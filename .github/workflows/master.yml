@@ -1,0 +1,52 @@
+name: Produces and releases artifacts
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: Build and run tests
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Setup JDK and .m2/settings.xml
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: 17
+          server-id: ossrh
+          distribution: 'zulu'
+          cache: maven
+          server-username: OSS_CENTRAL_USERNAME # env variable for Maven Central
+          server-password: OSS_CENTRAL_PASSWORD # env variable for Maven Central
+
+      # Prepare
+      - name: Prepare Maven Wrapper
+        run: chmod +x ./mvnw
+
+      # Build
+      - name: Build with Maven
+        run: ./mvnw clean verify -U -B -T4
+
+      # Get GPG private key into GPG
+      - name: Import GPG Owner Trust
+        run: echo "${{ secrets.GPG_OWNERTRUST }}" | base64 --decode | gpg --import-ownertrust
+
+      - name: Import GPG key
+        run: echo "${{ secrets.GPG_SECRET_KEYS }}" | base64 --decode | gpg --import --no-tty --batch --yes --always-trust
+
+      # Publish release
+      - name: Deploy a new release version to Maven Central
+        run: ./mvnw clean deploy -B -ntp -DskipTests -DskipExamples -Prelease -Dgpg.keyname="${{ secrets.GPG_KEYNAME }}" -Dgpg.passphrase="${{ secrets.GPG_PASSPHRASE }}"
+        env:
+          OSS_CENTRAL_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
+          OSS_CENTRAL_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
+
+#      - name: Upload coverage information
+#        uses: codecov/codecov-action@v2
+#        with:
+#          token: ${{ secrets.CODECOV_TOKEN }}

@@ -1,0 +1,193 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>dev.bpm-crafters.maven.parent</groupId>
+    <artifactId>maven-parent</artifactId>
+    <version>2024.1.1</version>
+    <relativePath/>
+  </parent>
+
+  <groupId>dev.bpm-crafters.process-engine-api</groupId>
+  <artifactId>process-engine-api-root</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <name>${project.artifactId}</name>
+  <description>Process Engine API</description>
+  <url>https://github.com/bpm-crafters/process-engine-api/</url>
+  <packaging>pom</packaging>
+
+  <properties>
+    <!-- TEST -->
+    <mockito.version>5.1.0</mockito.version>
+    <assertj.version>3.24.2</assertj.version>
+  </properties>
+
+  <modules>
+    <module>api</module>
+  </modules>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.assertj</groupId>
+        <artifactId>assertj-core</artifactId>
+        <version>${assertj.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.mockito.kotlin</groupId>
+        <artifactId>mockito-kotlin</artifactId>
+        <version>${mockito.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.tngtech.archunit</groupId>
+        <artifactId>archunit-junit5</artifactId>
+        <version>${archunit.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.jetbrains.kotlin</groupId>
+      <artifactId>kotlin-stdlib</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jetbrains.kotlin</groupId>
+      <artifactId>kotlin-reflect</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.github.microutils</groupId>
+      <artifactId>kotlin-logging-jvm</artifactId>
+      <version>${kotlin-logging.version}</version>
+    </dependency>
+
+    <!-- TEST -->
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-params</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jetbrains.kotlin</groupId>
+      <artifactId>kotlin-test-junit5</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito.kotlin</groupId>
+      <artifactId>mockito-kotlin</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+  </dependencies>
+
+  <build>
+    <defaultGoal>clean jacoco:prepare-agent package</defaultGoal>
+    <plugins>
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.jetbrains.kotlin</groupId>
+        <artifactId>kotlin-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </build>
+
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+    </license>
+  </licenses>
+
+  <scm>
+    <connection>scm:git:git@github.com:bpm-crafters/process-engine-api.git</connection>
+    <url>scm:git:git@github.com:bpm-crafters/process-engine-api.git</url>
+    <developerConnection>scm:git:git@github.com:bpm-crafters/process-engine-api.git</developerConnection>
+    <tag>HEAD</tag>
+  </scm>
+
+  <distributionManagement>
+    <snapshotRepository>
+      <id>ossrh</id>
+      <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
+    </snapshotRepository>
+    <repository>
+      <id>ossrh</id>
+      <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+    </repository>
+  </distributionManagement>
+
+  <developers>
+    <developer>
+      <id>jangalinski</id>
+      <name>Jan Galinski</name>
+      <roles>
+        <role>Developer</role>
+      </roles>
+      <organization>Holisticon AG</organization>
+      <organizationUrl>https://holisticon.de</organizationUrl>
+    </developer>
+    <developer>
+      <id>zambrovski</id>
+      <name>Simon Zambrovski</name>
+      <roles>
+        <role>Developer</role>
+      </roles>
+      <organization>Holisticon AG</organization>
+      <organizationUrl>https://holisticon.de</organizationUrl>
+    </developer>
+    <developer>
+      <id>__</id>
+      <name>Stephan Pelikan</name>
+      <roles>
+        <role>Developer</role>
+      </roles>
+      <organization>Phactum Solutions</organization>
+      <organizationUrl>https://phactum.at</organizationUrl>
+    </developer>
+    <developer>
+      <id>__</id>
+      <name>Peter Queteschiener</name>
+      <roles>
+        <role>Developer</role>
+      </roles>
+      <organization>Phactum Solutions</organization>
+      <organizationUrl>https://phactum.at</organizationUrl>
+    </developer>
+    <developer>
+      <id>__</id>
+      <name>Dominik Horn</name>
+      <roles>
+        <role>Developer</role>
+      </roles>
+      <organization>Miragon</organization>
+      <organizationUrl>https://miragon.com</organizationUrl>
+    </developer>
+    <developer>
+      <id>__</id>
+      <name>Thomas Hinrichs</name>
+      <roles>
+        <role>Developer</role>
+      </roles>
+      <organization>Miragon</organization>
+      <organizationUrl>https://miragon.com</organizationUrl>
+    </developer>
+  </developers>
+</project>
