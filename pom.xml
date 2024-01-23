@@ -25,6 +25,8 @@
 
   <modules>
     <module>api</module>
+    <module>examples</module>
+    <module>engine-adapter/camunda-platform-7</module>
   </modules>
 
   <dependencyManagement>
@@ -99,8 +101,17 @@
         <artifactId>jacoco-maven-plugin</artifactId>
       </plugin>
       <plugin>
-        <groupId>org.jetbrains.kotlin</groupId>
+        <!-- kotlin compiler -->
         <artifactId>kotlin-maven-plugin</artifactId>
+        <groupId>org.jetbrains.kotlin</groupId>
+        <configuration>
+          <jvmTarget>17</jvmTarget>
+          <compilerPlugins>
+            <plugin>spring</plugin>
+            <plugin>no-arg</plugin>
+            <plugin>all-open</plugin>
+          </compilerPlugins>
+        </configuration>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

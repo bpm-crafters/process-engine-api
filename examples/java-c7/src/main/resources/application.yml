@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: Java Camunda Platform 7
+
+springdoc:
+  swagger-ui:
+    try-it-out-enabled: true

@@ -2,10 +2,12 @@ package dev.bpmcrafters.processengineapi.correlation
 
 import dev.bpmcrafters.processengineapi.PayloadSupplier
 
+/**
+ * Command to correlate a message with running process instance.
+ * @since 0.0.1
+ */
 data class CorrelateMessageCmd(
   val messageName: String,
-  val payload: () -> Map<String, Any>,
+  val payloadSupplier: PayloadSupplier,
   val correlation: () -> Correlation
-) : PayloadSupplier {
-  override fun payload(): () -> Map<String, Any> = payload
-}
+) : PayloadSupplier by payloadSupplier

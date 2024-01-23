@@ -1,7 +1,16 @@
 package dev.bpmcrafters.processengineapi.task
 
-class CompleteTaskByErrorCmd(
-  taskId: String,
-  payload: () -> Map<String, Any>,
+/**
+ * Command to complete the task by error.
+ * @since 0.0.1
+ */
+open class CompleteTaskByErrorCmd(
+  /**
+   * Task id.
+   */
+  val taskId: String,
+  /**
+   * Error.
+   */
   val error: String
-) : CompleteTaskCmd(taskId = taskId, payload = payload)
+)
