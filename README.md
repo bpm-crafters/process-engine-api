@@ -16,10 +16,10 @@ easier.
 
 The library contains of the following Maven modules:
 
-- process-engine-api: pure API written in Kotlin (100% Java-compatible)
-- engine-adapter/camunda-platform-7-core: core implementation classes for Camunda 7 Platform without additional dependencies
-- engine-adapter/camunda-platform-7-spring-boot-starter: SpringBoot starter for usage of Camunda 7 Platform adapter
-- examples: various example projects showing the usage of the library.
+- `process-engine-api`: pure API written in Kotlin (100% Java-compatible)
+- `process-engine-api-adapter-camunda-platform-7-core`: core implementation classes for Camunda 7 Platform without additional dependencies
+- `process-engine-api-adapter-camunda-platform-7-spring-boot-starter`: SpringBoot starter for usage of Camunda 7 Platform adapter
+- `examples`: various example projects showing the usage of the library.
 
 ## API
 
