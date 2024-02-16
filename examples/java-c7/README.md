@@ -7,7 +7,7 @@ This example is a test that we can invoke API defined in Kotlin from Java. It ut
 There are some features in the C7 adapter already. In addition, there are some features in the example: 
 
 - AbstractSynchronousTaskHandler to complete external tasks in a synchronous way
-- In-Memory user task pool for retrieving infos about open user tasks (FIXME: currently there is no way to tell that the user task is already completed!)
+- In-Memory user task pool for retrieving infos about open user tasks
 
 ## Process
 

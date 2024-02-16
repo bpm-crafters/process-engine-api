@@ -11,5 +11,5 @@ interface SubscriptionRepository {
 
   fun activateSubscriptionForTask(taskId: String, subscription: TaskSubscriptionHandle)
   fun getActiveSubscriptionForTask(taskId: String): TaskSubscriptionHandle
-  fun removeSubscriptionForTask(taskId: String)
+  fun removeSubscriptionForTask(taskId: String): TaskSubscriptionHandle
 }

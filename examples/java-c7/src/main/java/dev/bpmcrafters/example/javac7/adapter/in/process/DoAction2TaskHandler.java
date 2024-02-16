@@ -18,7 +18,7 @@ public class DoAction2TaskHandler extends AbstractSynchronousTaskHandler {
 
   @Override
   public Map<String, Object> execute(TaskInformation taskInfo, Map<String, ?> variables) throws TaskHandlerException {
-    log.info("Executing action2 task handler on task {}", taskInfo.getTaskId());
+    log.info("[HANDLER ACTION2]: Working on task {}", taskInfo.getTaskId());
     val map = new HashMap<String, Object>(variables);
     map.put("action2", "value2");
     return map;

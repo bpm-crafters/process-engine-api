@@ -24,7 +24,7 @@ public class TaskApiClient {
     TaskSubscription subscription = taskApi.subscribeForTask(
       new SubscribeForTaskCmd(
         taskApi.ensureSupported(builder().withProcessDefinitionKey(processDefinitionKey).build()),
-        taskDefinitionKey, Collections.emptySet(), action
+        taskDefinitionKey, Collections.emptySet(), action, TaskModificationHandler.getEmpty()
       )
     ).get();
     activeSubscriptions.put(processDefinitionKey + taskDefinitionKey, subscription);

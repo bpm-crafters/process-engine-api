@@ -5,9 +5,11 @@ import dev.bpmcrafters.processengineapi.CommonRestrictions;
 import dev.bpmcrafters.processengineapi.task.SubscribeForTaskCmd;
 import dev.bpmcrafters.processengineapi.task.TaskApi;
 import dev.bpmcrafters.processengineapi.task.TaskInformation;
+import dev.bpmcrafters.processengineapi.task.TaskModificationHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
 import java.util.List;
@@ -31,8 +33,21 @@ public class InMemUserTaskHandler implements UserTaskOutPort {
         Collections.emptySet(), // all variables
         (taskInfo, variables) -> {
           if (!userTasks.containsKey(taskInfo)) { // don't replace existing tasks
-            log.info("Received user task {} with meta {}", taskInfo.getTaskId(), taskInfo.getMeta());
+            log.info("[TASK LIST]: Received user task {} with meta {}", taskInfo.getTaskId(), taskInfo.getMeta());
             userTasks.put(taskInfo, variables);
+          }
+        },
+        new TaskModificationHandler() {
+          @Override
+          public void modified(@NotNull TaskInformation taskInformation, @NotNull Map<String, ?> payload) {
+            log.info("[TASK LIST]: Updating task {}", taskInformation.getTaskId());
+            userTasks.put(taskInformation, payload);
+          }
+
+          @Override
+          public void terminated(@NotNull String taskId) {
+            log.info("[TASK LIST]: Removing task {}", taskId);
+            userTasks.keySet().stream().filter(info -> info.getTaskId().equals(taskId)).findFirst().ifPresent(userTasks::remove);
           }
         }
       )

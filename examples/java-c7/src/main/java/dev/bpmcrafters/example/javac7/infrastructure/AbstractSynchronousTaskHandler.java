@@ -2,8 +2,6 @@ package dev.bpmcrafters.example.javac7.infrastructure;
 
 import dev.bpmcrafters.processengineapi.CommonRestrictions;
 import dev.bpmcrafters.processengineapi.task.*;
-import jakarta.annotation.PostConstruct;
-import jakarta.annotation.PreDestroy;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
@@ -29,16 +27,22 @@ public abstract class AbstractSynchronousTaskHandler {
   public void register() {
     log.info("Registering handler for {}", topic);
     this.subscription = this.taskApi.subscribeForTask(
-      new SubscribeForTaskCmd(CommonRestrictions.builder().withTaskType("service").build(), topic, Collections.emptySet(), (taskInfo, variables) -> {
-        try {
-          log.info("[SYNC HANDLER]: Executing task {}...", taskInfo.getTaskId());
-          taskApi.completeTask(new CompleteTaskCmd(taskInfo.getTaskId(), () -> execute(taskInfo, variables)));
-          log.info("[SYNC HANDLER]: Completed task {}.", taskInfo.getTaskId());
-        } catch (TaskHandlerException e) {
-          log.info("[SYNC HANDLER]: Error completing task {}, completing with error code {}.", taskInfo.getTaskId(), e.getErrorCode());
-          taskApi.completeTaskByError(new CompleteTaskByErrorCmd(taskInfo.getTaskId(), e.getErrorCode()));
-        }
-      })
+      new SubscribeForTaskCmd(
+        CommonRestrictions.builder().withTaskType("service").build(),
+        topic,
+        Collections.emptySet(),
+        (taskInfo, variables) -> {
+          try {
+            log.info("[SYNC HANDLER]: Executing task {}...", taskInfo.getTaskId());
+            taskApi.completeTask(new CompleteTaskCmd(taskInfo.getTaskId(), () -> execute(taskInfo, variables)));
+            log.info("[SYNC HANDLER]: Completed task {}.", taskInfo.getTaskId());
+          } catch (TaskHandlerException e) {
+            log.info("[SYNC HANDLER]: Error completing task {}, completing with error code {}.", taskInfo.getTaskId(), e.getErrorCode());
+            taskApi.completeTaskByError(new CompleteTaskByErrorCmd(taskInfo.getTaskId(), e.getErrorCode()));
+          }
+        },
+        TaskModificationHandler.getEmpty()
+      )
     ).get();
   }
 

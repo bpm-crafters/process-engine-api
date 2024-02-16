@@ -19,8 +19,9 @@ class TaskApiImpl(
     return TaskSubscriptionHandle(
       taskDescriptionKey = cmd.taskDescriptionKey,
       payloadDescription = cmd.payloadDescription,
+      restrictions = cmd.restrictions,
       action = cmd.action,
-      restrictions = cmd.restrictions
+      modification = cmd.modifcation
     ).let {
       subscriptionRepository.createTaskSubscription(it)
       logger.info { "Registered new task subscription $it" }

@@ -39,7 +39,7 @@ class UserTaskCompletionStrategy(
       cmd.taskId,
       cmd.get()
     )
-    subscriptionRepository.removeSubscriptionForTask(cmd.taskId)
+    subscriptionRepository.removeSubscriptionForTask(cmd.taskId).modification.terminated(cmd.taskId)
     return CompletableFuture.completedFuture(Empty)
   }
 
@@ -48,7 +48,7 @@ class UserTaskCompletionStrategy(
       cmd.taskId,
       cmd.error
     )
-    subscriptionRepository.removeSubscriptionForTask(cmd.taskId)
+    subscriptionRepository.removeSubscriptionForTask(cmd.taskId).modification.terminated(cmd.taskId)
     return CompletableFuture.completedFuture(Empty)
   }
 }

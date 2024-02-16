@@ -28,8 +28,8 @@ class InMemSubscriptionRepository : SubscriptionRepository {
     this.activeSubscribedHandler[taskId] = subscription
   }
 
-  override fun removeSubscriptionForTask(taskId: String) {
-    this.activeSubscribedHandler.remove(taskId)
+  override fun removeSubscriptionForTask(taskId: String): TaskSubscriptionHandle {
+    return this.activeSubscribedHandler.remove(taskId) ?: throw IllegalArgumentException("No active subscription for for task $taskId found.")
   }
 
 }

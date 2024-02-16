@@ -43,7 +43,7 @@ class ExternalTaskCompletionStrategy(
       workerId,
       cmd.get()
     )
-    subscriptionRepository.removeSubscriptionForTask(cmd.taskId)
+    subscriptionRepository.removeSubscriptionForTask(cmd.taskId).modification.terminated(cmd.taskId)
     logger.info { "Successfully completed external task ${cmd.taskId}." }
     return CompletableFuture.completedFuture(Empty)
   }
@@ -54,7 +54,7 @@ class ExternalTaskCompletionStrategy(
       workerId,
       cmd.error
     )
-    subscriptionRepository.removeSubscriptionForTask(cmd.taskId)
+    subscriptionRepository.removeSubscriptionForTask(cmd.taskId).modification.terminated(cmd.taskId)
     logger.info { "Completed external task ${cmd.taskId} with error." }
     return CompletableFuture.completedFuture(Empty)
   }
