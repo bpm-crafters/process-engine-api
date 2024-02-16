@@ -9,25 +9,36 @@
     <relativePath>../../pom.xml</relativePath>
   </parent>
 
-  <artifactId>process-engine-api-adapter-camunda-platform-c7</artifactId>
+  <artifactId>process-engine-api-adapter-camunda-platform-c7-spring-boot-starter</artifactId>
+
+  <properties>
+    <spring-boot.version>3.1.8</spring-boot.version>
+  </properties>
 
   <dependencyManagement>
     <dependencies>
-      <!-- https://mvnrepository.com/artifact/org.camunda.bpm/camunda-bom -->
       <dependency>
-        <groupId>org.camunda.bpm</groupId>
-        <artifactId>camunda-bom</artifactId>
-        <version>7.20.0</version>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-dependencies</artifactId>
+        <version>${spring-boot.version}</version>
         <scope>import</scope>
         <type>pom</type>
       </dependency>
+        <!-- https://mvnrepository.com/artifact/org.camunda.bpm/camunda-bom -->
+        <dependency>
+          <groupId>org.camunda.bpm</groupId>
+          <artifactId>camunda-bom</artifactId>
+          <version>7.20.0</version>
+          <scope>import</scope>
+          <type>pom</type>
+        </dependency>
     </dependencies>
   </dependencyManagement>
 
   <dependencies>
     <dependency>
       <groupId>dev.bpm-crafters.process-engine-api</groupId>
-      <artifactId>process-engine-api</artifactId>
+      <artifactId>process-engine-api-adapter-camunda-platform-c7-core</artifactId>
       <version>0.0.1-SNAPSHOT</version>
     </dependency>
     <dependency>
@@ -38,7 +49,6 @@
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-autoconfigure</artifactId>
-      <version>3.1.6</version>
     </dependency>
   </dependencies>
 

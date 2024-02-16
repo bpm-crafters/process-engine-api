@@ -1,4 +1,4 @@
-package dev.bpmcrafters.processengineapi.adapter.c7
+package dev.bpmcrafters.processengineapi.adapter.c7.correlation
 
 import dev.bpmcrafters.processengineapi.CommonRestrictions
 import dev.bpmcrafters.processengineapi.MetaInfo
@@ -11,7 +11,9 @@ import org.camunda.bpm.engine.runtime.MessageCorrelationBuilder
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.Future
 
-class CorrelationApiImpl(private val runtimeService: RuntimeService) : CorrelationApi {
+class CorrelationApiImpl(
+  private val runtimeService: RuntimeService
+) : CorrelationApi {
 
   override fun correlateMessage(cmd: CorrelateMessageCmd): Future<Unit> {
     return CompletableFuture.supplyAsync {
@@ -21,10 +23,6 @@ class CorrelationApiImpl(private val runtimeService: RuntimeService) : Correlati
         .setVariables(cmd.payloadSupplier.get())
         .correlate()
     }
-  }
-
-  override fun meta(instance: MetaInfoAware): MetaInfo {
-    TODO("Not yet implemented")
   }
 
   override fun getSupportedRestrictions(): Set<String> = setOf(CommonRestrictions.PROCESS_INSTANCE_ID)
@@ -39,4 +37,9 @@ class CorrelationApiImpl(private val runtimeService: RuntimeService) : Correlati
         }
       }
   }
+
+  override fun meta(instance: MetaInfoAware): MetaInfo {
+    TODO("Not yet implemented")
+  }
+
 }

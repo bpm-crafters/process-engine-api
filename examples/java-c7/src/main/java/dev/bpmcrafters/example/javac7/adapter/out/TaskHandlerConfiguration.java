@@ -16,4 +16,9 @@ public class TaskHandlerConfiguration {
   public DoAction2TaskHandler doAction2(TaskApi taskApi) {
     return new DoAction2TaskHandler(taskApi);
   }
+
+  @Bean(initMethod = "register")
+  public InMemUserTaskHandler userTaskHandler(TaskApi taskApi) {
+    return new InMemUserTaskHandler(taskApi);
+  }
 }

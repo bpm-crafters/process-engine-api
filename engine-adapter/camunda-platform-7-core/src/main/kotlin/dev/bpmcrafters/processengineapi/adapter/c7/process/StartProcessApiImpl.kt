@@ -1,4 +1,4 @@
-package dev.bpmcrafters.processengineapi.adapter.c7
+package dev.bpmcrafters.processengineapi.adapter.c7.process
 
 import dev.bpmcrafters.processengineapi.MetaInfo
 import dev.bpmcrafters.processengineapi.MetaInfoAware

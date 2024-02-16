@@ -20,7 +20,7 @@ interface RestrictionAware {
   }
 
   /**
-   * Checks that the supplied restrictions are supported by the implementer
+   * Checks that the supplied restrictions are supported by the implementer.
    * @return restrictions if all restrictions are supported
    * @throws IllegalArgumentException if not all restrictions are supported
    */

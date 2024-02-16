@@ -1,5 +1,6 @@
 package dev.bpmcrafters.example.javac7.infrastructure;
 
+import dev.bpmcrafters.processengineapi.CommonRestrictions;
 import dev.bpmcrafters.processengineapi.task.*;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
@@ -25,7 +26,7 @@ public abstract class AbstractSynchronousTaskHandler {
   public void register() {
     log.info("Registering handler for {}", topic);
     this.subscription = this.taskApi.subscribeForTask(
-      new SubscribeForTaskCmd(Collections.emptyMap(), topic, Collections.emptySet(), (taskId, variables) -> {
+      new SubscribeForTaskCmd(CommonRestrictions.builder().withTaskType("service").build(), topic, Collections.emptySet(), (taskId, variables) -> {
         try {
           log.info("Completing task {}...", taskId);
           taskApi.completeTask(new CompleteTaskCmd(taskId, () -> execute(taskId, variables)));

@@ -14,7 +14,7 @@ data class SubscribeForTaskCmd(
    * any engine-specific attribute of the task XML-tag. As a fallback an adapter-implementation
    * should also accept a task's `id` attribute, since this the only common attribute in all engines.
    */
-  val taskDescriptionKey: String,
+  val taskDescriptionKey: String?,
   /**
    * Limitation of the payload variables to be delivered to the action.
    */

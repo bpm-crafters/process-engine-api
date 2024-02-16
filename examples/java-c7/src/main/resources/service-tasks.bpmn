@@ -5,7 +5,7 @@
       <bpmn:outgoing>Flow_0xo10tz</bpmn:outgoing>
     </bpmn:startEvent>
     <bpmn:sequenceFlow id="Flow_0xo10tz" sourceRef="StartEvent_1" targetRef="service-do-action1" />
-    <bpmn:sequenceFlow id="Flow_11htx0a" sourceRef="service-do-action1" targetRef="service-do-action2" />
+    <bpmn:sequenceFlow id="Flow_11htx0a" sourceRef="service-do-action1" targetRef="user-perform-task" />
     <bpmn:endEvent id="Event_0ha0s45" name="Finished">
       <bpmn:incoming>Flow_04ljvde</bpmn:incoming>
     </bpmn:endEvent>
@@ -15,7 +15,7 @@
       <bpmn:outgoing>Flow_11htx0a</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:serviceTask id="service-do-action2" name="Do action 2" camunda:type="external" camunda:topic="action2">
-      <bpmn:incoming>Flow_11htx0a</bpmn:incoming>
+      <bpmn:incoming>Flow_0soob8d</bpmn:incoming>
       <bpmn:outgoing>Flow_06ub3x1</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_04ljvde" sourceRef="receive_message" targetRef="Event_0ha0s45" />
@@ -24,6 +24,11 @@
       <bpmn:outgoing>Flow_04ljvde</bpmn:outgoing>
       <bpmn:messageEventDefinition id="MessageEventDefinition_1lzqmbf" messageRef="Message_3uo7jrg" />
     </bpmn:intermediateCatchEvent>
+    <bpmn:sequenceFlow id="Flow_0soob8d" sourceRef="user-perform-task" targetRef="service-do-action2" />
+    <bpmn:userTask id="user-perform-task" name="Perform user task" camunda:assignee="kermit" camunda:candidateUsers="avengers" camunda:candidateGroups="gonzo, fozzy">
+      <bpmn:incoming>Flow_11htx0a</bpmn:incoming>
+      <bpmn:outgoing>Flow_0soob8d</bpmn:outgoing>
+    </bpmn:userTask>
   </bpmn:process>
   <bpmn:message id="Message_3uo7jrg" name="message1" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
@@ -37,20 +42,23 @@
       <bpmndi:BPMNShape id="Activity_12vhv3z_di" bpmnElement="service-do-action1">
         <dc:Bounds x="270" y="77" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_11myxdm_di" bpmnElement="service-do-action2">
-        <dc:Bounds x="430" y="77" width="100" height="80" />
+      <bpmndi:BPMNShape id="Event_0ha0s45_di" bpmnElement="Event_0ha0s45">
+        <dc:Bounds x="802" y="99" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="799" y="142" width="42" height="14" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_0wvfb2c_di" bpmnElement="receive_message">
-        <dc:Bounds x="592" y="99" width="36" height="36" />
+        <dc:Bounds x="722" y="99" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="566" y="142" width="90" height="14" />
+          <dc:Bounds x="696" y="142" width="90" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_0ha0s45_di" bpmnElement="Event_0ha0s45">
-        <dc:Bounds x="672" y="99" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="669" y="142" width="42" height="14" />
-        </bpmndi:BPMNLabel>
+      <bpmndi:BPMNShape id="Activity_11myxdm_di" bpmnElement="service-do-action2">
+        <dc:Bounds x="570" y="77" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_127rnbj_di" bpmnElement="user-perform-task">
+        <dc:Bounds x="420" y="77" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_0xo10tz_di" bpmnElement="Flow_0xo10tz">
         <di:waypoint x="215" y="117" />
@@ -58,15 +66,19 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_11htx0a_di" bpmnElement="Flow_11htx0a">
         <di:waypoint x="370" y="117" />
-        <di:waypoint x="430" y="117" />
+        <di:waypoint x="420" y="117" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_06ub3x1_di" bpmnElement="Flow_06ub3x1">
-        <di:waypoint x="530" y="117" />
-        <di:waypoint x="592" y="117" />
+        <di:waypoint x="670" y="117" />
+        <di:waypoint x="722" y="117" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_04ljvde_di" bpmnElement="Flow_04ljvde">
-        <di:waypoint x="628" y="117" />
-        <di:waypoint x="672" y="117" />
+        <di:waypoint x="758" y="117" />
+        <di:waypoint x="802" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0soob8d_di" bpmnElement="Flow_0soob8d">
+        <di:waypoint x="520" y="117" />
+        <di:waypoint x="570" y="117" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
