@@ -1,5 +1,6 @@
 package dev.bpmcrafters.processengineapi.adapter.c7.process
 
+import dev.bpmcrafters.processengineapi.CommonRestrictions
 import dev.bpmcrafters.processengineapi.MetaInfo
 import dev.bpmcrafters.processengineapi.MetaInfoAware
 import dev.bpmcrafters.processengineapi.process.*
@@ -12,14 +13,14 @@ class StartProcessApiImpl(
   private val runtimeService: RuntimeService
 ) : StartProcessApi {
 
-  override fun startProcess(cmd: StartProcessCommand): Future<StartProcessResponse> {
+  override fun startProcess(cmd: StartProcessCommand): Future<ProcessInformation> {
     return when (cmd) {
       is StartProcessByDefinitionCmd ->
         CompletableFuture.supplyAsync {
           runtimeService.startProcessInstanceByKey(
             cmd.definitionKey,
             cmd.payloadSupplier.get()
-          ).toResponse()
+          ).toProcessInformation()
         }
 
       is StartProcessByMessageCmd ->
@@ -28,19 +29,19 @@ class StartProcessApiImpl(
             .createMessageCorrelation(cmd.messageName)
             .setVariables(cmd.payloadSupplier.get())
             .correlateStartMessage()
-            .toResponse()
+            .toProcessInformation()
         }
 
       else -> throw IllegalArgumentException("Unsupported start command $cmd")
     }
   }
 
-  private fun ProcessInstance.toResponse() = StartProcessResponse(
+  private fun ProcessInstance.toProcessInformation() = ProcessInformation(
     instanceId = this.id,
     meta = mapOf(
-      "processDefinitionId" to this.processDefinitionId,
-      "businessKey" to this.businessKey,
-      "tenantId" to this.tenantId,
+      CommonRestrictions.PROCESS_DEFINITION_KEY to this.processDefinitionId,
+      CommonRestrictions.BUSINESS_KEY to this.businessKey,
+      CommonRestrictions.TENANT_ID to this.tenantId,
       "rootProcessInstanceId" to this.rootProcessInstanceId
     )
   )

@@ -1,8 +1,10 @@
 package dev.bpmcrafters.processengineapi.adapter.c7.task.delivery
 
+import dev.bpmcrafters.processengineapi.CommonRestrictions
 import dev.bpmcrafters.processengineapi.adapter.c7.task.SubscriptionRepository
 import dev.bpmcrafters.processengineapi.adapter.c7.task.TaskSubscriptionHandle
 import dev.bpmcrafters.processengineapi.adapter.c7.task.completion.UserTaskCompletionStrategy
+import dev.bpmcrafters.processengineapi.task.TaskInformation
 import org.camunda.bpm.engine.TaskService
 import org.camunda.bpm.engine.task.Task
 
@@ -33,7 +35,7 @@ class UserTaskDelivery(
               taskService.getVariables(task.id, activeSubscription.payloadDescription)
             }
 
-            activeSubscription.action.accept(task.id, variables)
+            activeSubscription.action.accept(task.toInformation(), variables)
           }
       }
   }
@@ -42,4 +44,18 @@ class UserTaskDelivery(
     UserTaskCompletionStrategy.supports(this.restrictions) && (
       this.taskDescriptionKey == null || this.taskDescriptionKey == task.taskDefinitionKey || this.taskDescriptionKey == task.id
       )
+
+  private fun Task.toInformation() =
+    TaskInformation(
+      taskId = this.id,
+      meta = mapOf(
+        CommonRestrictions.TASK_TYPE to "user",
+        CommonRestrictions.TASK_DEFINITION_KEY to this.taskDefinitionKey,
+        CommonRestrictions.TENANT_ID to this.tenantId,
+        CommonRestrictions.PROCESS_INSTANCE_ID to this.processInstanceId,
+        "taskName" to this.name,
+        "taskDescription" to this.description,
+        "assignee" to this.assignee
+      )
+    )
 }

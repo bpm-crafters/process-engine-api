@@ -1,8 +1,10 @@
 package dev.bpmcrafters.processengineapi.adapter.c7.task.delivery
 
+import dev.bpmcrafters.processengineapi.CommonRestrictions
 import dev.bpmcrafters.processengineapi.adapter.c7.task.SubscriptionRepository
 import dev.bpmcrafters.processengineapi.adapter.c7.task.TaskSubscriptionHandle
 import dev.bpmcrafters.processengineapi.adapter.c7.task.completion.ExternalTaskCompletionStrategy
+import dev.bpmcrafters.processengineapi.task.TaskInformation
 import org.camunda.bpm.engine.ExternalTaskService
 import org.camunda.bpm.engine.externaltask.LockedExternalTask
 
@@ -45,7 +47,7 @@ class ExternalTaskDelivery(
               lockedTask.variables.filter { activeSubscription.payloadDescription.contains(it.key) }
             }
 
-            activeSubscription.action.accept(lockedTask.id, variables)
+            activeSubscription.action.accept(lockedTask.toTaskInformation(), variables)
           }
       }
   }
@@ -57,5 +59,18 @@ class ExternalTaskDelivery(
   private fun TaskSubscriptionHandle.matches(task: LockedExternalTask): Boolean {
     return ExternalTaskCompletionStrategy.supports(this.restrictions) &&
       (this.taskDescriptionKey == null || this.taskDescriptionKey == task.topicName)
+  }
+
+  private fun LockedExternalTask.toTaskInformation(): TaskInformation {
+    return TaskInformation(
+      this.id,
+      mapOf(
+        CommonRestrictions.PROCESS_DEFINITION_KEY to this.processDefinitionKey,
+        CommonRestrictions.PROCESS_INSTANCE_ID to this.processInstanceId,
+        CommonRestrictions.TENANT_ID to this.tenantId,
+        CommonRestrictions.TASK_TYPE to "service",
+        CommonRestrictions.ACTIVITY_ID to this.activityId
+      )
+    )
   }
 }

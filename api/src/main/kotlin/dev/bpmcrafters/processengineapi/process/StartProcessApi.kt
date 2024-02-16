@@ -13,5 +13,5 @@ interface StartProcessApi : MetaInfoAware {
    * @param cmd command describing the start.
    * @return future indicating completion and containing the reference to started instance.
    */
-  fun startProcess(cmd: StartProcessCommand): Future<StartProcessResponse>
+  fun startProcess(cmd: StartProcessCommand): Future<ProcessInformation>
 }

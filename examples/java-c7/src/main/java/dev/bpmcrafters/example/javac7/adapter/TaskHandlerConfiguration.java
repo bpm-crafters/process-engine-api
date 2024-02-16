@@ -1,5 +1,8 @@
-package dev.bpmcrafters.example.javac7.adapter.out;
+package dev.bpmcrafters.example.javac7.adapter;
 
+import dev.bpmcrafters.example.javac7.adapter.in.process.DoAction1TaskHandler;
+import dev.bpmcrafters.example.javac7.adapter.in.process.DoAction2TaskHandler;
+import dev.bpmcrafters.example.javac7.adapter.out.process.InMemUserTaskHandler;
 import dev.bpmcrafters.processengineapi.task.TaskApi;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

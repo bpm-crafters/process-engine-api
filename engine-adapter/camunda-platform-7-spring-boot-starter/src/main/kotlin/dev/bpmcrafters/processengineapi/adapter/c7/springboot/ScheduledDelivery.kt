@@ -14,16 +14,16 @@ class ScheduledDelivery(
 
   @Scheduled(fixedRate = 13_000L)
   fun scheduleExternalTaskDelivery() {
-    logger.info { "[SCHEDULER]: Delivering external tasks..." }
+    logger.trace { "[SCHEDULER]: Delivering external tasks..." }
     externalTaskDelivery.deliverAll()
-    logger.info { "[SCHEDULER]: Delivered external tasks." }
+    logger.trace { "[SCHEDULER]: Delivered external tasks." }
   }
 
   @Scheduled(fixedRate = 5_000L)
   fun scheduleUserTaskDelivery() {
-    logger.info { "[SCHEDULER]: Delivering user tasks..." }
+    logger.trace { "[SCHEDULER]: Delivering user tasks..." }
     userTaskDelivery.deliverAll()
-    logger.info { "[SCHEDULER]: Delivered user tasks." }
+    logger.trace { "[SCHEDULER]: Delivered user tasks." }
   }
 
 }

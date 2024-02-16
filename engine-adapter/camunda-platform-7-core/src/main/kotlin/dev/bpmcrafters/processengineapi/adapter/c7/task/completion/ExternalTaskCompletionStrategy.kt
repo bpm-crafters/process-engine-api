@@ -6,6 +6,7 @@ import dev.bpmcrafters.processengineapi.adapter.c7.task.CompletionStrategy
 import dev.bpmcrafters.processengineapi.adapter.c7.task.SubscriptionRepository
 import dev.bpmcrafters.processengineapi.task.CompleteTaskByErrorCmd
 import dev.bpmcrafters.processengineapi.task.CompleteTaskCmd
+import mu.KLogging
 import org.camunda.bpm.engine.ExternalTaskService
 import java.util.*
 import java.util.concurrent.CompletableFuture
@@ -20,7 +21,7 @@ class ExternalTaskCompletionStrategy(
   private val subscriptionRepository: SubscriptionRepository
 ) : CompletionStrategy {
 
-  companion object {
+  companion object : KLogging() {
     private val SUPPORTED_TASK_TYPES = arrayOf("service")
 
     fun supports(restrictions: Map<String, String>): Boolean {
@@ -43,6 +44,7 @@ class ExternalTaskCompletionStrategy(
       cmd.get()
     )
     subscriptionRepository.removeSubscriptionForTask(cmd.taskId)
+    logger.info { "Successfully completed external task ${cmd.taskId}." }
     return CompletableFuture.completedFuture(Empty)
   }
 
@@ -53,6 +55,7 @@ class ExternalTaskCompletionStrategy(
       cmd.error
     )
     subscriptionRepository.removeSubscriptionForTask(cmd.taskId)
+    logger.info { "Completed external task ${cmd.taskId} with error." }
     return CompletableFuture.completedFuture(Empty)
   }
 }

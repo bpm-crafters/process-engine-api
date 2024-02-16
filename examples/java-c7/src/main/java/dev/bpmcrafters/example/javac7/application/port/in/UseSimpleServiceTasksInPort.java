@@ -1,4 +1,4 @@
-package dev.bpmcrafters.example.javac7.application.port;
+package dev.bpmcrafters.example.javac7.application.port.in;
 
 import java.util.concurrent.Future;
 

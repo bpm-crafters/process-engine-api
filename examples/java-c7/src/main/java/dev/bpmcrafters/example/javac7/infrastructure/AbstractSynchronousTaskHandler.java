@@ -11,6 +11,9 @@ import java.util.Collections;
 import java.util.Map;
 
 
+/**
+ * Abstract example implementation of synchronous task handler.
+ */
 @Slf4j
 public abstract class AbstractSynchronousTaskHandler {
   private final TaskApi taskApi;
@@ -26,14 +29,14 @@ public abstract class AbstractSynchronousTaskHandler {
   public void register() {
     log.info("Registering handler for {}", topic);
     this.subscription = this.taskApi.subscribeForTask(
-      new SubscribeForTaskCmd(CommonRestrictions.builder().withTaskType("service").build(), topic, Collections.emptySet(), (taskId, variables) -> {
+      new SubscribeForTaskCmd(CommonRestrictions.builder().withTaskType("service").build(), topic, Collections.emptySet(), (taskInfo, variables) -> {
         try {
-          log.info("Completing task {}...", taskId);
-          taskApi.completeTask(new CompleteTaskCmd(taskId, () -> execute(taskId, variables)));
-          log.info("Completed task {}.", taskId);
+          log.info("[SYNC HANDLER]: Executing task {}...", taskInfo.getTaskId());
+          taskApi.completeTask(new CompleteTaskCmd(taskInfo.getTaskId(), () -> execute(taskInfo, variables)));
+          log.info("[SYNC HANDLER]: Completed task {}.", taskInfo.getTaskId());
         } catch (TaskHandlerException e) {
-          log.info("Error completing task {}, completing with error code {}.", taskId, e.getErrorCode());
-          taskApi.completeTaskByError(new CompleteTaskByErrorCmd(taskId, e.getErrorCode()));
+          log.info("[SYNC HANDLER]: Error completing task {}, completing with error code {}.", taskInfo.getTaskId(), e.getErrorCode());
+          taskApi.completeTaskByError(new CompleteTaskByErrorCmd(taskInfo.getTaskId(), e.getErrorCode()));
         }
       })
     ).get();
@@ -45,6 +48,6 @@ public abstract class AbstractSynchronousTaskHandler {
     this.taskApi.unsubscribe(new UnsubscribeFromTaskCmd(subscription)).get();
   }
 
-  public abstract Map<String, Object> execute(String taskId, Map<String, ?> variables) throws TaskHandlerException;
+  public abstract Map<String, Object> execute(TaskInformation taskInfo, Map<String, ?> variables) throws TaskHandlerException;
 
 }

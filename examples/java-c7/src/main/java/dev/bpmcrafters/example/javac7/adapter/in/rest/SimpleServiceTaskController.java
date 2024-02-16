@@ -1,7 +1,8 @@
 package dev.bpmcrafters.example.javac7.adapter.in.rest;
 
-import dev.bpmcrafters.example.javac7.application.port.PerformUserTaskInPort;
-import dev.bpmcrafters.example.javac7.application.port.UseSimpleServiceTasksInPort;
+import dev.bpmcrafters.example.javac7.application.port.in.PerformUserTaskInPort;
+import dev.bpmcrafters.example.javac7.application.port.in.UseSimpleServiceTasksInPort;
+import dev.bpmcrafters.processengineapi.task.TaskInformation;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -9,6 +10,7 @@ import lombok.val;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Set;
 
 import static org.springframework.http.ResponseEntity.noContent;
@@ -41,8 +43,8 @@ public class SimpleServiceTaskController {
 
   @GetMapping("/tasks")
   @SneakyThrows
-  public ResponseEntity<Set<String>> getTasks() {
-    return ok(taskUseCase.getUserTasks().get().keySet());
+  public ResponseEntity<List<TaskInformation>> getTasks() {
+    return ok(taskUseCase.getUserTasks().get());
   }
 
   @PostMapping("/tasks/{taskId}")

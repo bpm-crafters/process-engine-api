@@ -4,6 +4,7 @@ import dev.bpmcrafters.processengineapi.Empty
 import dev.bpmcrafters.processengineapi.MetaInfo
 import dev.bpmcrafters.processengineapi.MetaInfoAware
 import dev.bpmcrafters.processengineapi.task.*
+import mu.KLogging
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.Future
 
@@ -11,6 +12,8 @@ class TaskApiImpl(
   private val completionStrategies: List<CompletionStrategy>,
   private val subscriptionRepository: SubscriptionRepository
 ) : TaskApi {
+
+  companion object: KLogging()
 
   override fun subscribeForTask(cmd: SubscribeForTaskCmd): Future<TaskSubscription> {
     return TaskSubscriptionHandle(
@@ -20,6 +23,7 @@ class TaskApiImpl(
       restrictions = cmd.restrictions
     ).let {
       subscriptionRepository.createTaskSubscription(it)
+      logger.info { "Registered new task subscription $it" }
       CompletableFuture.completedFuture(it)
     }
   }
@@ -34,7 +38,7 @@ class TaskApiImpl(
     val activeSubscription = subscriptionRepository.getActiveSubscriptionForTask(cmd.taskId)
     // find the correct strategy
     val strategy = completionStrategies.find { it.supports(restrictions = activeSubscription.restrictions, taskDescriptionKey = activeSubscription.taskDescriptionKey) }
-    return strategy?.completeTask(cmd) ?: throw IllegalArgumentException("no completion strategy found for task ${cmd.taskId}")
+    return strategy?.completeTask(cmd) ?: throw IllegalArgumentException("No completion strategy found for task ${cmd.taskId}")
   }
 
   override fun completeTaskByError(cmd: CompleteTaskByErrorCmd): Future<Empty> {
@@ -42,7 +46,7 @@ class TaskApiImpl(
     val activeSubscription = subscriptionRepository.getActiveSubscriptionForTask(cmd.taskId)
     // find the correct strategy
     val strategy = completionStrategies.find { it.supports(restrictions = activeSubscription.restrictions, taskDescriptionKey = activeSubscription.taskDescriptionKey) }
-    return strategy?.completeTaskByError(cmd) ?: throw IllegalArgumentException("no completion strategy found for task ${cmd.taskId}")
+    return strategy?.completeTaskByError(cmd) ?: throw IllegalArgumentException("No completion strategy found for task ${cmd.taskId}")
   }
 
   override fun getSupportedRestrictions(): Set<String> = this.completionStrategies.map { it.getSupportedRestrictions() }.flatten().toSet()

@@ -1,8 +1,9 @@
-package dev.bpmcrafters.example.javac7.adapter.out;
+package dev.bpmcrafters.example.javac7.adapter.in.process;
 
 import dev.bpmcrafters.example.javac7.infrastructure.AbstractSynchronousTaskHandler;
 import dev.bpmcrafters.example.javac7.infrastructure.TaskHandlerException;
 import dev.bpmcrafters.processengineapi.task.TaskApi;
+import dev.bpmcrafters.processengineapi.task.TaskInformation;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 
@@ -16,8 +17,8 @@ public class DoAction1TaskHandler extends AbstractSynchronousTaskHandler {
   }
 
   @Override
-  public Map<String, Object> execute(String taskId, Map<String, ?> variables) throws TaskHandlerException {
-    log.info("Executing action1 task handler");
+  public Map<String, Object> execute(TaskInformation taskInfo, Map<String, ?> variables) throws TaskHandlerException {
+    log.info("Executing action1 task handler on task {}", taskInfo.getTaskId());
     val map = new HashMap<String, Object>(variables);
     map.put("action1", "value1");
     return map;

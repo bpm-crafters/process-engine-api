@@ -1,6 +1,6 @@
 package dev.bpmcrafters.example.javac7.application.usecase;
 
-import dev.bpmcrafters.example.javac7.application.port.UseSimpleServiceTasksInPort;
+import dev.bpmcrafters.example.javac7.application.port.in.UseSimpleServiceTasksInPort;
 import dev.bpmcrafters.processengineapi.CommonRestrictions;
 import dev.bpmcrafters.processengineapi.correlation.CorrelateMessageCmd;
 import dev.bpmcrafters.processengineapi.correlation.Correlation;

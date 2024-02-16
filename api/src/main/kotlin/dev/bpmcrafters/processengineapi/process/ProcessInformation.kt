@@ -1,10 +1,10 @@
 package dev.bpmcrafters.processengineapi.process
 
 /**
- * Response for the process start.
+ * Information about the process instance.
  * @since 0.0.1
  */
-data class StartProcessResponse(
+data class ProcessInformation(
   /**
    * Reference to the instance.
    */
