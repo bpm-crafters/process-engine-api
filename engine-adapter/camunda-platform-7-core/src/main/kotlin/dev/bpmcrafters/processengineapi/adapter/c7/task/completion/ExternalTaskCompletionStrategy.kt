@@ -1,6 +1,7 @@
 package dev.bpmcrafters.processengineapi.adapter.c7.task.completion
 
 import dev.bpmcrafters.processengineapi.CommonRestrictions
+import dev.bpmcrafters.processengineapi.Empty
 import dev.bpmcrafters.processengineapi.adapter.c7.task.CompletionStrategy
 import dev.bpmcrafters.processengineapi.adapter.c7.task.SubscriptionRepository
 import dev.bpmcrafters.processengineapi.task.CompleteTaskByErrorCmd
@@ -35,23 +36,23 @@ class ExternalTaskCompletionStrategy(
     return supports(restrictions)
   }
 
-  override fun completeTask(cmd: CompleteTaskCmd): Future<Unit> {
+  override fun completeTask(cmd: CompleteTaskCmd): Future<Empty> {
     externalTaskService.complete(
       cmd.taskId,
       workerId,
       cmd.get()
     )
     subscriptionRepository.removeSubscriptionForTask(cmd.taskId)
-    return CompletableFuture.completedFuture(null)
+    return CompletableFuture.completedFuture(Empty)
   }
 
-  override fun completeTaskByError(cmd: CompleteTaskByErrorCmd): Future<Unit> {
+  override fun completeTaskByError(cmd: CompleteTaskByErrorCmd): Future<Empty> {
     externalTaskService.handleBpmnError(
       cmd.taskId,
       workerId,
       cmd.error
     )
     subscriptionRepository.removeSubscriptionForTask(cmd.taskId)
-    return CompletableFuture.completedFuture(null)
+    return CompletableFuture.completedFuture(Empty)
   }
 }

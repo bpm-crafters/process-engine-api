@@ -1,5 +1,6 @@
 package dev.bpmcrafters.processengineapi.task
 
+import dev.bpmcrafters.processengineapi.Empty
 import dev.bpmcrafters.processengineapi.MetaInfoAware
 import dev.bpmcrafters.processengineapi.RestrictionAware
 import java.util.concurrent.Future
@@ -26,19 +27,19 @@ interface TaskApi : MetaInfoAware, RestrictionAware {
    * @param cmd command to unsubscribe.
    * @return future indicating the completion.
    */
-  fun unsubscribe(cmd: UnsubscribeFromTaskCmd): Future<Unit>
+  fun unsubscribe(cmd: UnsubscribeFromTaskCmd): Future<Empty>
 
   /**
    * Complete the task.
    * @param cmd command to complete the task.
    * @return future indicating the completion.
    */
-  fun completeTask(cmd: CompleteTaskCmd): Future<Unit>
+  fun completeTask(cmd: CompleteTaskCmd): Future<Empty>
 
   /**
    * Completes the task by throwing an error.
    * @param cmd command to complete the task.
    * @return future indicating the completion.
    */
-  fun completeTaskByError(cmd: CompleteTaskByErrorCmd): Future<Unit>
+  fun completeTaskByError(cmd: CompleteTaskByErrorCmd): Future<Empty>
 }

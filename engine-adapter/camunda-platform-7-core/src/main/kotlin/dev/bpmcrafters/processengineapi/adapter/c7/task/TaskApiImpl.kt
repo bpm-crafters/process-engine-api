@@ -1,5 +1,6 @@
 package dev.bpmcrafters.processengineapi.adapter.c7.task
 
+import dev.bpmcrafters.processengineapi.Empty
 import dev.bpmcrafters.processengineapi.MetaInfo
 import dev.bpmcrafters.processengineapi.MetaInfoAware
 import dev.bpmcrafters.processengineapi.task.*
@@ -23,12 +24,12 @@ class TaskApiImpl(
     }
   }
 
-  override fun unsubscribe(cmd: UnsubscribeFromTaskCmd): Future<Unit> {
+  override fun unsubscribe(cmd: UnsubscribeFromTaskCmd): Future<Empty> {
     subscriptionRepository.deleteTaskSubscription(ensure(cmd.subscription))
-    return CompletableFuture.completedFuture(null)
+    return CompletableFuture.completedFuture(Empty)
   }
 
-  override fun completeTask(cmd: CompleteTaskCmd): Future<Unit> {
+  override fun completeTask(cmd: CompleteTaskCmd): Future<Empty> {
     // get active subscription
     val activeSubscription = subscriptionRepository.getActiveSubscriptionForTask(cmd.taskId)
     // find the correct strategy
@@ -36,7 +37,7 @@ class TaskApiImpl(
     return strategy?.completeTask(cmd) ?: throw IllegalArgumentException("no completion strategy found for task ${cmd.taskId}")
   }
 
-  override fun completeTaskByError(cmd: CompleteTaskByErrorCmd): Future<Unit> {
+  override fun completeTaskByError(cmd: CompleteTaskByErrorCmd): Future<Empty> {
     // get active subscription
     val activeSubscription = subscriptionRepository.getActiveSubscriptionForTask(cmd.taskId)
     // find the correct strategy

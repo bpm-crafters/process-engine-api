@@ -9,8 +9,7 @@ interface SubscriptionRepository {
   fun createTaskSubscription(subscription: TaskSubscriptionHandle)
   fun deleteTaskSubscription(subscription: TaskSubscriptionHandle)
 
-  fun getActiveSubscriptionForTask(taskId: String): TaskSubscriptionHandle
-
   fun activateSubscriptionForTask(taskId: String, subscription: TaskSubscriptionHandle)
+  fun getActiveSubscriptionForTask(taskId: String): TaskSubscriptionHandle
   fun removeSubscriptionForTask(taskId: String)
 }

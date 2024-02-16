@@ -1,6 +1,7 @@
 package dev.bpmcrafters.processengineapi.adapter.c7.correlation
 
 import dev.bpmcrafters.processengineapi.CommonRestrictions
+import dev.bpmcrafters.processengineapi.Empty
 import dev.bpmcrafters.processengineapi.MetaInfo
 import dev.bpmcrafters.processengineapi.MetaInfoAware
 import dev.bpmcrafters.processengineapi.correlation.CorrelateMessageCmd
@@ -15,13 +16,14 @@ class CorrelationApiImpl(
   private val runtimeService: RuntimeService
 ) : CorrelationApi {
 
-  override fun correlateMessage(cmd: CorrelateMessageCmd): Future<Unit> {
+  override fun correlateMessage(cmd: CorrelateMessageCmd): Future<Empty> {
     return CompletableFuture.supplyAsync {
       runtimeService
         .createMessageCorrelation(cmd.messageName)
         .buildCorrelation(cmd.correlation)
         .setVariables(cmd.payloadSupplier.get())
         .correlate()
+      Empty
     }
   }
 

@@ -1,5 +1,6 @@
 package dev.bpmcrafters.processengineapi.adapter.c7.task
 
+import dev.bpmcrafters.processengineapi.Empty
 import dev.bpmcrafters.processengineapi.task.CompleteTaskByErrorCmd
 import dev.bpmcrafters.processengineapi.task.CompleteTaskCmd
 import java.util.concurrent.Future
@@ -28,12 +29,12 @@ interface CompletionStrategy {
    * @param cmd completion command.
    * @return completion future.
    */
-  fun completeTask(cmd: CompleteTaskCmd): Future<Unit>
+  fun completeTask(cmd: CompleteTaskCmd): Future<Empty>
 
   /**
    * Completes task throwing an error.
    * @param cmd completion command.
    * @return completion future.
    */
-  fun completeTaskByError(cmd: CompleteTaskByErrorCmd): Future<Unit>
+  fun completeTaskByError(cmd: CompleteTaskByErrorCmd): Future<Empty>
 }
