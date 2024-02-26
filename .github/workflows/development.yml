@@ -21,7 +21,7 @@ jobs:
     steps:
       # Checkout the code
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Expose branch name
         run: echo ${{ github.ref }}
@@ -33,15 +33,6 @@ jobs:
           java-version: 17
           distribution: 'zulu'
           cache: maven
-          gpg-private-key: ${{ secrets.GPG_SECRET_KEYS }}
-          gpg-passphrase: MAVEN_GPG_PASSPHRASE
-
-      - name: List keys
-        run: |
-          echo "GPG2"
-          gpg2 --list-secret
-          echo "GPG"
-          gpg --list-secret
 
       # Prepare
       - name: Prepare Maven Wrapper
@@ -52,14 +43,8 @@ jobs:
         run: ./mvnw clean verify -U -B -ntp -T4
 
       # itest
-     # - name: Run itest
-     #   run: ./mvnw integration-test failsafe:verify -Pitest -ntp -U -B -T4
-
-      # Create a release
-      - name: Sign with Maven
-        run: ./mvnw -B -ntp -Prelease -DskipTests verify -Dgpg.keyname="${{ secrets.GPG_KEYNAME }}"
-        env:
-          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+      - name: Run itest
+        run: ./mvnw integration-test failsafe:verify -Pitest -ntp -U -B -T4
 
 
 #      - name: Upload coverage to Codecov
