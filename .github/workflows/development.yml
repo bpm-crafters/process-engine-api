@@ -51,7 +51,7 @@ jobs:
 
       # Create a release
       - name: Sign with Maven
-        run: ./mvnw -B -ntp -Prelease -DskipTests verify
+        run: ./mvnw -B -ntp -Prelease -DskipTests verify -Dgpg.keyname="${{ secrets.GPG_KEYNAME }}"
         env:
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
 
