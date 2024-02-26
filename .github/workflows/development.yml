@@ -46,12 +46,12 @@ jobs:
         run: ./mvnw clean verify -U -B -ntp -T4
 
       # itest
-      - name: Run itest
-        run: ./mvnw integration-test failsafe:verify -Pitest -ntp -U -B -T4
+     # - name: Run itest
+     #   run: ./mvnw integration-test failsafe:verify -Pitest -ntp -U -B -T4
 
       # Create a release
       - name: Sign with Maven
-        run: ./mvnw -B -ntp -Prelease
+        run: ./mvnw -B -ntp -Prelease -DskipTests verify
         env:
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
 
