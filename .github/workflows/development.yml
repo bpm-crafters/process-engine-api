@@ -34,8 +34,14 @@ jobs:
           distribution: 'zulu'
           cache: maven
           gpg-private-key: ${{ secrets.GPG_SECRET_KEYS }}
-          gpg-passphrase: GPG_PASSPHRASE
+          gpg-passphrase: MAVEN_GPG_PASSPHRASE
 
+      - name: List keys
+        run: |
+          echo "GPG2"
+          gpg2 --list-secret
+          echo "GPG"
+          gpg --list-secret
 
       # Prepare
       - name: Prepare Maven Wrapper
