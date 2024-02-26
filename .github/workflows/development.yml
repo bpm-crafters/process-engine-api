@@ -21,14 +21,14 @@ jobs:
     steps:
       # Checkout the code
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Expose branch name
         run: echo ${{ github.ref }}
 
       # Setup JDK and Maven
       - name: Set up JDK
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           java-version: 17
           distribution: 'zulu'
@@ -45,6 +45,7 @@ jobs:
       # itest
       - name: Run itest
         run: ./mvnw integration-test failsafe:verify -Pitest -ntp -U -B -T4
+
 
 #      - name: Upload coverage to Codecov
 #        if: github.event_name == 'push' && github.actor != 'dependabot[bot]'
