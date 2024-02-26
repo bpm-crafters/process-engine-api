@@ -28,11 +28,14 @@ jobs:
 
       # Setup JDK and Maven
       - name: Set up JDK
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           java-version: 17
           distribution: 'zulu'
           cache: maven
+          gpg-private-key: ${{ secrets.GPG_SECRET_KEYS }}
+          gpg-passphrase: GPG_PASSPHRASE
+
 
       # Prepare
       - name: Prepare Maven Wrapper
@@ -45,6 +48,13 @@ jobs:
       # itest
       - name: Run itest
         run: ./mvnw integration-test failsafe:verify -Pitest -ntp -U -B -T4
+
+      # Create a release
+      - name: Sign with Maven
+        run: ./mvnw -B -ntp -Prelease
+        env:
+          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+
 
 #      - name: Upload coverage to Codecov
 #        if: github.event_name == 'push' && github.actor != 'dependabot[bot]'
