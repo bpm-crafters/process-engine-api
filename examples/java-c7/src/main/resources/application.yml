@@ -1,7 +1,22 @@
 spring:
   application:
-    name: Java Camunda Platform 7
+    name: Java Camunda Platform 7 Embedded
 
 springdoc:
   swagger-ui:
     try-it-out-enabled: true
+
+dev:
+  bpm-crafters:
+    process-api:
+      adapter:
+        c7:
+          external-service-tasks:
+            fixed-rate-schedule-rate: 7000
+            lock-time-in-seconds: 10
+            max-task-count: 100
+            worker-id: embedded-worker
+            delivery-strategy: embedded_job
+          user-tasks:
+            fixed-rate-schedule-rate: 5000
+            delivery-strategy: embedded_job

@@ -26,8 +26,8 @@
   <modules>
     <module>api</module>
     <module>examples</module>
-    <module>engine-adapter/camunda-platform-7-core</module>
-    <module>engine-adapter/camunda-platform-7-spring-boot-starter</module>
+    <module>engine-adapter/camunda-platform-7-embedded-core</module>
+    <module>engine-adapter/camunda-platform-7-embedded-spring-boot-starter</module>
   </modules>
 
   <dependencyManagement>
