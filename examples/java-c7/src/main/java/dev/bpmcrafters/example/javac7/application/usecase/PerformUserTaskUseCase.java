@@ -1,7 +1,8 @@
 package dev.bpmcrafters.example.javac7.application.usecase;
 
-import dev.bpmcrafters.example.javac7.adapter.out.process.InMemUserTaskHandler;
+import dev.bpmcrafters.example.javac7.adapter.out.process.InMemUserTaskAdapter;
 import dev.bpmcrafters.example.javac7.application.port.in.PerformUserTaskInPort;
+import dev.bpmcrafters.processengineapi.task.CompleteTaskByErrorCmd;
 import dev.bpmcrafters.processengineapi.task.CompleteTaskCmd;
 import dev.bpmcrafters.processengineapi.task.TaskApi;
 import dev.bpmcrafters.processengineapi.task.TaskInformation;
@@ -21,7 +22,7 @@ import java.util.concurrent.Future;
 @Slf4j
 public class PerformUserTaskUseCase implements PerformUserTaskInPort {
 
-  private final InMemUserTaskHandler taskPool;
+  private final InMemUserTaskAdapter taskPool;
   private final TaskApi taskApi;
 
   @Override
@@ -31,19 +32,42 @@ public class PerformUserTaskUseCase implements PerformUserTaskInPort {
   }
 
   @Override
-  @SneakyThrows
   public Future<Void> complete(String taskId, String value) {
     log.info("Completing task {}", taskId);
     CompletableFuture<Void> completableFuture = new CompletableFuture<>();
     Executors.newCachedThreadPool().submit(() -> {
-      taskApi.completeTask(
-        new CompleteTaskCmd(
-          taskId,
-          () -> Map.of("some-user-value", value)
-        )
-      ).get();
-      completableFuture.complete(null); // FIXME -> Chain futures
-      return null;
+      try {
+        taskApi.completeTask(
+          new CompleteTaskCmd(
+            taskId,
+            () -> Map.of("some-user-value", value)
+          )
+        ).get();
+        completableFuture.complete(null); // FIXME -> Chain futures
+      } catch (Exception e) {
+        completableFuture.completeExceptionally(e);
+      }
+    });
+    return completableFuture;
+  }
+
+  @Override
+  public Future<Void> completeWithError(String taskId, String value) {
+    log.info("Completing task {} with error", taskId);
+    CompletableFuture<Void> completableFuture = new CompletableFuture<>();
+    Executors.newCachedThreadPool().submit(() -> {
+      try {
+        taskApi.completeTaskByError(
+          new CompleteTaskByErrorCmd(
+            taskId,
+            "user_error",
+            () -> Map.of("some-user-value", value)
+          )
+        ).get();
+        completableFuture.complete(null); // FIXME -> Chain futures
+      } catch (Exception e) {
+        completableFuture.completeExceptionally(e);
+      }
     });
     return completableFuture;
   }

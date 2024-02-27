@@ -16,4 +16,11 @@ interface CorrelationApi : MetaInfoAware, RestrictionAware {
    * @return future to indicate completion.
    */
   fun correlateMessage(cmd: CorrelateMessageCmd): Future<Empty>
+
+  /**
+   * Delivers a signal event to process engine.
+   * @param cmd command to deliver.
+   * @return future to indicate completion.
+   */
+  fun sendSignal(cmd: SendSignalCmd): Future<Empty>
 }

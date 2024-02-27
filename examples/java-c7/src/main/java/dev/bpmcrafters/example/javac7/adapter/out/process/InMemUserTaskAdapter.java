@@ -19,7 +19,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @RequiredArgsConstructor
 @Slf4j
-public class InMemUserTaskHandler implements UserTaskOutPort {
+public class InMemUserTaskAdapter implements UserTaskOutPort {
 
   private final TaskApi taskApi;
   private final Map<TaskInformation, Map<String, ?>> userTasks = new ConcurrentHashMap<>();

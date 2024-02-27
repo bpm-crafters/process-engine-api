@@ -7,8 +7,10 @@ import dev.bpmcrafters.processengineapi.MetaInfoAware
 import dev.bpmcrafters.processengineapi.correlation.CorrelateMessageCmd
 import dev.bpmcrafters.processengineapi.correlation.Correlation
 import dev.bpmcrafters.processengineapi.correlation.CorrelationApi
+import dev.bpmcrafters.processengineapi.correlation.SendSignalCmd
 import org.camunda.bpm.engine.RuntimeService
 import org.camunda.bpm.engine.runtime.MessageCorrelationBuilder
+import org.camunda.bpm.engine.runtime.SignalEventReceivedBuilder
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.Future
 
@@ -27,7 +29,33 @@ class CorrelationApiImpl(
     }
   }
 
-  override fun getSupportedRestrictions(): Set<String> = setOf(CommonRestrictions.PROCESS_INSTANCE_ID)
+  override fun sendSignal(cmd: SendSignalCmd): Future<Empty> {
+    return CompletableFuture.supplyAsync {
+      runtimeService
+        .createSignalEvent(cmd.signalName)
+        .buildCorrelation(cmd.correlation)
+        .setVariables(cmd.payloadSupplier.get())
+        .send()
+      Empty
+    }
+  }
+
+  override fun getSupportedRestrictions(): Set<String> = setOf(
+    CommonRestrictions.PROCESS_INSTANCE_ID,
+    CommonRestrictions.TENANT_ID,
+  )
+
+  private fun SignalEventReceivedBuilder.buildCorrelation(correlation: () -> Correlation) = this.apply {
+    val restrictions = correlation.invoke().restrictions
+    ensureSupported(restrictions)
+    restrictions
+      .forEach { (key, value) ->
+        when (key) {
+          CommonRestrictions.TENANT_ID -> this.tenantId(value)
+//          CommonRestrictions.EXECUTION_ID -> this.executionId(value)
+        }
+      }
+  }
 
   private fun MessageCorrelationBuilder.buildCorrelation(correlation: () -> Correlation): MessageCorrelationBuilder = this.apply {
     val restrictions = correlation.invoke().restrictions
@@ -36,6 +64,8 @@ class CorrelationApiImpl(
       .forEach { (key, value) ->
         when (key) {
           CommonRestrictions.PROCESS_INSTANCE_ID -> this.processInstanceId(value)
+          CommonRestrictions.TENANT_ID -> this.tenantId(value)
+          // FIXME -> much more correlations are supported!
         }
       }
   }
