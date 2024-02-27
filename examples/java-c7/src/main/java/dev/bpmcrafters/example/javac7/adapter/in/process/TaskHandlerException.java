@@ -1,4 +1,4 @@
-package dev.bpmcrafters.example.javac7.infrastructure;
+package dev.bpmcrafters.example.javac7.adapter.in.process;
 
 import lombok.Getter;
 import lombok.ToString;

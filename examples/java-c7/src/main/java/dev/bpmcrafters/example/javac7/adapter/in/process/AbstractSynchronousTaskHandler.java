@@ -1,4 +1,4 @@
-package dev.bpmcrafters.example.javac7.infrastructure;
+package dev.bpmcrafters.example.javac7.adapter.in.process;
 
 import dev.bpmcrafters.processengineapi.CommonRestrictions;
 import dev.bpmcrafters.processengineapi.task.*;
@@ -38,7 +38,12 @@ public abstract class AbstractSynchronousTaskHandler {
             log.info("[SYNC HANDLER]: Completed task {}.", taskInfo.getTaskId());
           } catch (TaskHandlerException e) {
             log.info("[SYNC HANDLER]: Error completing task {}, completing with error code {}.", taskInfo.getTaskId(), e.getErrorCode());
-            taskApi.completeTaskByError(new CompleteTaskByErrorCmd(taskInfo.getTaskId(), e.getErrorCode()));
+            taskApi.completeTaskByError(new CompleteTaskByErrorCmd(
+                taskInfo.getTaskId(),
+                e.getErrorCode(),
+                Map::of // nothing to deliver in async case
+              )
+            );
           }
         },
         TaskModificationHandler.getEmpty()
