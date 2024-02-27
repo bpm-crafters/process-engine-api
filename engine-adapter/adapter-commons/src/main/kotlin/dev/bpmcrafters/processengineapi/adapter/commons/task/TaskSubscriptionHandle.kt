@@ -1,4 +1,4 @@
-package dev.bpmcrafters.processengineapi.adapter.c7.task
+package dev.bpmcrafters.processengineapi.adapter.commons.task
 
 import dev.bpmcrafters.processengineapi.task.TaskHandler
 import dev.bpmcrafters.processengineapi.task.TaskModificationHandler

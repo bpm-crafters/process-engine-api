@@ -1,7 +1,5 @@
 package dev.bpmcrafters.processengineapi.adapter.c7.task.delivery.job
 
-import dev.bpmcrafters.processengineapi.adapter.c7.task.SubscriptionRepository
-import dev.bpmcrafters.processengineapi.adapter.c7.task.TaskSubscriptionHandle
 import dev.bpmcrafters.processengineapi.adapter.c7.task.completion.ExternalTaskCompletionStrategy
 import dev.bpmcrafters.processengineapi.adapter.c7.task.completion.UserTaskCompletionStrategy
 import dev.bpmcrafters.processengineapi.adapter.c7.task.delivery.job.EmbeddedTaskDeliveryJobHandler.EmbeddedTaskDeliveryJobHandlerConfiguration.Companion.OPERATION_CREATE
@@ -10,6 +8,8 @@ import dev.bpmcrafters.processengineapi.adapter.c7.task.delivery.job.EmbeddedTas
 import dev.bpmcrafters.processengineapi.adapter.c7.task.delivery.job.EmbeddedTaskDeliveryJobHandler.EmbeddedTaskDeliveryJobHandlerConfiguration.Companion.TYPE_SERVICE
 import dev.bpmcrafters.processengineapi.adapter.c7.task.delivery.job.EmbeddedTaskDeliveryJobHandler.EmbeddedTaskDeliveryJobHandlerConfiguration.Companion.TYPE_USER
 import dev.bpmcrafters.processengineapi.adapter.c7.task.delivery.toTaskInformation
+import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionRepository
+import dev.bpmcrafters.processengineapi.adapter.commons.task.TaskSubscriptionHandle
 import org.camunda.bpm.engine.impl.cfg.ProcessEngineConfigurationImpl
 import org.camunda.bpm.engine.impl.interceptor.CommandContext
 import org.camunda.bpm.engine.impl.jobexecutor.JobHandler
@@ -56,6 +56,7 @@ class EmbeddedTaskDeliveryJobHandler(
                 activeSubscription.action.accept(userTask.toTaskInformation(), variables)
               }
           }
+
           TYPE_SERVICE -> {
             val tasks = commandContext.externalTaskManager.findExternalTasksByExecutionId(configuration.id)
             if (tasks != null) {
@@ -88,6 +89,7 @@ class EmbeddedTaskDeliveryJobHandler(
               }
               userTask.toTaskInformation() to variables
             }
+
             TYPE_SERVICE -> {
               val tasks = commandContext.externalTaskManager.findExternalTasksByExecutionId(configuration.id)
               if (tasks != null) {
@@ -102,6 +104,7 @@ class EmbeddedTaskDeliveryJobHandler(
                 null to null
               }
             }
+
             else -> null to null
           }
           // if task is found and variables are loaded, notify about modification
@@ -110,6 +113,7 @@ class EmbeddedTaskDeliveryJobHandler(
           }
         }
       }
+
       OPERATION_DELETE -> subscriptionRepository.getActiveSubscriptionForTask(configuration.id)?.apply {
         modification.terminated(configuration.id)
       }

@@ -1,11 +1,12 @@
 package dev.bpmcrafters.processengineapi.adapter.c7.task.delivery
 
-import dev.bpmcrafters.processengineapi.adapter.c7.task.SubscriptionRepository
-import dev.bpmcrafters.processengineapi.adapter.c7.task.TaskSubscriptionHandle
 import dev.bpmcrafters.processengineapi.adapter.c7.task.completion.UserTaskCompletionStrategy
+import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionRepository
+import dev.bpmcrafters.processengineapi.adapter.commons.task.TaskSubscriptionHandle
 import org.camunda.bpm.engine.TaskService
 import org.camunda.bpm.engine.task.Task
 import org.camunda.bpm.engine.task.TaskQuery
+
 /**
  * Delivers user tasks to subscriptions.
  * Uses internal Java API for pulling tasks.

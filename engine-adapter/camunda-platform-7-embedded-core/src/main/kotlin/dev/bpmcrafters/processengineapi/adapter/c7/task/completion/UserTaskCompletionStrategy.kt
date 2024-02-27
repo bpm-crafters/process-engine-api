@@ -2,9 +2,8 @@ package dev.bpmcrafters.processengineapi.adapter.c7.task.completion
 
 import dev.bpmcrafters.processengineapi.CommonRestrictions
 import dev.bpmcrafters.processengineapi.Empty
-import dev.bpmcrafters.processengineapi.adapter.c7.task.CompletionStrategy
-import dev.bpmcrafters.processengineapi.adapter.c7.task.InMemSubscriptionRepository
-import dev.bpmcrafters.processengineapi.adapter.c7.task.SubscriptionRepository
+import dev.bpmcrafters.processengineapi.adapter.commons.task.CompletionStrategy
+import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionRepository
 import dev.bpmcrafters.processengineapi.task.CompleteTaskByErrorCmd
 import dev.bpmcrafters.processengineapi.task.CompleteTaskCmd
 import org.camunda.bpm.engine.TaskService

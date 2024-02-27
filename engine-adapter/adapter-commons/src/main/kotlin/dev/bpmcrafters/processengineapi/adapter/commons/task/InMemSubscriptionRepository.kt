@@ -1,4 +1,4 @@
-package dev.bpmcrafters.processengineapi.adapter.c7.task
+package dev.bpmcrafters.processengineapi.adapter.commons.task
 
 import java.util.concurrent.ConcurrentHashMap
 

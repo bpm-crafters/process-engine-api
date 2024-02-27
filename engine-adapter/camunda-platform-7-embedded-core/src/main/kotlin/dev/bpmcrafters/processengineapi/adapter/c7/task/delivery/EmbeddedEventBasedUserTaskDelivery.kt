@@ -1,8 +1,8 @@
 package dev.bpmcrafters.processengineapi.adapter.c7.task.delivery
 
-import dev.bpmcrafters.processengineapi.adapter.c7.task.SubscriptionRepository
-import dev.bpmcrafters.processengineapi.adapter.c7.task.TaskSubscriptionHandle
 import dev.bpmcrafters.processengineapi.adapter.c7.task.completion.UserTaskCompletionStrategy
+import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionRepository
+import dev.bpmcrafters.processengineapi.adapter.commons.task.TaskSubscriptionHandle
 import org.camunda.bpm.engine.delegate.DelegateTask
 
 class EmbeddedEventBasedUserTaskDelivery(
