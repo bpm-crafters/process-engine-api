@@ -4,10 +4,7 @@ import dev.bpmcrafters.processengineapi.CommonRestrictions
 import dev.bpmcrafters.processengineapi.Empty
 import dev.bpmcrafters.processengineapi.MetaInfo
 import dev.bpmcrafters.processengineapi.MetaInfoAware
-import dev.bpmcrafters.processengineapi.correlation.CorrelateMessageCmd
-import dev.bpmcrafters.processengineapi.correlation.Correlation
-import dev.bpmcrafters.processengineapi.correlation.CorrelationApi
-import dev.bpmcrafters.processengineapi.correlation.SendSignalCmd
+import dev.bpmcrafters.processengineapi.correlation.*
 import org.camunda.bpm.engine.RuntimeService
 import org.camunda.bpm.engine.runtime.MessageCorrelationBuilder
 import org.camunda.bpm.engine.runtime.SignalEventReceivedBuilder
@@ -52,20 +49,24 @@ class CorrelationApiImpl(
       .forEach { (key, value) ->
         when (key) {
           CommonRestrictions.TENANT_ID -> this.tenantId(value)
-//          CommonRestrictions.EXECUTION_ID -> this.executionId(value)
+          CommonRestrictions.EXECUTION_ID -> this.executionId(value)
         }
       }
   }
 
-  private fun MessageCorrelationBuilder.buildCorrelation(correlation: () -> Correlation): MessageCorrelationBuilder = this.apply {
-    val restrictions = correlation.invoke().restrictions
+  private fun MessageCorrelationBuilder.buildCorrelation(correlation: CorrelationSupplier): MessageCorrelationBuilder = this.apply {
+    val restrictions = correlation.get().restrictions
     ensureSupported(restrictions)
     restrictions
       .forEach { (key, value) ->
         when (key) {
-          CommonRestrictions.PROCESS_INSTANCE_ID -> this.processInstanceId(value)
           CommonRestrictions.TENANT_ID -> this.tenantId(value)
+          CommonRestrictions.PROCESS_INSTANCE_ID -> this.processInstanceId(value)
+          CommonRestrictions.BUSINESS_KEY -> this.processInstanceBusinessKey(value)
+          "processDefinitionId" -> this.processDefinitionId(value)
           // FIXME -> much more correlations are supported!
+          // FIXME -> how to handle "localVariableEquals? use separator like name=value?
+          // FIXME -> how to handle "processVariableEquals? use separator like name=value?
         }
       }
   }

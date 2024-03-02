@@ -19,7 +19,7 @@ class UserTaskCompletionStrategy(
 ) : CompletionStrategy {
 
   companion object {
-    private val SUPPORTED_TASK_TYPES = arrayOf("user")
+    private val SUPPORTED_TASK_TYPES = arrayOf(CommonRestrictions.TASK_TYPE_USER)
     fun supports(restrictions: Map<String, String>): Boolean {
       return restrictions.containsKey(CommonRestrictions.TASK_TYPE) && SUPPORTED_TASK_TYPES.contains(restrictions[CommonRestrictions.TASK_TYPE])
     }

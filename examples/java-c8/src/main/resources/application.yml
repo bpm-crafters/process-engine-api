@@ -1,0 +1,32 @@
+spring:
+  application:
+    name: Java Camunda Platform 8 SaaS
+
+springdoc:
+  swagger-ui:
+    try-it-out-enabled: true
+
+server:
+  port: 8081
+
+dev:
+  bpm-crafters:
+    process-api:
+      adapter:
+        c8:
+          user-tasks:
+            delivery-strategy: scheduled
+            fixed-rate-schedule-rate: 5000 # every 5 seconds
+            tasklist-url: https://${zeebe.client.cloud.region}.tasklist.camunda.io/${zeebe.client.cloud.clusterId}
+          service-tasks:
+            delivery-strategy: subscription
+            worker-id: worker
+
+zeebe:
+  client:
+    cloud:
+      region: ${ZEEBE_REGION}
+      clusterId: ${ZEEBE_CLUSTER_ID}
+      clientId: ${ZEEBE_CLIENT_ID}
+      clientSecret: ${ZEEBE_CLIENT_SECRET}
+

@@ -5,6 +5,7 @@ package dev.bpmcrafters.processengineapi
  * @since 0.0.1
  */
 object CommonRestrictions {
+
   const val ACTIVITY_ID = "activityId"
   const val BUSINESS_KEY = "businessKey"
   const val CORRELATION_KEY = "correlationKey"
@@ -13,6 +14,12 @@ object CommonRestrictions {
   const val TASK_TYPE = "taskType"
   const val TASK_DEFINITION_KEY = "taskDefinitionKey"
   const val TENANT_ID = "tenantId"
+  const val MESSAGE_ID = "messageId"
+  const val MESSAGE_TTL = "messageTTL"
+  const val EXECUTION_ID = "executionId"
+
+  const val TASK_TYPE_SERVICE = "service"
+  const val TASK_TYPE_USER = "user"
 
   /**
    * Creates a helper restrictions builder.
@@ -26,6 +33,14 @@ object CommonRestrictions {
 
     fun withTaskType(taskType: String) = this.apply {
       restrictions[TASK_TYPE] = taskType
+    }
+
+    fun serviceTasks() = this.apply {
+      restrictions[TASK_TYPE] = TASK_TYPE_SERVICE
+    }
+
+    fun userTasks() = this.apply {
+      restrictions[TASK_TYPE] = TASK_TYPE_USER
     }
 
     fun withProcessDefinitionKey(processDefinitionKey: String) = this.apply {

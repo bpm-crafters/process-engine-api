@@ -12,10 +12,11 @@
   <artifactId>process-engine-api-adapter-camunda-platform-c8-spring-boot-starter</artifactId>
   <properties>
     <spring-boot.version>3.1.8</spring-boot.version>
-    <zeebe-starter.version>8.1.17</zeebe-starter.version>
-    <camunda-tasklist-client-java.version>1.6.0</camunda-tasklist-client-java.version>
-    <camunda-operate-client-java.version>1.3.7</camunda-operate-client-java.version>
+    <zeebe-client-java.version>8.4.4</zeebe-client-java.version>
+    <camunda-tasklist-client-java.version>8.4.0.3</camunda-tasklist-client-java.version>
+    <java-client-operate.version>8.4.1</java-client-operate.version>
   </properties>
+
 
   <dependencyManagement>
     <dependencies>
@@ -32,7 +33,13 @@
     <dependency>
       <groupId>dev.bpm-crafters.process-engine-api</groupId>
       <artifactId>process-engine-api</artifactId>
-      <version>0.0.1-SNAPSHOT</version>
+      <version>${project.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>dev.bpm-crafters.process-engine-api</groupId>
+      <artifactId>process-engine-api-adapter-camunda-platform-c8-core</artifactId>
+      <version>${project.version}</version>
     </dependency>
 
     <dependency>
@@ -40,24 +47,39 @@
       <artifactId>spring-boot-autoconfigure</artifactId>
     </dependency>
 
+    <!-- https://mvnrepository.com/artifact/io.camunda.spring/spring-boot-starter-camunda -->
     <dependency>
-      <groupId>io.camunda</groupId>
-      <artifactId>spring-zeebe-starter</artifactId>
-      <version>${zeebe-starter.version}</version>
+      <groupId>io.camunda.spring</groupId>
+      <artifactId>spring-boot-starter-camunda</artifactId>
+      <version>8.4.1</version>
       <scope>provided</scope>
     </dependency>
+
+    <!-- Provided by starter
+<dependency>
+  <groupId>io.camunda</groupId>
+  <artifactId>zeebe-client-java</artifactId>
+  <version>${zeebe-client-java.version}</version>
+  <scope>provided</scope>
+</dependency>
+
+<dependency>
+  <groupId>io.camunda.spring</groupId>
+  <artifactId>java-client-operate</artifactId>
+  <version>${java-client-operate.version}</version>
+  <scope>provided</scope>
+</dependency>
+-->
+
     <dependency>
       <groupId>io.camunda</groupId>
       <artifactId>camunda-tasklist-client-java</artifactId>
       <version>${camunda-tasklist-client-java.version}</version>
       <scope>provided</scope>
     </dependency>
-    <dependency>
-      <groupId>io.camunda</groupId>
-      <artifactId>camunda-operate-client-java</artifactId>
-      <version>${camunda-operate-client-java.version}</version>
-      <scope>provided</scope>
-    </dependency>
+
+
+
   </dependencies>
 
 </project>

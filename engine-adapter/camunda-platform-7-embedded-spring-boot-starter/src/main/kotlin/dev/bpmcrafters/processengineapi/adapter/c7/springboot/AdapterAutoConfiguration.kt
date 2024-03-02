@@ -2,11 +2,11 @@ package dev.bpmcrafters.processengineapi.adapter.c7.springboot
 
 import dev.bpmcrafters.processengineapi.adapter.c7.correlation.CorrelationApiImpl
 import dev.bpmcrafters.processengineapi.adapter.c7.process.StartProcessApiImpl
-import dev.bpmcrafters.processengineapi.adapter.commons.task.InMemSubscriptionRepository
-import dev.bpmcrafters.processengineapi.adapter.c7.task.TaskApiImpl
+import dev.bpmcrafters.processengineapi.adapter.c7.task.C7TaskApiImpl
 import dev.bpmcrafters.processengineapi.adapter.c7.task.completion.ExternalTaskCompletionStrategy
 import dev.bpmcrafters.processengineapi.adapter.c7.task.completion.UserTaskCompletionStrategy
 import dev.bpmcrafters.processengineapi.adapter.commons.task.CompletionStrategy
+import dev.bpmcrafters.processengineapi.adapter.commons.task.InMemSubscriptionRepository
 import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionRepository
 import dev.bpmcrafters.processengineapi.correlation.CorrelationApi
 import dev.bpmcrafters.processengineapi.process.StartProcessApi
@@ -30,7 +30,7 @@ class AdapterAutoConfiguration {
   )
 
   @Bean
-  fun taskApi(subscriptionRepository: SubscriptionRepository, completionStrategies: List<CompletionStrategy>): TaskApi = TaskApiImpl(
+  fun taskApi(subscriptionRepository: SubscriptionRepository, completionStrategies: List<CompletionStrategy>): TaskApi = C7TaskApiImpl(
     completionStrategies = completionStrategies,
     subscriptionRepository = subscriptionRepository
   )
