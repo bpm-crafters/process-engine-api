@@ -9,21 +9,12 @@
     <relativePath>../../pom.xml</relativePath>
   </parent>
 
-  <artifactId>process-engine-api-adapter-camunda-platform-c7-embedded-spring-boot-starter</artifactId>
-
+  <artifactId>process-engine-api-adapter-camunda-platform-c7-remote-core</artifactId>
   <properties>
-    <spring-boot.version>3.1.8</spring-boot.version>
   </properties>
 
   <dependencyManagement>
     <dependencies>
-      <dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-dependencies</artifactId>
-        <version>${spring-boot.version}</version>
-        <scope>import</scope>
-        <type>pom</type>
-      </dependency>
       <!-- https://mvnrepository.com/artifact/org.camunda.bpm/camunda-bom -->
       <dependency>
         <groupId>org.camunda.bpm</groupId>
@@ -38,18 +29,28 @@
   <dependencies>
     <dependency>
       <groupId>dev.bpm-crafters.process-engine-api</groupId>
-      <artifactId>process-engine-api-adapter-camunda-platform-c7-embedded-core</artifactId>
-      <version>0.0.1-SNAPSHOT</version>
+      <artifactId>process-engine-api</artifactId>
+      <version>${project.version}</version>
     </dependency>
+    <dependency>
+      <groupId>dev.bpm-crafters.process-engine-api</groupId>
+      <artifactId>process-engine-api-adapter-commons</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+    <!-- Use subscription-based delivery using official client -->
+    <dependency>
+      <groupId>org.camunda.bpm</groupId>
+      <artifactId>camunda-external-task-client</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <!-- Use embedded-like integration if the appropriate client is in place -->
     <dependency>
       <groupId>org.camunda.bpm</groupId>
       <artifactId>camunda-engine</artifactId>
       <scope>provided</scope>
     </dependency>
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-autoconfigure</artifactId>
-    </dependency>
+
   </dependencies>
 
 </project>
