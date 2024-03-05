@@ -11,17 +11,18 @@ import org.camunda.bpm.engine.runtime.SignalEventReceivedBuilder
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.Future
 
-class CorrelationApiImpl(
+class SignalApiImpl(
   private val runtimeService: RuntimeService
-) : CorrelationApi {
+) : SignalApi {
 
-  override fun correlateMessage(cmd: CorrelateMessageCmd): Future<Empty> {
+  override fun sendSignal(cmd: SendSignalCmd): Future<Empty> {
     return CompletableFuture.supplyAsync {
+      val correlation = cmd.correlation
       runtimeService
-        .createMessageCorrelation(cmd.messageName)
-        .buildCorrelation(cmd.correlation)
+        .createSignalEvent(cmd.signalName)
+        .buildCorrelation(correlation)
         .setVariables(cmd.payloadSupplier.get())
-        .correlate()
+        .send()
       Empty
     }
   }
@@ -29,23 +30,16 @@ class CorrelationApiImpl(
   override fun getSupportedRestrictions(): Set<String> = setOf(
     CommonRestrictions.PROCESS_INSTANCE_ID,
     CommonRestrictions.TENANT_ID,
-    CommonRestrictions.BUSINESS_KEY,
-    "processDefinitionId"
   )
 
-  private fun MessageCorrelationBuilder.buildCorrelation(correlation: CorrelationSupplier): MessageCorrelationBuilder = this.apply {
+  private fun SignalEventReceivedBuilder.buildCorrelation(correlation: CorrelationSupplier) = this.apply {
     val restrictions = correlation.get().restrictions
     ensureSupported(restrictions)
     restrictions
       .forEach { (key, value) ->
         when (key) {
           CommonRestrictions.TENANT_ID -> this.tenantId(value)
-          CommonRestrictions.PROCESS_INSTANCE_ID -> this.processInstanceId(value)
-          CommonRestrictions.BUSINESS_KEY -> this.processInstanceBusinessKey(value)
-          "processDefinitionId" -> this.processDefinitionId(value)
-          // FIXME -> much more correlations are supported!
-          // FIXME -> how to handle "localVariableEquals? use separator like name=value?
-          // FIXME -> how to handle "processVariableEquals? use separator like name=value?
+          CommonRestrictions.EXECUTION_ID -> this.executionId(value)
         }
       }
   }

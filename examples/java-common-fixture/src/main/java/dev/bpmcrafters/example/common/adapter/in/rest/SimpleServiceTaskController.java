@@ -2,6 +2,7 @@ package dev.bpmcrafters.example.common.adapter.in.rest;
 
 import dev.bpmcrafters.example.common.application.port.in.CorrelateInPort;
 import dev.bpmcrafters.example.common.application.port.in.PerformUserTaskInPort;
+import dev.bpmcrafters.example.common.application.port.in.SignalInPort;
 import dev.bpmcrafters.example.common.application.port.in.UseProcessInstanceInPort;
 import dev.bpmcrafters.processengineapi.task.TaskInformation;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,7 @@ public class SimpleServiceTaskController {
   private final UseProcessInstanceInPort processInstancePort;
   private final PerformUserTaskInPort taskPort;
   private final CorrelateInPort correlatePort;
+  private final SignalInPort signalPort;
 
   @PostMapping("/start-process")
   @SneakyThrows
@@ -46,7 +48,7 @@ public class SimpleServiceTaskController {
   @SneakyThrows
   public ResponseEntity<Void> sendSignal(String value) {
     log.info("Sending signal");
-    correlatePort.deliverSignal(value).get();
+    signalPort.deliverSignal(value).get();
     return noContent().build();
   }
 

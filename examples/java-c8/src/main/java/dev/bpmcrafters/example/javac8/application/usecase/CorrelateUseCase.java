@@ -44,26 +44,4 @@ public class CorrelateUseCase implements CorrelateInPort {
     });
     return completableFuture;
   }
-
-  @Override
-  public Future<Void> deliverSignal(String variableValue) {
-    CompletableFuture<Void> completableFuture = new CompletableFuture<>();
-    Executors.newCachedThreadPool().submit(() -> {
-      try {
-        correlationApi.sendSignal(
-          new SendSignalCmd(
-            "signal1",
-            () -> Map.of(
-              "signal-delivered-value", variableValue
-            ),
-            Correlation.Companion::getEMPTY
-          )
-        ).get();
-        completableFuture.complete(null); // FIXME -> chain instead of sync get
-      } catch (Exception e) {
-        completableFuture.completeExceptionally(e);
-      }
-    });
-    return completableFuture;
-  }
 }

@@ -33,18 +33,6 @@ class CorrelationApiImpl(
     }
   }
 
-  override fun sendSignal(cmd: SendSignalCmd): Future<Empty> {
-    return CompletableFuture.supplyAsync {
-      zeebeClient
-        .newBroadcastSignalCommand()
-        .signalName(cmd.signalName)
-        .variables(cmd.payloadSupplier.get())
-        .send()
-        .get() // FIXME Chain
-      Empty
-    }
-  }
-
   override fun meta(instance: MetaInfoAware): MetaInfo {
     TODO("Not yet implemented")
   }
