@@ -6,14 +6,15 @@ import dev.bpmcrafters.processengineapi.RestrictionAware
 import java.util.concurrent.Future
 
 /**
- * API to correlate messages with running process instances.
+ * API to send signals to running process instances.
  * @since 0.0.1
  */
-interface CorrelationApi : MetaInfoAware, RestrictionAware {
+interface SignalApi : MetaInfoAware, RestrictionAware {
+
   /**
-   * Correlates message.
-   * @param cmd command to correlate.
+   * Delivers a signal event to process engine.
+   * @param cmd command to deliver.
    * @return future to indicate completion.
    */
-  fun correlateMessage(cmd: CorrelateMessageCmd): Future<Empty>
+  fun sendSignal(cmd: SendSignalCmd): Future<Empty>
 }

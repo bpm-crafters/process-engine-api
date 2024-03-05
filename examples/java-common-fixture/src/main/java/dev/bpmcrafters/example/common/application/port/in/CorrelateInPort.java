@@ -11,11 +11,4 @@ public interface CorrelateInPort {
    * @return nothing.
    */
   Future<Void> correlateMessage(String correlationKey, String value);
-
-  /**
-   * Delivers signal.
-   * @param value string value.
-   * @return nothing.
-   */
-  Future<Void> deliverSignal(String value);
 }

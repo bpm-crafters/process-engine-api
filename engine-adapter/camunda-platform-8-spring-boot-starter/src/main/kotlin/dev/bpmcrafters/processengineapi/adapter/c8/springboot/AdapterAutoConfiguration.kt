@@ -1,6 +1,7 @@
 package dev.bpmcrafters.processengineapi.adapter.c8.springboot
 
 import dev.bpmcrafters.processengineapi.adapter.c8.correlation.CorrelationApiImpl
+import dev.bpmcrafters.processengineapi.adapter.c8.correlation.SignalApiImpl
 import dev.bpmcrafters.processengineapi.adapter.c8.process.StartProcessApiImpl
 import dev.bpmcrafters.processengineapi.adapter.c8.task.C8TaskApiImpl
 import dev.bpmcrafters.processengineapi.adapter.c8.task.completion.ServiceTaskCompletionStrategy
@@ -9,6 +10,7 @@ import dev.bpmcrafters.processengineapi.adapter.commons.task.CompletionStrategy
 import dev.bpmcrafters.processengineapi.adapter.commons.task.InMemSubscriptionRepository
 import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionRepository
 import dev.bpmcrafters.processengineapi.correlation.CorrelationApi
+import dev.bpmcrafters.processengineapi.correlation.SignalApi
 import dev.bpmcrafters.processengineapi.process.StartProcessApi
 import dev.bpmcrafters.processengineapi.task.TaskApi
 import io.camunda.tasklist.CamundaTaskListClient
@@ -31,8 +33,9 @@ class AdapterAutoConfiguration {
 
 
   @Bean
-  fun camundaTaskListClientSaaS(zeebeClientCloudConfigurationProperties: ZeebeClientConfigurationProperties,
-                                c8AdapterProperties: C8AdapterProperties
+  fun camundaTaskListClientSaaS(
+    zeebeClientCloudConfigurationProperties: ZeebeClientConfigurationProperties,
+    c8AdapterProperties: C8AdapterProperties
   ): CamundaTaskListClient {
     /*
     val jwtConfig = JwtConfig()
@@ -71,6 +74,11 @@ class AdapterAutoConfiguration {
 
   @Bean
   fun correlationApi(zeebeClient: ZeebeClient): CorrelationApi = CorrelationApiImpl(
+    zeebeClient = zeebeClient
+  )
+
+  @Bean
+  fun signalApi(zeebeClient: ZeebeClient): SignalApi = SignalApiImpl(
     zeebeClient = zeebeClient
   )
 
