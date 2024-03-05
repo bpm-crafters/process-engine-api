@@ -2,9 +2,8 @@ package dev.bpmcrafters.processengineapi.adapter.c7.task.completion
 
 import dev.bpmcrafters.processengineapi.CommonRestrictions
 import dev.bpmcrafters.processengineapi.Empty
-import dev.bpmcrafters.processengineapi.adapter.c7.task.CompletionStrategy
-import dev.bpmcrafters.processengineapi.adapter.c7.task.InMemSubscriptionRepository
-import dev.bpmcrafters.processengineapi.adapter.c7.task.SubscriptionRepository
+import dev.bpmcrafters.processengineapi.adapter.commons.task.CompletionStrategy
+import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionRepository
 import dev.bpmcrafters.processengineapi.task.CompleteTaskByErrorCmd
 import dev.bpmcrafters.processengineapi.task.CompleteTaskCmd
 import org.camunda.bpm.engine.TaskService
@@ -20,7 +19,7 @@ class UserTaskCompletionStrategy(
 ) : CompletionStrategy {
 
   companion object {
-    private val SUPPORTED_TASK_TYPES = arrayOf("user")
+    private val SUPPORTED_TASK_TYPES = arrayOf(CommonRestrictions.TASK_TYPE_USER)
     fun supports(restrictions: Map<String, String>): Boolean {
       return restrictions.containsKey(CommonRestrictions.TASK_TYPE) && SUPPORTED_TASK_TYPES.contains(restrictions[CommonRestrictions.TASK_TYPE])
     }

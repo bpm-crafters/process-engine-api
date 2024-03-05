@@ -27,5 +27,5 @@ data class SubscribeForTaskCmd(
   /**
    * Action to execute if the delivered task is terminated.
    */
-  val modifcation: TaskModificationHandler
+  val modification: TaskModificationHandler
 )

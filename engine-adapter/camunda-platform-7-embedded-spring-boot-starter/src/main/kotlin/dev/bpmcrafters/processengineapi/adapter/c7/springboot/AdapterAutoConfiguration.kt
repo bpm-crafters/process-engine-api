@@ -2,12 +2,12 @@ package dev.bpmcrafters.processengineapi.adapter.c7.springboot
 
 import dev.bpmcrafters.processengineapi.adapter.c7.correlation.CorrelationApiImpl
 import dev.bpmcrafters.processengineapi.adapter.c7.process.StartProcessApiImpl
-import dev.bpmcrafters.processengineapi.adapter.c7.task.CompletionStrategy
-import dev.bpmcrafters.processengineapi.adapter.c7.task.InMemSubscriptionRepository
-import dev.bpmcrafters.processengineapi.adapter.c7.task.SubscriptionRepository
-import dev.bpmcrafters.processengineapi.adapter.c7.task.TaskApiImpl
+import dev.bpmcrafters.processengineapi.adapter.c7.task.C7TaskApiImpl
 import dev.bpmcrafters.processengineapi.adapter.c7.task.completion.ExternalTaskCompletionStrategy
 import dev.bpmcrafters.processengineapi.adapter.c7.task.completion.UserTaskCompletionStrategy
+import dev.bpmcrafters.processengineapi.adapter.commons.task.CompletionStrategy
+import dev.bpmcrafters.processengineapi.adapter.commons.task.InMemSubscriptionRepository
+import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionRepository
 import dev.bpmcrafters.processengineapi.correlation.CorrelationApi
 import dev.bpmcrafters.processengineapi.process.StartProcessApi
 import dev.bpmcrafters.processengineapi.task.TaskApi
@@ -18,7 +18,6 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.scheduling.annotation.EnableScheduling
-import java.util.*
 
 @Configuration
 @EnableScheduling
@@ -31,7 +30,7 @@ class AdapterAutoConfiguration {
   )
 
   @Bean
-  fun taskApi(subscriptionRepository: SubscriptionRepository, completionStrategies: List<CompletionStrategy>): TaskApi = TaskApiImpl(
+  fun taskApi(subscriptionRepository: SubscriptionRepository, completionStrategies: List<CompletionStrategy>): TaskApi = C7TaskApiImpl(
     completionStrategies = completionStrategies,
     subscriptionRepository = subscriptionRepository
   )

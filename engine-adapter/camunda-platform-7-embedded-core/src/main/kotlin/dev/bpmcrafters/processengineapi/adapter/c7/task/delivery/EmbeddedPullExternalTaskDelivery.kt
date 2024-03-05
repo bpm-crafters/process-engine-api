@@ -1,10 +1,8 @@
 package dev.bpmcrafters.processengineapi.adapter.c7.task.delivery
 
-import dev.bpmcrafters.processengineapi.CommonRestrictions
-import dev.bpmcrafters.processengineapi.adapter.c7.task.SubscriptionRepository
-import dev.bpmcrafters.processengineapi.adapter.c7.task.TaskSubscriptionHandle
 import dev.bpmcrafters.processengineapi.adapter.c7.task.completion.ExternalTaskCompletionStrategy
-import dev.bpmcrafters.processengineapi.task.TaskInformation
+import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionRepository
+import dev.bpmcrafters.processengineapi.adapter.commons.task.TaskSubscriptionHandle
 import org.camunda.bpm.engine.ExternalTaskService
 import org.camunda.bpm.engine.externaltask.ExternalTaskQueryBuilder
 import org.camunda.bpm.engine.externaltask.LockedExternalTask
@@ -43,8 +41,11 @@ class EmbeddedPullExternalTaskDelivery(
             } else {
               lockedTask.variables.filter { activeSubscription.payloadDescription.contains(it.key) }
             }
-
-            activeSubscription.action.accept(lockedTask.toTaskInformation(), variables)
+            try {
+              activeSubscription.action.accept(lockedTask.toTaskInformation(), variables)
+            } catch (e: Exception) {
+              externalTaskService.handleFailure(lockedTask.id, workerId, e.message, lockedTask.retries - 1, 10) // FIXME -> props
+            }
           }
       }
   }

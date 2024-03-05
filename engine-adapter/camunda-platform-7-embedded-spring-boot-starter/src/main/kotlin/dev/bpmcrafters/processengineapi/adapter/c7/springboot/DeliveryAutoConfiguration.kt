@@ -6,13 +6,13 @@ import dev.bpmcrafters.processengineapi.adapter.c7.springboot.C7AdapterPropertie
 import dev.bpmcrafters.processengineapi.adapter.c7.springboot.event.EventBasedEmbeddedUserTaskDeliveryBinding
 import dev.bpmcrafters.processengineapi.adapter.c7.springboot.schedule.ScheduledEmbeddedExternalServiceTaskDeliveryBinding
 import dev.bpmcrafters.processengineapi.adapter.c7.springboot.schedule.ScheduledEmbeddedUserTaskDeliveryBinding
-import dev.bpmcrafters.processengineapi.adapter.c7.task.SubscriptionRepository
 import dev.bpmcrafters.processengineapi.adapter.c7.task.delivery.EmbeddedEventBasedUserTaskDelivery
 import dev.bpmcrafters.processengineapi.adapter.c7.task.delivery.EmbeddedPullExternalTaskDelivery
 import dev.bpmcrafters.processengineapi.adapter.c7.task.delivery.EmbeddedPullUserTaskDelivery
 import dev.bpmcrafters.processengineapi.adapter.c7.task.delivery.UserTaskDelivery
 import dev.bpmcrafters.processengineapi.adapter.c7.task.delivery.job.EmbeddedTaskDeliveryEnginePlugin
 import dev.bpmcrafters.processengineapi.adapter.c7.task.delivery.job.EmbeddedTaskDeliveryJobHandler
+import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionRepository
 import mu.KLogging
 import org.camunda.bpm.engine.ExternalTaskService
 import org.camunda.bpm.engine.TaskService

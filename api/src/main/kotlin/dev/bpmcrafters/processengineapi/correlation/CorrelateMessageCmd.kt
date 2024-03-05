@@ -9,5 +9,5 @@ import dev.bpmcrafters.processengineapi.PayloadSupplier
 data class CorrelateMessageCmd(
   val messageName: String,
   val payloadSupplier: PayloadSupplier,
-  val correlation: () -> Correlation
+  val correlation: CorrelationSupplier
 ) : PayloadSupplier by payloadSupplier
