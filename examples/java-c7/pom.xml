@@ -41,7 +41,12 @@
 
     <dependency>
       <groupId>org.camunda.bpm.springboot</groupId>
-      <artifactId>camunda-bpm-spring-boot-starter</artifactId>
+      <artifactId>camunda-bpm-spring-boot-starter-webapp</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.holunda</groupId>
+      <artifactId>camunda-platform-7-autologin</artifactId>
+      <version>0.1.0</version>
     </dependency>
     <dependency>
       <groupId>dev.bpm-crafters.process-engine-api</groupId>
