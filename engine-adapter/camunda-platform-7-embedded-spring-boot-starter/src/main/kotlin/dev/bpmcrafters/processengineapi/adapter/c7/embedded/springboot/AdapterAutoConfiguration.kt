@@ -1,5 +1,6 @@
 package dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.correlation.CorrelationApiImpl
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.correlation.SignalApiImpl
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.process.StartProcessApiImpl
@@ -8,6 +9,7 @@ import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.completion.Exte
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.completion.UserTaskCompletionStrategy
 import dev.bpmcrafters.processengineapi.adapter.commons.task.CompletionStrategy
 import dev.bpmcrafters.processengineapi.adapter.commons.task.InMemSubscriptionRepository
+import dev.bpmcrafters.processengineapi.adapter.commons.task.ParsingHelper
 import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionRepository
 import dev.bpmcrafters.processengineapi.correlation.CorrelationApi
 import dev.bpmcrafters.processengineapi.correlation.SignalApi
@@ -38,9 +40,19 @@ class AdapterAutoConfiguration {
   )
 
   @Bean
-  fun correlationApi(runtimeService: RuntimeService): CorrelationApi = CorrelationApiImpl(
-    runtimeService = runtimeService
+  fun correlationApi(runtimeService: RuntimeService, parsingHelper: ParsingHelper): CorrelationApi = CorrelationApiImpl(
+    runtimeService = runtimeService,
+    parsingHelper = parsingHelper
   )
+
+  @Bean
+  fun jacksonparsingHelper(objectMapper: ObjectMapper): ParsingHelper {
+    return object: ParsingHelper {
+      override fun parseJsonString(value: String): Map<String, Any> {
+        return objectMapper.readValue(value, objectMapper.typeFactory.constructMapType(Map::class.java, String::class.java, Any::class.java))
+      }
+    }
+  }
 
   @Bean
   fun signalApi(runtimeService: RuntimeService): SignalApi = SignalApiImpl(

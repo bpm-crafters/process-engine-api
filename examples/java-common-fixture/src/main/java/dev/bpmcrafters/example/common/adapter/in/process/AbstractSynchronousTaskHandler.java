@@ -46,7 +46,7 @@ public abstract class AbstractSynchronousTaskHandler {
             );
           }
         },
-        TaskModificationHandler.getEmpty()
+        TaskTerminationHandler.getEmpty()
       )
     ).get();
   }

@@ -50,11 +50,12 @@ class CorrelationApiImpl(
       this.messageId(restrictions[CommonRestrictions.MESSAGE_ID])
     }
     if (restrictions.containsKey(CommonRestrictions.MESSAGE_ID)) {
-      this.variables(restrictions[CommonRestrictions.MESSAGE_ID])
+      this.messageId(restrictions[CommonRestrictions.MESSAGE_ID])
     }
-    if (restrictions.containsKey(CommonRestrictions.MESSAGE_TTL)) {
-      this.variables(restrictions[CommonRestrictions.MESSAGE_TTL])
-    }
+// FIXME -> parse duration?
+//    if (restrictions.containsKey(CommonRestrictions.MESSAGE_TTL)) {
+//      this.timeToLive(restrictions[CommonRestrictions.MESSAGE_TTL])
+//    }
   }
 
   override fun getSupportedRestrictions(): Set<String> = setOf(

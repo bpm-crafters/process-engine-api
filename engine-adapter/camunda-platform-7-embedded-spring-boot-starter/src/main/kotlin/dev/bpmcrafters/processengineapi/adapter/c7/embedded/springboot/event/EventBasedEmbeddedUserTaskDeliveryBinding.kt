@@ -5,6 +5,7 @@ import org.camunda.bpm.engine.delegate.DelegateTask
 import org.springframework.context.event.EventListener
 import org.springframework.core.annotation.Order
 
+// FIXME -> defined ORDER
 class EventBasedEmbeddedUserTaskDeliveryBinding(
   private val embeddedEventBasedUserTaskDelivery: EmbeddedEventBasedUserTaskDelivery
 ) {
@@ -14,13 +15,6 @@ class EventBasedEmbeddedUserTaskDeliveryBinding(
   )
   fun onTaskCreate(delegateTask: DelegateTask) {
     embeddedEventBasedUserTaskDelivery.userTaskCreated(delegateTask = delegateTask)
-  }
-
-  @EventListener(
-    condition = "#delegateTask.eventName.equals('update') || #delegateTask.eventName.equals('assignment')"
-  )
-  fun onTaskUpdate(delegateTask: DelegateTask) {
-    embeddedEventBasedUserTaskDelivery.userTaskModified(delegateTask = delegateTask)
   }
 
   @EventListener(

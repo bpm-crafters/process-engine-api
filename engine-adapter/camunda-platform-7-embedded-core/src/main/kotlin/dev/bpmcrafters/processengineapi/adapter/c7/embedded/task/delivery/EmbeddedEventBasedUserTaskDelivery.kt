@@ -28,19 +28,6 @@ class EmbeddedEventBasedUserTaskDelivery(
       }
   }
 
-  fun userTaskModified(delegateTask: DelegateTask) {
-    subscriptionRepository.getActiveSubscriptionForTask(delegateTask.id)?.apply {
-
-      val variables = if (this.payloadDescription.isEmpty()) {
-        delegateTask.variables
-      } else {
-        delegateTask.variables.filterKeys { key -> this.payloadDescription.contains(key) }
-      }
-
-      modification.modified(delegateTask.toTaskInformation(), variables)
-    }
-  }
-
   fun userTaskDeleted(delegateTask: DelegateTask) {
     subscriptionRepository.getActiveSubscriptionForTask(delegateTask.id)?.modification?.terminated(delegateTask.id)
   }

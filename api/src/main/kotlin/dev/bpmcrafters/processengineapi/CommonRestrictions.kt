@@ -6,14 +6,25 @@ package dev.bpmcrafters.processengineapi
  */
 object CommonRestrictions {
 
+  /**
+   * FIXME: consider to remove restriction names to adapters.
+   */
+
   const val ACTIVITY_ID = "activityId"
   const val BUSINESS_KEY = "businessKey"
   const val CORRELATION_KEY = "correlationKey"
   const val PROCESS_DEFINITION_KEY = "processDefinitionKey"
   const val PROCESS_INSTANCE_ID = "processInstanceId"
+  const val PROCESS_DEFINITION_ID = "processDefinitionId"
+  const val PROCESS_DEFINITION_VERSION_TAG = "processDefinitionVersionTag"
   const val TASK_TYPE = "taskType"
   const val TASK_DEFINITION_KEY = "taskDefinitionKey"
   const val TENANT_ID = "tenantId"
+  const val WITHOUT_TENANT_ID = "withoutTenantId"
+  const val PROCESS_VARIABLE_LIST = "processVariables"
+  const val PROCESS_VARIABLE_LIST_JSON = "processVariablesJson"
+  const val LOCAL_VARIABLE_LIST = "localVariables"
+  const val LOCAL_VARIABLE_LIST_JSON = "localVariablesJson"
   const val MESSAGE_ID = "messageId"
   const val MESSAGE_TTL = "messageTTL"
   const val EXECUTION_ID = "executionId"

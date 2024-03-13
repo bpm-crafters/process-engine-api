@@ -5,7 +5,7 @@ import dev.bpmcrafters.processengineapi.CommonRestrictions;
 import dev.bpmcrafters.processengineapi.task.SubscribeForTaskCmd;
 import dev.bpmcrafters.processengineapi.task.TaskApi;
 import dev.bpmcrafters.processengineapi.task.TaskInformation;
-import dev.bpmcrafters.processengineapi.task.TaskModificationHandler;
+import dev.bpmcrafters.processengineapi.task.TaskTerminationHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -28,7 +28,7 @@ public class InMemUserTaskAdapter implements UserTaskOutPort {
   public void register() {
     taskApi.subscribeForTask(
       new SubscribeForTaskCmd(
-        CommonRestrictions.builder().withTaskType("user").build(), // user tasks only
+        CommonRestrictions.builder().userTasks().build(), // user tasks only
         null, // all of them
         Collections.emptySet(), // all variables
         (taskInfo, variables) -> {
@@ -37,13 +37,7 @@ public class InMemUserTaskAdapter implements UserTaskOutPort {
             userTasks.put(taskInfo, variables);
           }
         },
-        new TaskModificationHandler() {
-          @Override
-          public void modified(@NotNull TaskInformation taskInformation, @NotNull Map<String, ?> payload) {
-            log.info("[TASK LIST]: Updating task {}", taskInformation.getTaskId());
-            userTasks.put(taskInformation, payload);
-          }
-
+        new TaskTerminationHandler() {
           @Override
           public void terminated(@NotNull String taskId) {
             log.info("[TASK LIST]: Removing task {}", taskId);

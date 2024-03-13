@@ -65,12 +65,14 @@ class EmbeddedTaskDeliveryJobHandler(
                 .firstOrNull { subscription -> subscription.matches(task) }
                 ?.let { activeSubscription ->
                   task.lock(workerId, lockTimeInSecconds) // lock external task
+                  // FIXME -> check if already active for other subscription and notify it (delete)
                   subscriptionRepository.activateSubscriptionForTask(task.id, activeSubscription)
                   val variables = if (activeSubscription.payloadDescription.isEmpty()) {
                     task.execution.variables
                   } else {
                     task.execution.variables.filterKeys { key -> activeSubscription.payloadDescription.contains(key) }
                   }
+                  // FIXME -> should we try catch and deliver failure?
                   activeSubscription.action.accept(task.toTaskInformation(), variables)
                 }
             }
@@ -106,10 +108,6 @@ class EmbeddedTaskDeliveryJobHandler(
             }
 
             else -> null to null
-          }
-          // if task is found and variables are loaded, notify about modification
-          if (taskInformation != null && taskVariables != null) {
-            this.modification.modified(taskInformation, taskVariables)
           }
         }
       }

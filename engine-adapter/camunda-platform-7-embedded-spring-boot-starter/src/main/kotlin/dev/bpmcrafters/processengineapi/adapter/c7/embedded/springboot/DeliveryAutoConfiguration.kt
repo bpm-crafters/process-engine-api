@@ -60,7 +60,8 @@ class DeliveryAutoConfiguration {
     externalTaskService = externalTaskService,
     workerId = c7AdapterProperties.externalServiceTasks.workerId,
     maxTasks = c7AdapterProperties.externalServiceTasks.maxTaskCount,
-    lockDuration = c7AdapterProperties.externalServiceTasks.lockTimeInSeconds
+    lockDuration = c7AdapterProperties.externalServiceTasks.lockTimeInSeconds,
+    retryTimeout = c7AdapterProperties.externalServiceTasks.retryTimeoutInSeconds,
   )
 
   @Bean

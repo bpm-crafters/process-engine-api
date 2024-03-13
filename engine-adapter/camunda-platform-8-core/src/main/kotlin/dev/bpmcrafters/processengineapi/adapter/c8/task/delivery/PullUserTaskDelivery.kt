@@ -14,7 +14,13 @@ class PullUserTaskDelivery(
   private val subscriptionRepository: SubscriptionRepository
 ) {
   fun deliverAll() {
+
+
     val subscriptions = subscriptionRepository.getTaskSubscriptions()
+
+    // FIXME -> reverse lookup for all active subscriptions
+    // if the task is not retrieved but active subscription has a task, call modification#terminated hook
+
     taskListClient.getTasks(
       TaskSearch()
         .forSubscriptions(subscriptions)
@@ -53,7 +59,6 @@ class PullUserTaskDelivery(
 
   private fun TaskSubscriptionHandle.matches(task: Task): Boolean =
     UserTaskCompletionStrategy.supports(this.restrictions)
-      && (this.taskDescriptionKey == null || this.taskDescriptionKey == task.taskDefinitionId || this.taskDescriptionKey == task.id)
-
-
+      && (this.taskDescriptionKey == null || this.taskDescriptionKey == task.taskDefinitionId)
+    //FIXME -> more restrictions
 }

@@ -14,9 +14,13 @@ abstract class AbstractTaskApiImpl(
   private val subscriptionRepository: SubscriptionRepository
 ) : TaskApi {
 
-  companion object: KLogging()
+  companion object : KLogging()
 
   override fun subscribeForTask(cmd: SubscribeForTaskCmd): Future<TaskSubscription> {
+    // check that at least one completion strategy supports provided subscription restrictions
+    require(completionStrategies.any { completionStrategy -> completionStrategy.supports(cmd.restrictions, cmd.taskDescriptionKey) })
+    { "Subscription failed. provided restrictions (${cmd.restrictions}) are not supported by configured completion strategies " +
+      "${completionStrategies.map { it.getSupportedRestrictions().joinToString(separator = ",", prefix = "'", postfix = "'") }}. " }
     return TaskSubscriptionHandle(
       taskDescriptionKey = cmd.taskDescriptionKey,
       payloadDescription = cmd.payloadDescription,

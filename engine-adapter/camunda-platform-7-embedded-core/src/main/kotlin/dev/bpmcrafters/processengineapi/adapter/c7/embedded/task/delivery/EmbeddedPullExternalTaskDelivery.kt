@@ -1,5 +1,6 @@
 package dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery
 
+import dev.bpmcrafters.processengineapi.CommonRestrictions
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.completion.ExternalTaskCompletionStrategy
 import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionRepository
 import dev.bpmcrafters.processengineapi.adapter.commons.task.TaskSubscriptionHandle
@@ -16,7 +17,8 @@ class EmbeddedPullExternalTaskDelivery(
   private val workerId: String,
   private val subscriptionRepository: SubscriptionRepository,
   private val maxTasks: Int,
-  private val lockDuration: Long
+  private val lockDuration: Long,
+  private val retryTimeout: Long
 ) : ExternalServiceTaskDelivery {
 
   /**
@@ -46,7 +48,7 @@ class EmbeddedPullExternalTaskDelivery(
             try {
               activeSubscription.action.accept(lockedTask.toTaskInformation(), variables)
             } catch (e: Exception) {
-              externalTaskService.handleFailure(lockedTask.id, workerId, e.message, lockedTask.retries - 1, 10) // FIXME -> props
+              externalTaskService.handleFailure(lockedTask.id, workerId, e.message, lockedTask.retries - 1, retryTimeout)
             }
           }
       }
@@ -58,14 +60,25 @@ class EmbeddedPullExternalTaskDelivery(
       .distinct()
       .forEach { topic ->
         this.topic(topic, lockDuration)
-        // FIXME ->
       }
     return this
   }
 
   private fun TaskSubscriptionHandle.matches(task: LockedExternalTask): Boolean {
     return ExternalTaskCompletionStrategy.supports(this.restrictions) &&
-      (this.taskDescriptionKey == null || this.taskDescriptionKey == task.topicName)
-    // FIXME -> more descriptions
+      (this.taskDescriptionKey == null || this.taskDescriptionKey == task.topicName) &&
+      this.restrictions.all {
+        when (it.key) {
+          CommonRestrictions.EXECUTION_ID -> it.value == task.executionId
+          CommonRestrictions.ACTIVITY_ID -> it.value == task.activityId
+          CommonRestrictions.BUSINESS_KEY -> it.value == task.businessKey
+          CommonRestrictions.TENANT_ID -> it.value == task.tenantId
+          CommonRestrictions.PROCESS_INSTANCE_ID -> it.value == task.processInstanceId
+          CommonRestrictions.PROCESS_DEFINITION_KEY -> it.value == task.processDefinitionKey
+          CommonRestrictions.PROCESS_DEFINITION_ID -> it.value == task.processDefinitionId
+          CommonRestrictions.PROCESS_DEFINITION_VERSION_TAG -> it.value == task.processDefinitionVersionTag
+          else -> false
+        }
+      }
   }
 }

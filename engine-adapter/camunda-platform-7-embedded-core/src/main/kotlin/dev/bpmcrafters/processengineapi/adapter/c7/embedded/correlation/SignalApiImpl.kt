@@ -4,9 +4,10 @@ import dev.bpmcrafters.processengineapi.CommonRestrictions
 import dev.bpmcrafters.processengineapi.Empty
 import dev.bpmcrafters.processengineapi.MetaInfo
 import dev.bpmcrafters.processengineapi.MetaInfoAware
-import dev.bpmcrafters.processengineapi.correlation.*
+import dev.bpmcrafters.processengineapi.correlation.CorrelationSupplier
+import dev.bpmcrafters.processengineapi.correlation.SendSignalCmd
+import dev.bpmcrafters.processengineapi.correlation.SignalApi
 import org.camunda.bpm.engine.RuntimeService
-import org.camunda.bpm.engine.runtime.MessageCorrelationBuilder
 import org.camunda.bpm.engine.runtime.SignalEventReceivedBuilder
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.Future
@@ -30,6 +31,7 @@ class SignalApiImpl(
   override fun getSupportedRestrictions(): Set<String> = setOf(
     CommonRestrictions.PROCESS_INSTANCE_ID,
     CommonRestrictions.TENANT_ID,
+    CommonRestrictions.WITHOUT_TENANT_ID,
   )
 
   private fun SignalEventReceivedBuilder.buildCorrelation(correlation: CorrelationSupplier) = this.apply {
@@ -38,7 +40,14 @@ class SignalApiImpl(
     restrictions
       .forEach { (key, value) ->
         when (key) {
-          CommonRestrictions.TENANT_ID -> this.tenantId(value)
+          CommonRestrictions.TENANT_ID -> this.tenantId(value).apply {
+            require(restrictions.containsKey(CommonRestrictions.WITHOUT_TENANT_ID)) { "Illegal restriction combination. ${CommonRestrictions.WITHOUT_TENANT_ID} " +
+              "and ${CommonRestrictions.WITHOUT_TENANT_ID} can't be provided in the same time because they are mutually exclusive." }
+          }
+          CommonRestrictions.WITHOUT_TENANT_ID -> this.withoutTenantId().apply {
+            require(restrictions.containsKey(CommonRestrictions.TENANT_ID)) { "Illegal restriction combination. ${CommonRestrictions.WITHOUT_TENANT_ID} " +
+              "and ${CommonRestrictions.WITHOUT_TENANT_ID} can't be provided in the same time because they are mutually exclusive." }
+          }
           CommonRestrictions.EXECUTION_ID -> this.executionId(value)
         }
       }
