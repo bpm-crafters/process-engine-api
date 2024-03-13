@@ -11,7 +11,7 @@ There are some features in the C7 adapter already. In addition, there are some f
 
 ## Process
 
-![Service Task Process](src/main/resources/service-tasks.png)
+![Service Task Process](src/main/resources/simple-process.png)
 
 
 ## How to run
