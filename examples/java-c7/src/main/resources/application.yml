@@ -20,3 +20,14 @@ dev:
           user-tasks:
             delivery-strategy: embedded_job
             fixed-rate-schedule-rate: 5000
+camunda:
+  bpm:
+    webapp:
+      index-redirect-enabled: false
+    admin-user:
+      id: admin
+    filter:
+      create: All
+    login:
+      enabled: true
+      user-id: admin
