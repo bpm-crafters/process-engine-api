@@ -15,9 +15,6 @@ dev:
             external-service-tasks:
               delivery-strategy: embedded_job
               worker-id: embedded-worker
-              fixed-rate-schedule-rate: 7000
               lock-time-in-seconds: 10
-              max-task-count: 100
             user-tasks:
               delivery-strategy: embedded_job
-              fixed-rate-schedule-rate: 5000

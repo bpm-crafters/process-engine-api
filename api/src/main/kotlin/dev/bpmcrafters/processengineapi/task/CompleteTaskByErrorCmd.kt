@@ -14,7 +14,7 @@ open class CompleteTaskByErrorCmd(
   /**
    * Error.
    */
-  val error: String,
+  val errorCode: String,
   /**
    * Payload supplier.
    */

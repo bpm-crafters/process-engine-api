@@ -1,8 +1,10 @@
-package dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery
+package dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.pull
 
-import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.completion.UserTaskCompletionStrategy
+import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.UserTaskDelivery
+import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.toTaskInformation
 import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionRepository
 import dev.bpmcrafters.processengineapi.adapter.commons.task.TaskSubscriptionHandle
+import dev.bpmcrafters.processengineapi.task.TaskType
 import org.camunda.bpm.engine.TaskService
 import org.camunda.bpm.engine.task.Task
 import org.camunda.bpm.engine.task.TaskQuery
@@ -51,9 +53,10 @@ class EmbeddedPullUserTaskDelivery(
 
 
   private fun TaskSubscriptionHandle.matches(task: Task): Boolean =
-    UserTaskCompletionStrategy.supports(this.restrictions) && (
-      this.taskDescriptionKey == null || this.taskDescriptionKey == task.taskDefinitionKey || this.taskDescriptionKey == task.id
+    this.taskType == TaskType.USER && (
+      this.taskDescriptionKey == null
+        || this.taskDescriptionKey == task.taskDefinitionKey
+        || this.taskDescriptionKey == task.id
       )
-
 }
 

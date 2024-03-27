@@ -1,7 +1,5 @@
 package dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.job
 
-import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.completion.ExternalTaskCompletionStrategy
-import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.completion.UserTaskCompletionStrategy
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.job.EmbeddedTaskDeliveryJobHandler.EmbeddedTaskDeliveryJobHandlerConfiguration.Companion.OPERATION_CREATE
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.job.EmbeddedTaskDeliveryJobHandler.EmbeddedTaskDeliveryJobHandlerConfiguration.Companion.OPERATION_DELETE
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.job.EmbeddedTaskDeliveryJobHandler.EmbeddedTaskDeliveryJobHandlerConfiguration.Companion.OPERATION_MODIFY
@@ -10,6 +8,7 @@ import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.job.Em
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.toTaskInformation
 import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionRepository
 import dev.bpmcrafters.processengineapi.adapter.commons.task.TaskSubscriptionHandle
+import dev.bpmcrafters.processengineapi.task.TaskType
 import org.camunda.bpm.engine.impl.cfg.ProcessEngineConfigurationImpl
 import org.camunda.bpm.engine.impl.interceptor.CommandContext
 import org.camunda.bpm.engine.impl.jobexecutor.JobHandler
@@ -24,7 +23,7 @@ import java.util.*
 class EmbeddedTaskDeliveryJobHandler(
   private val subscriptionRepository: SubscriptionRepository,
   private val workerId: String,
-  private val lockTimeInSecconds: Long
+  private val lockTimeInSeconds: Long
 ) : JobHandler<EmbeddedTaskDeliveryJobHandler.EmbeddedTaskDeliveryJobHandlerConfiguration> {
 
   companion object {
@@ -32,10 +31,10 @@ class EmbeddedTaskDeliveryJobHandler(
   }
 
   override fun execute(
-          configuration: EmbeddedTaskDeliveryJobHandlerConfiguration,
-          execution: ExecutionEntity?,
-          commandContext: CommandContext,
-          tenantId: String?
+    configuration: EmbeddedTaskDeliveryJobHandlerConfiguration,
+    execution: ExecutionEntity?,
+    commandContext: CommandContext,
+    tenantId: String?
   ) {
     val subscriptions = subscriptionRepository.getTaskSubscriptions()
 
@@ -64,7 +63,7 @@ class EmbeddedTaskDeliveryJobHandler(
               subscriptions
                 .firstOrNull { subscription -> subscription.matches(task) }
                 ?.let { activeSubscription ->
-                  task.lock(workerId, lockTimeInSecconds) // lock external task
+                  task.lock(workerId, lockTimeInSeconds) // lock external task
                   // FIXME -> check if already active for other subscription and notify it (delete)
                   subscriptionRepository.activateSubscriptionForTask(task.id, activeSubscription)
                   val variables = if (activeSubscription.payloadDescription.isEmpty()) {
@@ -113,7 +112,7 @@ class EmbeddedTaskDeliveryJobHandler(
       }
 
       OPERATION_DELETE -> subscriptionRepository.getActiveSubscriptionForTask(configuration.id)?.apply {
-        modification.terminated(configuration.id)
+        termination.accept(configuration.id)
       }
     }
   }
@@ -123,18 +122,15 @@ class EmbeddedTaskDeliveryJobHandler(
   }
 
   override fun newConfiguration(canonicalString: String): EmbeddedTaskDeliveryJobHandlerConfiguration =
-          EmbeddedTaskDeliveryJobHandlerConfiguration.new(canonicalString)
+    EmbeddedTaskDeliveryJobHandlerConfiguration.new(canonicalString)
 
   override fun getType(): String = TYPE
 
   private fun TaskSubscriptionHandle.matches(taskEntity: TaskEntity): Boolean =
-    UserTaskCompletionStrategy.supports(this.restrictions)
-      && (this.taskDescriptionKey == null || this.taskDescriptionKey == taskEntity.taskDefinitionKey || this.taskDescriptionKey == taskEntity.id)
+    this.taskType == TaskType.USER && (this.taskDescriptionKey == null || this.taskDescriptionKey == taskEntity.taskDefinitionKey || this.taskDescriptionKey == taskEntity.id)
 
   private fun TaskSubscriptionHandle.matches(taskEntity: ExternalTaskEntity): Boolean =
-    ExternalTaskCompletionStrategy.supports(this.restrictions) &&
-      (this.taskDescriptionKey == null || this.taskDescriptionKey == taskEntity.topicName)
-
+    this.taskType == TaskType.EXTERNAL && (this.taskDescriptionKey == null || this.taskDescriptionKey == taskEntity.topicName)
 
   data class EmbeddedTaskDeliveryJobHandlerConfiguration(
     val id: String,

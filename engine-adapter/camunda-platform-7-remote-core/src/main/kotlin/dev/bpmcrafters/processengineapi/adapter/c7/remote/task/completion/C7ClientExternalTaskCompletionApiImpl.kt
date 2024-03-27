@@ -1,43 +1,27 @@
 package dev.bpmcrafters.processengineapi.adapter.c7.remote.task.completion
 
-import dev.bpmcrafters.processengineapi.CommonRestrictions
 import dev.bpmcrafters.processengineapi.Empty
-import dev.bpmcrafters.processengineapi.adapter.commons.task.CompletionStrategy
 import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionRepository
 import dev.bpmcrafters.processengineapi.task.CompleteTaskByErrorCmd
 import dev.bpmcrafters.processengineapi.task.CompleteTaskCmd
+import dev.bpmcrafters.processengineapi.task.FailTaskCmd
+import dev.bpmcrafters.processengineapi.task.ExternalTaskCompletionApi
 import mu.KLogging
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.Future
 import org.camunda.bpm.client.task.ExternalTaskService as ClientExternalTaskService
 
 /**
- * External task completion strategy using official client-based external task service.
+ * External task completion API implementation using official client-based external task service.
  * @param externalTaskService external task service provided by the official Camunda Platform 7 client
  * @param subscriptionRepository repository for subscriptions.
  */
-class ClientExternalTaskServiceCompletionStrategy(
+class C7ClientExternalTaskCompletionApiImpl(
   private val externalTaskService: ClientExternalTaskService,
   private val subscriptionRepository: SubscriptionRepository
-) : CompletionStrategy {
+) : ExternalTaskCompletionApi {
 
-  companion object : KLogging() {
-    private val SUPPORTED_TASK_TYPES = arrayOf(CommonRestrictions.TASK_TYPE_SERVICE)
-
-    fun supports(restrictions: Map<String, String>): Boolean {
-      return restrictions.containsKey(CommonRestrictions.TASK_TYPE)
-        && SUPPORTED_TASK_TYPES.contains(restrictions[CommonRestrictions.TASK_TYPE])
-    }
-  }
-
-  override fun getSupportedRestrictions(): Set<String> {
-    return setOf(CommonRestrictions.TASK_TYPE)
-  }
-
-  override fun supports(restrictions: Map<String, String>, taskDescriptionKey: String?): Boolean {
-    return supports(restrictions)
-  }
-
+  companion object : KLogging()
 
   override fun completeTask(cmd: CompleteTaskCmd): Future<Empty> {
     externalTaskService
@@ -47,7 +31,7 @@ class ClientExternalTaskServiceCompletionStrategy(
         mapOf()
       )
     subscriptionRepository.removeSubscriptionForTask(cmd.taskId)?.apply {
-      modification.terminated(cmd.taskId)
+      termination.accept(cmd.taskId)
     }
     return CompletableFuture.completedFuture(Empty)
   }
@@ -56,12 +40,27 @@ class ClientExternalTaskServiceCompletionStrategy(
     externalTaskService
       .handleBpmnError(
         cmd.taskId,
-        cmd.error,
+        cmd.errorCode,
         "",
         cmd.get()
       )
     subscriptionRepository.removeSubscriptionForTask(cmd.taskId)?.apply {
-      modification.terminated(cmd.taskId)
+      termination.accept(cmd.taskId)
+    }
+    return CompletableFuture.completedFuture(Empty)
+  }
+
+  override fun failTask(cmd: FailTaskCmd): Future<Empty> {
+    externalTaskService
+      .handleFailure(
+        cmd.taskId,
+        cmd.reason,
+        cmd.errorDetails,
+        100,
+        1000
+      )
+    subscriptionRepository.removeSubscriptionForTask(cmd.taskId)?.apply {
+      termination.accept(cmd.taskId)
     }
     return CompletableFuture.completedFuture(Empty)
   }

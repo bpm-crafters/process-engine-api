@@ -1,16 +1,13 @@
-package dev.bpmcrafters.processengineapi.adapter.c7.embedded.task
+package dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.subscription
 
 import dev.bpmcrafters.processengineapi.MetaInfo
 import dev.bpmcrafters.processengineapi.MetaInfoAware
-import dev.bpmcrafters.processengineapi.adapter.commons.task.CompletionStrategy
+import dev.bpmcrafters.processengineapi.adapter.commons.task.AbstractTaskSubscriptionApiImpl
 import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionRepository
-import dev.bpmcrafters.processengineapi.adapter.commons.task.AbstractTaskApiImpl
 
-class C7TaskApiImpl(
-  completionStrategies: List<CompletionStrategy>,
+class C7TaskSubscriptionApiImpl(
   subscriptionRepository: SubscriptionRepository
-  ) : AbstractTaskApiImpl(
-  completionStrategies = completionStrategies,
+) : AbstractTaskSubscriptionApiImpl(
   subscriptionRepository = subscriptionRepository
 ) {
 

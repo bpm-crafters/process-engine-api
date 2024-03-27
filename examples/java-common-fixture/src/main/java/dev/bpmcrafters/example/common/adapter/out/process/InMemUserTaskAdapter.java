@@ -3,13 +3,12 @@ package dev.bpmcrafters.example.common.adapter.out.process;
 import dev.bpmcrafters.example.common.application.port.out.UserTaskOutPort;
 import dev.bpmcrafters.processengineapi.CommonRestrictions;
 import dev.bpmcrafters.processengineapi.task.SubscribeForTaskCmd;
-import dev.bpmcrafters.processengineapi.task.TaskApi;
 import dev.bpmcrafters.processengineapi.task.TaskInformation;
-import dev.bpmcrafters.processengineapi.task.TaskTerminationHandler;
+import dev.bpmcrafters.processengineapi.task.TaskSubscriptionApi;
+import dev.bpmcrafters.processengineapi.task.TaskType;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
 import java.util.List;
@@ -21,14 +20,16 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 public class InMemUserTaskAdapter implements UserTaskOutPort {
 
-  private final TaskApi taskApi;
+  private final TaskSubscriptionApi taskSubscriptionApi;
   private final Map<TaskInformation, Map<String, ?>> userTasks = new ConcurrentHashMap<>();
 
   @SneakyThrows
   public void register() {
-    taskApi.subscribeForTask(
+    log.info("[USER TASK] Registering user task pool");
+    taskSubscriptionApi.subscribeForTask(
       new SubscribeForTaskCmd(
-        CommonRestrictions.builder().userTasks().build(), // user tasks only
+        CommonRestrictions.builder().build(),
+        TaskType.USER, // user tasks only
         null, // all of them
         Collections.emptySet(), // all variables
         (taskInfo, variables) -> {
@@ -37,12 +38,9 @@ public class InMemUserTaskAdapter implements UserTaskOutPort {
             userTasks.put(taskInfo, variables);
           }
         },
-        new TaskTerminationHandler() {
-          @Override
-          public void terminated(@NotNull String taskId) {
-            log.info("[TASK LIST]: Removing task {}", taskId);
-            userTasks.keySet().stream().filter(info -> info.getTaskId().equals(taskId)).findFirst().ifPresent(userTasks::remove);
-          }
+        (taskId) -> {
+          log.info("[TASK LIST]: Removing task {}", taskId);
+          userTasks.keySet().stream().filter(info -> info.getTaskId().equals(taskId)).findFirst().ifPresent(userTasks::remove);
         }
       )
     ).get();

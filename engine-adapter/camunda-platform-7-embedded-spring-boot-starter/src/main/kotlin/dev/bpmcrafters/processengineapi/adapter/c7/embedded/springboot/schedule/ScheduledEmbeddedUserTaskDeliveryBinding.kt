@@ -1,6 +1,6 @@
 package dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.schedule
 
-import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.EmbeddedPullUserTaskDelivery
+import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.pull.EmbeddedPullUserTaskDelivery
 import mu.KLogging
 import org.springframework.scheduling.annotation.Scheduled
 

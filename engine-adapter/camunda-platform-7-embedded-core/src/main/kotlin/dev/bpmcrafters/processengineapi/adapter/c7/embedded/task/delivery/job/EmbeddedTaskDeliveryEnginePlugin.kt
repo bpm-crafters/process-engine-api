@@ -10,12 +10,12 @@ import org.camunda.bpm.engine.impl.cfg.ProcessEngineConfigurationImpl
  * Engine plugin registering a job handler and parse listeners to deliver new tasks via Camunda Job.
  */
 open class EmbeddedTaskDeliveryEnginePlugin(
-        private val jobHandler: EmbeddedTaskDeliveryJobHandler,
-        private val deliverServiceTasks: Boolean,
-        private val deliverUserTasks: Boolean,
+  private val jobHandler: EmbeddedTaskDeliveryJobHandler,
+  private val deliverServiceTasks: Boolean,
+  private val deliverUserTasks: Boolean,
 ) : AbstractProcessEnginePlugin() {
 
-  companion object: KLogging()
+  companion object : KLogging()
 
   override fun preInit(processEngineConfiguration: ProcessEngineConfigurationImpl): Unit = with(processEngineConfiguration) {
     if (customJobHandlers == null) {

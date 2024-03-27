@@ -3,16 +3,17 @@ package dev.bpmcrafters.processengineapi.adapter.c8.springboot
 import dev.bpmcrafters.processengineapi.adapter.c8.correlation.CorrelationApiImpl
 import dev.bpmcrafters.processengineapi.adapter.c8.correlation.SignalApiImpl
 import dev.bpmcrafters.processengineapi.adapter.c8.process.StartProcessApiImpl
-import dev.bpmcrafters.processengineapi.adapter.c8.task.C8TaskApiImpl
-import dev.bpmcrafters.processengineapi.adapter.c8.task.completion.ServiceTaskCompletionStrategy
-import dev.bpmcrafters.processengineapi.adapter.c8.task.completion.UserTaskCompletionStrategy
-import dev.bpmcrafters.processengineapi.adapter.commons.task.CompletionStrategy
+import dev.bpmcrafters.processengineapi.adapter.c8.task.completion.C8TaskListClientUserTaskCompletionApiImpl
+import dev.bpmcrafters.processengineapi.adapter.c8.task.completion.C8ZeebeExternalServiceTaskCompletionApiImpl
+import dev.bpmcrafters.processengineapi.adapter.c8.task.subscription.C8TaskSubscriptionApiImpl
 import dev.bpmcrafters.processengineapi.adapter.commons.task.InMemSubscriptionRepository
 import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionRepository
 import dev.bpmcrafters.processengineapi.correlation.CorrelationApi
 import dev.bpmcrafters.processengineapi.correlation.SignalApi
 import dev.bpmcrafters.processengineapi.process.StartProcessApi
-import dev.bpmcrafters.processengineapi.task.TaskApi
+import dev.bpmcrafters.processengineapi.task.ExternalTaskCompletionApi
+import dev.bpmcrafters.processengineapi.task.TaskSubscriptionApi
+import dev.bpmcrafters.processengineapi.task.UserTaskCompletionApi
 import io.camunda.tasklist.CamundaTaskListClient
 import io.camunda.zeebe.client.ZeebeClient
 import io.camunda.zeebe.spring.client.CamundaAutoConfiguration
@@ -29,7 +30,7 @@ import org.springframework.scheduling.annotation.EnableScheduling
   CamundaAutoConfiguration::class
 )
 @EnableConfigurationProperties(value = [C8AdapterProperties::class])
-class AdapterAutoConfiguration {
+class C8AdapterAutoConfiguration {
 
 
   @Bean
@@ -67,8 +68,7 @@ class AdapterAutoConfiguration {
   )
 
   @Bean
-  fun taskApi(subscriptionRepository: SubscriptionRepository, completionStrategies: List<CompletionStrategy>): TaskApi = C8TaskApiImpl(
-    completionStrategies = completionStrategies,
+  fun taskCompletionApi(subscriptionRepository: SubscriptionRepository): TaskSubscriptionApi = C8TaskSubscriptionApiImpl(
     subscriptionRepository = subscriptionRepository
   )
 
@@ -89,8 +89,8 @@ class AdapterAutoConfiguration {
   fun externalTaskCompletionStrategy(
     zeebeClient: ZeebeClient,
     subscriptionRepository: SubscriptionRepository,
-  ): CompletionStrategy =
-    ServiceTaskCompletionStrategy(
+  ): ExternalTaskCompletionApi =
+    C8ZeebeExternalServiceTaskCompletionApiImpl(
       zeebeClient = zeebeClient,
       subscriptionRepository = subscriptionRepository
     )
@@ -99,8 +99,8 @@ class AdapterAutoConfiguration {
   fun userTaskCompletionStrategy(
     taskListClient: CamundaTaskListClient,
     subscriptionRepository: SubscriptionRepository
-  ): CompletionStrategy =
-    UserTaskCompletionStrategy(
+  ): UserTaskCompletionApi =
+    C8TaskListClientUserTaskCompletionApiImpl(
       taskListClient = taskListClient,
       subscriptionRepository = subscriptionRepository
     )

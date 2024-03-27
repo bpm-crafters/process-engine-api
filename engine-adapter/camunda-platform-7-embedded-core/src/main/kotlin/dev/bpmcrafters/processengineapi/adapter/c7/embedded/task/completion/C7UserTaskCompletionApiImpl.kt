@@ -1,37 +1,25 @@
 package dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.completion
 
-import dev.bpmcrafters.processengineapi.CommonRestrictions
 import dev.bpmcrafters.processengineapi.Empty
-import dev.bpmcrafters.processengineapi.adapter.commons.task.CompletionStrategy
 import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionRepository
 import dev.bpmcrafters.processengineapi.task.CompleteTaskByErrorCmd
 import dev.bpmcrafters.processengineapi.task.CompleteTaskCmd
+import dev.bpmcrafters.processengineapi.task.UserTaskCompletionApi
+import mu.KLogging
 import org.camunda.bpm.engine.TaskService
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.Future
 
 /**
- * Strategy for completing user tasks using Camunda taskService Java API.
+ * Implementation using Camunda taskService Java API for completion of user tasks.
+ * @since 0.0.1
  */
-class UserTaskCompletionStrategy(
+class C7UserTaskCompletionApiImpl(
   private val taskService: TaskService,
   private val subscriptionRepository: SubscriptionRepository
-) : CompletionStrategy {
+) : UserTaskCompletionApi {
 
-  companion object {
-    private val SUPPORTED_TASK_TYPES = arrayOf(CommonRestrictions.TASK_TYPE_USER)
-    fun supports(restrictions: Map<String, String>): Boolean {
-      return restrictions.containsKey(CommonRestrictions.TASK_TYPE) && SUPPORTED_TASK_TYPES.contains(restrictions[CommonRestrictions.TASK_TYPE])
-    }
-  }
-
-  override fun getSupportedRestrictions(): Set<String> {
-    return setOf(CommonRestrictions.TASK_TYPE)
-  }
-
-  override fun supports(restrictions: Map<String, String>, taskDescriptionKey: String?): Boolean {
-    return supports(restrictions)
-  }
+  companion object : KLogging()
 
   override fun completeTask(cmd: CompleteTaskCmd): Future<Empty> {
     taskService.complete(
@@ -39,7 +27,7 @@ class UserTaskCompletionStrategy(
       cmd.get()
     )
     subscriptionRepository.removeSubscriptionForTask(cmd.taskId)?.apply {
-      modification.terminated(cmd.taskId)
+      termination.accept(cmd.taskId)
     }
     return CompletableFuture.completedFuture(Empty)
   }
@@ -47,10 +35,10 @@ class UserTaskCompletionStrategy(
   override fun completeTaskByError(cmd: CompleteTaskByErrorCmd): Future<Empty> {
     taskService.handleBpmnError(
       cmd.taskId,
-      cmd.error
+      cmd.errorCode
     )
     subscriptionRepository.removeSubscriptionForTask(cmd.taskId)?.apply {
-      modification.terminated(cmd.taskId)
+      termination.accept(cmd.taskId)
     }
     return CompletableFuture.completedFuture(Empty)
   }

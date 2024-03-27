@@ -8,7 +8,6 @@ import io.camunda.zeebe.client.api.response.ActivatedJob
 fun ActivatedJob.toTaskInformation(): TaskInformation = TaskInformation(
   taskId = "${this.key}",
   meta = mapOf(
-    CommonRestrictions.TASK_TYPE to "service",
     CommonRestrictions.TENANT_ID to this.tenantId,
     CommonRestrictions.TASK_DEFINITION_KEY to this.bpmnProcessId,
     CommonRestrictions.PROCESS_DEFINITION_KEY to "${this.processDefinitionKey}",
@@ -20,7 +19,6 @@ fun ActivatedJob.toTaskInformation(): TaskInformation = TaskInformation(
 fun Task.toTaskInformation(): TaskInformation = TaskInformation(
   taskId = this.id,
   meta = mapOf(
-    CommonRestrictions.TASK_TYPE to "user",
     CommonRestrictions.TASK_DEFINITION_KEY to this.taskDefinitionId,
     CommonRestrictions.PROCESS_DEFINITION_KEY to this.processDefinitionKey,
     CommonRestrictions.PROCESS_INSTANCE_ID to this.processInstanceKey,

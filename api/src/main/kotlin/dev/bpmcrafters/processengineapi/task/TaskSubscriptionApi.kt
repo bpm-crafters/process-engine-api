@@ -6,10 +6,10 @@ import dev.bpmcrafters.processengineapi.RestrictionAware
 import java.util.concurrent.Future
 
 /**
- * Task API providing operations for task handling and for subscription of the task handlers.
+ * Task API providing operations for subscription of the task handlers.
  * @since 0.0.1
  */
-interface TaskApi : MetaInfoAware, RestrictionAware {
+interface TaskSubscriptionApi : MetaInfoAware, RestrictionAware {
 
   /**
    * Creates a subscription for the task which will deliver tasks matching the [SubscribeForTaskCmd.taskDescriptionKey]
@@ -28,18 +28,4 @@ interface TaskApi : MetaInfoAware, RestrictionAware {
    * @return future indicating the completion.
    */
   fun unsubscribe(cmd: UnsubscribeFromTaskCmd): Future<Empty>
-
-  /**
-   * Complete the task.
-   * @param cmd command to complete the task.
-   * @return future indicating the completion.
-   */
-  fun completeTask(cmd: CompleteTaskCmd): Future<Empty>
-
-  /**
-   * Completes the task by throwing an error.
-   * @param cmd command to complete the task.
-   * @return future indicating the completion.
-   */
-  fun completeTaskByError(cmd: CompleteTaskByErrorCmd): Future<Empty>
 }

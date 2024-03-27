@@ -1,11 +1,11 @@
 package dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.schedule
 
-import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.EmbeddedPullExternalTaskDelivery
+import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.pull.EmbeddedPullExternalTaskDelivery
 import mu.KLogging
 import org.springframework.scheduling.annotation.Scheduled
 
 class ScheduledEmbeddedExternalServiceTaskDeliveryBinding(
-        private val embeddedPullExternalTaskDelivery: EmbeddedPullExternalTaskDelivery,
+  private val embeddedPullExternalTaskDelivery: EmbeddedPullExternalTaskDelivery,
 ) {
 
   companion object : KLogging()

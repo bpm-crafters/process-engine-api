@@ -5,7 +5,7 @@ import org.camunda.bpm.client.impl.ExternalTaskClientImpl
 import org.camunda.bpm.client.task.ExternalTaskService
 
 /**
- * Extended client allowing to complete task outside of a handle method.
+ * Extended client allowing to complete task outside a handle method.
  */
 class ExtendedExternalTaskClient(
   private val delegate: ExternalTaskClientImpl,

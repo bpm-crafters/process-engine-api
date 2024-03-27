@@ -17,21 +17,13 @@ object CommonRestrictions {
   const val PROCESS_INSTANCE_ID = "processInstanceId"
   const val PROCESS_DEFINITION_ID = "processDefinitionId"
   const val PROCESS_DEFINITION_VERSION_TAG = "processDefinitionVersionTag"
-  const val TASK_TYPE = "taskType"
   const val TASK_DEFINITION_KEY = "taskDefinitionKey"
   const val TENANT_ID = "tenantId"
   const val WITHOUT_TENANT_ID = "withoutTenantId"
-  const val PROCESS_VARIABLE_LIST = "processVariables"
-  const val PROCESS_VARIABLE_LIST_JSON = "processVariablesJson"
-  const val LOCAL_VARIABLE_LIST = "localVariables"
-  const val LOCAL_VARIABLE_LIST_JSON = "localVariablesJson"
   const val MESSAGE_ID = "messageId"
   const val MESSAGE_TTL = "messageTTL"
   const val EXECUTION_ID = "executionId"
-
-  const val TASK_TYPE_SERVICE = "service"
-  const val TASK_TYPE_USER = "user"
-
+  
   /**
    * Creates a helper restrictions builder.
    */
@@ -41,18 +33,6 @@ object CommonRestrictions {
   class RestrictionsBuilder internal constructor() {
 
     private val restrictions = mutableMapOf<String, String>()
-
-    fun withTaskType(taskType: String) = this.apply {
-      restrictions[TASK_TYPE] = taskType
-    }
-
-    fun serviceTasks() = this.apply {
-      restrictions[TASK_TYPE] = TASK_TYPE_SERVICE
-    }
-
-    fun userTasks() = this.apply {
-      restrictions[TASK_TYPE] = TASK_TYPE_USER
-    }
 
     fun withProcessDefinitionKey(processDefinitionKey: String) = this.apply {
       restrictions[PROCESS_DEFINITION_KEY] = processDefinitionKey

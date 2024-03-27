@@ -1,11 +1,11 @@
-package dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.completion
+package dev.bpmcrafters.processengineapi.adapter.c7.remote.task.completion
 
-import dev.bpmcrafters.processengineapi.CommonRestrictions
 import dev.bpmcrafters.processengineapi.Empty
-import dev.bpmcrafters.processengineapi.adapter.commons.task.CompletionStrategy
 import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionRepository
 import dev.bpmcrafters.processengineapi.task.CompleteTaskByErrorCmd
 import dev.bpmcrafters.processengineapi.task.CompleteTaskCmd
+import dev.bpmcrafters.processengineapi.task.FailTaskCmd
+import dev.bpmcrafters.processengineapi.task.ExternalTaskCompletionApi
 import mu.KLogging
 import org.camunda.bpm.engine.ExternalTaskService
 import java.util.concurrent.CompletableFuture
@@ -14,27 +14,13 @@ import java.util.concurrent.Future
 /**
  * Strategy for completing external tasks using Camunda externalTaskService Java API.
  */
-class ExternalTaskCompletionStrategy(
+class C7RemoteServiceExternalTaskCompletionApiImpl(
   private val workerId: String,
   private val externalTaskService: ExternalTaskService,
   private val subscriptionRepository: SubscriptionRepository
-) : CompletionStrategy {
+) : ExternalTaskCompletionApi {
 
-  companion object : KLogging() {
-    private val SUPPORTED_TASK_TYPES = arrayOf(CommonRestrictions.TASK_TYPE_SERVICE)
-
-    fun supports(restrictions: Map<String, String>): Boolean {
-      return restrictions.containsKey(CommonRestrictions.TASK_TYPE) && SUPPORTED_TASK_TYPES.contains(restrictions[CommonRestrictions.TASK_TYPE])
-    }
-  }
-
-  override fun getSupportedRestrictions(): Set<String> {
-    return setOf(CommonRestrictions.TASK_TYPE)
-  }
-
-  override fun supports(restrictions: Map<String, String>, taskDescriptionKey: String?): Boolean {
-    return supports(restrictions)
-  }
+  companion object : KLogging()
 
   override fun completeTask(cmd: CompleteTaskCmd): Future<Empty> {
     externalTaskService.complete(
@@ -43,7 +29,7 @@ class ExternalTaskCompletionStrategy(
       cmd.get()
     )
     subscriptionRepository.removeSubscriptionForTask(cmd.taskId)?.apply {
-      modification.terminated(cmd.taskId)
+      termination.accept(cmd.taskId)
       logger.info { "Successfully completed external task ${cmd.taskId}." }
     }
     return CompletableFuture.completedFuture(Empty)
@@ -53,11 +39,27 @@ class ExternalTaskCompletionStrategy(
     externalTaskService.handleBpmnError(
       cmd.taskId,
       workerId,
-      cmd.error
+      cmd.errorCode
     )
     subscriptionRepository.removeSubscriptionForTask(cmd.taskId)?.apply {
-      modification.terminated(cmd.taskId)
+      termination.accept(cmd.taskId)
       logger.info { "Completed external task ${cmd.taskId} with error." }
+    }
+    return CompletableFuture.completedFuture(Empty)
+  }
+
+  override fun failTask(cmd: FailTaskCmd): Future<Empty> {
+    externalTaskService.handleFailure(
+      cmd.taskId,
+      workerId,
+      cmd.reason,
+      cmd.errorDetails,
+      100, // FIXME -> how to get those, they are only in the job
+      1000 // FIXME -> retry timeout from props?
+    )
+    subscriptionRepository.removeSubscriptionForTask(cmd.taskId)?.apply {
+      termination.accept(cmd.taskId)
+      logger.info { "Failure occurred on external task ${cmd.taskId} handling." }
     }
     return CompletableFuture.completedFuture(Empty)
   }

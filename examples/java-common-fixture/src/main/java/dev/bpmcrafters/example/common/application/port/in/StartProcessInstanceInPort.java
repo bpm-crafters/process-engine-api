@@ -2,7 +2,7 @@ package dev.bpmcrafters.example.common.application.port.in;
 
 import java.util.concurrent.Future;
 
-public interface UseProcessInstanceInPort {
+public interface StartProcessInstanceInPort {
   /**
    * Starts a new process instance.
    * @param value string value.

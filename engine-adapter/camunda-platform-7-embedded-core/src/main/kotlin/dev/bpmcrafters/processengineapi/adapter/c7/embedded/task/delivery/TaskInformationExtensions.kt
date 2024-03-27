@@ -12,7 +12,6 @@ fun Task.toTaskInformation() =
   TaskInformation(
     taskId = this.id,
     meta = mapOf(
-      CommonRestrictions.TASK_TYPE to "user",
       CommonRestrictions.TASK_DEFINITION_KEY to this.taskDefinitionKey,
       CommonRestrictions.TENANT_ID to this.tenantId,
       CommonRestrictions.PROCESS_INSTANCE_ID to this.processInstanceId,
@@ -26,7 +25,6 @@ fun TaskEntity.toTaskInformation() =
   TaskInformation(
     taskId = this.id,
     meta = mapOf(
-      CommonRestrictions.TASK_TYPE to "user",
       CommonRestrictions.TASK_DEFINITION_KEY to this.taskDefinitionKey,
       CommonRestrictions.TENANT_ID to this.tenantId,
       CommonRestrictions.PROCESS_INSTANCE_ID to this.processInstanceId,
@@ -40,7 +38,6 @@ fun DelegateTask.toTaskInformation() =
   TaskInformation(
     taskId = this.id,
     meta = mapOf(
-      CommonRestrictions.TASK_TYPE to "user",
       CommonRestrictions.TASK_DEFINITION_KEY to this.taskDefinitionKey,
       CommonRestrictions.TENANT_ID to this.tenantId,
       CommonRestrictions.PROCESS_INSTANCE_ID to this.processInstanceId,
@@ -57,7 +54,6 @@ fun LockedExternalTask.toTaskInformation(): TaskInformation {
       CommonRestrictions.PROCESS_DEFINITION_KEY to this.processDefinitionKey,
       CommonRestrictions.PROCESS_INSTANCE_ID to this.processInstanceId,
       CommonRestrictions.TENANT_ID to this.tenantId,
-      CommonRestrictions.TASK_TYPE to "service",
       CommonRestrictions.ACTIVITY_ID to this.activityId
     )
   )
@@ -70,7 +66,6 @@ fun ExternalTaskEntity.toTaskInformation(): TaskInformation {
       CommonRestrictions.PROCESS_DEFINITION_KEY to this.processDefinitionKey,
       CommonRestrictions.PROCESS_INSTANCE_ID to this.processInstanceId,
       CommonRestrictions.TENANT_ID to this.tenantId,
-      CommonRestrictions.TASK_TYPE to "service",
       CommonRestrictions.ACTIVITY_ID to this.activityId
     )
   )

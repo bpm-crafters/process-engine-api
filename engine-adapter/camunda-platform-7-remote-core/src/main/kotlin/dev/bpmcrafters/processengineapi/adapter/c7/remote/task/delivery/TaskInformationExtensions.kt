@@ -10,7 +10,6 @@ import org.camunda.bpm.client.task.ExternalTask as RemoteExternalTask
 fun RemoteExternalTask.toTaskInformation(): TaskInformation = TaskInformation(
   taskId = this.id,
   meta = mapOf(
-    CommonRestrictions.TASK_TYPE to "service",
     CommonRestrictions.TENANT_ID to this.tenantId,
     CommonRestrictions.TASK_DEFINITION_KEY to this.topicName,
     CommonRestrictions.PROCESS_DEFINITION_KEY to this.processDefinitionKey,
@@ -22,7 +21,6 @@ fun RemoteExternalTask.toTaskInformation(): TaskInformation = TaskInformation(
 fun LockedExternalTask.toTaskInformation(): TaskInformation = TaskInformation(
   taskId = this.id,
   meta = mapOf(
-    CommonRestrictions.TASK_TYPE to "service",
     CommonRestrictions.TENANT_ID to this.tenantId,
     CommonRestrictions.TASK_DEFINITION_KEY to this.topicName,
     CommonRestrictions.PROCESS_DEFINITION_KEY to this.processDefinitionKey,
@@ -35,7 +33,6 @@ fun Task.toTaskInformation() =
   TaskInformation(
     taskId = this.id,
     meta = mapOf(
-      CommonRestrictions.TASK_TYPE to "user",
       CommonRestrictions.TASK_DEFINITION_KEY to this.taskDefinitionKey,
       CommonRestrictions.TENANT_ID to this.tenantId,
       CommonRestrictions.PROCESS_INSTANCE_ID to this.processInstanceId,

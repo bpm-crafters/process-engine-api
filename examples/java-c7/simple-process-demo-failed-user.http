@@ -2,6 +2,7 @@
 < {%
     client.global.clearAll()
 %}
+// @no-log
 POST http://localhost:8080/simple-service-tasks/start-process?value=string&intValue=1
 
 > {%
@@ -13,7 +14,13 @@ POST http://localhost:8080/simple-service-tasks/start-process?value=string&intVa
 %}
 
 ### Get user tasks
+< {%
+  import {wait} from "wait";
+  console.log("waiting 5 secs");
+  wait(5);
+%}
 
+// @no-log
 GET http://localhost:8080/simple-service-tasks/tasks
 Accept: application/json
 
@@ -34,6 +41,7 @@ Accept: application/json
 %}
 
 ### Complete user task
+// @no-log
 POST http://localhost:8080/simple-service-tasks/tasks/{{ taskId }}/error?value=value-of-user-task-error
 
 > {%
@@ -43,6 +51,13 @@ POST http://localhost:8080/simple-service-tasks/tasks/{{ taskId }}/error?value=v
 %}
 
 ### Correlate signal
+< {%
+  import {wait} from "wait";
+  console.log("waiting 5 secs");
+  wait(5);
+%}
+
+// @no-log
 POST http://localhost:8080/simple-service-tasks/signal?value=value-delivered-by-signal
 
 > {%

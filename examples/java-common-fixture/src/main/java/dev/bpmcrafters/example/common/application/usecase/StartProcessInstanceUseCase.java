@@ -1,11 +1,6 @@
 package dev.bpmcrafters.example.common.application.usecase;
 
-import dev.bpmcrafters.example.common.application.port.in.UseProcessInstanceInPort;
-import dev.bpmcrafters.processengineapi.CommonRestrictions;
-import dev.bpmcrafters.processengineapi.correlation.CorrelateMessageCmd;
-import dev.bpmcrafters.processengineapi.correlation.Correlation;
-import dev.bpmcrafters.processengineapi.correlation.CorrelationApi;
-import dev.bpmcrafters.processengineapi.correlation.SendSignalCmd;
+import dev.bpmcrafters.example.common.application.port.in.StartProcessInstanceInPort;
 import dev.bpmcrafters.processengineapi.process.StartProcessApi;
 import dev.bpmcrafters.processengineapi.process.StartProcessByDefinitionCmd;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +15,7 @@ import java.util.concurrent.Future;
 
 @Component
 @RequiredArgsConstructor
-public class UseProcessInstanceUseCase implements UseProcessInstanceInPort {
+public class StartProcessInstanceUseCase implements StartProcessInstanceInPort {
 
   private final StartProcessApi startProcessApi;
 
