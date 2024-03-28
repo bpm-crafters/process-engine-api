@@ -28,12 +28,12 @@
     <dependency>
       <groupId>dev.bpm-crafters.process-engine-api</groupId>
       <artifactId>process-engine-api</artifactId>
-      <version>0.0.1-SNAPSHOT</version>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>dev.bpm-crafters.process-engine-api</groupId>
       <artifactId>process-engine-api-adapter-commons</artifactId>
-      <version>0.0.1-SNAPSHOT</version>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>org.camunda.bpm</groupId>

@@ -5,7 +5,7 @@ import dev.bpmcrafters.processengineapi.MetaInfoAware
 import dev.bpmcrafters.processengineapi.adapter.commons.task.AbstractTaskSubscriptionApiImpl
 import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionRepository
 
-class C7TaskSubscriptionApiImpl(
+class C7RemoteTaskSubscriptionApiImpl(
   subscriptionRepository: SubscriptionRepository
 ) : AbstractTaskSubscriptionApiImpl(
   subscriptionRepository = subscriptionRepository

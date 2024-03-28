@@ -16,7 +16,7 @@ import org.camunda.bpm.client.task.ExternalTaskService as ClientExternalTaskServ
  * @param externalTaskService external task service provided by the official Camunda Platform 7 client
  * @param subscriptionRepository repository for subscriptions.
  */
-class C7ClientExternalTaskCompletionApiImpl(
+class C7RemoteClientExternalTaskCompletionApiImpl(
   private val externalTaskService: ClientExternalTaskService,
   private val subscriptionRepository: SubscriptionRepository
 ) : ExternalTaskCompletionApi {

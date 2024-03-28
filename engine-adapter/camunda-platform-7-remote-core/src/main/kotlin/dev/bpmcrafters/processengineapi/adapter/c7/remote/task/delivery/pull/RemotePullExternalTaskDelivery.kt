@@ -1,5 +1,7 @@
-package dev.bpmcrafters.processengineapi.adapter.c7.remote.task.delivery
+package dev.bpmcrafters.processengineapi.adapter.c7.remote.task.delivery.pull
 
+import dev.bpmcrafters.processengineapi.adapter.c7.remote.task.delivery.ExternalServiceTaskDelivery
+import dev.bpmcrafters.processengineapi.adapter.c7.remote.task.delivery.toTaskInformation
 import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionRepository
 import dev.bpmcrafters.processengineapi.adapter.commons.task.TaskSubscriptionHandle
 import dev.bpmcrafters.processengineapi.task.TaskType
@@ -11,12 +13,13 @@ import org.camunda.bpm.engine.externaltask.LockedExternalTask
  * Delivers external tasks to subscriptions.
  * This implementation uses internal Java API and pulls tasks for delivery.
  */
-class PullRemoteServiceExternalTaskDelivery(
+class RemotePullExternalTaskDelivery(
   private val externalTaskService: ExternalTaskService,
   private val workerId: String,
   private val subscriptionRepository: SubscriptionRepository,
   private val maxTasks: Int,
-  private val lockDuration: Long
+  private val lockDuration: Long,
+  private val retryTimeout: Long
 ) : ExternalServiceTaskDelivery {
 
   /**
@@ -46,7 +49,7 @@ class PullRemoteServiceExternalTaskDelivery(
             try {
               activeSubscription.action.accept(lockedTask.toTaskInformation(), variables)
             } catch (e: Exception) {
-              externalTaskService.handleFailure(lockedTask.id, workerId, e.message, lockedTask.retries - 1, 10) // FIXME -> props
+              externalTaskService.handleFailure(lockedTask.id, workerId, e.message, lockedTask.retries - 1, retryTimeout)
             }
           }
       }

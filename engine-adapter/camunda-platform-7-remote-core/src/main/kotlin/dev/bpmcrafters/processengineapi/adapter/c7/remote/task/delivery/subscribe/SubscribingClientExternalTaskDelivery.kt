@@ -1,9 +1,10 @@
-package dev.bpmcrafters.processengineapi.adapter.c7.remote.task.delivery
+package dev.bpmcrafters.processengineapi.adapter.c7.remote.task.delivery.subscribe
 
-import dev.bpmcrafters.processengineapi.adapter.c7.remote.task.extension.ExtendedExternalTaskClient
+import dev.bpmcrafters.processengineapi.adapter.c7.remote.task.delivery.toTaskInformation
 import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionRepository
 import dev.bpmcrafters.processengineapi.adapter.commons.task.TaskSubscriptionHandle
 import dev.bpmcrafters.processengineapi.task.TaskType
+import org.camunda.bpm.client.ExternalTaskClient
 import org.camunda.bpm.client.task.ExternalTask
 import org.camunda.bpm.client.topic.TopicSubscriptionBuilder
 
@@ -11,7 +12,7 @@ import org.camunda.bpm.client.topic.TopicSubscriptionBuilder
  *
  */
 class SubscribingClientExternalTaskDelivery(
-  private val externalTaskClient: ExtendedExternalTaskClient,
+  private val externalTaskClient: ExternalTaskClient,
   private val subscriptionRepository: SubscriptionRepository,
   private val lockDuration: Long
 ) {

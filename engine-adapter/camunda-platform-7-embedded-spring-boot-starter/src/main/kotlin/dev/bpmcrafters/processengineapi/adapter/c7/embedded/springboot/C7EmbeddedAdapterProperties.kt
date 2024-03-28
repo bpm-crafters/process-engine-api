@@ -1,11 +1,11 @@
 package dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot
 
-import dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.C7AdapterProperties.Companion.DEFAULT_PREFIX
+import dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.C7EmbeddedAdapterProperties.Companion.DEFAULT_PREFIX
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.boot.context.properties.NestedConfigurationProperty
 
 @ConfigurationProperties(prefix = DEFAULT_PREFIX)
-class C7AdapterProperties(
+class C7EmbeddedAdapterProperties(
   /**
    * Configuration for external service tasks.
    */

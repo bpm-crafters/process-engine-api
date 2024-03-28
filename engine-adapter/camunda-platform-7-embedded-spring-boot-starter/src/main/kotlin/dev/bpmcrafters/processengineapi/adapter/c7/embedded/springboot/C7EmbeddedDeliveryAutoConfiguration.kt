@@ -1,8 +1,8 @@
 package dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot
 
-import dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.C7AdapterProperties.Companion.DEFAULT_PREFIX
-import dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.C7AdapterProperties.ExternalServiceTaskDeliveryStrategy
-import dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.C7AdapterProperties.UserTaskDeliveryStrategy
+import dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.C7EmbeddedAdapterProperties.Companion.DEFAULT_PREFIX
+import dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.C7EmbeddedAdapterProperties.ExternalServiceTaskDeliveryStrategy
+import dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.C7EmbeddedAdapterProperties.UserTaskDeliveryStrategy
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.event.EventBasedEmbeddedUserTaskDeliveryBinding
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.schedule.ScheduledEmbeddedExternalServiceTaskDeliveryBinding
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.schedule.ScheduledEmbeddedUserTaskDeliveryBinding
@@ -26,8 +26,8 @@ import org.springframework.context.annotation.Configuration
  * Auto-configuration for delivery.
  */
 @Configuration
-@AutoConfigureAfter(C7AdapterAutoConfiguration::class)
-class DeliveryAutoConfiguration {
+@AutoConfigureAfter(C7EmbeddedAdapterAutoConfiguration::class)
+class C7EmbeddedDeliveryAutoConfiguration {
 
   companion object : KLogging()
 
@@ -36,7 +36,7 @@ class DeliveryAutoConfiguration {
   fun embeddedEventUserTaskDelivery(
     subscriptionRepository: SubscriptionRepository,
     taskService: TaskService,
-    c7AdapterProperties: C7AdapterProperties
+    c7AdapterProperties: C7EmbeddedAdapterProperties
   ): UserTaskDelivery {
     return EmbeddedEventBasedUserTaskDelivery(
       subscriptionRepository = subscriptionRepository
@@ -54,7 +54,7 @@ class DeliveryAutoConfiguration {
   fun externalTaskDelivery(
     subscriptionRepository: SubscriptionRepository,
     externalTaskService: ExternalTaskService,
-    c7AdapterProperties: C7AdapterProperties
+    c7AdapterProperties: C7EmbeddedAdapterProperties
   ) = EmbeddedPullExternalTaskDelivery(
     subscriptionRepository = subscriptionRepository,
     externalTaskService = externalTaskService,
@@ -69,7 +69,7 @@ class DeliveryAutoConfiguration {
   fun embeddedScheduledUserTaskDelivery(
     subscriptionRepository: SubscriptionRepository,
     taskService: TaskService,
-    c7AdapterProperties: C7AdapterProperties
+    c7AdapterProperties: C7EmbeddedAdapterProperties
   ): UserTaskDelivery {
     return EmbeddedPullUserTaskDelivery(
       subscriptionRepository = subscriptionRepository,
@@ -101,7 +101,7 @@ class DeliveryAutoConfiguration {
   )
   fun embeddedJobTaskDeliveryJobHandler(
     subscriptionRepository: SubscriptionRepository,
-    c7AdapterProperties: C7AdapterProperties
+    c7AdapterProperties: C7EmbeddedAdapterProperties
   ): EmbeddedTaskDeliveryJobHandler {
     return EmbeddedTaskDeliveryJobHandler(
       subscriptionRepository = subscriptionRepository,
@@ -117,7 +117,7 @@ class DeliveryAutoConfiguration {
       + " or "
       + "'\${dev.bpm-crafters.process-api.adapter.c7.embedded.user-tasks.delivery-strategy}'.equals('embedded_job')"
   )
-  fun embeddedJobTaskDeliveryBinding(jobHandler: EmbeddedTaskDeliveryJobHandler, c7AdapterProperties: C7AdapterProperties): EmbeddedTaskDeliveryEnginePlugin {
+  fun embeddedJobTaskDeliveryBinding(jobHandler: EmbeddedTaskDeliveryJobHandler, c7AdapterProperties: C7EmbeddedAdapterProperties): EmbeddedTaskDeliveryEnginePlugin {
     return EmbeddedTaskDeliveryEnginePlugin(
       jobHandler = jobHandler,
       deliverServiceTasks = c7AdapterProperties.externalServiceTasks.deliveryStrategy == ExternalServiceTaskDeliveryStrategy.EMBEDDED_JOB,

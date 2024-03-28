@@ -1,5 +1,7 @@
-package dev.bpmcrafters.processengineapi.adapter.c7.remote.task.delivery
+package dev.bpmcrafters.processengineapi.adapter.c7.remote.task.delivery.pull
 
+import dev.bpmcrafters.processengineapi.adapter.c7.remote.task.delivery.UserTaskDelivery
+import dev.bpmcrafters.processengineapi.adapter.c7.remote.task.delivery.toTaskInformation
 import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionRepository
 import dev.bpmcrafters.processengineapi.adapter.commons.task.TaskSubscriptionHandle
 import dev.bpmcrafters.processengineapi.task.TaskType
@@ -11,7 +13,7 @@ import org.camunda.bpm.engine.task.TaskQuery
  * Delivers user tasks to subscriptions.
  * Uses internal Java API for pulling tasks.
  */
-class PullUserTaskDelivery(
+class RemotePullUserTaskDelivery(
   private val taskService: TaskService,
   private val subscriptionRepository: SubscriptionRepository
 ) : UserTaskDelivery {

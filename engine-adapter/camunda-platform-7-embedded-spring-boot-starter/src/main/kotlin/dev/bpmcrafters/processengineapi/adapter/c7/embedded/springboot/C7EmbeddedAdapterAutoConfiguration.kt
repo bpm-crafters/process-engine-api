@@ -24,8 +24,8 @@ import org.springframework.scheduling.annotation.EnableScheduling
 
 @Configuration
 @EnableScheduling
-@EnableConfigurationProperties(value = [C7AdapterProperties::class])
-class C7AdapterAutoConfiguration {
+@EnableConfigurationProperties(value = [C7EmbeddedAdapterProperties::class])
+class C7EmbeddedAdapterAutoConfiguration {
 
   @Bean
   fun startProcessApi(runtimeService: RuntimeService): StartProcessApi = StartProcessApiImpl(
@@ -54,7 +54,7 @@ class C7AdapterAutoConfiguration {
   fun externalTaskCompletionApi(
     externalTaskService: ExternalTaskService,
     subscriptionRepository: SubscriptionRepository,
-    c7AdapterProperties: C7AdapterProperties
+    c7AdapterProperties: C7EmbeddedAdapterProperties
   ): ExternalTaskCompletionApi =
     C7ExternalTaskCompletionApiImpl(
       workerId = c7AdapterProperties.externalServiceTasks.workerId,
