@@ -9,8 +9,8 @@
     <relativePath>../pom.xml</relativePath>
   </parent>
 
-  <artifactId>process-engine-api-examples-java-c7</artifactId>
-  <description>Example: Java Camunda Platform 7</description>
+  <artifactId>process-engine-api-examples-java-c7-remote</artifactId>
+  <description>Example: Java Camunda Platform 7 Remote</description>
 
   <dependencyManagement>
     <dependencies>
