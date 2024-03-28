@@ -12,7 +12,7 @@
   <artifactId>process-engine-api-adapter-camunda-platform-c7-embedded-spring-boot-starter</artifactId>
 
   <properties>
-    <spring-boot.version>3.1.8</spring-boot.version>
+    <spring-boot.version>3.1.10</spring-boot.version>
   </properties>
 
   <dependencyManagement>
@@ -24,14 +24,14 @@
         <scope>import</scope>
         <type>pom</type>
       </dependency>
-        <!-- https://mvnrepository.com/artifact/org.camunda.bpm/camunda-bom -->
-        <dependency>
-          <groupId>org.camunda.bpm</groupId>
-          <artifactId>camunda-bom</artifactId>
-          <version>7.20.0</version>
-          <scope>import</scope>
-          <type>pom</type>
-        </dependency>
+      <!-- https://mvnrepository.com/artifact/org.camunda.bpm/camunda-bom -->
+      <dependency>
+        <groupId>org.camunda.bpm</groupId>
+        <artifactId>camunda-bom</artifactId>
+        <version>7.20.0</version>
+        <scope>import</scope>
+        <type>pom</type>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
@@ -39,7 +39,7 @@
     <dependency>
       <groupId>dev.bpm-crafters.process-engine-api</groupId>
       <artifactId>process-engine-api-adapter-camunda-platform-c7-embedded-core</artifactId>
-      <version>0.0.1-SNAPSHOT</version>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>org.camunda.bpm</groupId>
@@ -49,6 +49,10 @@
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-autoconfigure</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-databind</artifactId>
     </dependency>
   </dependencies>
 

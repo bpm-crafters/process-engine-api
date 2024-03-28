@@ -27,7 +27,17 @@
       </dependency>
       <dependency>
         <groupId>dev.bpm-crafters.process-engine-api</groupId>
+        <artifactId>process-engine-api-adapter-camunda-platform-c7-remote-spring-boot-starter</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>dev.bpm-crafters.process-engine-api</groupId>
         <artifactId>process-engine-api-adapter-camunda-platform-c8-spring-boot-starter</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>dev.bpm-crafters.process-engine-api</groupId>
+        <artifactId>process-engine-api-examples-java-common-fixture</artifactId>
         <version>${project.version}</version>
       </dependency>
     </dependencies>
@@ -36,6 +46,7 @@
   <modules>
     <module>java-common-fixture</module>
     <module>java-c7</module>
+    <module>java-c7-remote</module>
     <module>java-c8</module>
   </modules>
 

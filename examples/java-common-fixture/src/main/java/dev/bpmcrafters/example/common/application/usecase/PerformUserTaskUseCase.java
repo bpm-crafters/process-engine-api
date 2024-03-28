@@ -2,10 +2,7 @@ package dev.bpmcrafters.example.common.application.usecase;
 
 import dev.bpmcrafters.example.common.application.port.out.UserTaskOutPort;
 import dev.bpmcrafters.example.common.application.port.in.PerformUserTaskInPort;
-import dev.bpmcrafters.processengineapi.task.CompleteTaskByErrorCmd;
-import dev.bpmcrafters.processengineapi.task.CompleteTaskCmd;
-import dev.bpmcrafters.processengineapi.task.TaskApi;
-import dev.bpmcrafters.processengineapi.task.TaskInformation;
+import dev.bpmcrafters.processengineapi.task.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -22,7 +19,7 @@ import java.util.concurrent.Future;
 public class PerformUserTaskUseCase implements PerformUserTaskInPort {
 
   private final UserTaskOutPort taskPool;
-  private final TaskApi taskApi;
+  private final UserTaskCompletionApi taskCompletionApi;
 
   @Override
   public Future<List<TaskInformation>> getUserTasks() {
@@ -36,7 +33,7 @@ public class PerformUserTaskUseCase implements PerformUserTaskInPort {
     CompletableFuture<Void> completableFuture = new CompletableFuture<>();
     Executors.newCachedThreadPool().submit(() -> {
       try {
-        taskApi.completeTask(
+        taskCompletionApi.completeTask(
           new CompleteTaskCmd(
             taskId,
             () -> Map.of("some-user-value", value)
@@ -57,7 +54,7 @@ public class PerformUserTaskUseCase implements PerformUserTaskInPort {
     CompletableFuture<Void> completableFuture = new CompletableFuture<>();
     Executors.newCachedThreadPool().submit(() -> {
       try {
-        taskApi.completeTaskByError(
+        taskCompletionApi.completeTaskByError(
           new CompleteTaskByErrorCmd(
             taskId,
             "user_error",

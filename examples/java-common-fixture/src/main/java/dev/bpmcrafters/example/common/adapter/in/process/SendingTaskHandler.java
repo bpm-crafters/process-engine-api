@@ -1,7 +1,8 @@
 package dev.bpmcrafters.example.common.adapter.in.process;
 
-import dev.bpmcrafters.processengineapi.task.TaskApi;
+import dev.bpmcrafters.processengineapi.task.ExternalTaskCompletionApi;
 import dev.bpmcrafters.processengineapi.task.TaskInformation;
+import dev.bpmcrafters.processengineapi.task.TaskSubscriptionApi;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 
@@ -10,8 +11,8 @@ import java.util.Map;
 
 @Slf4j
 public class SendingTaskHandler extends AbstractSynchronousTaskHandler {
-  public SendingTaskHandler(TaskApi taskApi) {
-    super(taskApi, "send-message-external");
+  public SendingTaskHandler(TaskSubscriptionApi taskSubscriptionApi, ExternalTaskCompletionApi externalTaskCompletionApi) {
+    super(taskSubscriptionApi, externalTaskCompletionApi, "send-message-external");
   }
 
   @Override

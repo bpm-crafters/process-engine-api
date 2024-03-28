@@ -17,7 +17,7 @@ import org.springframework.context.annotation.Configuration
  * Auto-configuration for delivery.
  */
 @Configuration
-@AutoConfigureAfter(AdapterAutoConfiguration::class)
+@AutoConfigureAfter(C8AdapterAutoConfiguration::class)
 class DeliveryAutoConfiguration {
 
   companion object : KLogging()

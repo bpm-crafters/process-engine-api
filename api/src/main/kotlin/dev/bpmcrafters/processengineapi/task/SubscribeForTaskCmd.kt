@@ -8,7 +8,11 @@ data class SubscribeForTaskCmd(
   /**
    * Defines a set of restrictions evaluated by the engine adapter.
    */
-  var restrictions: Map<String, String>,
+  val restrictions: Map<String, String>,
+  /**
+   * Task type.
+   */
+  val taskType: TaskType,
   /**
    * May refer to BPMN 2.0 attribute `implementation` or `operation[@implementationRef]` or
    * any engine-specific attribute of the task XML-tag. As a fallback an adapter-implementation
@@ -23,9 +27,8 @@ data class SubscribeForTaskCmd(
    * Action to deliver the task to.
    */
   val action: TaskHandler,
-
   /**
    * Action to execute if the delivered task is terminated.
    */
-  val modification: TaskModificationHandler
+  val termination: TaskTerminationHandler
 )

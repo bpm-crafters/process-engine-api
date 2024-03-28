@@ -3,7 +3,7 @@ package dev.bpmcrafters.processengineapi.task
 import dev.bpmcrafters.processengineapi.PayloadSupplier
 
 /**
- * Command to complete the task by error.
+ * Command to complete the task by BPMN error.
  * @since 0.0.1
  */
 open class CompleteTaskByErrorCmd(
@@ -14,7 +14,7 @@ open class CompleteTaskByErrorCmd(
   /**
    * Error.
    */
-  val error: String,
+  val errorCode: String,
   /**
    * Payload supplier.
    */

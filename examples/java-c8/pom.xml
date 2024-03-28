@@ -12,10 +12,6 @@
   <artifactId>process-engine-api-examples-java-c8</artifactId>
   <description>Example: Java Camunda Platform 8</description>
 
-  <properties>
-    <camunda-tasklist-client-java.version>8.4.0.3</camunda-tasklist-client-java.version>
-  </properties>
-
   <dependencyManagement>
     <dependencies>
       <dependency>
@@ -32,7 +28,6 @@
     <dependency>
       <groupId>dev.bpm-crafters.process-engine-api</groupId>
       <artifactId>process-engine-api-examples-java-common-fixture</artifactId>
-      <version>${project.version}</version>
     </dependency>
 
     <dependency>
@@ -53,18 +48,14 @@
     <dependency>
       <groupId>io.camunda</groupId>
       <artifactId>camunda-tasklist-client-java</artifactId>
-      <version>${camunda-tasklist-client-java.version}</version>
+      <version>8.4.0.3</version>
     </dependency>
 
-
-    <dependency>
-      <groupId>org.projectlombok</groupId>
-      <artifactId>lombok</artifactId>
-    </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-web</artifactId>
     </dependency>
+
     <dependency>
       <groupId>org.springdoc</groupId>
       <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
