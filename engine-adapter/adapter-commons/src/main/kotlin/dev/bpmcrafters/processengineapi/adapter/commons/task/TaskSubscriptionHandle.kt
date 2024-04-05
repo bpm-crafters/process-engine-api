@@ -10,7 +10,7 @@ import dev.bpmcrafters.processengineapi.task.TaskType
  */
 data class TaskSubscriptionHandle(
   val taskType: TaskType,
-  val payloadDescription: Set<String>,
+  val payloadDescription: Set<String>?,
   val restrictions: Map<String, String>,
   val taskDescriptionKey: String?,
   val action: TaskHandler,

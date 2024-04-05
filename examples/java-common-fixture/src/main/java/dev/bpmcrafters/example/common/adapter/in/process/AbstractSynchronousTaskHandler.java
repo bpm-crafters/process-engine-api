@@ -33,7 +33,7 @@ public abstract class AbstractSynchronousTaskHandler {
         CommonRestrictions.builder().build(),
         TaskType.EXTERNAL,
         topic,
-        Collections.emptySet(),
+        null,
         (taskInfo, variables) -> {
           try {
             log.info("[SYNC HANDLER]: Executing task {}...", taskInfo.getTaskId());

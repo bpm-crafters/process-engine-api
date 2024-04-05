@@ -56,8 +56,8 @@ class C7RemoteClientExternalTaskCompletionApiImpl(
         cmd.taskId,
         cmd.reason,
         cmd.errorDetails,
-        100,
-        1000
+        100, // FIXME
+        1000 // FIXME
       )
     subscriptionRepository.deactivateSubscriptionForTask(cmd.taskId)?.apply {
       termination.accept(cmd.taskId)

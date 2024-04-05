@@ -43,10 +43,14 @@ class EmbeddedPullExternalTaskDelivery(
 
             subscriptionRepository.activateSubscriptionForTask(lockedTask.id, activeSubscription)
 
-            val variables = if (activeSubscription.payloadDescription.isEmpty()) {
+            val variables = if (activeSubscription.payloadDescription == null) {
               lockedTask.variables
             } else {
-              lockedTask.variables.filter { activeSubscription.payloadDescription.contains(it.key) }
+              if (activeSubscription.payloadDescription!!.isEmpty()) {
+                mapOf()
+              } else {
+                lockedTask.variables.filter { activeSubscription.payloadDescription!!.contains(it.key) }
+              }
             }
             try {
               activeSubscription.action.accept(lockedTask.toTaskInformation(), variables)

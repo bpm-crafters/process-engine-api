@@ -27,11 +27,17 @@ class SubscribingClientExternalTaskDelivery(
           .handler { externalTask, externalTaskService ->
             if (subscription.matches(externalTask)) {
               subscriptionRepository.activateSubscriptionForTask(externalTask.id, subscription)
-              val variables = if (subscription.payloadDescription.isEmpty()) {
+
+              val variables = if (subscription.payloadDescription == null) {
                 externalTask.allVariables
               } else {
-                externalTask.allVariables.filter { subscription.payloadDescription.contains(it.key) }
+                if (subscription.payloadDescription!!.isEmpty()) {
+                  mapOf()
+                } else {
+                  externalTask.allVariables.filter { subscription.payloadDescription!!.contains(it.key) }
+                }
               }
+
               try {
                 subscription.action.accept(externalTask.toTaskInformation(), variables)
               } catch (e: Exception) {
@@ -74,8 +80,8 @@ class SubscribingClientExternalTaskDelivery(
 
     // FIXME -> more limitations....
 
-    return if (subscription.payloadDescription.isNotEmpty()) {
-      this.variables(*subscription.payloadDescription.toTypedArray())
+    return if (subscription.payloadDescription != null && subscription.payloadDescription!!.isNotEmpty()) {
+      this.variables(*subscription.payloadDescription!!.toTypedArray())
     } else {
       this
     }

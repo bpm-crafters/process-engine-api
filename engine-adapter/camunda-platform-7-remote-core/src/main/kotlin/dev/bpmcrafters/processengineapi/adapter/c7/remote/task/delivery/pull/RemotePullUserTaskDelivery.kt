@@ -34,10 +34,14 @@ class RemotePullUserTaskDelivery(
 
             subscriptionRepository.activateSubscriptionForTask(task.id, activeSubscription)
 
-            val variables = if (activeSubscription.payloadDescription.isEmpty()) {
+            val variables = if (activeSubscription.payloadDescription == null) {
               taskService.getVariables(task.id)
             } else {
-              taskService.getVariables(task.id, activeSubscription.payloadDescription)
+              if (activeSubscription.payloadDescription!!.isEmpty()) {
+                mapOf()
+              } else {
+                taskService.getVariables(task.id, activeSubscription.payloadDescription)
+              }
             }
 
             activeSubscription.action.accept(task.toTaskInformation(), variables)
