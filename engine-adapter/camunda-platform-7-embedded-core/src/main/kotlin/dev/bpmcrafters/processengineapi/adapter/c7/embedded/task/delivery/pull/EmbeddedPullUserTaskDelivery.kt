@@ -5,6 +5,7 @@ import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.toTask
 import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionRepository
 import dev.bpmcrafters.processengineapi.adapter.commons.task.TaskSubscriptionHandle
 import dev.bpmcrafters.processengineapi.task.TaskType
+import mu.KLogging
 import org.camunda.bpm.engine.TaskService
 import org.camunda.bpm.engine.task.Task
 import org.camunda.bpm.engine.task.TaskQuery
@@ -17,6 +18,8 @@ class EmbeddedPullUserTaskDelivery(
   private val taskService: TaskService,
   private val subscriptionRepository: SubscriptionRepository
 ) : UserTaskDelivery {
+
+  companion object: KLogging()
 
   /**
    * Delivers all tasks found in user task service to corresponding subscriptions.
@@ -39,8 +42,12 @@ class EmbeddedPullUserTaskDelivery(
             } else {
               taskService.getVariables(task.id, activeSubscription.payloadDescription)
             }
-
-            activeSubscription.action.accept(task.toTaskInformation(), variables)
+            try {
+              activeSubscription.action.accept(task.toTaskInformation(), variables)
+            } catch (e: Exception) {
+              logger.error { "[PROCESS-ENGINE-C7-EMBEDDED]: Error delivering task ${task.id}: ${e.message}" }
+              subscriptionRepository.deactivateSubscriptionForTask(taskId = task.id)
+            }
           }
       }
   }

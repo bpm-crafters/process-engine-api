@@ -40,8 +40,11 @@ class PullUserTaskDelivery(
           }?.associate { variable ->
             variable.name to variable.value
           } ?: mapOf()
-
-          activeSubscription.action.accept(task.toTaskInformation(), variables)
+          try {
+            activeSubscription.action.accept(task.toTaskInformation(), variables)
+          } catch (e: Exception) {
+            subscriptionRepository.deactivateSubscriptionForTask(taskId = task.id)
+          }
         }
     }
   }

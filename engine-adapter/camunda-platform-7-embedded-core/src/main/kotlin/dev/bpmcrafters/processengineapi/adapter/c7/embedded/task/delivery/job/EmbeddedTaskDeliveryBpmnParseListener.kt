@@ -53,7 +53,7 @@ class EmbeddedTaskDeliveryBpmnParseListener(
   }
 
   private fun addTaskAssignmentListeners(taskDefinition: TaskDefinition) {
-    taskDefinition.addBuiltInTaskListener(TaskListener.EVENTNAME_ASSIGNMENT, jobCreatingUserTaskListener)
+    // taskDefinition.addBuiltInTaskListener(TaskListener.EVENTNAME_ASSIGNMENT, jobCreatingUserTaskListener)
   }
 
   private fun addExecutionCreateListeners(taskDefinition: TaskDefinition) {
@@ -65,7 +65,7 @@ class EmbeddedTaskDeliveryBpmnParseListener(
   }
 
   private fun addTaskUpdateListeners(taskDefinition: TaskDefinition) {
-    taskDefinition.addBuiltInTaskListener(TaskListener.EVENTNAME_UPDATE, jobCreatingUserTaskListener)
+    // taskDefinition.addBuiltInTaskListener(TaskListener.EVENTNAME_UPDATE, jobCreatingUserTaskListener)
   }
 
   private fun addTaskDeleteListeners(taskDefinition: TaskDefinition) {

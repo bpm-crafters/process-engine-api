@@ -4,27 +4,62 @@ import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionReposit
 import dev.bpmcrafters.processengineapi.adapter.commons.task.TaskSubscriptionHandle
 import dev.bpmcrafters.processengineapi.task.TaskType
 import io.camunda.zeebe.client.ZeebeClient
+import io.camunda.zeebe.client.api.command.ClientStatusException
 import io.camunda.zeebe.client.api.response.ActivatedJob
 import io.camunda.zeebe.client.api.worker.JobWorkerBuilderStep1.JobWorkerBuilderStep3
+import io.grpc.Status
+import mu.KLogging
 
-/**
- * Uses task subscription available in the repository to subscribe to zeebe.
- */
-class SubscribingServiceTaskDelivery(
+class SubscribingRefreshingUserTaskDelivery(
   private val zeebeClient: ZeebeClient,
   private val subscriptionRepository: SubscriptionRepository,
-  private val workerId: String
+  private val workerId: String,
+  private val userTaskLockTimeoutMs: Long,
 ) {
+
+  companion object : KLogging() {
+    const val ZEEBE_USER_TASK = "io.camunda.zeebe:userTask"
+    const val TIMEOUT_FACTOR = 2L
+  }
+
+  fun refresh() {
+    subscriptionRepository
+      .getDeliveredTaskIds(TaskType.USER)
+      .forEach { taskId ->
+        try {
+          logger.trace { "Extending job $taskId..." }
+          zeebeClient
+            .newUpdateTimeoutCommand(taskId.toLong())
+            .timeout(userTaskLockTimeoutMs)
+            .send()
+            .join()
+          logger.trace { "Extended job $taskId." }
+        } catch (e: ClientStatusException) {
+          when (e.statusCode) {
+            Status.Code.NOT_FOUND -> {
+              subscriptionRepository.getActiveSubscriptionForTask(taskId)?.let {
+                logger.trace { "User task is gone, sending termination to the handler." }
+                it.termination.accept(taskId)
+                subscriptionRepository.deactivateSubscriptionForTask(taskId)
+                logger.trace { "Termination sent to handler and user task is removed." }
+              }
+            }
+
+            else -> logger.error(e) { "Error extending job $taskId." }
+          }
+        }
+      }
+  }
 
   fun subscribe() {
     subscriptionRepository
       .getTaskSubscriptions()
-      .filter { it.taskType == TaskType.EXTERNAL }
+      .filter { it.taskType == TaskType.USER }
       .forEach { subscription ->
         // this is a job to subscribe to.
         zeebeClient
           .newWorker()
-          .jobType(subscription.taskDescriptionKey)
+          .jobType(ZEEBE_USER_TASK)
           .handler { client, job ->
             if (subscription.matches(job)) {
               subscriptionRepository.activateSubscriptionForTask("${job.key}", subscription)
@@ -48,6 +83,7 @@ class SubscribingServiceTaskDelivery(
             }
           }
           .name(workerId)
+          .timeout(userTaskLockTimeoutMs * TIMEOUT_FACTOR)
           .forSubscription(subscription)
           // FIXME -> tenantId
           // FIXME -> more to setup from props
@@ -57,12 +93,11 @@ class SubscribingServiceTaskDelivery(
   }
 
   /*
-   * Additional restrictions to check.
-   * The activated job can be completed by the Subscription strategy and is correct type (topic).
-   */
+ * Additional restrictions to check.
+ */
   private fun TaskSubscriptionHandle.matches(job: ActivatedJob): Boolean {
-    return this.taskType == TaskType.EXTERNAL
-    // job.customHeaders // FIXME: analyze this! user/service task, etc..
+    return this.taskType == TaskType.USER
+    // job.customHeaders // FIXME: analyze this! make sure we reflect the subscription restrictions
   }
 
   private fun JobWorkerBuilderStep3.forSubscription(subscription: TaskSubscriptionHandle): JobWorkerBuilderStep3 {
@@ -72,4 +107,6 @@ class SubscribingServiceTaskDelivery(
       this
     }
   }
+
+
 }

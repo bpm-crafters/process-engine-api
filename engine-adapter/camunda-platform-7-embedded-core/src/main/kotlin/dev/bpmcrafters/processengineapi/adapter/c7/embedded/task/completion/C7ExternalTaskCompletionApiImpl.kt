@@ -28,9 +28,9 @@ class C7ExternalTaskCompletionApiImpl(
       workerId,
       cmd.get()
     )
-    subscriptionRepository.removeSubscriptionForTask(cmd.taskId)?.apply {
+    subscriptionRepository.deactivateSubscriptionForTask(cmd.taskId)?.apply {
       termination.accept(cmd.taskId)
-      logger.info { "Successfully completed external task ${cmd.taskId}." }
+      logger.info { "[PROCESS-ENGINE-C7-EMBEDDED]: Successfully completed external task ${cmd.taskId}." }
     }
     return CompletableFuture.completedFuture(Empty)
   }
@@ -41,9 +41,9 @@ class C7ExternalTaskCompletionApiImpl(
       workerId,
       cmd.errorCode
     )
-    subscriptionRepository.removeSubscriptionForTask(cmd.taskId)?.apply {
+    subscriptionRepository.deactivateSubscriptionForTask(cmd.taskId)?.apply {
       termination.accept(cmd.taskId)
-      logger.info { "Completed external task ${cmd.taskId} with error." }
+      logger.info { "[PROCESS-ENGINE-C7-EMBEDDED]: Completed external task ${cmd.taskId} with error." }
     }
     return CompletableFuture.completedFuture(Empty)
   }
@@ -57,9 +57,9 @@ class C7ExternalTaskCompletionApiImpl(
       100, // FIXME -> how to get those, they are only in the job
       1000 // FIXME -> retry timeout from props?
     )
-    subscriptionRepository.removeSubscriptionForTask(cmd.taskId)?.apply {
+    subscriptionRepository.deactivateSubscriptionForTask(cmd.taskId)?.apply {
       termination.accept(cmd.taskId)
-      logger.info { "Failure occurred on external task ${cmd.taskId} handling." }
+      logger.info { "[PROCESS-ENGINE-C7-EMBEDDED]: Failure occurred on external task ${cmd.taskId} handling." }
     }
     return CompletableFuture.completedFuture(Empty)
   }

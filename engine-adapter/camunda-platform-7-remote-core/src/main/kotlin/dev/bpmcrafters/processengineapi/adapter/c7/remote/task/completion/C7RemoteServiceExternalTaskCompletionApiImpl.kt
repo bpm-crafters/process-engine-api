@@ -28,7 +28,7 @@ class C7RemoteServiceExternalTaskCompletionApiImpl(
       workerId,
       cmd.get()
     )
-    subscriptionRepository.removeSubscriptionForTask(cmd.taskId)?.apply {
+    subscriptionRepository.deactivateSubscriptionForTask(cmd.taskId)?.apply {
       termination.accept(cmd.taskId)
       logger.info { "Successfully completed external task ${cmd.taskId}." }
     }
@@ -41,7 +41,7 @@ class C7RemoteServiceExternalTaskCompletionApiImpl(
       workerId,
       cmd.errorCode
     )
-    subscriptionRepository.removeSubscriptionForTask(cmd.taskId)?.apply {
+    subscriptionRepository.deactivateSubscriptionForTask(cmd.taskId)?.apply {
       termination.accept(cmd.taskId)
       logger.info { "Completed external task ${cmd.taskId} with error." }
     }
@@ -57,7 +57,7 @@ class C7RemoteServiceExternalTaskCompletionApiImpl(
       100, // FIXME -> how to get those, they are only in the job
       1000 // FIXME -> retry timeout from props?
     )
-    subscriptionRepository.removeSubscriptionForTask(cmd.taskId)?.apply {
+    subscriptionRepository.deactivateSubscriptionForTask(cmd.taskId)?.apply {
       termination.accept(cmd.taskId)
       logger.info { "Failure occurred on external task ${cmd.taskId} handling." }
     }

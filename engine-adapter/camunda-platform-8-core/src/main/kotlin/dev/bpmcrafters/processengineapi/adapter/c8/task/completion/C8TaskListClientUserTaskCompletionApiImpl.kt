@@ -20,7 +20,7 @@ class C8TaskListClientUserTaskCompletionApiImpl(
   override fun completeTask(cmd: CompleteTaskCmd): Future<Empty> {
     taskListClient
       .completeTask(cmd.taskId, cmd.get())
-    subscriptionRepository.removeSubscriptionForTask(cmd.taskId)?.apply {
+    subscriptionRepository.deactivateSubscriptionForTask(cmd.taskId)?.apply {
       termination.accept(cmd.taskId)
     }
     return CompletableFuture.completedFuture(Empty)
@@ -28,7 +28,7 @@ class C8TaskListClientUserTaskCompletionApiImpl(
 
   override fun completeTaskByError(cmd: CompleteTaskByErrorCmd): Future<Empty> {
     TODO("Not implemented yet") // how can this be done?
-    subscriptionRepository.removeSubscriptionForTask(cmd.taskId)?.apply {
+    subscriptionRepository.deactivateSubscriptionForTask(cmd.taskId)?.apply {
       termination.accept(cmd.taskId)
     }
     return CompletableFuture.completedFuture(Empty)

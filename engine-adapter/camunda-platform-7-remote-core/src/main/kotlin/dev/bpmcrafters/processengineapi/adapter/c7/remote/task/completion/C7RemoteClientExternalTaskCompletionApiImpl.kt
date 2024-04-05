@@ -30,7 +30,7 @@ class C7RemoteClientExternalTaskCompletionApiImpl(
         cmd.get(),
         mapOf()
       )
-    subscriptionRepository.removeSubscriptionForTask(cmd.taskId)?.apply {
+    subscriptionRepository.deactivateSubscriptionForTask(cmd.taskId)?.apply {
       termination.accept(cmd.taskId)
     }
     return CompletableFuture.completedFuture(Empty)
@@ -44,7 +44,7 @@ class C7RemoteClientExternalTaskCompletionApiImpl(
         "",
         cmd.get()
       )
-    subscriptionRepository.removeSubscriptionForTask(cmd.taskId)?.apply {
+    subscriptionRepository.deactivateSubscriptionForTask(cmd.taskId)?.apply {
       termination.accept(cmd.taskId)
     }
     return CompletableFuture.completedFuture(Empty)
@@ -59,7 +59,7 @@ class C7RemoteClientExternalTaskCompletionApiImpl(
         100,
         1000
       )
-    subscriptionRepository.removeSubscriptionForTask(cmd.taskId)?.apply {
+    subscriptionRepository.deactivateSubscriptionForTask(cmd.taskId)?.apply {
       termination.accept(cmd.taskId)
     }
     return CompletableFuture.completedFuture(Empty)

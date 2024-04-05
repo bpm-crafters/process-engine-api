@@ -25,7 +25,7 @@ class C7RemoteServiceUserTaskCompletionApiImpl(
       cmd.taskId,
       cmd.get()
     )
-    subscriptionRepository.removeSubscriptionForTask(cmd.taskId)?.apply {
+    subscriptionRepository.deactivateSubscriptionForTask(cmd.taskId)?.apply {
       termination.accept(cmd.taskId)
     }
     return CompletableFuture.completedFuture(Empty)
@@ -36,7 +36,7 @@ class C7RemoteServiceUserTaskCompletionApiImpl(
       cmd.taskId,
       cmd.errorCode
     )
-    subscriptionRepository.removeSubscriptionForTask(cmd.taskId)?.apply {
+    subscriptionRepository.deactivateSubscriptionForTask(cmd.taskId)?.apply {
       termination.accept(cmd.taskId)
     }
     return CompletableFuture.completedFuture(Empty)

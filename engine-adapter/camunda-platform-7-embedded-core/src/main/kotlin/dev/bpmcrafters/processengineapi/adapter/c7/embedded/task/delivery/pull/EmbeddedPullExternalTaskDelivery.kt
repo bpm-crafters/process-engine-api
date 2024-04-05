@@ -2,6 +2,7 @@ package dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.pull
 
 import dev.bpmcrafters.processengineapi.CommonRestrictions
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.ExternalServiceTaskDelivery
+import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.pull.EmbeddedPullUserTaskDelivery.Companion.logger
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.toTaskInformation
 import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionRepository
 import dev.bpmcrafters.processengineapi.adapter.commons.task.TaskSubscriptionHandle
@@ -51,6 +52,8 @@ class EmbeddedPullExternalTaskDelivery(
               activeSubscription.action.accept(lockedTask.toTaskInformation(), variables)
             } catch (e: Exception) {
               externalTaskService.handleFailure(lockedTask.id, workerId, e.message, lockedTask.retries - 1, retryTimeout)
+              logger.error { "[PROCESS-ENGINE-C7-EMBEDDED]: Error delivering task ${lockedTask.id}: ${e.message}" }
+              subscriptionRepository.deactivateSubscriptionForTask(taskId = lockedTask.id)
             }
           }
       }
