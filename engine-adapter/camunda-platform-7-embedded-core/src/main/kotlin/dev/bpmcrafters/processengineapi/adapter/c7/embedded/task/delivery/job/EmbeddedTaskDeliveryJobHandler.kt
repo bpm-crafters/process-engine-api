@@ -47,10 +47,14 @@ class EmbeddedTaskDeliveryJobHandler(
               .firstOrNull { subscription -> subscription.matches(userTask) }
               ?.let { activeSubscription ->
                 subscriptionRepository.activateSubscriptionForTask(userTask.id, activeSubscription)
-                val variables = if (activeSubscription.payloadDescription.isEmpty()) {
+                val variables = if (activeSubscription.payloadDescription == null) {
                   userTask.variables
                 } else {
-                  userTask.variables.filterKeys { key -> activeSubscription.payloadDescription.contains(key) }
+                  if (activeSubscription.payloadDescription!!.isEmpty()) {
+                    mapOf()
+                  } else {
+                    userTask.variables.filterKeys { key -> activeSubscription.payloadDescription!!.contains(key) }
+                  }
                 }
                 try {
                   activeSubscription.action.accept(userTask.toTaskInformation(), variables)
@@ -71,10 +75,14 @@ class EmbeddedTaskDeliveryJobHandler(
                   task.lock(workerId, lockTimeInSeconds) // lock external task
                   // FIXME -> check if already active for other subscription and notify it (delete)
                   subscriptionRepository.activateSubscriptionForTask(task.id, activeSubscription)
-                  val variables = if (activeSubscription.payloadDescription.isEmpty()) {
+                  val variables = if (activeSubscription.payloadDescription == null) {
                     task.execution.variables
                   } else {
-                    task.execution.variables.filterKeys { key -> activeSubscription.payloadDescription.contains(key) }
+                    if (activeSubscription.payloadDescription!!.isEmpty()) {
+                      mapOf()
+                    } else {
+                      task.execution.variables.filterKeys { key -> activeSubscription.payloadDescription!!.contains(key) }
+                    }
                   }
                   try {
                     activeSubscription.action.accept(task.toTaskInformation(), variables)

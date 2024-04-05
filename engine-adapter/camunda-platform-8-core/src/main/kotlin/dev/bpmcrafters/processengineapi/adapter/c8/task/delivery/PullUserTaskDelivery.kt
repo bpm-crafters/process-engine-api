@@ -33,13 +33,18 @@ class PullUserTaskDelivery(
 
           subscriptionRepository.activateSubscriptionForTask(task.id, activeSubscription)
 
-          val variables = if (activeSubscription.payloadDescription.isEmpty()) {
+          val variables : Map<String, Any> = if (activeSubscription.payloadDescription == null) {
             task.variables
           } else {
-            task.variables?.filter { activeSubscription.payloadDescription.contains(it.name) }
+            if (activeSubscription.payloadDescription!!.isEmpty()) {
+              task.variables?.filter { activeSubscription.payloadDescription!!.contains(it.name) }
+            } else {
+              listOf()
+            }
           }?.associate { variable ->
             variable.name to variable.value
           } ?: mapOf()
+
           try {
             activeSubscription.action.accept(task.toTaskInformation(), variables)
           } catch (e: Exception) {

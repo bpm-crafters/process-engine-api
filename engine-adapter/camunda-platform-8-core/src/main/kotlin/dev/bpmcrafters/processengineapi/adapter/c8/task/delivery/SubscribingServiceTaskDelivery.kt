@@ -28,10 +28,14 @@ class SubscribingServiceTaskDelivery(
           .handler { client, job ->
             if (subscription.matches(job)) {
               subscriptionRepository.activateSubscriptionForTask("${job.key}", subscription)
-              val variables = if (subscription.payloadDescription.isEmpty()) {
+              val variables = if (subscription.payloadDescription == null) {
                 job.variablesAsMap
               } else {
-                job.variablesAsMap.filter { subscription.payloadDescription.contains(it.key) }
+                if (subscription.payloadDescription!!.isEmpty()) {
+                  mapOf()
+                } else {
+                  job.variablesAsMap.filter { subscription.payloadDescription!!.contains(it.key) }
+                }
               }
               try {
                 subscription.action.accept(job.toTaskInformation(), variables)
@@ -66,8 +70,8 @@ class SubscribingServiceTaskDelivery(
   }
 
   private fun JobWorkerBuilderStep3.forSubscription(subscription: TaskSubscriptionHandle): JobWorkerBuilderStep3 {
-    return if (subscription.payloadDescription.isNotEmpty()) {
-      this.fetchVariables(subscription.payloadDescription.toList())
+    return if (subscription.payloadDescription != null && subscription.payloadDescription!!.isNotEmpty()) {
+      this.fetchVariables(subscription.payloadDescription!!.toList())
     } else {
       this
     }

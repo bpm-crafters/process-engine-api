@@ -21,10 +21,14 @@ class EmbeddedEventBasedUserTaskDelivery(
 
         subscriptionRepository.activateSubscriptionForTask(delegateTask.id, activeSubscription)
 
-        val variables = if (activeSubscription.payloadDescription.isEmpty()) {
+        val variables = if (activeSubscription.payloadDescription == null) {
           delegateTask.variables
         } else {
-          delegateTask.variables.filterKeys { key -> activeSubscription.payloadDescription.contains(key) }
+          if (activeSubscription.payloadDescription!!.isEmpty()) {
+            mapOf()
+          } else {
+            delegateTask.variables.filterKeys { key -> activeSubscription.payloadDescription!!.contains(key) }
+          }
         }
         try {
           activeSubscription.action.accept(delegateTask.toTaskInformation(), variables)

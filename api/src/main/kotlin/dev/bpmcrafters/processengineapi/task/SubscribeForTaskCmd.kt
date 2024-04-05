@@ -21,8 +21,11 @@ data class SubscribeForTaskCmd(
   val taskDescriptionKey: String?,
   /**
    * Limitation of the payload variables to be delivered to the action.
+   * If empty, no variables should be provided.
+   * If non-empty, the variables are limited to those, provided in the list.
+   * If null, all variables are provided.
    */
-  val payloadDescription: Set<String>,
+  val payloadDescription: Set<String>? = null,
   /**
    * Action to deliver the task to.
    */

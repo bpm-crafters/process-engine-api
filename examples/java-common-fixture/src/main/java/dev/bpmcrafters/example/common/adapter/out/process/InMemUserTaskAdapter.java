@@ -31,7 +31,7 @@ public class InMemUserTaskAdapter implements UserTaskOutPort {
         CommonRestrictions.builder().build(),
         TaskType.USER, // user tasks only
         null, // all of them
-        Collections.emptySet(), // all variables
+        null, // all variables
         (taskInfo, variables) -> {
           if (!userTasks.containsKey(taskInfo)) { // don't replace existing tasks
             log.info("[TASK LIST]: Received user task {} with meta {}", taskInfo.getTaskId(), taskInfo.getMeta());

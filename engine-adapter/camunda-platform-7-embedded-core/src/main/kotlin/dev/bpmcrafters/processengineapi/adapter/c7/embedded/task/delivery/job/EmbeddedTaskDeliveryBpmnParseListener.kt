@@ -22,9 +22,7 @@ class EmbeddedTaskDeliveryBpmnParseListener(
     val activityBehavior = activity.activityBehavior as UserTaskActivityBehavior
     val taskDefinition = activityBehavior.taskDefinition
     addExecutionCreateListeners(taskDefinition)
-    addTaskAssignmentListeners(taskDefinition)
     addTaskCompleteListeners(taskDefinition)
-    addTaskUpdateListeners(taskDefinition)
     addTaskDeleteListeners(taskDefinition)
     addTaskTimeoutListeners(taskDefinition)
   }
@@ -52,20 +50,12 @@ class EmbeddedTaskDeliveryBpmnParseListener(
     activity.addBuiltInListener(ExecutionListener.EVENTNAME_END, jobCreatingServiceTaskListener)
   }
 
-  private fun addTaskAssignmentListeners(taskDefinition: TaskDefinition) {
-    // taskDefinition.addBuiltInTaskListener(TaskListener.EVENTNAME_ASSIGNMENT, jobCreatingUserTaskListener)
-  }
-
   private fun addExecutionCreateListeners(taskDefinition: TaskDefinition) {
     taskDefinition.addBuiltInTaskListener(TaskListener.EVENTNAME_CREATE, jobCreatingUserTaskListener)
   }
 
   private fun addTaskCompleteListeners(taskDefinition: TaskDefinition) {
     taskDefinition.addBuiltInTaskListener(TaskListener.EVENTNAME_COMPLETE, jobCreatingUserTaskListener)
-  }
-
-  private fun addTaskUpdateListeners(taskDefinition: TaskDefinition) {
-    // taskDefinition.addBuiltInTaskListener(TaskListener.EVENTNAME_UPDATE, jobCreatingUserTaskListener)
   }
 
   private fun addTaskDeleteListeners(taskDefinition: TaskDefinition) {
