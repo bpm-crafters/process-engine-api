@@ -20,19 +20,19 @@ open class JobCreatingExternalServiceTaskListener(
   override fun notify(delegateExecution: DelegateExecution) {
     when (delegateExecution.eventName) {
       ExecutionListener.EVENTNAME_START -> processEngineConfigurationImpl.createJob(
-              EmbeddedTaskDeliveryJobHandler.EmbeddedTaskDeliveryJobHandlerConfiguration(
-                      id = delegateExecution.id,
-                      type = TYPE_SERVICE,
-                      operation = OPERATION_CREATE
-              )
+        EmbeddedTaskDeliveryJobHandler.EmbeddedTaskDeliveryJobHandlerConfiguration(
+          id = delegateExecution.id,
+          type = TYPE_SERVICE,
+          operation = OPERATION_CREATE
+        )
       )
 
       ExecutionListener.EVENTNAME_END -> processEngineConfigurationImpl.createJob(
-              EmbeddedTaskDeliveryJobHandler.EmbeddedTaskDeliveryJobHandlerConfiguration(
-                      id = delegateExecution.id,
-                      type = TYPE_SERVICE,
-                      operation = OPERATION_DELETE
-              )
+        EmbeddedTaskDeliveryJobHandler.EmbeddedTaskDeliveryJobHandlerConfiguration(
+          id = delegateExecution.id,
+          type = TYPE_SERVICE,
+          operation = OPERATION_DELETE
+        )
       )
     }
   }

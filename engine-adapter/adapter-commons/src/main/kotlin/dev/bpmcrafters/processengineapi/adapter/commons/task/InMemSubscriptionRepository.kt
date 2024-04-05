@@ -1,5 +1,6 @@
 package dev.bpmcrafters.processengineapi.adapter.commons.task
 
+import dev.bpmcrafters.processengineapi.task.TaskType
 import java.util.concurrent.ConcurrentHashMap
 
 /**
@@ -28,8 +29,14 @@ class InMemSubscriptionRepository : SubscriptionRepository {
     this.activeSubscribedHandler[taskId] = subscription
   }
 
-  override fun removeSubscriptionForTask(taskId: String): TaskSubscriptionHandle? {
+  override fun deactivateSubscriptionForTask(taskId: String): TaskSubscriptionHandle? {
     return this.activeSubscribedHandler.remove(taskId)
+  }
+
+  override fun getDeliveredTaskIds(taskType: TaskType) : List<String> {
+    return this.activeSubscribedHandler.filter {
+      it.value.taskType == taskType
+    }.keys.toList()
   }
 
 }

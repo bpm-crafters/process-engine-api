@@ -44,13 +44,18 @@ class C8AdapterProperties(
      */
     val fixedRateScheduleRate: Long = 5_000L,
     /**
+     * Fixed rate for refreshing user task delivery
+     */
+    val fixedRateRefreshRate: Long = 5_000L,
+    /**
      * URL of the task list.
      */
     val tasklistUrl: String
   )
 
   enum class UserTaskDeliveryStrategy {
-    SCHEDULED
+    SCHEDULED,
+    SUBSCRIPTION_REFRESHING
   }
 
   enum class ServiceTaskDeliveryStrategy {

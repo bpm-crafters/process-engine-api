@@ -22,7 +22,7 @@ open class EmbeddedTaskDeliveryEnginePlugin(
       customJobHandlers = mutableListOf()
     }
     customJobHandlers.add(jobHandler)
-    logger.info { "[PROCESS-ENGINE-API]: Registered custom job handler for task delivery." }
+    logger.info { "[PROCESS-ENGINE-C7-EMBEDDED]: Registered custom job handler for task delivery." }
 
     if (customPostBPMNParseListeners == null) {
       customPostBPMNParseListeners = mutableListOf()
@@ -31,14 +31,14 @@ open class EmbeddedTaskDeliveryEnginePlugin(
     val parseListener = EmbeddedTaskDeliveryBpmnParseListener(
       jobCreatingServiceTaskListener =
       if (deliverServiceTasks) {
-        logger.info { "[PROCESS-ENGINE-API]: Registered parse listener for external service task delivery." }
+        logger.info { "[PROCESS-ENGINE-C7-EMBEDDED]: Registered parse listener for external service task delivery." }
         JobCreatingExternalServiceTaskListener(processEngineConfigurationImpl = processEngineConfiguration)
       } else {
         ExecutionListener {}
       },
       jobCreatingUserTaskListener =
       if (deliverUserTasks) {
-        logger.info { "[PROCESS-ENGINE-API]: Registered parse listener for user task delivery." }
+        logger.info { "[PROCESS-ENGINE-C7-EMBEDDED]: Registered parse listener for user task delivery." }
         JobCreatingUserTaskListener(processEngineConfigurationImpl = processEngineConfiguration)
       } else {
         TaskListener {}

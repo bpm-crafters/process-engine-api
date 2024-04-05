@@ -1,8 +1,10 @@
 package dev.bpmcrafters.processengineapi.adapter.c8.springboot
 
 import dev.bpmcrafters.processengineapi.adapter.c8.springboot.C8AdapterProperties.Companion.DEFAULT_PREFIX
+import dev.bpmcrafters.processengineapi.adapter.c8.springboot.schedule.RefreshingUserTaskDeliveryBinding
 import dev.bpmcrafters.processengineapi.adapter.c8.springboot.schedule.ScheduledUserTaskDeliveryBinding
 import dev.bpmcrafters.processengineapi.adapter.c8.task.delivery.PullUserTaskDelivery
+import dev.bpmcrafters.processengineapi.adapter.c8.task.delivery.SubscribingRefreshingUserTaskDelivery
 import dev.bpmcrafters.processengineapi.adapter.c8.task.delivery.SubscribingServiceTaskDelivery
 import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionRepository
 import io.camunda.tasklist.CamundaTaskListClient
@@ -46,6 +48,21 @@ class DeliveryAutoConfiguration {
     )
   }
 
+  @Bean(initMethod = "subscribe")
+  @ConditionalOnProperty(prefix = DEFAULT_PREFIX, name = ["user-tasks.delivery-strategy"], havingValue = "subscription_refreshing")
+  fun subscribingRefreshingUserTaskDelivery(
+    subscriptionRepository: SubscriptionRepository,
+    zeebeClient: ZeebeClient,
+    c8AdapterProperties: C8AdapterProperties
+  ): SubscribingRefreshingUserTaskDelivery {
+    return SubscribingRefreshingUserTaskDelivery(
+      subscriptionRepository = subscriptionRepository,
+      zeebeClient = zeebeClient,
+      workerId = c8AdapterProperties.serviceTasks.workerId,
+      userTaskLockTimeoutMs = c8AdapterProperties.userTasks.fixedRateRefreshRate
+    )
+  }
+
   @Bean
   @ConditionalOnProperty(prefix = DEFAULT_PREFIX, name = ["user-tasks.delivery-strategy"], havingValue = "scheduled")
   fun scheduledUserTaskDeliveryBinding(pullUserTaskDelivery: PullUserTaskDelivery): ScheduledUserTaskDeliveryBinding {
@@ -53,4 +70,13 @@ class DeliveryAutoConfiguration {
       pullUserTaskDelivery = pullUserTaskDelivery
     )
   }
+
+  @Bean
+  @ConditionalOnProperty(prefix = DEFAULT_PREFIX, name = ["user-tasks.delivery-strategy"], havingValue = "subscription_refreshing")
+  fun refreshingUserTaskDeliveryBinding(subscribingRefreshingUserTaskDelivery: SubscribingRefreshingUserTaskDelivery): RefreshingUserTaskDeliveryBinding {
+    return RefreshingUserTaskDeliveryBinding(
+      subscribingRefreshingUserTaskDelivery = subscribingRefreshingUserTaskDelivery
+    )
+  }
+
 }

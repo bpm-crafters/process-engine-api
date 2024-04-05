@@ -23,7 +23,7 @@ class C8ZeebeExternalServiceTaskCompletionApiImpl(
       .newCompleteCommand(cmd.taskId.toLong())
       .variables(cmd.get())
       .send()
-    subscriptionRepository.removeSubscriptionForTask(cmd.taskId)?.apply {
+    subscriptionRepository.deactivateSubscriptionForTask(cmd.taskId)?.apply {
       termination.accept(cmd.taskId)
     }
     return CompletableFuture.completedFuture(Empty)
@@ -35,7 +35,7 @@ class C8ZeebeExternalServiceTaskCompletionApiImpl(
       .errorCode(cmd.errorCode)
       .variables(cmd.get())
       .send()
-    subscriptionRepository.removeSubscriptionForTask(cmd.taskId)?.apply {
+    subscriptionRepository.deactivateSubscriptionForTask(cmd.taskId)?.apply {
       termination.accept(cmd.taskId)
     }
     return CompletableFuture.completedFuture(Empty)
@@ -44,7 +44,7 @@ class C8ZeebeExternalServiceTaskCompletionApiImpl(
   override fun failTask(cmd: FailTaskCmd): Future<Empty> {
     zeebeClient
       .newFailCommand(cmd.taskId.toLong())
-    subscriptionRepository.removeSubscriptionForTask(cmd.taskId)?.apply {
+    subscriptionRepository.deactivateSubscriptionForTask(cmd.taskId)?.apply {
       termination.accept(cmd.taskId)
     }
     return CompletableFuture.completedFuture(Empty)

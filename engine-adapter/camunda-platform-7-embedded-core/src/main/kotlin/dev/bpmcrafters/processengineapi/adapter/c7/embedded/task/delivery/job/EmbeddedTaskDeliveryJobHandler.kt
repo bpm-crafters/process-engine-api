@@ -2,9 +2,9 @@ package dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.job
 
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.job.EmbeddedTaskDeliveryJobHandler.EmbeddedTaskDeliveryJobHandlerConfiguration.Companion.OPERATION_CREATE
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.job.EmbeddedTaskDeliveryJobHandler.EmbeddedTaskDeliveryJobHandlerConfiguration.Companion.OPERATION_DELETE
-import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.job.EmbeddedTaskDeliveryJobHandler.EmbeddedTaskDeliveryJobHandlerConfiguration.Companion.OPERATION_MODIFY
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.job.EmbeddedTaskDeliveryJobHandler.EmbeddedTaskDeliveryJobHandlerConfiguration.Companion.TYPE_SERVICE
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.job.EmbeddedTaskDeliveryJobHandler.EmbeddedTaskDeliveryJobHandlerConfiguration.Companion.TYPE_USER
+import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.pull.EmbeddedPullUserTaskDelivery.Companion.logger
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.toTaskInformation
 import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionRepository
 import dev.bpmcrafters.processengineapi.adapter.commons.task.TaskSubscriptionHandle
@@ -52,7 +52,12 @@ class EmbeddedTaskDeliveryJobHandler(
                 } else {
                   userTask.variables.filterKeys { key -> activeSubscription.payloadDescription.contains(key) }
                 }
-                activeSubscription.action.accept(userTask.toTaskInformation(), variables)
+                try {
+                  activeSubscription.action.accept(userTask.toTaskInformation(), variables)
+                } catch (e: Exception) {
+                  logger.error { "[PROCESS-ENGINE-C7-EMBEDDED]: Error delivering task ${userTask.id}: ${e.message}" }
+                  subscriptionRepository.deactivateSubscriptionForTask(taskId = userTask.id)
+                }
               }
           }
 
@@ -71,45 +76,16 @@ class EmbeddedTaskDeliveryJobHandler(
                   } else {
                     task.execution.variables.filterKeys { key -> activeSubscription.payloadDescription.contains(key) }
                   }
-                  // FIXME -> should we try catch and deliver failure?
-                  activeSubscription.action.accept(task.toTaskInformation(), variables)
+                  try {
+                    activeSubscription.action.accept(task.toTaskInformation(), variables)
+                  } catch (e: Exception) {
+                    logger.error { "[PROCESS-ENGINE-C7-EMBEDDED]: Error delivering task ${task.id}: ${e.message}" }
+                    subscriptionRepository.deactivateSubscriptionForTask(taskId = task.id)
+                  }
                 }
             }
           }
         }
-
-      OPERATION_MODIFY -> {
-        subscriptionRepository.getActiveSubscriptionForTask(configuration.id)?.apply {
-          val (taskInformation, taskVariables) = when (configuration.type) {
-            TYPE_USER -> {
-              val userTask = commandContext.taskManager.findTaskById(configuration.id)
-              val variables = if (this.payloadDescription.isEmpty()) {
-                userTask.variables
-              } else {
-                userTask.variables.filterKeys { key -> this.payloadDescription.contains(key) }
-              }
-              userTask.toTaskInformation() to variables
-            }
-
-            TYPE_SERVICE -> {
-              val tasks = commandContext.externalTaskManager.findExternalTasksByExecutionId(configuration.id)
-              if (tasks != null) {
-                val task = tasks.first() // FIXME? can it really happen?
-                val variables = if (this.payloadDescription.isEmpty()) {
-                  task.execution.variables
-                } else {
-                  task.execution.variables.filterKeys { key -> this.payloadDescription.contains(key) }
-                }
-                task.toTaskInformation() to variables
-              } else {
-                null to null
-              }
-            }
-
-            else -> null to null
-          }
-        }
-      }
 
       OPERATION_DELETE -> subscriptionRepository.getActiveSubscriptionForTask(configuration.id)?.apply {
         termination.accept(configuration.id)
@@ -143,7 +119,6 @@ class EmbeddedTaskDeliveryJobHandler(
 
       const val OPERATION_CREATE = "create"
       const val OPERATION_DELETE = "delete"
-      const val OPERATION_MODIFY = "modify"
 
       const val TYPE_USER = "user"
       const val TYPE_SERVICE = "service"

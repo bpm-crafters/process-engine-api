@@ -1,6 +1,7 @@
 package dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.event
 
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.UserTaskDelivery
+import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.pull.EmbeddedPullUserTaskDelivery.Companion.logger
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.toTaskInformation
 import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionRepository
 import dev.bpmcrafters.processengineapi.adapter.commons.task.TaskSubscriptionHandle
@@ -25,8 +26,12 @@ class EmbeddedEventBasedUserTaskDelivery(
         } else {
           delegateTask.variables.filterKeys { key -> activeSubscription.payloadDescription.contains(key) }
         }
-
-        activeSubscription.action.accept(delegateTask.toTaskInformation(), variables)
+        try {
+          activeSubscription.action.accept(delegateTask.toTaskInformation(), variables)
+        } catch (e: Exception) {
+          logger.error { "[PROCESS-ENGINE-C7-EMBEDDED] Error delivering task ${delegateTask.id}: ${e.message}" }
+          subscriptionRepository.deactivateSubscriptionForTask(taskId = delegateTask.id)
+        }
       }
   }
 
