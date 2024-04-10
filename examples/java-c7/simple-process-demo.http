@@ -3,7 +3,7 @@
     client.global.clearAll();
 %}
 // @no-log
-POST http://localhost:8080/simple-service-tasks/start-process?value=string&intValue=1
+POST http://localhost:8080/simple-service-tasks/start-process?value=correlationValue&intValue=1
 
 > {%
   client.test("Request executed successfully", function () {
@@ -56,7 +56,7 @@ POST http://localhost:8080/simple-service-tasks/tasks/{{ taskId }}/complete?valu
   wait(5);
 %}
 // @no-log
-POST http://localhost:8080/simple-service-tasks/correlate/{{ instanceId }}?value=value-delivered-by-correlation
+POST http://localhost:8080/simple-service-tasks/correlate/correlationValue?value=value-delivered-by-correlation
 
 > {%
   client.test("Request executed successfully", function () {

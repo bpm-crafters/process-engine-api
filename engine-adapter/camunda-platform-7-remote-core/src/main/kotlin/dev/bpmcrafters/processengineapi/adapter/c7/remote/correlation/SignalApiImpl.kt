@@ -18,10 +18,9 @@ class SignalApiImpl(
 
   override fun sendSignal(cmd: SendSignalCmd): Future<Empty> {
     return CompletableFuture.supplyAsync {
-      val correlation = cmd.correlation
       runtimeService
         .createSignalEvent(cmd.signalName)
-        .buildCorrelation(correlation)
+        .applyRestrictions(cmd.restrictions)
         .setVariables(cmd.payloadSupplier.get())
         .send()
       Empty
@@ -34,8 +33,7 @@ class SignalApiImpl(
     CommonRestrictions.WITHOUT_TENANT_ID,
   )
 
-  private fun SignalEventReceivedBuilder.buildCorrelation(correlation: CorrelationSupplier) = this.apply {
-    val restrictions = correlation.get().restrictions
+  private fun SignalEventReceivedBuilder.applyRestrictions(restrictions: Map<String, String>) = this.apply {
     ensureSupported(restrictions)
     restrictions
       .forEach { (key, value) ->

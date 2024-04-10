@@ -19,13 +19,11 @@ class CorrelationApiImpl(
 
   override fun correlateMessage(cmd: CorrelateMessageCmd): Future<Empty> {
     return CompletableFuture.supplyAsync {
-      val restrictions = cmd.correlation.get().restrictions
-      ensureSupported(restrictions)
+      val correlationKey = cmd.correlation.get().correlationKey
       zeebeClient
         .newPublishMessageCommand()
         .messageName(cmd.messageName)
-        .withCorrelationKey(restrictions)
-        .buildCorrelation(restrictions)
+        .correlationKey(correlationKey)
         .variables(cmd.payloadSupplier.get())
         .send()
         .get() // FIXME Chain
@@ -37,31 +35,5 @@ class CorrelationApiImpl(
     TODO("Not yet implemented")
   }
 
-  private fun PublishMessageCommandStep2.withCorrelationKey(restrictions: Map<String, String>): PublishMessageCommandStep3 {
-    require(restrictions.containsKey(CommonRestrictions.CORRELATION_KEY)) { "${CommonRestrictions.CORRELATION_KEY} is mandatory, but was missing." }
-    return this.correlationKey(restrictions[CommonRestrictions.CORRELATION_KEY])
-  }
-
-  private fun PublishMessageCommandStep3.buildCorrelation(restrictions: Map<String, String>): PublishMessageCommandStep3 = this.apply {
-    if (restrictions.containsKey(CommonRestrictions.TENANT_ID)) {
-      this.tenantId(restrictions[CommonRestrictions.TENANT_ID])
-    }
-    if (restrictions.containsKey(CommonRestrictions.MESSAGE_ID)) {
-      this.messageId(restrictions[CommonRestrictions.MESSAGE_ID])
-    }
-    if (restrictions.containsKey(CommonRestrictions.MESSAGE_ID)) {
-      this.messageId(restrictions[CommonRestrictions.MESSAGE_ID])
-    }
-// FIXME -> parse duration?
-//    if (restrictions.containsKey(CommonRestrictions.MESSAGE_TTL)) {
-//      this.timeToLive(restrictions[CommonRestrictions.MESSAGE_TTL])
-//    }
-  }
-
-  override fun getSupportedRestrictions(): Set<String> = setOf(
-    CommonRestrictions.CORRELATION_KEY,
-    CommonRestrictions.TENANT_ID,
-    CommonRestrictions.MESSAGE_ID,
-    CommonRestrictions.MESSAGE_TTL
-  )
+  override fun getSupportedRestrictions(): Set<String> = setOf()
 }
