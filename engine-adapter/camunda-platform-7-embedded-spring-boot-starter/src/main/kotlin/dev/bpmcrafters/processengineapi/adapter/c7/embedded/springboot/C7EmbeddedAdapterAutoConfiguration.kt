@@ -2,6 +2,7 @@ package dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot
 
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.correlation.CorrelationApiImpl
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.correlation.SignalApiImpl
+import dev.bpmcrafters.processengineapi.adapter.c7.embedded.deploy.DeploymentApiImpl
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.process.StartProcessApiImpl
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.completion.C7ExternalTaskCompletionApiImpl
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.completion.C7UserTaskCompletionApiImpl
@@ -10,11 +11,13 @@ import dev.bpmcrafters.processengineapi.adapter.commons.task.InMemSubscriptionRe
 import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionRepository
 import dev.bpmcrafters.processengineapi.correlation.CorrelationApi
 import dev.bpmcrafters.processengineapi.correlation.SignalApi
+import dev.bpmcrafters.processengineapi.deploy.DeploymentApi
 import dev.bpmcrafters.processengineapi.process.StartProcessApi
 import dev.bpmcrafters.processengineapi.task.ExternalTaskCompletionApi
 import dev.bpmcrafters.processengineapi.task.TaskSubscriptionApi
 import dev.bpmcrafters.processengineapi.task.UserTaskCompletionApi
 import org.camunda.bpm.engine.ExternalTaskService
+import org.camunda.bpm.engine.RepositoryService
 import org.camunda.bpm.engine.RuntimeService
 import org.camunda.bpm.engine.TaskService
 import org.springframework.boot.context.properties.EnableConfigurationProperties
@@ -45,6 +48,11 @@ class C7EmbeddedAdapterAutoConfiguration {
   @Bean
   fun signalApi(runtimeService: RuntimeService): SignalApi = SignalApiImpl(
     runtimeService = runtimeService
+  )
+
+  @Bean
+  fun deploymentApi(repositoryService: RepositoryService): DeploymentApi = DeploymentApiImpl(
+    repositoryService = repositoryService
   )
 
   @Bean

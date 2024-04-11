@@ -2,10 +2,13 @@ package dev.bpmcrafters.processengineapi.adapter.c7.remote.springboot
 
 import dev.bpmcrafters.processengineapi.adapter.c7.remote.correlation.CorrelationApiImpl
 import dev.bpmcrafters.processengineapi.adapter.c7.remote.correlation.SignalApiImpl
+import dev.bpmcrafters.processengineapi.adapter.c7.remote.deploy.DeploymentApiImpl
 import dev.bpmcrafters.processengineapi.adapter.c7.remote.process.StartProcessApiImpl
 import dev.bpmcrafters.processengineapi.correlation.CorrelationApi
 import dev.bpmcrafters.processengineapi.correlation.SignalApi
+import dev.bpmcrafters.processengineapi.deploy.DeploymentApi
 import dev.bpmcrafters.processengineapi.process.StartProcessApi
+import org.camunda.bpm.engine.RepositoryService
 import org.camunda.bpm.engine.RuntimeService
 import org.camunda.community.rest.EnableCamundaRestClient
 import org.springframework.beans.factory.annotation.Qualifier
@@ -31,6 +34,11 @@ class C7RemoteServiceApiAutoConfiguration {
   @Bean
   fun signalApi(@Qualifier("remote") runtimeService: RuntimeService): SignalApi = SignalApiImpl(
     runtimeService = runtimeService
+  )
+
+  @Bean
+  fun deployApi(@Qualifier("remote") repositoryService: RepositoryService): DeploymentApi = DeploymentApiImpl(
+    repositoryService = repositoryService
   )
 
 }

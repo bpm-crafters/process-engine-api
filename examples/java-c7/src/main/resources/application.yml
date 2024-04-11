@@ -29,3 +29,4 @@ camunda:
     login:
       enabled: true
       user-id: admin
+    auto-deployment-enabled: false

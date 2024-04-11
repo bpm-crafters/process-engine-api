@@ -2,6 +2,7 @@ package dev.bpmcrafters.processengineapi.adapter.c8.springboot
 
 import dev.bpmcrafters.processengineapi.adapter.c8.correlation.CorrelationApiImpl
 import dev.bpmcrafters.processengineapi.adapter.c8.correlation.SignalApiImpl
+import dev.bpmcrafters.processengineapi.adapter.c8.deploy.DeploymentApiImpl
 import dev.bpmcrafters.processengineapi.adapter.c8.process.StartProcessApiImpl
 import dev.bpmcrafters.processengineapi.adapter.c8.task.completion.C8TaskListClientUserTaskCompletionApiImpl
 import dev.bpmcrafters.processengineapi.adapter.c8.task.completion.C8ZeebeExternalServiceTaskCompletionApiImpl
@@ -10,6 +11,7 @@ import dev.bpmcrafters.processengineapi.adapter.commons.task.InMemSubscriptionRe
 import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionRepository
 import dev.bpmcrafters.processengineapi.correlation.CorrelationApi
 import dev.bpmcrafters.processengineapi.correlation.SignalApi
+import dev.bpmcrafters.processengineapi.deploy.DeploymentApi
 import dev.bpmcrafters.processengineapi.process.StartProcessApi
 import dev.bpmcrafters.processengineapi.task.ExternalTaskCompletionApi
 import dev.bpmcrafters.processengineapi.task.TaskSubscriptionApi
@@ -79,6 +81,11 @@ class C8AdapterAutoConfiguration {
 
   @Bean
   fun signalApi(zeebeClient: ZeebeClient): SignalApi = SignalApiImpl(
+    zeebeClient = zeebeClient
+  )
+
+  @Bean
+  fun deploymentApi(zeebeClient: ZeebeClient): DeploymentApi = DeploymentApiImpl(
     zeebeClient = zeebeClient
   )
 
