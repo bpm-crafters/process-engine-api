@@ -12,13 +12,13 @@
         <meta name="author" content="BPM Crafters">
       
       
-        <link rel="canonical" href="https://bpm-crafters.dev/process-engine-api/snapshot/introduction/index.html">
+        <link rel="canonical" href="https://bpm-crafters.dev/process-engine-api/snapshot/reference-guide/correlation.html">
       
       
-        <link rel="prev" href="../index.html">
+        <link rel="prev" href="index.html">
       
       
-        <link rel="next" href="../getting-started/index.html">
+        <link rel="next" href="../developer-guide/contribution.html">
       
       
       <link rel="icon" href="../assets/images/favicon.png">
@@ -26,7 +26,7 @@
     
     
       
-        <title>Motivation and Goal - Process Engine API</title>
+        <title>Message Correlation - Process Engine API</title>
       
     
     
@@ -114,7 +114,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Motivation and Goal
+              Message Correlation
             
           </span>
         </div>
@@ -230,13 +230,11 @@
         
   
   
-    
-  
   
     
     
-      <li class="md-tabs__item md-tabs__item--active">
-        <a href="index.html" class="md-tabs__link">
+      <li class="md-tabs__item">
+        <a href="../introduction/index.html" class="md-tabs__link">
           
   
   Introduction
@@ -267,11 +265,13 @@
         
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
-        <a href="../reference-guide/index.html" class="md-tabs__link">
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="index.html" class="md-tabs__link">
           
   
   Reference
@@ -376,30 +376,25 @@
       
   
   
-    
   
   
-  
     
     
     
-      
-        
-        
       
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
         
           
-          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
             
   
   <span class="md-ellipsis">
@@ -410,7 +405,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_2">
             <span class="md-nav__icon md-icon"></span>
             Introduction
@@ -421,17 +416,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-      
-      <a href="index.html" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../introduction/index.html" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -440,7 +428,6 @@
   
 
       </a>
-      
     </li>
   
 
@@ -477,25 +464,30 @@
       
   
   
+    
   
   
+  
     
     
     
+      
+        
+        
       
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
         
           
-          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
             
   
   <span class="md-ellipsis">
@@ -506,7 +498,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_4">
             <span class="md-nav__icon md-icon"></span>
             Reference
@@ -520,7 +512,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../reference-guide/index.html" class="md-nav__link">
+      <a href="index.html" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -538,10 +530,17 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../reference-guide/correlation.html" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+      <a href="correlation.html" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -550,6 +549,7 @@
   
 
       </a>
+      
     </li>
   
 
@@ -669,9 +669,44 @@
   
 
 
-  <h1>Motivation and Goal</h1>
+  <h1>Message Correlation</h1>
 
+<p>Message correlation denotes the ability of a process engine to continue the process execution of a process instance waiting in a catch message event 
+if a message with a given name is delivered to the process engine. In doing so, it requires a way to target a single process execution (otherwise the
+correlation fails regarding BPMN specification).</p>
+<p>Different engines provide different notions for targeting a single process execution. We believe that the best way to do so is not to rely on individual 
+engine features, but rather should be based on an approach which can be applied in any BPMN engine either message correlation based on a correlation value, 
+or supporting scoped variable mapping. In both cases, it is useful to use a value of a process variable as a correlation value.</p>
+<p>In case the engine supports correlation value, you just need to define it in your BPMN. Here is an example of doing it in Camunda 8:</p>
+<p><img alt="Correlation with Correlation Key in C8" src="../assets/img/correlation-correlation-key.png" width="300" /></p>
+<p>In case the correlation value is not supported directly, but scoped variable mappings are supported, you need to define a (local) variable
+in the scope of the message catch event and provide the correlation value to point to a process variable. Here is an example of doing it in Camunda Platform 7:</p>
+<p><img alt="Correlation Variable Mapping in C7" src="../assets/img/correlation-variable-mapping.png" width="300" /></p>
+<p>For this reason, the Message Correlation API supports the targeting based on a <code>Supplier&lt;Correlation&gt;</code>.</p>
+<p>As a user of the <code>CorrelationAPI</code> you have to invoke the <code>CorrelateMessageCmd</code> and provide the <code>Correlation</code> via supplier function.</p>
+<p>And here is the example code to correlate message:</p>
+<div class="highlight"><pre><span></span><code><span class="kd">class</span> <span class="nc">CorrelationUseCase</span><span class="w"> </span><span class="p">{</span>
 
+<span class="w">  </span><span class="kd">private</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">CorrelationApi</span><span class="w"> </span><span class="n">correlationApi</span><span class="p">;</span>
+
+<span class="w">  </span><span class="cm">/**</span>
+<span class="cm">   * Correlates message1 using supplied value as correlation key. </span>
+<span class="cm">   * @param correlationValue correlation value.</span>
+<span class="cm">   * @param payloadValue value to set as process variable on successful correlation.</span>
+<span class="cm">   */</span>
+<span class="w">  </span><span class="kt">void</span><span class="w"> </span><span class="nf">correlateMessage1</span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">correlationValue</span><span class="p">,</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="n">payloadValue</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">correlationApi</span><span class="p">.</span><span class="na">correlateMessage</span><span class="p">(</span>
+<span class="w">      </span><span class="k">new</span><span class="w"> </span><span class="n">CorrelateMessageCmd</span><span class="p">(</span>
+<span class="w">        </span><span class="s">&quot;message1&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="p">()</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">Map</span><span class="p">.</span><span class="na">of</span><span class="p">(</span>
+<span class="w">          </span><span class="s">&quot;message-delivered-value&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">payloadValue</span>
+<span class="w">        </span><span class="p">),</span>
+<span class="w">        </span><span class="p">()</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">Correlation</span><span class="p">.</span><span class="na">withKey</span><span class="p">(</span><span class="n">correlationValue</span><span class="p">)</span>
+<span class="w">      </span><span class="p">)</span>
+<span class="w">    </span><span class="p">).</span><span class="na">get</span><span class="p">();</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
 
 
 
