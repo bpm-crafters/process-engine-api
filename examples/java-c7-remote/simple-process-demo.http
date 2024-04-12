@@ -3,7 +3,7 @@
     client.global.clearAll();
 %}
 // @no-log
-POST http://localhost:8081/simple-service-tasks/start-process?value=correlationKey&intValue=1
+POST http://localhost:8080/simple-service-tasks/start-process?value=correlationKey&intValue=1
 
 > {%
   client.test("Request executed successfully", function () {
