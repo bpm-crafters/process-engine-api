@@ -9,5 +9,5 @@ import dev.bpmcrafters.processengineapi.PayloadSupplier
 data class SendSignalCmd(
   val signalName: String,
   val payloadSupplier: PayloadSupplier,
-  val correlation: CorrelationSupplier
+  val restrictions: Map<String, String>
 ) : PayloadSupplier by payloadSupplier

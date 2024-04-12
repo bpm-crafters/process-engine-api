@@ -6,15 +6,31 @@ package dev.bpmcrafters.processengineapi.correlation
  */
 data class Correlation(
   /**
-   * Restrictions to find unique process instance for correlation.
+   * Correlation key.
    */
-  val restrictions: Map<String, String>
+  val correlationKey: String,
+  /**
+   * If the engine is not supporting the correlation by key, defines the name of the local variable used to access correlation.
+   */
+  val correlationVariable: String = "correlationKey"
 ) {
   companion object {
     /**
-     * Empty correlation.
+     * Constructs correlation based on key, using default variable name.
+     * @param key correlation key.
+     * @return correlation
      */
-    @JvmStatic
-    val EMPTY = Correlation(mapOf())
+    fun withKey(key: String): Correlation {
+      return Correlation(correlationKey = key)
+    }
+  }
+
+  /**
+   * Modifies the name for correlation variable.
+   * @param variable name of the (local) variable used to correlate.
+   * @return correlation.
+   */
+  fun withVariable(variable: String): Correlation {
+    return this.copy(correlationVariable = variable)
   }
 }

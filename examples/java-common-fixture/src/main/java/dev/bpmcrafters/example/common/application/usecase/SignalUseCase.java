@@ -1,6 +1,7 @@
 package dev.bpmcrafters.example.common.application.usecase;
 
 import dev.bpmcrafters.example.common.application.port.in.SignalInPort;
+import dev.bpmcrafters.processengineapi.CommonRestrictions;
 import dev.bpmcrafters.processengineapi.correlation.Correlation;
 import dev.bpmcrafters.processengineapi.correlation.SendSignalCmd;
 import dev.bpmcrafters.processengineapi.correlation.SignalApi;
@@ -29,7 +30,7 @@ public class SignalUseCase implements SignalInPort {
             () -> Map.of(
               "signal-delivered-value", variableValue
             ),
-            Correlation.Companion::getEMPTY
+            CommonRestrictions.builder().build()
           )
         ).get();
         completableFuture.complete(null); // FIXME -> chain instead of sync get

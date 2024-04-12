@@ -1,11 +1,9 @@
-package dev.bpmcrafters.example.javac8.application.usecase;
+package dev.bpmcrafters.example.common.application.usecase;
 
 import dev.bpmcrafters.example.common.application.port.in.CorrelateInPort;
-import dev.bpmcrafters.processengineapi.CommonRestrictions;
 import dev.bpmcrafters.processengineapi.correlation.CorrelateMessageCmd;
 import dev.bpmcrafters.processengineapi.correlation.Correlation;
 import dev.bpmcrafters.processengineapi.correlation.CorrelationApi;
-import dev.bpmcrafters.processengineapi.correlation.SendSignalCmd;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -32,9 +30,7 @@ public class CorrelateUseCase implements CorrelateInPort {
             () -> Map.of(
               "message-delivered-value", variableValue
             ),
-            () -> new Correlation(
-              CommonRestrictions.builder().withCorrelationKey(correlationValue).build() // FIXME: works in C8 und not in C7
-            )
+            () -> Correlation.Companion.withKey(correlationValue)
           )
         ).get();
         completableFuture.complete(null); // FIXME -> chain instead of sync get

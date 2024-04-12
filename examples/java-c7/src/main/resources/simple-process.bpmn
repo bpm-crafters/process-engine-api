@@ -16,6 +16,11 @@
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="Flow_04ljvde" sourceRef="received_message" targetRef="finished" />
     <bpmn:intermediateCatchEvent id="received_message" name="Message received" camunda:asyncAfter="true">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="correlationKey">${stringValue}</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_06ub3x1</bpmn:incoming>
       <bpmn:outgoing>Flow_04ljvde</bpmn:outgoing>
       <bpmn:messageEventDefinition id="MessageEventDefinition_1lzqmbf" messageRef="Message_3uo7jrg" />

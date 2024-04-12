@@ -4,14 +4,10 @@ import dev.bpmcrafters.processengineapi.CommonRestrictions
 import dev.bpmcrafters.processengineapi.Empty
 import dev.bpmcrafters.processengineapi.MetaInfo
 import dev.bpmcrafters.processengineapi.MetaInfoAware
-import dev.bpmcrafters.processengineapi.correlation.CorrelateMessageCmd
-import dev.bpmcrafters.processengineapi.correlation.CorrelationApi
 import dev.bpmcrafters.processengineapi.correlation.SendSignalCmd
 import dev.bpmcrafters.processengineapi.correlation.SignalApi
 import io.camunda.zeebe.client.ZeebeClient
 import io.camunda.zeebe.client.api.command.BroadcastSignalCommandStep1
-import io.camunda.zeebe.client.api.command.PublishMessageCommandStep1.PublishMessageCommandStep2
-import io.camunda.zeebe.client.api.command.PublishMessageCommandStep1.PublishMessageCommandStep3
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.Future
 
@@ -21,11 +17,10 @@ class SignalApiImpl(
 
   override fun sendSignal(cmd: SendSignalCmd): Future<Empty> {
     return CompletableFuture.supplyAsync {
-      val restrictions = cmd.correlation.get().restrictions
       zeebeClient
         .newBroadcastSignalCommand()
         .signalName(cmd.signalName)
-        .buildCorrelation(restrictions)
+        .applyRestrictions(cmd.restrictions)
         .variables(cmd.payloadSupplier.get())
         .send()
         .get() // FIXME Chain
@@ -37,7 +32,7 @@ class SignalApiImpl(
     CommonRestrictions.TENANT_ID,
   )
 
-  fun BroadcastSignalCommandStep1.BroadcastSignalCommandStep2.buildCorrelation(restrictions: Map<String, String>) = this.apply {
+  fun BroadcastSignalCommandStep1.BroadcastSignalCommandStep2.applyRestrictions(restrictions: Map<String, String>) = this.apply {
     if (restrictions.containsKey(CommonRestrictions.TENANT_ID)) {
       this.tenantId(restrictions[CommonRestrictions.TENANT_ID])
     }

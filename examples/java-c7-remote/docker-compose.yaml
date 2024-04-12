@@ -1,0 +1,10 @@
+version: "3.9"
+services:
+  camunda-bpm-platform-7:
+    image: camunda/camunda-bpm-platform:latest
+    ports:
+      - '8081:8080'
+    command:
+      - './camunda.sh'
+      - '--rest'
+      - '--swaggerui'
