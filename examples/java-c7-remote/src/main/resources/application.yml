@@ -25,4 +25,4 @@ feign:
   client:
     config:
       default:
-        url: "http://localhost/engine-rest/"
+        url: "http://localhost:8081/engine-rest/"
