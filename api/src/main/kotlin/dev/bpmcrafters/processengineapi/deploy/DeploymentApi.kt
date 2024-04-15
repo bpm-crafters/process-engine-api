@@ -10,5 +10,5 @@ import java.util.concurrent.Future
  */
 interface DeploymentApi: MetaInfoAware {
 
-  fun deploy(cmd: DeployBundleCommand): Future<Empty>
+  fun deploy(cmd: DeployBundleCommand): Future<DeploymentInformation>
 }

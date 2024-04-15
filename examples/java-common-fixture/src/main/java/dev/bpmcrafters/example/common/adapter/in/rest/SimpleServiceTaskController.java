@@ -1,9 +1,6 @@
 package dev.bpmcrafters.example.common.adapter.in.rest;
 
-import dev.bpmcrafters.example.common.application.port.in.CorrelateInPort;
-import dev.bpmcrafters.example.common.application.port.in.PerformUserTaskInPort;
-import dev.bpmcrafters.example.common.application.port.in.SignalInPort;
-import dev.bpmcrafters.example.common.application.port.in.StartProcessInstanceInPort;
+import dev.bpmcrafters.example.common.application.port.in.*;
 import dev.bpmcrafters.processengineapi.task.TaskInformation;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -23,10 +20,19 @@ import static org.springframework.http.ResponseEntity.*;
 @RequestMapping("/simple-service-tasks")
 public class SimpleServiceTaskController {
 
+  private final DeployInPort deployPort;
   private final StartProcessInstanceInPort processInstancePort;
   private final PerformUserTaskInPort taskPort;
   private final CorrelateInPort correlatePort;
   private final SignalInPort signalPort;
+
+  @PostMapping("/deploy")
+  @SneakyThrows
+  public ResponseEntity<String> deploy() {
+    val info = deployPort.deploy().get();
+    log.info("Deployed process {}", info.getDeploymentKey());
+    return created(URI.create(info.getDeploymentKey())).build();
+  }
 
   @PostMapping("/start-process")
   @SneakyThrows
