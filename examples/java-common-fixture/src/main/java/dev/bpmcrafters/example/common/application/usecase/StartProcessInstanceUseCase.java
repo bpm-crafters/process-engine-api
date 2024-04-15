@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.val;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
@@ -29,7 +30,8 @@ public class StartProcessInstanceUseCase implements StartProcessInstanceInPort {
             "simple-process-1",
             () -> Map.of(
               "stringValue", value,
-              "intValue", intValue
+              "intValue", intValue,
+              "listVariable", List.of("element1", "element2")
             )
           )
         );

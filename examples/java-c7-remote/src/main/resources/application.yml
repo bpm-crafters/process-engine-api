@@ -6,6 +6,8 @@ springdoc:
   swagger-ui:
     try-it-out-enabled: true
 
+
+
 dev:
   bpm-crafters:
     process-api:

@@ -65,6 +65,7 @@ class RemotePullExternalTaskDelivery(
       .distinct()
       .forEach { topic ->
         this.topic(topic, lockDuration)
+          .enableCustomObjectDeserialization()
         // FIXME ->
       }
     return this

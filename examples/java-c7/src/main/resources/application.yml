@@ -30,3 +30,4 @@ camunda:
       enabled: true
       user-id: admin
     auto-deployment-enabled: false
+    default-serialization-format: application/json
