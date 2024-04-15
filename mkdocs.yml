@@ -93,7 +93,8 @@ nav:
     - Motivation and Goal: introduction/index.md
   - Getting Started: getting-started/index.md
   - Reference:
-    - Reference Overview: reference-guide/index.md
+    - Overview: reference-guide/index.md
+    - Message Correlation: reference-guide/correlation.md
   - Developers:
     - Contribution: developer-guide/contribution.md
     - Project Setup: developer-guide/project-setup.md

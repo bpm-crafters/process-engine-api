@@ -4,7 +4,7 @@ package dev.bpmcrafters.processengineapi.correlation
  * Correlation information.
  * @since 0.0.1
  */
-data class Correlation(
+data class Correlation private constructor(
   /**
    * Correlation key.
    */
@@ -20,6 +20,7 @@ data class Correlation(
      * @param key correlation key.
      * @return correlation
      */
+    @JvmStatic
     fun withKey(key: String): Correlation {
       return Correlation(correlationKey = key)
     }

@@ -30,7 +30,7 @@ public class CorrelateUseCase implements CorrelateInPort {
             () -> Map.of(
               "message-delivered-value", variableValue
             ),
-            () -> Correlation.Companion.withKey(correlationValue)
+            () -> Correlation.withKey(correlationValue)
           )
         ).get();
         completableFuture.complete(null); // FIXME -> chain instead of sync get
