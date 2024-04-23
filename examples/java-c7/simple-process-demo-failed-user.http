@@ -1,9 +1,20 @@
-### Start process
+### Generate correlationKey
 < {%
-    client.global.clearAll()
+  client.global.clearAll();
 %}
 // @no-log
-POST http://localhost:8080/simple-service-tasks/start-process?value=string&intValue=1
+GET https://www.uuidtools.com/api/generate/v4
+Accept: application/json
+
+> {%
+  const correlationKey = jsonPath(response.body, "$[0]");
+  console.log("Correlation key", correlationKey);
+  client.global.set("correlationKey", correlationKey);
+%}
+
+### Start process
+// @no-log
+POST http://localhost:8080/simple-service-tasks/start-process?value={{ correlationKey }}&intValue=1
 
 > {%
   client.test("Request executed successfully", function () {

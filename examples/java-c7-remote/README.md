@@ -16,9 +16,10 @@ There are some features in the C7 adapter already. In addition, there are some f
 
 ## How to run
 
+- Start docker-compose
 - Build with Maven
 - Start `JavaCamunda7ExampleApplication`
-- Open http://localhost:8080/swagger-ui/index.html
+- Open http://localhost:8081/swagger-ui/index.html
 - Start process
 - Wait, wait, wait, check the logs, wait...
 - Copy the resulting retrieved user task id
