@@ -2,12 +2,12 @@ spring:
   application:
     name: Java Camunda Platform 8 SaaS
 
+server:
+  port: 8082
+
 springdoc:
   swagger-ui:
     try-it-out-enabled: true
-
-server:
-  port: 8081
 
 dev:
   bpm-crafters:

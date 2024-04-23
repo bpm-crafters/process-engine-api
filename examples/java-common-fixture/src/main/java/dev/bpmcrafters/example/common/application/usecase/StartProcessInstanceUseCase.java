@@ -30,8 +30,8 @@ public class StartProcessInstanceUseCase implements StartProcessInstanceInPort {
             "simple-process-1",
             () -> Map.of(
               "stringValue", value,
-              "intValue", intValue,
-              "listVariable", List.of("element1", "element2")
+              "intValue", intValue
+              // "listVariable", List.of("element1", "element2") // FIXME -> will be resolved with https://github.com/bpm-crafters/process-engine-api/issues/33
             )
           )
         );

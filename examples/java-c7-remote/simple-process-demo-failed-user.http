@@ -3,7 +3,7 @@
     client.global.clearAll()
 %}
 // @no-log
-POST http://localhost:8080/simple-service-tasks/start-process?value=string&intValue=1
+POST http://localhost:8081/simple-service-tasks/start-process?value=string&intValue=1
 
 > {%
   client.test("Request executed successfully", function () {
@@ -21,7 +21,7 @@ POST http://localhost:8080/simple-service-tasks/start-process?value=string&intVa
 %}
 
 // @no-log
-GET http://localhost:8080/simple-service-tasks/tasks
+GET http://localhost:8081/simple-service-tasks/tasks
 Accept: application/json
 
 > {%
@@ -42,7 +42,7 @@ Accept: application/json
 
 ### Complete user task
 // @no-log
-POST http://localhost:8080/simple-service-tasks/tasks/{{ taskId }}/error?value=value-of-user-task-error
+POST http://localhost:8081/simple-service-tasks/tasks/{{ taskId }}/error?value=value-of-user-task-error
 
 > {%
   client.test("Request executed successfully", function () {
@@ -58,7 +58,7 @@ POST http://localhost:8080/simple-service-tasks/tasks/{{ taskId }}/error?value=v
 %}
 
 // @no-log
-POST http://localhost:8080/simple-service-tasks/signal?value=value-delivered-by-signal
+POST http://localhost:8081/simple-service-tasks/signal?value=value-delivered-by-signal
 
 > {%
   client.test("Request executed successfully", function () {

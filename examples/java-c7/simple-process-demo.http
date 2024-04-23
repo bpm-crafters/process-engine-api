@@ -1,9 +1,32 @@
-### Start process
+### Generate correlationKey
 < {%
-    client.global.clearAll();
+  client.global.clearAll();
 %}
 // @no-log
-POST http://localhost:8080/simple-service-tasks/start-process?value=correlationValue&intValue=1
+GET https://www.uuidtools.com/api/generate/v4
+Accept: application/json
+
+> {%
+  const correlationKey = jsonPath(response.body, "$[0]");
+  console.log("Correlation key", correlationKey);
+  client.global.set("correlationKey", correlationKey);
+%}
+
+### Deploy process
+// @no-log
+POST http://localhost:8080/simple-service-tasks/deploy
+
+> {%
+  client.test("Request executed successfully", function () {
+    client.assert(response.status === 201, "Response status is not 201");
+  });
+
+  client.global.set("deploymentKey", response.headers.valueOf("Location"));
+%}
+
+### Start process
+// @no-log
+POST http://localhost:8080/simple-service-tasks/start-process?value={{ correlationKey }}&intValue=1
 
 > {%
   client.test("Request executed successfully", function () {
@@ -56,7 +79,7 @@ POST http://localhost:8080/simple-service-tasks/tasks/{{ taskId }}/complete?valu
   wait(5);
 %}
 // @no-log
-POST http://localhost:8080/simple-service-tasks/correlate/correlationValue?value=value-delivered-by-correlation
+POST http://localhost:8080/simple-service-tasks/correlate/{{ correlationKey }}?value=value-delivered-by-correlation
 
 > {%
   client.test("Request executed successfully", function () {
