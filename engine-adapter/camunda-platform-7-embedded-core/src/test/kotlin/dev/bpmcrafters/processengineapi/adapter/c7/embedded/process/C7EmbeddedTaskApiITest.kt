@@ -1,6 +1,6 @@
 package dev.bpmcrafters.processengineapi.adapter.c7.embedded.process
 
-import dev.bpmcrafters.processengineapi.adapter.c7.embedded.process.C7TaskApiITest.Companion.BPMN
+import dev.bpmcrafters.processengineapi.adapter.c7.embedded.process.C7EmbeddedTaskApiITest.Companion.BPMN
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.pull.EmbeddedPullUserTaskDelivery
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.subscription.C7TaskSubscriptionApiImpl
 import dev.bpmcrafters.processengineapi.adapter.commons.task.InMemSubscriptionRepository
@@ -18,7 +18,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.RegisterExtension
 
 @Deployment(resources = [BPMN])
-class C7TaskApiITest {
+class C7EmbeddedTaskApiITest {
 
   companion object {
     @RegisterExtension

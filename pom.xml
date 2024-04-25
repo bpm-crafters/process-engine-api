@@ -26,6 +26,7 @@
   <modules>
     <module>api</module>
     <module>examples</module>
+    <module>engine-adapter/adapter-test</module>
     <module>engine-adapter/adapter-commons</module>
     <module>engine-adapter/camunda-platform-7-embedded-core</module>
     <module>engine-adapter/camunda-platform-7-embedded-spring-boot-starter</module>
@@ -117,6 +118,9 @@
             <plugin>no-arg</plugin>
             <plugin>all-open</plugin>
           </compilerPlugins>
+          <pluginOptions>
+            <option>all-open:annotation=io.toolisticon.testing.jgiven.JGivenKotlinStage</option>
+          </pluginOptions>
         </configuration>
       </plugin>
       <plugin>
@@ -199,7 +203,7 @@
     </developer>
     <developer>
       <id>__</id>
-      <name>Thomas Hinrichs</name>
+      <name>Thomas Heinrichs</name>
       <roles>
         <role>Developer</role>
       </roles>

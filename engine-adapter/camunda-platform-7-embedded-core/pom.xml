@@ -50,6 +50,13 @@
 
     <!-- Testing -->
     <dependency>
+      <groupId>dev.bpm-crafters.process-engine-api</groupId>
+      <artifactId>process-engine-api-adapter-test</artifactId>
+      <version>${project.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
       <groupId>com.h2database</groupId>
       <artifactId>h2</artifactId>
       <version>${h2.version}</version>
@@ -77,6 +84,12 @@
       <groupId>io.mockk</groupId>
       <artifactId>mockk-jvm</artifactId>
       <version>${mockk.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.tngtech.jgiven</groupId>
+      <artifactId>jgiven-junit5</artifactId>
+      <version>1.3.1</version>
       <scope>test</scope>
     </dependency>
 
