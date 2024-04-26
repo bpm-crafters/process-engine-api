@@ -19,8 +19,10 @@ dev:
               delivery-strategy: embedded_job
               worker-id: embedded-worker
               lock-time-in-seconds: 10
+              execute-initial-pull-on-startup: true
             user-tasks:
               delivery-strategy: embedded_job
+              execute-initial-pull-on-startup: true
 camunda:
   bpm:
     webapp:
