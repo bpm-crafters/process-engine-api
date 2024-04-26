@@ -38,10 +38,10 @@ class C7EmbeddedStartProcessApiITest : JGivenBaseIntegrationTest() {
   }
 
   @ProvidedScenarioState
-  var startProcessApiImpl: StartProcessApi = StartProcessApiImpl(camunda.runtimeService)
+  var startProcessApi: StartProcessApi = StartProcessApiImpl(camunda.runtimeService)
 
   @ProvidedScenarioState
-  var processTestHelper: ProcessTestHelper = C7ProcessTestHelper(camunda.processEngine)
+  var processTestHelper: ProcessTestHelper = C7EmbeddedProcessTestHelper(camunda.processEngine)
 
   @Test
   fun `should start process by definition without payload`() {

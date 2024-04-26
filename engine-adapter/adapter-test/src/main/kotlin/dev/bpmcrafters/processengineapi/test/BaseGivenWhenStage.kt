@@ -11,7 +11,7 @@ import io.toolisticon.testing.jgiven.step
 @JGivenKotlinStage
 class BaseGivenWhenStage : Stage<BaseGivenWhenStage>() {
 
-  @ScenarioState
+  @ExpectedScenarioState
   lateinit var startProcessApi: StartProcessApi
 
   @ExpectedScenarioState

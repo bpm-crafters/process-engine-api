@@ -44,12 +44,12 @@ class C7EmbeddedTaskApiITest {
   private val actionHandler = mockk<TaskHandler>()
   private val terminationHandler = mockk<TaskTerminationHandler>()
 
-  private lateinit var startProcessApiImpl: StartProcessApi
+  private lateinit var startProcessApi: StartProcessApi
   private lateinit var embeddedPullUserTaskDelivery: EmbeddedPullUserTaskDelivery
 
   @BeforeEach
   fun setUp() {
-    startProcessApiImpl = StartProcessApiImpl(camunda.runtimeService)
+    startProcessApi = StartProcessApiImpl(camunda.runtimeService)
     embeddedPullUserTaskDelivery = EmbeddedPullUserTaskDelivery(camunda.taskService, subscriptionRepository)
   }
 
@@ -67,7 +67,7 @@ class C7EmbeddedTaskApiITest {
     )
 
     // WHEN we start a process
-    startProcessApiImpl.startProcess(
+    startProcessApi.startProcess(
       StartProcessByDefinitionCmd(
         definitionKey = KEY,
         payloadSupplier = { emptyMap() }
