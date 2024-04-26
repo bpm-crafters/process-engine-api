@@ -34,7 +34,11 @@ class C7EmbeddedAdapterProperties(
     /**
      * Fixed rate for scheduled user task delivery.
      */
-    val fixedRateScheduleRate: Long = 5_000L
+    val fixedRateScheduleRate: Long = 5_000L,
+    /**
+     * Should an initial pull be executed on startup.
+     */
+    val executeInitialPullOnStartup: Boolean = true
   )
 
   /**
@@ -65,6 +69,10 @@ class C7EmbeddedAdapterProperties(
      * Delivery strategy for external service tasks.
      */
     val deliveryStrategy: ExternalServiceTaskDeliveryStrategy,
+    /**
+     * Should an initial pull be executed on startup.
+     */
+    val executeInitialPullOnStartup: Boolean = true
   )
 
   /**

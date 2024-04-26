@@ -1,2 +1,4 @@
 dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.C7EmbeddedAdapterAutoConfiguration
 dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.C7EmbeddedDeliveryAutoConfiguration
+dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.C7EmbeddedInitialPullOnStartupAutoConfiguration
+
