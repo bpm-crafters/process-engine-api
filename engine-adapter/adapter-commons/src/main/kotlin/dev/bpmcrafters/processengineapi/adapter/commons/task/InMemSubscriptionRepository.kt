@@ -39,4 +39,9 @@ class InMemSubscriptionRepository : SubscriptionRepository {
     }.keys.toList()
   }
 
+  fun deleteAllTaskSubscriptions() {
+    subscriptions.clear()
+    activeSubscribedHandler.clear()
+  }
+
 }

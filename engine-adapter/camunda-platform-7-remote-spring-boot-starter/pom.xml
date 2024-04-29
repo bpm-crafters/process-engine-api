@@ -10,9 +10,6 @@
   </parent>
 
   <artifactId>process-engine-api-adapter-camunda-platform-c7-remote-spring-boot-starter</artifactId>
-  <properties>
-    <spring-boot.version>3.2.5</spring-boot.version>
-  </properties>
 
   <dependencyManagement>
     <dependencies>
@@ -75,7 +72,7 @@
     <!-- Testing -->
     <dependency>
       <groupId>dev.bpm-crafters.process-engine-api</groupId>
-      <artifactId>process-engine-api-adapter-test</artifactId>
+      <artifactId>process-engine-api-adapter-testing</artifactId>
       <version>${project.version}</version>
       <scope>test</scope>
     </dependency>

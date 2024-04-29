@@ -28,7 +28,7 @@ class RemotePullExternalTaskDelivery(
   /**
    * Delivers all tasks found in the external service to corresponding subscriptions.
    */
-  fun deliverAll() {
+  override fun deliverAll() {
 
     val subscriptions = subscriptionRepository.getTaskSubscriptions()
     if(subscriptions.isNotEmpty()) {

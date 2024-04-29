@@ -1,21 +1,13 @@
-package dev.bpmcrafters.processengineapi.adapter.c7.embedded.process
+package dev.bpmcrafters.processengineapi.adapter.c7.remote.springboot
 
-import dev.bpmcrafters.processengineapi.adapter.c7.embedded.process.AbstractC7EmbeddedApiITest.Companion.BPMN
+import dev.bpmcrafters.processengineapi.test.ProcessTestHelper
 import io.toolisticon.testing.jgiven.GIVEN
 import io.toolisticon.testing.jgiven.THEN
 import io.toolisticon.testing.jgiven.WHEN
-import org.camunda.bpm.engine.test.Deployment
-import org.camunda.bpm.engine.test.junit5.ProcessEngineExtension
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.RegisterExtension
+import org.springframework.beans.factory.annotation.Autowired
 
-@Deployment(resources = [BPMN])
-class C7EmbeddedTaskApiITest : AbstractC7EmbeddedApiITest(C7EmbeddedProcessTestHelper(camunda.processEngine)) {
-
-  companion object {
-    @RegisterExtension
-    val camunda: ProcessEngineExtension = ProcessEngineExtension.builder().useProcessEngine(processEngine).build()
-  }
+class C7RemoteTaskApiITest(@Autowired processTestHelperImpl: ProcessTestHelper) : AbstractC7RemoteApiITest(processTestHelperImpl) {
 
   @Test
   fun `should get subscribed for user task with pull strategie`() {

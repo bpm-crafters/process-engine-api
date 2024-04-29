@@ -24,7 +24,7 @@ class RemotePullUserTaskDelivery(
   /**
    * Delivers all tasks found in user task service to corresponding subscriptions.
    */
-  fun deliverAll() {
+  override fun deliverAll() {
     val subscriptions = subscriptionRepository.getTaskSubscriptions()
     if(subscriptions.isNotEmpty()) {
       logger.trace { "Pull remote user tasks for subscriptions: $subscriptions" }

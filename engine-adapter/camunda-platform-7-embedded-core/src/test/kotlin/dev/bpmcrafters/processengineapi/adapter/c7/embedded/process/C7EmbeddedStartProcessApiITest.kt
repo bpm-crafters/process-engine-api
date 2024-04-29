@@ -1,10 +1,6 @@
 package dev.bpmcrafters.processengineapi.adapter.c7.embedded.process
 
-import com.tngtech.jgiven.annotation.ProvidedScenarioState
-import dev.bpmcrafters.processengineapi.adapter.c7.embedded.process.C7EmbeddedStartProcessApiITest.Companion.BPMN
-import dev.bpmcrafters.processengineapi.process.StartProcessApi
-import dev.bpmcrafters.processengineapi.test.JGivenBaseIntegrationTest
-import dev.bpmcrafters.processengineapi.test.ProcessTestHelper
+import dev.bpmcrafters.processengineapi.adapter.c7.embedded.process.AbstractC7EmbeddedApiITest.Companion.BPMN
 import io.toolisticon.testing.jgiven.THEN
 import io.toolisticon.testing.jgiven.WHEN
 import org.camunda.bpm.engine.ProcessEngineConfiguration
@@ -17,31 +13,12 @@ import org.junit.jupiter.api.extension.RegisterExtension
 
 
 @Deployment(resources = [BPMN])
-class C7EmbeddedStartProcessApiITest : JGivenBaseIntegrationTest() {
+class C7EmbeddedStartProcessApiITest : AbstractC7EmbeddedApiITest(C7EmbeddedProcessTestHelper(camunda.processEngine)) {
 
   companion object {
     @RegisterExtension
-    val camunda: ProcessEngineExtension = ProcessEngineExtension.builder().useProcessEngine(
-      object : StandaloneInMemProcessEngineConfiguration() {
-        init {
-          history = ProcessEngineConfiguration.HISTORY_AUDIT
-          databaseSchemaUpdate = ProcessEngineConfiguration.DB_SCHEMA_UPDATE_TRUE
-          jobExecutorActivate = false
-          expressionManager = MockExpressionManager()
-        }
-      }.buildProcessEngine()
-    ).build()
-
-    const val KEY = "simple-process"
-    const val START_MESSAGE = "startMessage"
-    const val BPMN = "bpmn/$KEY.bpmn"
+    val camunda: ProcessEngineExtension = ProcessEngineExtension.builder().useProcessEngine(processEngine).build()
   }
-
-  @ProvidedScenarioState
-  var startProcessApi: StartProcessApi = StartProcessApiImpl(camunda.runtimeService)
-
-  @ProvidedScenarioState
-  var processTestHelper: ProcessTestHelper = C7EmbeddedProcessTestHelper(camunda.processEngine)
 
   @Test
   fun `should start process by definition without payload`() {
