@@ -9,7 +9,7 @@ dev:
         c7:
           remote:
             external-service-tasks:
-              delivery-strategy: remote_scheduled
+              delivery-strategy: disabled
               fixed-rate-schedule-rate: 10
               worker-id: embedded-worker
               lock-time-in-seconds: 10

@@ -5,6 +5,7 @@ import dev.bpmcrafters.processengineapi.adapter.c7.remote.task.delivery.toTaskIn
 import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionRepository
 import dev.bpmcrafters.processengineapi.adapter.commons.task.TaskSubscriptionHandle
 import dev.bpmcrafters.processengineapi.task.TaskType
+import mu.KLogging
 import org.camunda.bpm.engine.ExternalTaskService
 import org.camunda.bpm.engine.externaltask.ExternalTaskQueryBuilder
 import org.camunda.bpm.engine.externaltask.LockedExternalTask
@@ -22,41 +23,47 @@ class RemotePullExternalTaskDelivery(
   private val retryTimeout: Long
 ) : ExternalServiceTaskDelivery {
 
+  companion object : KLogging()
+
   /**
    * Delivers all tasks found in the external service to corresponding subscriptions.
    */
   fun deliverAll() {
 
     val subscriptions = subscriptionRepository.getTaskSubscriptions()
+    if(subscriptions.isNotEmpty()) {
+      logger.trace { "Pull remote external tasks for subscriptions: $subscriptions" }
+      // FIXME -> how many queries do we want? 1:1 subscriptions, or 1 query for all?
+      externalTaskService
+        .fetchAndLock(maxTasks, workerId)
+        .forSubscriptions(subscriptions)
+        .execute()
+        .forEach { lockedTask ->
+          subscriptions
+            .firstOrNull { subscription -> subscription.matches(lockedTask) }
+            ?.let { activeSubscription ->
 
-    // FIXME -> how many queries do we want? 1:1 subscriptions, or 1 query for all?
-    externalTaskService
-      .fetchAndLock(maxTasks, workerId)
-      .forSubscriptions(subscriptions)
-      .execute()
-      .forEach { lockedTask ->
-        subscriptions
-          .firstOrNull { subscription -> subscription.matches(lockedTask) }
-          ?.let { activeSubscription ->
+              subscriptionRepository.activateSubscriptionForTask(lockedTask.id, activeSubscription)
 
-            subscriptionRepository.activateSubscriptionForTask(lockedTask.id, activeSubscription)
-
-            val variables = if (activeSubscription.payloadDescription == null) {
-              lockedTask.variables
-            } else {
-              if (activeSubscription.payloadDescription!!.isEmpty()) {
-                mapOf()
+              val variables = if (activeSubscription.payloadDescription == null) {
+                lockedTask.variables
               } else {
-                lockedTask.variables.filter { activeSubscription.payloadDescription!!.contains(it.key) }
+                if (activeSubscription.payloadDescription!!.isEmpty()) {
+                  mapOf()
+                } else {
+                  lockedTask.variables.filter { activeSubscription.payloadDescription!!.contains(it.key) }
+                }
+              }
+              try {
+                activeSubscription.action.accept(lockedTask.toTaskInformation(), variables)
+              } catch (e: Exception) {
+                externalTaskService.handleFailure(lockedTask.id, workerId, e.message, lockedTask.retries - 1, retryTimeout)
               }
             }
-            try {
-              activeSubscription.action.accept(lockedTask.toTaskInformation(), variables)
-            } catch (e: Exception) {
-              externalTaskService.handleFailure(lockedTask.id, workerId, e.message, lockedTask.retries - 1, retryTimeout)
-            }
-          }
-      }
+        }
+    } else {
+      logger.trace { "Pull remote external tasks disabled because of no active subscriptions" }
+    }
   }
 
   private fun ExternalTaskQueryBuilder.forSubscriptions(subscriptions: List<TaskSubscriptionHandle>): ExternalTaskQueryBuilder {

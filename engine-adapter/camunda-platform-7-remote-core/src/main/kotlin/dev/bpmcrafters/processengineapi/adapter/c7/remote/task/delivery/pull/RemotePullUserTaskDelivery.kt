@@ -5,6 +5,7 @@ import dev.bpmcrafters.processengineapi.adapter.c7.remote.task.delivery.toTaskIn
 import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionRepository
 import dev.bpmcrafters.processengineapi.adapter.commons.task.TaskSubscriptionHandle
 import dev.bpmcrafters.processengineapi.task.TaskType
+import mu.KLogging
 import org.camunda.bpm.engine.TaskService
 import org.camunda.bpm.engine.task.Task
 import org.camunda.bpm.engine.task.TaskQuery
@@ -18,35 +19,42 @@ class RemotePullUserTaskDelivery(
   private val subscriptionRepository: SubscriptionRepository
 ) : UserTaskDelivery {
 
+  companion object : KLogging()
+
   /**
    * Delivers all tasks found in user task service to corresponding subscriptions.
    */
   fun deliverAll() {
     val subscriptions = subscriptionRepository.getTaskSubscriptions()
-    taskService
-      .createTaskQuery()
-      .forSubscriptions(subscriptions)
-      .list()
-      .forEach { task ->
-        subscriptions
-          .firstOrNull { subscription -> subscription.matches(task) }
-          ?.let { activeSubscription ->
+    if(subscriptions.isNotEmpty()) {
+      logger.trace { "Pull remote user tasks for subscriptions: $subscriptions" }
+      taskService
+        .createTaskQuery()
+        .forSubscriptions(subscriptions)
+        .list()
+        .forEach { task ->
+          subscriptions
+            .firstOrNull { subscription -> subscription.matches(task) }
+            ?.let { activeSubscription ->
 
-            subscriptionRepository.activateSubscriptionForTask(task.id, activeSubscription)
+              subscriptionRepository.activateSubscriptionForTask(task.id, activeSubscription)
 
-            val variables = if (activeSubscription.payloadDescription == null) {
-              taskService.getVariables(task.id)
-            } else {
-              if (activeSubscription.payloadDescription!!.isEmpty()) {
-                mapOf()
+              val variables = if (activeSubscription.payloadDescription == null) {
+                taskService.getVariables(task.id)
               } else {
-                taskService.getVariables(task.id, activeSubscription.payloadDescription)
+                if (activeSubscription.payloadDescription!!.isEmpty()) {
+                  mapOf()
+                } else {
+                  taskService.getVariables(task.id, activeSubscription.payloadDescription)
+                }
               }
-            }
 
-            activeSubscription.action.accept(task.toTaskInformation(), variables)
-          }
-      }
+              activeSubscription.action.accept(task.toTaskInformation(), variables)
+            }
+        }
+    } else {
+      logger.trace { "Skipped pull remote user task because of no active subscriptions" }
+    }
   }
 
   private fun TaskQuery.forSubscriptions(subscriptions: List<TaskSubscriptionHandle>): TaskQuery {

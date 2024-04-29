@@ -80,7 +80,12 @@ class C7RemoteAdapterProperties(
     /**
      * Custom delivery.
      */
-    CUSTOM
+    CUSTOM,
+
+    /**
+     * Disabled delivery
+     */
+    DISABLED
   }
 
 
@@ -101,6 +106,11 @@ class C7RemoteAdapterProperties(
     /**
      * Custom delivery.
      */
-    CUSTOM
+    CUSTOM,
+
+    /**
+     * Disabled delivery
+     */
+    DISABLED
   }
 }
