@@ -12,13 +12,13 @@
         <meta name="author" content="BPM Crafters">
       
       
-        <link rel="canonical" href="https://bpm-crafters.dev/process-engine-api/snapshot/reference-guide/index.html">
+        <link rel="canonical" href="https://bpm-crafters.dev/process-engine-api/snapshot/introduction/clean-architecture.html">
       
       
-        <link rel="prev" href="../getting-started/index.html">
+        <link rel="prev" href="index.html">
       
       
-        <link rel="next" href="correlation.html">
+        <link rel="next" href="../getting-started/index.html">
       
       
       <link rel="icon" href="../assets/images/favicon.png">
@@ -26,7 +26,7 @@
     
     
       
-        <title>Overview - Process Engine API</title>
+        <title>Clean Architecture - Process Engine API</title>
       
     
     
@@ -114,7 +114,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Overview
+              Clean Architecture
             
           </span>
         </div>
@@ -230,11 +230,13 @@
         
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
-        <a href="../introduction/index.html" class="md-tabs__link">
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="index.html" class="md-tabs__link">
           
   
   Introduction
@@ -265,13 +267,11 @@
         
   
   
-    
-  
   
     
     
-      <li class="md-tabs__item md-tabs__item--active">
-        <a href="index.html" class="md-tabs__link">
+      <li class="md-tabs__item">
+        <a href="../reference-guide/index.html" class="md-tabs__link">
           
   
   Reference
@@ -376,25 +376,30 @@
       
   
   
+    
   
   
+  
     
     
     
+      
+        
+        
       
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
         
           
-          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
             
   
   <span class="md-ellipsis">
@@ -405,7 +410,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_2">
             <span class="md-nav__icon md-icon"></span>
             Introduction
@@ -419,7 +424,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../introduction/index.html" class="md-nav__link">
+      <a href="index.html" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -437,10 +442,17 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../introduction/clean-architecture.html" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+      <a href="clean-architecture.html" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -449,6 +461,7 @@
   
 
       </a>
+      
     </li>
   
 
@@ -485,30 +498,25 @@
       
   
   
-    
   
   
-  
     
     
     
-      
-        
-        
       
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
         
           
-          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
             
   
   <span class="md-ellipsis">
@@ -519,7 +527,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_4">
             <span class="md-nav__icon md-icon"></span>
             Reference
@@ -530,17 +538,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-      
-      <a href="index.html" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../reference-guide/index.html" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -549,7 +550,6 @@
   
 
       </a>
-      
     </li>
   
 
@@ -562,7 +562,7 @@
   
   
     <li class="md-nav__item">
-      <a href="correlation.html" class="md-nav__link">
+      <a href="../reference-guide/correlation.html" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -690,9 +690,31 @@
   
 
 
-  <h1>Overview</h1>
+  <h1>Clean Architecture</h1>
 
-
+<p>Clean Architecture is a set of principles defined by <a href="https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html">Uncle Bob's post back in 2012</a>
+and focuses on several rules applied during system design. This principles are originally published in different architectural approaches
+and are used combined to achieve some software quality values like:</p>
+<ul>
+<li>Portability (aka independent of frameworks)</li>
+<li>Good Testability</li>
+<li>Independence of external systems</li>
+</ul>
+<p>Our experience of building process applications showed that the application of Clean Architecture delivers those values to process applications as well.
+Considering application of Clean Architecture principle, the architectural blueprint would result in something similar to the following:</p>
+<p><img alt="Clean Architecture" src="../assets/img/clean-architecture.png" /></p>
+<p>There are in general multiple inbound adapters for the application, responsible for initialization of the control flow. A common one is a REST adapter offering
+some endpoint for HTTP access of some frontend. There might be many other, like message consumers, but the interesting one in the context of process 
+applications is the WorkflowAdapter. Every time, the process orchestration needs to invoke some business functionality of our application, it would
+use this to access its implementation of a particular use case. Usually, process engines have some measures and API to register callbacks for this.</p>
+<p>On the outbound adapter side, the application relies on different third-party technologies integrated via outbound ports. Following the dependency rule, 
+the application code is not allowed to reference any adapters directly. A common practice is to use Dependency Inversion to wirte the adapter implementing
+the outbound port, so the use case implementation only has a reference to the outbound port and the IoC container provides the adapter implementation 
+at runtime. Again, the part specific to process applications is the integration of the Workflow Adapter, responsible to forwarding of all calls to the 
+process engine. Usually, this adapter translates the process-related operations like starting of new process instances or completion of user or service
+tasks to a vendor-specific process engine API.</p>
+<p>The <code>Process Engine API</code> provides vendor-agnostic abstract API for the <code>Workflow Adapter</code> and uses a set of adapter modules, translating its invocation
+into the vendor-specific API calls. By doing so, your application code remains technology-independent and portable.</p>
 
 
 

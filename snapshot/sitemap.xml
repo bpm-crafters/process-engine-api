@@ -2,37 +2,42 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://bpm-crafters.dev/process-engine-api/snapshot/index.html</loc>
-         <lastmod>2024-04-26</lastmod>
+         <lastmod>2024-04-29</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://bpm-crafters.dev/process-engine-api/snapshot/developer-guide/contribution.html</loc>
-         <lastmod>2024-04-26</lastmod>
+         <lastmod>2024-04-29</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://bpm-crafters.dev/process-engine-api/snapshot/developer-guide/project-setup.html</loc>
-         <lastmod>2024-04-26</lastmod>
+         <lastmod>2024-04-29</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://bpm-crafters.dev/process-engine-api/snapshot/getting-started/index.html</loc>
-         <lastmod>2024-04-26</lastmod>
+         <lastmod>2024-04-29</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://bpm-crafters.dev/process-engine-api/snapshot/introduction/index.html</loc>
-         <lastmod>2024-04-26</lastmod>
+         <lastmod>2024-04-29</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://bpm-crafters.dev/process-engine-api/snapshot/introduction/clean-architecture.html</loc>
+         <lastmod>2024-04-29</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://bpm-crafters.dev/process-engine-api/snapshot/reference-guide/index.html</loc>
-         <lastmod>2024-04-26</lastmod>
+         <lastmod>2024-04-29</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://bpm-crafters.dev/process-engine-api/snapshot/reference-guide/correlation.html</loc>
-         <lastmod>2024-04-26</lastmod>
+         <lastmod>2024-04-29</lastmod>
          <changefreq>daily</changefreq>
     </url>
 </urlset>

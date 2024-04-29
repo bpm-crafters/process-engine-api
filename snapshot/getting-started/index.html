@@ -15,18 +15,18 @@
         <link rel="canonical" href="https://bpm-crafters.dev/process-engine-api/snapshot/getting-started/index.html">
       
       
-        <link rel="prev" href="../introduction/index.html">
+        <link rel="prev" href="../introduction/clean-architecture.html">
       
       
         <link rel="next" href="../reference-guide/index.html">
       
       
       <link rel="icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.0, mkdocs-material-9.5.19">
+      <meta name="generator" content="mkdocs-1.6.0, mkdocs-material-9.5.20">
     
     
       
-        <title>Getting Started - Process Engine API</title>
+        <title>Quick Start - Process Engine API</title>
       
     
     
@@ -79,6 +79,11 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
+        
+        <a href="#camunda-platform-7-running-as-embedded-engine" class="md-skip">
+          Skip to content
+        </a>
+      
     </div>
     <div data-md-component="announce">
       
@@ -114,7 +119,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Getting Started
+              Quick Start
             
           </span>
         </div>
@@ -257,7 +262,7 @@
   
     
   
-  Getting Started
+  Quick Start
 
       </a>
     </li>
@@ -433,6 +438,27 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../introduction/clean-architecture.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Clean Architecture
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -454,15 +480,70 @@
       
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Quick Start
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="index.html" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
-    Getting Started
+    Quick Start
   </span>
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#camunda-platform-7-running-as-embedded-engine" class="md-nav__link">
+    <span class="md-ellipsis">
+      Camunda Platform 7 running as embedded engine
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#camunda-platform-7-running-as-remote-engine" class="md-nav__link">
+    <span class="md-ellipsis">
+      Camunda Platform 7 running as remote engine
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#camunda-platform-8-as-saas" class="md-nav__link">
+    <span class="md-ellipsis">
+      Camunda Platform 8 as SaaS
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -664,9 +745,164 @@
   
 
 
-  <h1>Getting Started</h1>
+  <h1>Quick Start</h1>
 
+<p>If you want to try out <code>process-engine-api</code> library in your project, there are two steps you need to perform.</p>
+<p>First, add the library to your project classpath. In maven it is just adding the following dependency into your 
+project's <code>pom.xml</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="w">  </span><span class="nt">&lt;dependency&gt;</span>
+<span class="w">    </span><span class="nt">&lt;groupId&gt;</span>dev.bpm-crafters.process-engine-api<span class="nt">&lt;/groupId&gt;</span>
+<span class="w">    </span><span class="nt">&lt;artifactId&gt;</span>process-engine-api<span class="nt">&lt;/artifactId&gt;</span>
+<span class="w">    </span><span class="nt">&lt;version&gt;</span>${process-engine-api.version}<span class="nt">&lt;/version&gt;</span>
+<span class="w">  </span><span class="nt">&lt;/dependency&gt;</span>
+</code></pre></div>
+<p>This dependency provides you with the most important classes required for implementation of your system using
+a process engine. Here is an example how a user task can be completed:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">dev.bpmcrafters.processengineapi.task.*</span><span class="p">;</span>
 
+<span class="nd">@Component</span>
+<span class="nd">@RequiredArgsConstructor</span>
+<span class="nd">@Slf4j</span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">CompleteUserTaskUseCase</span><span class="w"> </span><span class="kd">implements</span><span class="w"> </span><span class="n">CompleteUserTaskInPort</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">  </span><span class="kd">private</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">UserTaskCompletionApi</span><span class="w"> </span><span class="n">taskCompletionApi</span><span class="p">;</span>
+
+<span class="w">  </span><span class="nd">@Override</span>
+<span class="w">  </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">completeUserTaskWithSomeValue</span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">taskId</span><span class="p">,</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="n">value</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">taskCompletionApi</span><span class="p">.</span><span class="na">completeTask</span><span class="p">(</span>
+<span class="w">      </span><span class="k">new</span><span class="w"> </span><span class="n">CompleteTaskCmd</span><span class="p">(</span>
+<span class="w">        </span><span class="n">taskId</span><span class="p">,</span>
+<span class="w">        </span><span class="p">()</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">Map</span><span class="p">.</span><span class="na">of</span><span class="p">(</span><span class="s">&quot;some-user-value&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">value</span><span class="p">)</span>
+<span class="w">      </span><span class="p">)</span>
+<span class="w">    </span><span class="p">).</span><span class="na">get</span><span class="p">();</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="p">}</span>
+</code></pre></div>
+<p>As you can see, the code above doesn't contain any engine-specific code, but rather uses only the <code>process-engine-api</code>.
+This means that the resulting code is portable and the decision about used engine doesn't influence the implementation
+of you application logic.</p>
+<p>The second step depends on your target architecture and used process engine. Please refer to the one of the following
+configurations:</p>
+<h2 id="camunda-platform-7-running-as-embedded-engine">Camunda Platform 7 running as embedded engine<a class="headerlink" href="#camunda-platform-7-running-as-embedded-engine" title="Permanent link">#</a></h2>
+<p>If you start with a Camunda Platform 7 operated in an embedded engine mode, by for example using the Camunda Spring Boot Starter,
+the following configuration is applicable for you. </p>
+<p>First of all add the corresponding adapter to your project's classpath:</p>
+<div class="highlight"><pre><span></span><code><span class="w">  </span><span class="nt">&lt;dependency&gt;</span>
+<span class="w">    </span><span class="nt">&lt;groupId&gt;</span>dev.bpm-crafters.process-engine-api<span class="nt">&lt;/groupId&gt;</span>
+<span class="w">    </span><span class="nt">&lt;artifactId&gt;</span>process-engine-api-adapter-camunda-platform-c7-embedded-spring-boot-starter<span class="nt">&lt;/artifactId&gt;</span>
+<span class="w">    </span><span class="nt">&lt;version&gt;</span>${process-engine-api.version}<span class="nt">&lt;/version&gt;</span>
+<span class="w">  </span><span class="nt">&lt;/dependency&gt;</span>
+</code></pre></div>
+<p>and finally add the following configuration to your configuration properties. Here is a version for <code>application.yaml</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">dev</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">bpm-crafters</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">process-api</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">adapter</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">c7</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">embedded</span><span class="p">:</span>
+<span class="w">            </span><span class="nt">external-service-tasks</span><span class="p">:</span>
+<span class="w">              </span><span class="nt">delivery-strategy</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">embedded_job</span>
+<span class="w">              </span><span class="nt">worker-id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">embedded-worker</span>
+<span class="w">              </span><span class="nt">lock-time-in-seconds</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span>
+<span class="w">            </span><span class="nt">user-tasks</span><span class="p">:</span>
+<span class="w">              </span><span class="nt">delivery-strategy</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">embedded_job</span>
+</code></pre></div>
+<h2 id="camunda-platform-7-running-as-remote-engine">Camunda Platform 7 running as remote engine<a class="headerlink" href="#camunda-platform-7-running-as-remote-engine" title="Permanent link">#</a></h2>
+<p>If you start with a Camunda Platform 7 operated remotely, the following configuration is applicable for you.</p>
+<p>First of all add the corresponding adapter to your project's classpath. In order to connect to remote engine,
+you will need to use some client. Assuming you are using Camunda Hub extension <a href="https://github.com/camunda-community-hub/camunda-platform-7-rest-client-spring-boot">camunda-platform-7-rest-client-spring-boot</a>,
+you will also need to add some additional libraries. Here is the result:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">&lt;dependendcies&gt;</span>
+<span class="w">  </span><span class="cm">&lt;!-- the correct adapter --&gt;</span>
+<span class="w">  </span><span class="nt">&lt;dependency&gt;</span>
+<span class="w">    </span><span class="nt">&lt;groupId&gt;</span>dev.bpm-crafters.process-engine-api<span class="nt">&lt;/groupId&gt;</span>
+<span class="w">    </span><span class="nt">&lt;artifactId&gt;</span>process-engine-api-adapter-camunda-platform-c7-remote-spring-boot-starter<span class="nt">&lt;/artifactId&gt;</span>
+<span class="w">    </span><span class="nt">&lt;version&gt;</span>${process-engine-api.version}<span class="nt">&lt;/version&gt;</span>
+<span class="w">  </span><span class="nt">&lt;/dependency&gt;</span>
+<span class="w">  </span><span class="cm">&lt;!-- rest client library --&gt;</span><span class="w"> </span>
+<span class="w">  </span><span class="nt">&lt;dependency&gt;</span>
+<span class="w">    </span><span class="nt">&lt;groupId&gt;</span>org.camunda.community.rest<span class="nt">&lt;/groupId&gt;</span>
+<span class="w">    </span><span class="nt">&lt;artifactId&gt;</span>camunda-platform-7-rest-client-spring-boot-starter<span class="nt">&lt;/artifactId&gt;</span>
+<span class="w">    </span><span class="nt">&lt;version&gt;</span>7.21.0<span class="nt">&lt;/version&gt;</span>
+<span class="w">  </span><span class="nt">&lt;/dependency&gt;</span>
+<span class="w">  </span><span class="cm">&lt;!-- open feign client --&gt;</span>
+<span class="w">  </span><span class="nt">&lt;dependency&gt;</span>
+<span class="w">    </span><span class="nt">&lt;groupId&gt;</span>org.springframework.cloud<span class="nt">&lt;/groupId&gt;</span>
+<span class="w">    </span><span class="nt">&lt;artifactId&gt;</span>spring-cloud-starter-openfeign<span class="nt">&lt;/artifactId&gt;</span>
+<span class="w">  </span><span class="nt">&lt;/dependency&gt;</span>
+<span class="w">  </span><span class="nt">&lt;dependency&gt;</span>
+<span class="w">    </span><span class="nt">&lt;groupId&gt;</span>io.github.openfeign<span class="nt">&lt;/groupId&gt;</span>
+<span class="w">    </span><span class="nt">&lt;artifactId&gt;</span>feign-httpclient<span class="nt">&lt;/artifactId&gt;</span>
+<span class="w">  </span><span class="nt">&lt;/dependency&gt;</span>
+<span class="nt">&lt;/dependendcies&gt;</span>
+</code></pre></div>
+<p>and finally add the following configuration to your configuration properties. Here is a version for <code>application.yaml</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">dev</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">bpm-crafters</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">process-api</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">adapter</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">c7</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">remote</span><span class="p">:</span>
+<span class="w">            </span><span class="nt">external-service-tasks</span><span class="p">:</span>
+<span class="w">              </span><span class="nt">delivery-strategy</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">remote_scheduled</span>
+<span class="w">              </span><span class="nt">fixed-rate-schedule-rate</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span>
+<span class="w">              </span><span class="nt">worker-id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">embedded-worker</span>
+<span class="w">              </span><span class="nt">lock-time-in-seconds</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span>
+<span class="w">            </span><span class="nt">user-tasks</span><span class="p">:</span>
+<span class="w">              </span><span class="nt">fixed-rate-schedule-rate</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span>
+<span class="w">              </span><span class="nt">delivery-strategy</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">remote_scheduled</span>
+
+<span class="c1"># to tell the client library where the engine is located provide the correct details below:</span>
+<span class="nt">feign</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">client</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">config</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">default</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">url</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;http://localhost:9090/engine-rest/&quot;</span>
+</code></pre></div>
+<h2 id="camunda-platform-8-as-saas">Camunda Platform 8 as SaaS<a class="headerlink" href="#camunda-platform-8-as-saas" title="Permanent link">#</a></h2>
+<p>If you start with a Camunda Platform 8 operated as SaaS, the following configuration is applicable for you.</p>
+<p>First add the corresponding adapter to your project's classpath:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">&lt;dependencies&gt;</span>
+<span class="w">    </span><span class="nt">&lt;dependency&gt;</span>
+<span class="w">      </span><span class="nt">&lt;groupId&gt;</span>dev.bpm-crafters.process-engine-api<span class="nt">&lt;/groupId&gt;</span>
+<span class="w">      </span><span class="nt">&lt;artifactId&gt;</span>process-engine-api-adapter-camunda-platform-c8-spring-boot-starter<span class="nt">&lt;/artifactId&gt;</span>
+<span class="w">    </span><span class="nt">&lt;/dependency&gt;</span>
+
+<span class="w">    </span><span class="cm">&lt;!-- We need the camunda client too --&gt;</span>
+<span class="w">    </span><span class="nt">&lt;dependency&gt;</span>
+<span class="w">      </span><span class="nt">&lt;groupId&gt;</span>io.camunda.spring<span class="nt">&lt;/groupId&gt;</span>
+<span class="w">      </span><span class="nt">&lt;artifactId&gt;</span>spring-boot-starter-camunda<span class="nt">&lt;/artifactId&gt;</span>
+<span class="w">    </span><span class="nt">&lt;/dependency&gt;</span>
+<span class="w">    </span><span class="nt">&lt;dependency&gt;</span>
+<span class="w">      </span><span class="nt">&lt;groupId&gt;</span>io.camunda.spring<span class="nt">&lt;/groupId&gt;</span>
+<span class="w">      </span><span class="nt">&lt;artifactId&gt;</span>java-common<span class="nt">&lt;/artifactId&gt;</span>
+<span class="w">    </span><span class="nt">&lt;/dependency&gt;</span>
+<span class="nt">&lt;/dependencies&gt;</span>
+</code></pre></div>
+<p>and configure the adapter in your application properties:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">dev</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">bpm-crafters</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">process-api</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">adapter</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">c8</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">user-tasks</span><span class="p">:</span>
+<span class="w">            </span><span class="nt">delivery-strategy</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">subscription_refreshing</span>
+<span class="w">            </span><span class="nt">fixed-rate-schedule-rate</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5000</span><span class="w"> </span><span class="c1"># every 5 seconds</span>
+<span class="w">            </span><span class="nt">tasklist-url</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://${zeebe.client.cloud.region}.tasklist.camunda.io/${zeebe.client.cloud.clusterId}</span>
+<span class="w">            </span><span class="nt">fixed-rate-refresh-rate</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5000</span><span class="w"> </span><span class="c1"># every 5 seconds</span>
+<span class="w">          </span><span class="nt">service-tasks</span><span class="p">:</span>
+<span class="w">            </span><span class="nt">delivery-strategy</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">subscription</span>
+<span class="w">            </span><span class="nt">worker-id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">worker</span>
+
+<span class="nt">zeebe</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">client</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">cloud</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">region</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${ZEEBE_REGION}</span>
+<span class="w">      </span><span class="nt">clusterId</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${ZEEBE_CLUSTER_ID}</span>
+<span class="w">      </span><span class="nt">clientId</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${ZEEBE_CLIENT_ID}</span>
+<span class="w">      </span><span class="nt">clientSecret</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${ZEEBE_CLIENT_SECRET}</span>
+</code></pre></div>
 
 
 
@@ -687,7 +923,7 @@
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1-2.1-2M12.5 7v5.2l4 2.4-1 1L11 13V7h1.5M11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2v1.8Z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">April 26, 2024</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">April 29, 2024</span>
   </span>
 
     
