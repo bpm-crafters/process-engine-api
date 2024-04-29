@@ -91,7 +91,8 @@ nav:
   - Home: index.md
   - Introduction:
     - Motivation and Goal: introduction/index.md
-  - Getting Started: getting-started/index.md
+    - Clean Architecture: introduction/clean-architecture.md
+  - Quick Start: getting-started/index.md
   - Reference:
     - Overview: reference-guide/index.md
     - Message Correlation: reference-guide/correlation.md

@@ -10,6 +10,9 @@ We provide documentation for different people and different tasks. A good starti
 ## Get in touch
 
 If you are missing a feature, have a question regarding usage or deployment, you should definitely get in touch
-with us. There are various ways to do so:
+with us. Here is a link to the open issues of the project:
 
 [![Github Issues](https://img.shields.io/github/issues/bpm-crafters/process-engine-api)](https://github.com/bpm-crafters/process-engine-api/issues)
+
+You might want to help with their implementation or file some new or just contribute your opinion in the discussions. At any rate, any 
+participation or feedback is highly welcome.
