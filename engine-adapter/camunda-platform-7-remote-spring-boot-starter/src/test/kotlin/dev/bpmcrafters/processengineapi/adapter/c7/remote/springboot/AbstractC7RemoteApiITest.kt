@@ -40,7 +40,7 @@ abstract class AbstractC7RemoteApiITest(processTestHelperImpl: ProcessTestHelper
   fun setUp() {
     repositoryService.createDeployment()
       .name("Simple Process")
-      .addClasspathResource("bpmn/simple-process.bpmn")
+      .addClasspathResource(BPMN)
       .deploy()
   }
 
