@@ -1,11 +1,14 @@
 package dev.bpmcrafters.processengineapi.adapter.c8.task.delivery
 
+import dev.bpmcrafters.processengineapi.adapter.c8.task.SubscribingUserTaskDelivery
 import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionRepository
 import dev.bpmcrafters.processengineapi.adapter.commons.task.TaskSubscriptionHandle
+import dev.bpmcrafters.processengineapi.task.TaskSubscription
 import dev.bpmcrafters.processengineapi.task.TaskType
 import io.camunda.zeebe.client.ZeebeClient
 import io.camunda.zeebe.client.api.command.ClientStatusException
 import io.camunda.zeebe.client.api.response.ActivatedJob
+import io.camunda.zeebe.client.api.worker.JobWorker
 import io.camunda.zeebe.client.api.worker.JobWorkerBuilderStep1.JobWorkerBuilderStep3
 import io.grpc.Status
 import mu.KLogging
@@ -15,12 +18,15 @@ class SubscribingRefreshingUserTaskDelivery(
   private val subscriptionRepository: SubscriptionRepository,
   private val workerId: String,
   private val userTaskLockTimeoutMs: Long,
-) {
+): SubscribingUserTaskDelivery {
 
   companion object : KLogging() {
     const val ZEEBE_USER_TASK = "io.camunda.zeebe:userTask"
     const val TIMEOUT_FACTOR = 2L
   }
+
+  // taskDescriptionKey to job => TODO typealias for taskDescriptionKey?
+  private var jobWorkerRegistry: Map<String, JobWorker> = emptyMap()
 
   fun refresh() {
     subscriptionRepository
@@ -94,7 +100,21 @@ class SubscribingRefreshingUserTaskDelivery(
           // FIXME -> more to setup from props
           // FIXME -> metrics to setup
           .open()
+          .let {
+            jobWorkerRegistry + (subscription.taskDescriptionKey to it)
+          }
       }
+  }
+
+  override fun unsubscribe(taskSubscription: TaskSubscription) {
+    if(taskSubscription is TaskSubscriptionHandle) { // TODO extend interface of TaskSubscription?
+      logger.info { "Unsubscribe from user task: ${taskSubscription.taskDescriptionKey}" }
+      jobWorkerRegistry[taskSubscription.taskDescriptionKey]?.close()
+    }
+  }
+
+  fun unsubscribeAll() {
+    jobWorkerRegistry.forEach { (_, job) -> job.close() }
   }
 
   /*
@@ -112,6 +132,5 @@ class SubscribingRefreshingUserTaskDelivery(
       this
     }
   }
-
 
 }

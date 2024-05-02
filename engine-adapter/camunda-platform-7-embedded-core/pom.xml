@@ -11,13 +11,20 @@
 
   <artifactId>process-engine-api-adapter-camunda-platform-c7-embedded-core</artifactId>
 
+  <properties>
+    <camunda.version>7.20.0</camunda.version>
+    <h2.version>2.2.224</h2.version>
+    <camunda-platform-7-mockito.version>7.20.1</camunda-platform-7-mockito.version>
+    <mockk.version>1.13.10</mockk.version>
+  </properties>
+
   <dependencyManagement>
     <dependencies>
       <!-- https://mvnrepository.com/artifact/org.camunda.bpm/camunda-bom -->
       <dependency>
         <groupId>org.camunda.bpm</groupId>
         <artifactId>camunda-bom</artifactId>
-        <version>7.20.0</version>
+        <version>${camunda.version}</version>
         <scope>import</scope>
         <type>pom</type>
       </dependency>
@@ -40,6 +47,40 @@
       <artifactId>camunda-engine</artifactId>
       <scope>provided</scope>
     </dependency>
+
+    <!-- Testing -->
+    <dependency>
+      <groupId>dev.bpm-crafters.process-engine-api</groupId>
+      <artifactId>process-engine-api-adapter-testing</artifactId>
+      <version>${project.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>com.h2database</groupId>
+      <artifactId>h2</artifactId>
+      <version>${h2.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.camunda.bpm</groupId>
+      <artifactId>camunda-bpm-junit5</artifactId>
+      <version>${camunda.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.camunda.bpm</groupId>
+      <artifactId>camunda-bpm-assert</artifactId>
+      <version>${camunda.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.camunda.community.mockito</groupId>
+      <artifactId>camunda-platform-7-mockito</artifactId>
+      <version>${camunda-platform-7-mockito.version}</version>
+      <scope>test</scope>
+    </dependency>
+
   </dependencies>
 
 </project>

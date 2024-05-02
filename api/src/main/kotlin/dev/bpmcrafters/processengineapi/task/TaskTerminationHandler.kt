@@ -6,4 +6,4 @@ import java.util.function.Consumer
  * Handler that is invoked if the task is deleted after the task has been assigned to the task handler.
  * @since 0.0.1
  */
-interface TaskTerminationHandler : Consumer<String>
+fun interface TaskTerminationHandler : Consumer<String>

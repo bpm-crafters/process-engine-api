@@ -18,6 +18,8 @@
   <packaging>pom</packaging>
 
   <properties>
+    <spring-boot.version>3.2.5</spring-boot.version>
+
     <!-- TEST -->
     <mockito.version>5.1.0</mockito.version>
     <assertj.version>3.24.2</assertj.version>
@@ -26,6 +28,7 @@
   <modules>
     <module>api</module>
     <module>examples</module>
+    <module>engine-adapter/adapter-testing</module>
     <module>engine-adapter/adapter-commons</module>
     <module>engine-adapter/camunda-platform-7-embedded-core</module>
     <module>engine-adapter/camunda-platform-7-embedded-spring-boot-starter</module>
@@ -117,6 +120,9 @@
             <plugin>no-arg</plugin>
             <plugin>all-open</plugin>
           </compilerPlugins>
+          <pluginOptions>
+            <option>all-open:annotation=io.toolisticon.testing.jgiven.JGivenKotlinStage</option>
+          </pluginOptions>
         </configuration>
       </plugin>
       <plugin>
@@ -199,7 +205,7 @@
     </developer>
     <developer>
       <id>__</id>
-      <name>Thomas Hinrichs</name>
+      <name>Thomas Heinrichs</name>
       <roles>
         <role>Developer</role>
       </roles>

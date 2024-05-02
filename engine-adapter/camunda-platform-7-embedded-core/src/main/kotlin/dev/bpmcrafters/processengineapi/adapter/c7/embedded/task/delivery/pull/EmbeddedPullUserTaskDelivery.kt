@@ -26,34 +26,39 @@ class EmbeddedPullUserTaskDelivery(
    */
   fun deliverAll() {
     val subscriptions = subscriptionRepository.getTaskSubscriptions()
-    taskService
-      .createTaskQuery()
-      .forSubscriptions(subscriptions)
-      .list()
-      .forEach { task ->
-        subscriptions
-          .firstOrNull { subscription -> subscription.matches(task) }
-          ?.let { activeSubscription ->
+    if(subscriptions.isNotEmpty()) {
+      logger.trace { "Pull user tasks for subscriptions: $subscriptions" }
+      taskService
+        .createTaskQuery()
+        .forSubscriptions(subscriptions)
+        .list()
+        .forEach { task ->
+          subscriptions
+            .firstOrNull { subscription -> subscription.matches(task) }
+            ?.let { activeSubscription ->
 
-            subscriptionRepository.activateSubscriptionForTask(task.id, activeSubscription)
+              subscriptionRepository.activateSubscriptionForTask(task.id, activeSubscription)
 
-            val variables = if (activeSubscription.payloadDescription == null) {
-              taskService.getVariables(task.id)
-            } else {
-              if (activeSubscription.payloadDescription!!.isEmpty()) {
-                mapOf()
+              val variables = if (activeSubscription.payloadDescription == null) {
+                taskService.getVariables(task.id)
               } else {
-                taskService.getVariables(task.id, activeSubscription.payloadDescription)
+                if (activeSubscription.payloadDescription!!.isEmpty()) {
+                  mapOf()
+                } else {
+                  taskService.getVariables(task.id, activeSubscription.payloadDescription)
+                }
+              }
+              try {
+                activeSubscription.action.accept(task.toTaskInformation(), variables)
+              } catch (e: Exception) {
+                logger.error { "[PROCESS-ENGINE-C7-EMBEDDED]: Error delivering task ${task.id}: ${e.message}" }
+                subscriptionRepository.deactivateSubscriptionForTask(taskId = task.id)
               }
             }
-            try {
-              activeSubscription.action.accept(task.toTaskInformation(), variables)
-            } catch (e: Exception) {
-              logger.error { "[PROCESS-ENGINE-C7-EMBEDDED]: Error delivering task ${task.id}: ${e.message}" }
-              subscriptionRepository.deactivateSubscriptionForTask(taskId = task.id)
-            }
-          }
-      }
+        }
+      } else {
+      logger.trace { "Pull user tasks disabled because of no active subscriptions" }
+    }
   }
 
   private fun TaskQuery.forSubscriptions(subscriptions: List<TaskSubscriptionHandle>): TaskQuery {

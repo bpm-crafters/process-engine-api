@@ -36,17 +36,17 @@ class StartProcessApiImpl(
     }
   }
 
-  private fun ProcessInstance.toProcessInformation() = ProcessInformation(
-    instanceId = this.id,
-    meta = mapOf(
-      CommonRestrictions.PROCESS_DEFINITION_KEY to this.processDefinitionId,
-      CommonRestrictions.BUSINESS_KEY to this.businessKey,
-      CommonRestrictions.TENANT_ID to this.tenantId,
-      "rootProcessInstanceId" to this.rootProcessInstanceId
-    )
-  )
-
   override fun meta(instance: MetaInfoAware): MetaInfo {
     TODO()
   }
 }
+
+fun ProcessInstance.toProcessInformation() = ProcessInformation(
+  instanceId = this.id,
+  meta = mapOf(
+    CommonRestrictions.PROCESS_DEFINITION_KEY to this.processDefinitionId,
+    CommonRestrictions.BUSINESS_KEY to this.businessKey,
+    CommonRestrictions.TENANT_ID to this.tenantId,
+    "rootProcessInstanceId" to this.rootProcessInstanceId
+  )
+)

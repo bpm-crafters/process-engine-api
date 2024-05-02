@@ -4,6 +4,7 @@ import dev.bpmcrafters.processengineapi.adapter.c8.correlation.CorrelationApiImp
 import dev.bpmcrafters.processengineapi.adapter.c8.correlation.SignalApiImpl
 import dev.bpmcrafters.processengineapi.adapter.c8.deploy.DeploymentApiImpl
 import dev.bpmcrafters.processengineapi.adapter.c8.process.StartProcessApiImpl
+import dev.bpmcrafters.processengineapi.adapter.c8.task.SubscribingUserTaskDelivery
 import dev.bpmcrafters.processengineapi.adapter.c8.task.completion.C8TaskListClientUserTaskCompletionApiImpl
 import dev.bpmcrafters.processengineapi.adapter.c8.task.completion.C8ZeebeExternalServiceTaskCompletionApiImpl
 import dev.bpmcrafters.processengineapi.adapter.c8.task.subscription.C8TaskSubscriptionApiImpl
@@ -70,8 +71,9 @@ class C8AdapterAutoConfiguration {
   )
 
   @Bean
-  fun taskCompletionApi(subscriptionRepository: SubscriptionRepository): TaskSubscriptionApi = C8TaskSubscriptionApiImpl(
-    subscriptionRepository = subscriptionRepository
+  fun taskCompletionApi(subscriptionRepository: SubscriptionRepository, subscribingUserTaskDelivery: SubscribingUserTaskDelivery?): TaskSubscriptionApi = C8TaskSubscriptionApiImpl(
+    subscriptionRepository = subscriptionRepository,
+    subscribingUserTaskDelivery = subscribingUserTaskDelivery,
   )
 
   @Bean

@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: ITest
+
+dev:
+  bpm-crafters:
+    process-api:
+      adapter:
+        c8:
+          user-tasks:
+            delivery-strategy: subscription_refreshing
+            fixed-rate-schedule-rate: 100000
+            tasklist-url: localhost
+            fixed-rate-refresh-rate: 100000
+          service-tasks:
+            delivery-strategy: subscription
+            worker-id: execute-action-external

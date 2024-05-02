@@ -6,4 +6,4 @@ import java.util.function.Supplier
  * Supplier for the payload.
  * @since 0.0.1
  */
-interface PayloadSupplier : Supplier<Map<String, Any>>
+fun interface PayloadSupplier : Supplier<Map<String, Any>>
