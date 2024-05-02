@@ -31,7 +31,11 @@ class C7RemoteProcessTestHelper(
   override fun getUserTaskCompletionApi(): UserTaskCompletionApi = userTaskCompletionApi
   override fun getExternalTaskCompletionApi(): ExternalTaskCompletionApi = externalTaskCompletionApi
 
-  override fun triggerUserTaskDeliveryManually() = userTaskDelivery.deliverAll()
+  override fun triggerPullingUserTaskDeliveryManually() = userTaskDelivery.deliverAll()
+  override fun subscribeForUserTasks() {
+    TODO("Not yet implemented")
+  }
+
   override fun triggerExternalTaskDeliveryManually() = externalTaskDelivery.deliverAll()
 
   override fun getProcessInformation(instanceId: String): ProcessInformation =

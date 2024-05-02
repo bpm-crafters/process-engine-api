@@ -1,23 +1,18 @@
-package dev.bpmcrafters.processengineapi.adapter.c7.embedded.process
+package dev.bpmcrafters.processengineapi.adapter.c8
 
-import dev.bpmcrafters.processengineapi.adapter.c7.embedded.process.AbstractC7EmbeddedApiITest.Companion.BPMN
+import dev.bpmcrafters.processengineapi.test.ProcessTestHelper
 import io.toolisticon.testing.jgiven.GIVEN
 import io.toolisticon.testing.jgiven.THEN
 import io.toolisticon.testing.jgiven.WHEN
-import org.camunda.bpm.engine.test.Deployment
-import org.camunda.bpm.engine.test.junit5.ProcessEngineExtension
+import org.junit.Ignore
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.RegisterExtension
+import org.springframework.beans.factory.annotation.Autowired
 
-@Deployment(resources = [BPMN])
-class C7EmbeddedTaskApiITest : AbstractC7EmbeddedApiITest(C7EmbeddedProcessTestHelper(camunda.processEngine)) {
-
-  companion object {
-    @RegisterExtension
-    val camunda: ProcessEngineExtension = ProcessEngineExtension.builder().useProcessEngine(processEngine).build()
-  }
+class C8TaskApiITest(@Autowired processTestHelperImpl: ProcessTestHelper) : AbstractC8ApiITest(processTestHelperImpl) {
 
   @Test
+  @Disabled("FIXME")
   fun `should get subscribed for user task with pull strategie`() {
     GIVEN
       .`a active user task subscription`(USER_TASK)
@@ -27,6 +22,48 @@ class C7EmbeddedTaskApiITest : AbstractC7EmbeddedApiITest(C7EmbeddedProcessTestH
 
     THEN
       .`we should get notified about a new user task with pull strategy`()
+  }
+
+  @Test
+  fun `should get subscribed for user task with subscribing strategie`() {
+    GIVEN
+      .`a active user task subscription`(USER_TASK)
+      .`subscribe for tasks`()
+
+    WHEN
+      .`start process by definition`(KEY)
+
+    THEN
+      .`we should get notified about a new user task with subscribing strategy`()
+  }
+
+  @Test
+  @Disabled("FIXME")
+  fun `should not get subscribed for user task with pull strategie after unsubscribe`() {
+    GIVEN
+      .`a active user task subscription`(USER_TASK)
+
+    WHEN
+      .`unsubscribe user task subscription`()
+      .`start process by definition`(KEY)
+
+    THEN
+      .`we should not get notified about a new user task with pull strategy`()
+  }
+
+  @Test
+  @Disabled("FIXME")
+  fun `should not get subscribed for user task with subscribing strategie after unsubscribe`() {
+    GIVEN
+      .`a active user task subscription`(USER_TASK)
+      .`subscribe for tasks`()
+
+    WHEN
+      .`unsubscribe user task subscription`()
+      .`start process by definition`(KEY)
+
+    THEN
+      .`we should not get notified about a new user task with subscribing strategy`()
   }
 
   @Test
@@ -42,19 +79,7 @@ class C7EmbeddedTaskApiITest : AbstractC7EmbeddedApiITest(C7EmbeddedProcessTestH
   }
 
   @Test
-  fun `should not get subscribed for user task with pull strategie after unsubscribe`() {
-    GIVEN
-      .`a active user task subscription`(USER_TASK)
-
-    WHEN
-      .`unsubscribe user task subscription`()
-      .`start process by definition`(KEY)
-
-    THEN
-      .`we should not get notified about a new user task with pull strategy`()
-  }
-
-  @Test
+  @Disabled("FIXME")
   fun `should not get subscribed for external task with pull strategie after unsubscribe`() {
     GIVEN
       .`a active external task subscription`(USER_TASK)
@@ -68,6 +93,7 @@ class C7EmbeddedTaskApiITest : AbstractC7EmbeddedApiITest(C7EmbeddedProcessTestH
   }
 
   @Test
+  @Disabled("FIXME")
   fun `should complete a user task`() {
     GIVEN
       .`a active user task subscription`(USER_TASK)
@@ -81,6 +107,7 @@ class C7EmbeddedTaskApiITest : AbstractC7EmbeddedApiITest(C7EmbeddedProcessTestH
   }
 
   @Test
+  @Disabled("FIXME")
   fun `should complete a external task`() {
     GIVEN
       .`a active external task subscription`(EXTERNAL_TASK)

@@ -54,7 +54,10 @@ class C7EmbeddedProcessTestHelper(private val processEngine: ProcessEngine) : Pr
     subscriptionRepository = subscriptionRepository
   )
 
-  override fun triggerUserTaskDeliveryManually() = embeddedPullUserTaskDelivery.deliverAll()
+  override fun triggerPullingUserTaskDeliveryManually() = embeddedPullUserTaskDelivery.deliverAll()
+  override fun subscribeForUserTasks() {
+    TODO("Not yet implemented")
+  }
 
   override fun triggerExternalTaskDeliveryManually() = embeddedPullExternalTaskDelivery.deliverAll()
 

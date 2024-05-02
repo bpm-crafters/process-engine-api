@@ -16,7 +16,9 @@ interface ProcessTestHelper {
 
   fun getExternalTaskCompletionApi(): ExternalTaskCompletionApi
 
-  fun triggerUserTaskDeliveryManually()
+  fun triggerPullingUserTaskDeliveryManually()
+
+  fun subscribeForUserTasks()
 
   fun triggerExternalTaskDeliveryManually()
 

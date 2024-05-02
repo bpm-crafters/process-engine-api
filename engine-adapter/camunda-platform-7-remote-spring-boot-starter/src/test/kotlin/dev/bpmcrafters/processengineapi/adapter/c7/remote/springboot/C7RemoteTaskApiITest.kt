@@ -18,7 +18,7 @@ class C7RemoteTaskApiITest(@Autowired processTestHelperImpl: ProcessTestHelper) 
       .`start process by definition`(KEY)
 
     THEN
-      .`we should get notified about a new user task`()
+      .`we should get notified about a new user task with pull strategy`()
   }
 
   @Test
@@ -43,7 +43,7 @@ class C7RemoteTaskApiITest(@Autowired processTestHelperImpl: ProcessTestHelper) 
       .`start process by definition`(KEY)
 
     THEN
-      .`we should not get notified about a new user task`()
+      .`we should not get notified about a new user task with pull strategy`()
   }
 
   @Test
@@ -66,7 +66,7 @@ class C7RemoteTaskApiITest(@Autowired processTestHelperImpl: ProcessTestHelper) 
       .`start process by definition`(KEY)
 
     THEN
-      .`we should get notified about a new user task`()
+      .`we should get notified about a new user task with pull strategy`()
 
     WHEN
       .`complete the user task`()

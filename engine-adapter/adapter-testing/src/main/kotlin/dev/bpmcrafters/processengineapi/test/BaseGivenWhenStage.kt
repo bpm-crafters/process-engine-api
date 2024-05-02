@@ -9,10 +9,13 @@ import dev.bpmcrafters.processengineapi.task.*
 import io.mockk.mockk
 import io.toolisticon.testing.jgiven.JGivenKotlinStage
 import io.toolisticon.testing.jgiven.step
+import mu.KLogging
 import org.assertj.core.api.Assertions.assertThat
 
 @JGivenKotlinStage
 class BaseGivenWhenStage : Stage<BaseGivenWhenStage>() {
+
+  companion object : KLogging()
 
   @ExpectedScenarioState
   lateinit var processTestHelper: ProcessTestHelper
@@ -66,7 +69,16 @@ class BaseGivenWhenStage : Stage<BaseGivenWhenStage>() {
   }
 
   fun `a active user task subscription`(taskDescriptionKey: String) = step {
-    taskSubscription = subscribeTask(TaskType.USER, taskDescriptionKey) { taskInformation, _ -> userTaskId = taskInformation.taskId }
+    taskSubscription = subscribeTask(TaskType.USER, taskDescriptionKey) { taskInformation, _ ->
+      run {
+        logger.info { "Got new task ${taskInformation.taskId}" }
+        userTaskId = taskInformation.taskId
+      }
+    }
+  }
+
+  fun `subscribe for tasks`() = step {
+    processTestHelper.subscribeForUserTasks()
   }
 
   fun `a active external task subscription`(taskDescriptionKey: String) = step {

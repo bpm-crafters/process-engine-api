@@ -14,7 +14,8 @@ import dev.bpmcrafters.processengineapi.test.ProcessTestHelper
 
 class C8ProcessTestHelper(
   private val startProcessApi: StartProcessApi,
-  private val userTaskDelivery: SubscribingRefreshingUserTaskDelivery,
+  private val subscribingUserTaskDelivery: SubscribingRefreshingUserTaskDelivery,
+  private val pullUserTaskDelivery: PullUserTaskDelivery,
   private val subscribingServiceTaskDelivery: SubscribingServiceTaskDelivery,
   private val taskSubscriptionApi: TaskSubscriptionApi,
   private val userTaskCompletionApi: UserTaskCompletionApi,
@@ -27,7 +28,9 @@ class C8ProcessTestHelper(
   override fun getUserTaskCompletionApi(): UserTaskCompletionApi = userTaskCompletionApi
   override fun getExternalTaskCompletionApi(): ExternalTaskCompletionApi = externalTaskCompletionApi
 
-  override fun triggerUserTaskDeliveryManually() = userTaskDelivery.refresh()
+  override fun triggerPullingUserTaskDeliveryManually() = pullUserTaskDelivery.deliverAll()
+  override fun subscribeForUserTasks() = subscribingUserTaskDelivery.subscribe()
+
   override fun triggerExternalTaskDeliveryManually() = subscribingServiceTaskDelivery.subscribe()
 
   override fun getProcessInformation(instanceId: String): ProcessInformation = ProcessInformation(
@@ -35,6 +38,9 @@ class C8ProcessTestHelper(
     meta = emptyMap()
   )
 
-  override fun clearAllSubscriptions() = (subscriptionRepository as InMemSubscriptionRepository).deleteAllTaskSubscriptions()
+  override fun clearAllSubscriptions() {
+    (subscriptionRepository as InMemSubscriptionRepository).deleteAllTaskSubscriptions()
+    subscribingUserTaskDelivery.unsubscribeAll()
+  }
 
 }
