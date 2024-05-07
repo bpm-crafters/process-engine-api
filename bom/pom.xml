@@ -10,6 +10,7 @@
   <artifactId>process-engine-api-bom</artifactId>
   <name>BOM: ${artifactId}</name>
   <description>Bill of Materials for Process Engine API.</description>
+  <packaging>pom</packaging>
 
   <dependencyManagement>
     <dependencies>
