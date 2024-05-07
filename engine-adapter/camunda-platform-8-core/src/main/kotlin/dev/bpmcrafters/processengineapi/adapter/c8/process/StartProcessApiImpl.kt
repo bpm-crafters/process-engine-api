@@ -3,12 +3,10 @@ package dev.bpmcrafters.processengineapi.adapter.c8.process
 import dev.bpmcrafters.processengineapi.CommonRestrictions
 import dev.bpmcrafters.processengineapi.MetaInfo
 import dev.bpmcrafters.processengineapi.MetaInfoAware
-import dev.bpmcrafters.processengineapi.process.ProcessInformation
-import dev.bpmcrafters.processengineapi.process.StartProcessApi
-import dev.bpmcrafters.processengineapi.process.StartProcessByDefinitionCmd
-import dev.bpmcrafters.processengineapi.process.StartProcessCommand
+import dev.bpmcrafters.processengineapi.process.*
 import io.camunda.zeebe.client.ZeebeClient
 import io.camunda.zeebe.client.api.response.ProcessInstanceEvent
+import io.camunda.zeebe.client.api.response.PublishMessageResponse
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.Future
 
@@ -29,6 +27,17 @@ class StartProcessApiImpl(
             .get()
             .toProcessInformation()
         }
+      is StartProcessByMessageCmd ->
+        CompletableFuture.supplyAsync {
+          zeebeClient
+            .newPublishMessageCommand()
+            .messageName(cmd.messageName)
+            .correlationKey("") // empty means create a new instance
+            .variables(cmd.payloadSupplier.get())
+            .send()
+            .get()
+            .toProcessInformation()
+        }
       else -> throw IllegalArgumentException("Unsupported start command $cmd")
     }
   }
@@ -39,6 +48,13 @@ class StartProcessApiImpl(
       "processDefinitionId" to "${this.processDefinitionKey}",
       CommonRestrictions.PROCESS_DEFINITION_KEY to this.bpmnProcessId,
       CommonRestrictions.TENANT_ID to this.tenantId,
+    )
+  )
+
+  private fun PublishMessageResponse.toProcessInformation() = ProcessInformation(
+    instanceId = "",
+    meta = mapOf(
+
     )
   )
 
