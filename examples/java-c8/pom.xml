@@ -10,7 +10,7 @@
   </parent>
 
   <artifactId>process-engine-api-examples-java-c8</artifactId>
-  <description>Example: Java Camunda Platform 8</description>
+  <name>Example: Java C8</name>
 
   <dependencyManagement>
     <dependencies>

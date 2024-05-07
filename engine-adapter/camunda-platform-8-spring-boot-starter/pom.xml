@@ -10,6 +10,7 @@
   </parent>
 
   <artifactId>process-engine-api-adapter-camunda-platform-c8-spring-boot-starter</artifactId>
+  <name>Adapter: C8 Spring-Boot Starter</name>
   <properties>
     <spring-boot.version>3.1.8</spring-boot.version>
     <zeebe-client-java.version>8.4.1</zeebe-client-java.version>

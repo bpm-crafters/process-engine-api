@@ -10,7 +10,7 @@
   </parent>
 
   <artifactId>process-engine-api-examples-java-c7-remote</artifactId>
-  <description>Example: Java Camunda Platform 7 Remote</description>
+  <name>Example: Java C7 Remote</name>
 
   <dependencyManagement>
     <dependencies>

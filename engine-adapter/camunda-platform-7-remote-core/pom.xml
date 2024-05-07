@@ -10,8 +10,7 @@
   </parent>
 
   <artifactId>process-engine-api-adapter-camunda-platform-c7-remote-core</artifactId>
-  <properties>
-  </properties>
+  <name>Adapter: C7 Remote Core</name>
 
   <dependencyManagement>
     <dependencies>

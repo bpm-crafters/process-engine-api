@@ -8,5 +8,7 @@
   </parent>
 
   <artifactId>process-engine-api</artifactId>
+  <name>API: ${artifactId}</name>
+  <description>Java API for engine-independent process functionality.</description>
 
 </project>

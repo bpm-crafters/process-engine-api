@@ -10,7 +10,7 @@
   </parent>
 
   <artifactId>process-engine-api-examples-java-c7</artifactId>
-  <description>Example: Java Camunda Platform 7</description>
+  <name>Example: Java C7 Embedded</name>
 
   <dependencyManagement>
     <dependencies>

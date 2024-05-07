@@ -10,12 +10,13 @@
   </parent>
 
   <artifactId>process-engine-api-adapter-commons</artifactId>
+  <name>Adapter: Common Implementation</name>
 
   <dependencies>
     <dependency>
       <groupId>dev.bpm-crafters.process-engine-api</groupId>
       <artifactId>process-engine-api</artifactId>
-      <version>0.0.1-SNAPSHOT</version>
+      <version>${project.version}</version>
     </dependency>
   </dependencies>
 

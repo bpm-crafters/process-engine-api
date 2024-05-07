@@ -10,6 +10,7 @@
   </parent>
 
   <artifactId>process-engine-api-adapter-camunda-platform-c8-core</artifactId>
+  <name>Adapter: C8 Core</name>
   <properties>
     <zeebe-client-java.version>8.4.0</zeebe-client-java.version>
     <camunda-tasklist-client-java.version>8.4.0.3</camunda-tasklist-client-java.version>

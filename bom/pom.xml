@@ -1,17 +1,15 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-
   <parent>
     <groupId>dev.bpm-crafters.process-engine-api</groupId>
     <artifactId>process-engine-api-root</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <relativePath>../pom.xml</relativePath>
   </parent>
 
-  <artifactId>process-engine-api-examples</artifactId>
-  <packaging>pom</packaging>
-  <name>Example: Parent</name>
+  <artifactId>process-engine-api-bom</artifactId>
+  <name>BOM: ${artifactId}</name>
+  <description>Bill of Materials for Process Engine API.</description>
 
   <dependencyManagement>
     <dependencies>
@@ -22,32 +20,28 @@
       </dependency>
       <dependency>
         <groupId>dev.bpm-crafters.process-engine-api</groupId>
+        <artifactId>process-engine-api-adapter-camunda-platform-c7-embedded-core</artifactId>
+      </dependency>
+      <dependency>
+        <groupId>dev.bpm-crafters.process-engine-api</groupId>
         <artifactId>process-engine-api-adapter-camunda-platform-c7-embedded-spring-boot-starter</artifactId>
-        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>dev.bpm-crafters.process-engine-api</groupId>
+        <artifactId>process-engine-api-adapter-camunda-platform-c7-remote-core</artifactId>
       </dependency>
       <dependency>
         <groupId>dev.bpm-crafters.process-engine-api</groupId>
         <artifactId>process-engine-api-adapter-camunda-platform-c7-remote-spring-boot-starter</artifactId>
-        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>dev.bpm-crafters.process-engine-api</groupId>
+        <artifactId>process-engine-api-adapter-camunda-platform-c8-core</artifactId>
       </dependency>
       <dependency>
         <groupId>dev.bpm-crafters.process-engine-api</groupId>
         <artifactId>process-engine-api-adapter-camunda-platform-c8-spring-boot-starter</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>dev.bpm-crafters.process-engine-api</groupId>
-        <artifactId>process-engine-api-examples-java-common-fixture</artifactId>
-        <version>${project.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
-
-  <modules>
-    <module>java-common-fixture</module>
-    <module>java-c7</module>
-    <module>java-c7-remote</module>
-    <module>java-c8</module>
-  </modules>
-
 </project>
