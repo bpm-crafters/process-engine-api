@@ -17,7 +17,7 @@ data class TaskSubscriptionHandle(
   val termination: TaskTerminationHandler
 ) : TaskSubscription {
   override fun toString(): String {
-    return "TaskSubscriptionHandle(taskType=$taskType, payloadDescription=$payloadDescription, restrictions=$payloadDescription, taskDescriptionKey=$taskDescriptionKey"
+    return "TaskSubscriptionHandle(taskType=$taskType, payloadDescription=$payloadDescription, restrictions=$restrictions, taskDescriptionKey=$taskDescriptionKey"
   }
 }
 
