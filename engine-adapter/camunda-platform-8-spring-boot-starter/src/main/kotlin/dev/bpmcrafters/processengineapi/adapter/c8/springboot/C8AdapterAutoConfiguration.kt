@@ -25,6 +25,7 @@ import io.camunda.tasklist.CamundaTaskListClient
 import io.camunda.zeebe.client.ZeebeClient
 import io.camunda.zeebe.spring.client.CamundaAutoConfiguration
 import io.camunda.zeebe.spring.client.properties.ZeebeClientConfigurationProperties
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.AutoConfigureAfter
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.context.properties.EnableConfigurationProperties
@@ -41,44 +42,13 @@ import org.springframework.scheduling.annotation.EnableScheduling
 @EnableConfigurationProperties(value = [C8AdapterProperties::class])
 class C8AdapterAutoConfiguration {
 
-
-  @Bean
-  @ConditionalOnMissingBean
-  fun camundaTaskListClientSaaS(
-    zeebeClientCloudConfigurationProperties: ZeebeClientConfigurationProperties,
-    c8AdapterProperties: C8AdapterProperties
-  ): CamundaTaskListClient {
-    /*
-    val jwtConfig = JwtConfig()
-    jwtConfig.addProduct(Product.TASKLIST,
-      JwtCredential(
-        zeebeClientCloudConfigurationProperties.cloud.clientId,
-        zeebeClientCloudConfigurationProperties.cloud.clientSecret,
-        "tasklist.camunda.io",
-        "https://login.cloud.camunda.io/oauth/token")
-    )
-    val authentication = SaaSAuthentication.builder().jwtConfig(jwtConfig).build()
-    */
-
-    return CamundaTaskListClient
-      .builder()
-      .taskListUrl(c8AdapterProperties.userTasks.tasklistUrl)
-      .saaSAuthentication(
-        zeebeClientCloudConfigurationProperties.cloud.clientId,
-        zeebeClientCloudConfigurationProperties.cloud.clientSecret,
-      )
-      .shouldReturnVariables()
-      // .authentication(authentication) // produces NPE
-      .build()
-  }
-
   @Bean
   fun startProcessApi(zeebeClient: ZeebeClient): StartProcessApi = StartProcessApiImpl(
     zeebeClient = zeebeClient
   )
 
   @Bean
-  fun taskCompletionApi(subscriptionRepository: SubscriptionRepository, subscribingUserTaskDelivery: SubscribingUserTaskDelivery?): TaskSubscriptionApi = C8TaskSubscriptionApiImpl(
+  fun taskCompletionApi(subscriptionRepository: SubscriptionRepository, @Autowired(required = false) subscribingUserTaskDelivery: SubscribingUserTaskDelivery?): TaskSubscriptionApi = C8TaskSubscriptionApiImpl(
     subscriptionRepository = subscriptionRepository,
     subscribingUserTaskDelivery = subscribingUserTaskDelivery,
   )
@@ -110,6 +80,37 @@ class C8AdapterAutoConfiguration {
       zeebeClient = zeebeClient,
       subscriptionRepository = subscriptionRepository
     )
+
+
+  @Bean
+  @ConditionalOnMissingBean
+  fun camundaTaskListClientSaaS(
+    zeebeClientCloudConfigurationProperties: ZeebeClientConfigurationProperties,
+    c8AdapterProperties: C8AdapterProperties
+  ): CamundaTaskListClient {
+    /*
+    val jwtConfig = JwtConfig()
+    jwtConfig.addProduct(Product.TASKLIST,
+      JwtCredential(
+        zeebeClientCloudConfigurationProperties.cloud.clientId,
+        zeebeClientCloudConfigurationProperties.cloud.clientSecret,
+        "tasklist.camunda.io",
+        "https://login.cloud.camunda.io/oauth/token")
+    )
+    val authentication = SaaSAuthentication.builder().jwtConfig(jwtConfig).build()
+    */
+
+    return CamundaTaskListClient
+      .builder()
+      .taskListUrl(c8AdapterProperties.userTasks.tasklistUrl)
+      .saaSAuthentication(
+        zeebeClientCloudConfigurationProperties.cloud.clientId,
+        zeebeClientCloudConfigurationProperties.cloud.clientSecret,
+      )
+      .shouldReturnVariables()
+      // .authentication(authentication) // produces NPE
+      .build()
+  }
 
   @Bean
   fun userTaskCompletionStrategy(

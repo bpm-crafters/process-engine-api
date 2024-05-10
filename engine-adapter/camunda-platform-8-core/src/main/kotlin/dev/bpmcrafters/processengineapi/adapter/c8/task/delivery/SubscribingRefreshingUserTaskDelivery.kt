@@ -25,10 +25,10 @@ class SubscribingRefreshingUserTaskDelivery(
     const val TIMEOUT_FACTOR = 2L
   }
 
-  // taskDescriptionKey to job => TODO typealias for taskDescriptionKey?
   private var jobWorkerRegistry: Map<String, JobWorker> = emptyMap()
 
   fun refresh() {
+    logger.trace { "[USER TASK DELIVERY] Refreshing user tasks." }
     subscriptionRepository
       .getDeliveredTaskIds(TaskType.USER)
       .forEach { taskId ->
@@ -58,7 +58,7 @@ class SubscribingRefreshingUserTaskDelivery(
   }
 
   fun subscribe() {
-    logger.info { "[USER TASK DELIVERY] Subscribing for user tasks" }
+    logger.info { "[USER TASK DELIVERY] Subscribing for user tasks." }
     subscriptionRepository
       .getTaskSubscriptions()
       .filter { it.taskType == TaskType.USER }
@@ -69,7 +69,7 @@ class SubscribingRefreshingUserTaskDelivery(
           .jobType(ZEEBE_USER_TASK)
           .handler { client, job ->
             if (subscription.matches(job)) {
-              logger.info { "Retrieved user task ${job.key}" }
+              logger.debug { "Retrieved user task ${job.key}" }
               subscriptionRepository.activateSubscriptionForTask("${job.key}", subscription)
 
               val variables = if (subscription.payloadDescription == null) {
@@ -110,7 +110,7 @@ class SubscribingRefreshingUserTaskDelivery(
 
   override fun unsubscribe(taskSubscription: TaskSubscription) {
     if(taskSubscription is TaskSubscriptionHandle) { // TODO extend interface of TaskSubscription?
-      logger.info { "Unsubscribe from user task: ${taskSubscription.taskDescriptionKey}" }
+      logger.debug { "Unsubscribe from user task: ${taskSubscription.taskDescriptionKey}" }
       jobWorkerRegistry[taskSubscription.taskDescriptionKey]?.close()
     }
   }
@@ -119,7 +119,7 @@ class SubscribingRefreshingUserTaskDelivery(
     jobWorkerRegistry.forEach { (_, job) -> job.close() }
   }
 
-  /*
+/*
  * Additional restrictions to check.
  */
   private fun TaskSubscriptionHandle.matches(job: ActivatedJob): Boolean {

@@ -9,9 +9,11 @@ fun ActivatedJob.toTaskInformation(): TaskInformation = TaskInformation(
   taskId = "${this.key}",
   meta = mapOf(
     CommonRestrictions.TENANT_ID to this.tenantId,
-    CommonRestrictions.TASK_DEFINITION_KEY to this.bpmnProcessId,
-    CommonRestrictions.PROCESS_DEFINITION_KEY to "${this.processDefinitionKey}",
+    CommonRestrictions.TASK_DEFINITION_KEY to this.elementId,
+    CommonRestrictions.PROCESS_DEFINITION_KEY to this.bpmnProcessId,
+    CommonRestrictions.PROCESS_DEFINITION_ID to "${this.processDefinitionKey}",
     CommonRestrictions.PROCESS_INSTANCE_ID to "${this.processInstanceKey}",
+    "formKey" to this.customHeaders.getOrDefault("io.camunda.zeebe:formKey", null),
     // FIXME more from the job.customHeaders!
   )
 )
