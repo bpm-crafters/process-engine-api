@@ -26,6 +26,7 @@ import io.camunda.zeebe.client.ZeebeClient
 import io.camunda.zeebe.spring.client.CamundaAutoConfiguration
 import io.camunda.zeebe.spring.client.properties.ZeebeClientConfigurationProperties
 import org.springframework.boot.autoconfigure.AutoConfigureAfter
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -42,7 +43,7 @@ class C8AdapterAutoConfiguration {
 
 
   @Bean
-  @Profile("saas")
+  @ConditionalOnMissingBean
   fun camundaTaskListClientSaaS(
     zeebeClientCloudConfigurationProperties: ZeebeClientConfigurationProperties,
     c8AdapterProperties: C8AdapterProperties
@@ -68,24 +69,6 @@ class C8AdapterAutoConfiguration {
       )
       .shouldReturnVariables()
       // .authentication(authentication) // produces NPE
-      .build()
-  }
-
-  @Bean
-  @Profile("sm")
-  fun camundaTaskListClientSelfManaged(
-    zeebeClientCloudConfigurationProperties: ZeebeClientConfigurationProperties,
-    c8AdapterProperties: C8AdapterProperties
-  ): CamundaTaskListClient {
-    // FIXME -> consider not to define this in the adapter at all, but delegate the setup  to infrastructure of the application
-    return CamundaTaskListClient
-      .builder()
-      .taskListUrl(c8AdapterProperties.userTasks.tasklistUrl)
-      .saaSAuthentication(
-        zeebeClientCloudConfigurationProperties.cloud.clientId,
-        zeebeClientCloudConfigurationProperties.cloud.clientSecret
-      )
-      .shouldReturnVariables()
       .build()
   }
 
