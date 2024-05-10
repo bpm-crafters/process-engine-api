@@ -25,6 +25,7 @@ class InitialPullExternalServiceTasksDeliveryBinding(
   )
 
   @EventListener
+  @Suppress("UNUSED_PARAMETER")
   fun pullUserTasks(event: ProcessApplicationStartedEvent) {
     logger.trace { "[INITIAL PULL]: Delivering external service tasks..." }
     pullDelivery.deliverAll()

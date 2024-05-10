@@ -18,7 +18,7 @@ class SubscribingRefreshingUserTaskDelivery(
   private val subscriptionRepository: SubscriptionRepository,
   private val workerId: String,
   private val userTaskLockTimeoutMs: Long,
-): SubscribingUserTaskDelivery {
+) : SubscribingUserTaskDelivery {
 
   companion object : KLogging() {
     const val ZEEBE_USER_TASK = "io.camunda.zeebe:userTask"
@@ -90,7 +90,6 @@ class SubscribingRefreshingUserTaskDelivery(
               }
             } else {
               // put it back
-              // TODO: check this, is it ok to put the job this way back?
               zeebeClient.newUpdateRetriesCommand(job).retries(job.retries + 1)
               client.newFailCommand(job.key)
             }
@@ -98,8 +97,6 @@ class SubscribingRefreshingUserTaskDelivery(
           .name(workerId)
           .timeout(userTaskLockTimeoutMs * TIMEOUT_FACTOR)
           .forSubscription(subscription)
-          // FIXME -> tenantId
-          // FIXME -> more to setup from props
           // FIXME -> metrics to setup
           .open()
           .let {
@@ -109,7 +106,7 @@ class SubscribingRefreshingUserTaskDelivery(
   }
 
   override fun unsubscribe(taskSubscription: TaskSubscription) {
-    if(taskSubscription is TaskSubscriptionHandle) { // TODO extend interface of TaskSubscription?
+    if (taskSubscription is TaskSubscriptionHandle) {
       logger.debug { "Unsubscribe from user task: ${taskSubscription.taskDescriptionKey}" }
       jobWorkerRegistry[taskSubscription.taskDescriptionKey]?.close()
     }
@@ -119,15 +116,19 @@ class SubscribingRefreshingUserTaskDelivery(
     jobWorkerRegistry.forEach { (_, job) -> job.close() }
   }
 
-/*
- * Additional restrictions to check.
- */
+  /*
+   * Additional restrictions to check.
+   */
+  @Suppress("UNUSED_PARAMETER")
   private fun TaskSubscriptionHandle.matches(job: ActivatedJob): Boolean {
     return this.taskType == TaskType.USER
     // job.customHeaders // FIXME: analyze this! make sure we reflect the subscription restrictions
   }
 
   private fun JobWorkerBuilderStep3.forSubscription(subscription: TaskSubscriptionHandle): JobWorkerBuilderStep3 {
+    // FIXME -> tenantId
+    // FIXME -> more to setup from props
+
     return if (subscription.payloadDescription != null && subscription.payloadDescription!!.isNotEmpty()) {
       this.fetchVariables(subscription.payloadDescription!!.toList())
     } else {

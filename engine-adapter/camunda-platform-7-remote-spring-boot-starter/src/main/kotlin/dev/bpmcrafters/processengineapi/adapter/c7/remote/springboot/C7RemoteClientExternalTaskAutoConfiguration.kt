@@ -30,8 +30,7 @@ class C7RemoteClientExternalTaskAutoConfiguration {
   @ConditionalOnProperty(prefix = C7RemoteAdapterProperties.DEFAULT_PREFIX, name = ["external-service-tasks.delivery-strategy"], havingValue = "remote_subscribed")
   fun externalTaskClientCompletionApi(
     externalTaskService: ExternalTaskService,
-    subscriptionRepository: SubscriptionRepository,
-    c7AdapterProperties: C7RemoteAdapterProperties
+    subscriptionRepository: SubscriptionRepository
   ): ExternalTaskCompletionApi =
     C7RemoteClientExternalTaskCompletionApiImpl(
       externalTaskService = externalTaskService,

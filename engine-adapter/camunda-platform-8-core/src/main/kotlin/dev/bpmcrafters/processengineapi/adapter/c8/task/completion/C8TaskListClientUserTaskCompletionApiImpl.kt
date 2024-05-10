@@ -27,10 +27,6 @@ class C8TaskListClientUserTaskCompletionApiImpl(
   }
 
   override fun completeTaskByError(cmd: CompleteTaskByErrorCmd): Future<Empty> {
-    TODO("Not implemented yet") // how can this be done?
-    subscriptionRepository.deactivateSubscriptionForTask(cmd.taskId)?.apply {
-      termination.accept(cmd.taskId)
-    }
-    return CompletableFuture.completedFuture(Empty)
+    TODO("Not supported by task list client")
   }
 }

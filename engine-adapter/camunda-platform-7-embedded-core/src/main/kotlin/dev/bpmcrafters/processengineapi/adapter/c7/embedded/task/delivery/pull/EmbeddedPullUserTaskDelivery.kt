@@ -61,6 +61,7 @@ class EmbeddedPullUserTaskDelivery(
     }
   }
 
+  @Suppress("UNUSED_PARAMETER")
   private fun TaskQuery.forSubscriptions(subscriptions: List<TaskSubscriptionHandle>): TaskQuery {
     // FIXME: narrow down, for the moment take all tasks
     return this

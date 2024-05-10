@@ -53,8 +53,6 @@ class SubscribingServiceTaskDelivery(
           }
           .name(workerId)
           .forSubscription(subscription)
-          // FIXME -> tenantId
-          // FIXME -> more to setup from props
           // FIXME -> metrics to setup
           .open()
       }
@@ -64,12 +62,15 @@ class SubscribingServiceTaskDelivery(
    * Additional restrictions to check.
    * The activated job can be completed by the Subscription strategy and is correct type (topic).
    */
+  @Suppress("UNUSED_PARAMETER")
   private fun TaskSubscriptionHandle.matches(job: ActivatedJob): Boolean {
     return this.taskType == TaskType.EXTERNAL
     // job.customHeaders // FIXME: analyze this! user/service task, etc..
   }
 
   private fun JobWorkerBuilderStep3.forSubscription(subscription: TaskSubscriptionHandle): JobWorkerBuilderStep3 {
+    // FIXME -> tenantId
+    // FIXME -> more to setup from props
     return if (subscription.payloadDescription != null && subscription.payloadDescription!!.isNotEmpty()) {
       this.fetchVariables(subscription.payloadDescription!!.toList())
     } else {

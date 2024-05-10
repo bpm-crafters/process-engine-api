@@ -21,6 +21,7 @@ class InitialPullUserTasksDeliveryBinding(
   )
 
   @EventListener
+  @Suppress("UNUSED_PARAMETER")
   fun pullUserTasks(event: ProcessApplicationStartedEvent) {
     logger.trace { "[INITIAL PULL]: Delivering user tasks..." }
     pullDelivery.deliverAll()
