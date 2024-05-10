@@ -13,6 +13,11 @@
   <packaging>pom</packaging>
   <name>Example: Parent</name>
 
+  <properties>
+    <deploy.skip>true</deploy.skip>
+    <gpg.skip>true</gpg.skip>
+  </properties>
+
   <dependencyManagement>
     <dependencies>
       <dependency>
