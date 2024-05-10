@@ -42,9 +42,19 @@ jobs:
       - name: Build with Maven
         run: ./mvnw clean verify -U -B -ntp -T4
 
-      # itest
-      - name: Run itest
-        run: ./mvnw integration-test failsafe:verify -Pitest -ntp -U -B -T4
+      # Get GPG private key into GPG
+      - name: Import GPG Owner Trust
+        run: echo "${{ secrets.GPG_OWNERTRUST }}" | base64 --decode | gpg --import-ownertrust
+
+      - name: Import GPG key
+        run: echo "${{ secrets.GPG_SECRET_KEYS }}" | base64 --decode | gpg --import --no-tty --batch --yes --always-trust
+
+      # Publish release
+      - name: Deploy a new snapshot version to Maven Central
+        run: ./mvnw clean deploy -B -ntp -DskipTests -DskipExamples -Prelease -Dgpg.keyname="${{ secrets.GPG_KEYNAME }}" -Dgpg.passphrase="${{ secrets.GPG_PASSPHRASE }}"
+        env:
+          OSS_CENTRAL_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
+          OSS_CENTRAL_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
 
 
 #      - name: Upload coverage to Codecov
