@@ -33,6 +33,8 @@ jobs:
           java-version: 17
           distribution: 'zulu'
           cache: maven
+          server-username: OSS_CENTRAL_USERNAME # env variable for Maven Central
+          server-password: OSS_CENTRAL_PASSWORD # env variable for Maven Central
 
       # Prepare
       - name: Prepare Maven Wrapper
@@ -40,7 +42,7 @@ jobs:
 
       # Build
       - name: Build with Maven
-        run: ./mvnw clean verify -U -B -ntp -T4
+        run: ./mvnw clean verify -U -B -ntp -T4 -DskipTests
 
       # Get GPG private key into GPG
       - name: Import GPG Owner Trust

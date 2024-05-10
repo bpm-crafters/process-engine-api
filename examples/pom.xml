@@ -16,6 +16,7 @@
   <properties>
     <deploy.skip>true</deploy.skip>
     <gpg.skip>true</gpg.skip>
+    <dokka.skip>true</dokka.skip>
   </properties>
 
   <dependencyManagement>
