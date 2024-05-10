@@ -1,2 +1,3 @@
 dev.bpmcrafters.processengineapi.adapter.c8.springboot.C8AdapterAutoConfiguration
 dev.bpmcrafters.processengineapi.adapter.c8.springboot.DeliveryAutoConfiguration
+dev.bpmcrafters.processengineapi.adapter.c8.springboot.CompletionAutoConfiguration

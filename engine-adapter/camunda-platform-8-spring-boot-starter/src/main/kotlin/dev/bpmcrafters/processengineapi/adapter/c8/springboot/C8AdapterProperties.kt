@@ -4,6 +4,9 @@ import dev.bpmcrafters.processengineapi.adapter.c8.springboot.C8AdapterPropertie
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.boot.context.properties.NestedConfigurationProperty
 
+/**
+ * Configuration of Camunda 8 adapter.
+ */
 @ConfigurationProperties(prefix = DEFAULT_PREFIX)
 class C8AdapterProperties(
   /**
@@ -40,6 +43,10 @@ class C8AdapterProperties(
      */
     val deliveryStrategy: UserTaskDeliveryStrategy,
     /**
+     * Completion strategy for user tasks.
+     */
+    val completionStrategy: UserTaskCompletionStrategy,
+    /**
      * Fixed rate for scheduled user task delivery.
      */
     val fixedRateScheduleRate: Long = 5_000L,
@@ -50,15 +57,46 @@ class C8AdapterProperties(
     /**
      * URL of the task list.
      */
-    val tasklistUrl: String
+    val tasklistUrl: String = "https://\${zeebe.client.cloud.region}.tasklist.camunda.io/\${zeebe.client.cloud.clusterId}"
   )
 
+  /**
+   * Strategy to complete user tasks.
+   */
+  enum class UserTaskCompletionStrategy {
+    /**
+     * Use task list client.
+     */
+    TASKLIST,
+
+    /**
+     * Use zeebe client.
+     */
+    JOB
+  }
+
+  /**
+   * Strategy to deliver user tasks.
+   */
   enum class UserTaskDeliveryStrategy {
+    /**
+     * Scheduled, based on task list client.
+     */
     SCHEDULED,
+
+    /**
+     * Subscribing using zeebe job subscriptions, extending lock times.
+     */
     SUBSCRIPTION_REFRESHING
   }
 
+  /**
+   * Strategy to deliver external service tasks.
+   */
   enum class ServiceTaskDeliveryStrategy {
+    /**
+     * Subscribing using zeebe job.
+     */
     SUBSCRIPTION
   }
 }
