@@ -58,6 +58,7 @@ class SubscribingRefreshingUserTaskDelivery(
   }
 
   fun subscribe() {
+    logger.info { "[USER TASK DELIVERY] Subscribing for user tasks" }
     subscriptionRepository
       .getTaskSubscriptions()
       .filter { it.taskType == TaskType.USER }
@@ -68,6 +69,7 @@ class SubscribingRefreshingUserTaskDelivery(
           .jobType(ZEEBE_USER_TASK)
           .handler { client, job ->
             if (subscription.matches(job)) {
+              logger.info { "Retrieved user task ${job.key}" }
               subscriptionRepository.activateSubscriptionForTask("${job.key}", subscription)
 
               val variables = if (subscription.payloadDescription == null) {

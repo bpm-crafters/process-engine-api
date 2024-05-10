@@ -17,6 +17,10 @@ import dev.bpmcrafters.processengineapi.process.StartProcessApi
 import dev.bpmcrafters.processengineapi.task.ExternalTaskCompletionApi
 import dev.bpmcrafters.processengineapi.task.TaskSubscriptionApi
 import dev.bpmcrafters.processengineapi.task.UserTaskCompletionApi
+import io.camunda.common.auth.Product
+import io.camunda.common.auth.SimpleAuthentication
+import io.camunda.common.auth.SimpleConfig
+import io.camunda.common.auth.SimpleCredential
 import io.camunda.tasklist.CamundaTaskListClient
 import io.camunda.zeebe.client.ZeebeClient
 import io.camunda.zeebe.spring.client.CamundaAutoConfiguration
@@ -25,6 +29,7 @@ import org.springframework.boot.autoconfigure.AutoConfigureAfter
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Profile
 import org.springframework.scheduling.annotation.EnableScheduling
 
 @EnableScheduling
@@ -37,6 +42,7 @@ class C8AdapterAutoConfiguration {
 
 
   @Bean
+  @Profile("saas")
   fun camundaTaskListClientSaaS(
     zeebeClientCloudConfigurationProperties: ZeebeClientConfigurationProperties,
     c8AdapterProperties: C8AdapterProperties
@@ -62,6 +68,24 @@ class C8AdapterAutoConfiguration {
       )
       .shouldReturnVariables()
       // .authentication(authentication) // produces NPE
+      .build()
+  }
+
+  @Bean
+  @Profile("sm")
+  fun camundaTaskListClientSelfManaged(
+    zeebeClientCloudConfigurationProperties: ZeebeClientConfigurationProperties,
+    c8AdapterProperties: C8AdapterProperties
+  ): CamundaTaskListClient {
+    // FIXME -> consider not to define this in the adapter at all, but delegate the setup  to infrastructure of the application
+    return CamundaTaskListClient
+      .builder()
+      .taskListUrl(c8AdapterProperties.userTasks.tasklistUrl)
+      .saaSAuthentication(
+        zeebeClientCloudConfigurationProperties.cloud.clientId,
+        zeebeClientCloudConfigurationProperties.cloud.clientSecret
+      )
+      .shouldReturnVariables()
       .build()
   }
 

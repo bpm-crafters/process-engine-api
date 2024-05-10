@@ -38,17 +38,17 @@
     <dependency>
       <groupId>io.camunda.spring</groupId>
       <artifactId>spring-boot-starter-camunda</artifactId>
-      <version>8.4.1</version>
+      <version>8.4.0</version>
     </dependency>
     <dependency>
       <groupId>io.camunda.spring</groupId>
       <artifactId>java-common</artifactId>
-      <version>8.4.1</version>
+      <version>8.4.0</version>
     </dependency>
     <dependency>
       <groupId>io.camunda</groupId>
       <artifactId>camunda-tasklist-client-java</artifactId>
-      <version>8.4.0.3</version>
+      <version>8.4.0.7</version>
     </dependency>
 
     <dependency>
@@ -78,4 +78,11 @@
       </plugin>
     </plugins>
   </build>
+  <repositories>
+    <repository>
+      <id>maven_central</id>
+      <name>Maven Central</name>
+      <url>https://repo.maven.apache.org/maven2/</url>
+    </repository>
+  </repositories>
 </project>

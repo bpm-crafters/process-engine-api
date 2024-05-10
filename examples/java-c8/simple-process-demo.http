@@ -15,7 +15,7 @@ Accept: application/json
 
 ### Start process
 // @no-log
-POST http://localhost:8082/simple-service-tasks/start-process?value={{ correlationKey }}&intValue=1
+POST http://localhost:18082/simple-service-tasks/start-process?value={{ correlationKey }}&intValue=1
 
 > {%
   client.test("Request executed successfully", function () {
@@ -32,7 +32,7 @@ POST http://localhost:8082/simple-service-tasks/start-process?value={{ correlati
   wait(5);
 %}
 // @no-log
-GET http://localhost:8082/simple-service-tasks/tasks
+GET http://localhost:18082/simple-service-tasks/tasks
 Accept: application/json
 
 > {%
@@ -52,8 +52,7 @@ Accept: application/json
 %}
 
 ### Complete user task
-// @no-log
-POST http://localhost:8082/simple-service-tasks/tasks/{{ taskId }}/complete?value=value-of-user-task-completion
+POST http://localhost:18082/simple-service-tasks/tasks/{{ taskId }}/complete?value=value-of-user-task-completion
 
 > {%
   client.test("Request executed successfully", function () {
@@ -68,7 +67,7 @@ POST http://localhost:8082/simple-service-tasks/tasks/{{ taskId }}/complete?valu
   wait(5);
 %}
 // @no-log
-POST http://localhost:8082/simple-service-tasks/correlate/{{correlationKey}}?value=value-delivered-by-correlation
+POST http://localhost:18082/simple-service-tasks/correlate/{{correlationKey}}?value=value-delivered-by-correlation
 
 > {%
   client.test("Request executed successfully", function () {

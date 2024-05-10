@@ -13,10 +13,7 @@
   <name>Adapter: C8 Core</name>
   <properties>
     <zeebe-client-java.version>8.4.0</zeebe-client-java.version>
-    <camunda-tasklist-client-java.version>8.4.0.3</camunda-tasklist-client-java.version>
-    <!--
-    <java-client-operate.version>8.4.1</java-client-operate.version>
-    -->
+    <camunda-tasklist-client-java.version>8.4.0.7</camunda-tasklist-client-java.version>
   </properties>
 
   <dependencies>
@@ -43,14 +40,6 @@
       <version>${camunda-tasklist-client-java.version}</version>
       <scope>provided</scope>
     </dependency>
-    <!--
-    <dependency>
-      <groupId>io.camunda.spring</groupId>
-      <artifactId>java-client-operate</artifactId>
-      <version>${java-client-operate.version}</version>
-      <scope>provided</scope>
-    </dependency>
-    -->
   </dependencies>
 
 </project>

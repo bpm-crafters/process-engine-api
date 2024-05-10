@@ -17,4 +17,9 @@ class RefreshingUserTaskDeliveryBinding(
     logger.trace { "[SCHEDULER]: Refreshing user tasks." }
   }
 
+  @Scheduled(initialDelayString = "\${dev.bpm-crafters.process-api.adapter.c8.user-tasks.fixed-rate-refresh-rate}", fixedDelay = Long.MAX_VALUE - 1000)
+  fun scheduleTaskSubscription() {
+    subscribingRefreshingUserTaskDelivery.subscribe()
+  }
+
 }
