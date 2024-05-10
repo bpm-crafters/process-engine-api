@@ -33,8 +33,6 @@ jobs:
           java-version: 17
           distribution: 'zulu'
           cache: maven
-          server-username: OSS_CENTRAL_USERNAME # env variable for Maven Central
-          server-password: OSS_CENTRAL_PASSWORD # env variable for Maven Central
 
       # Prepare
       - name: Prepare Maven Wrapper
@@ -42,22 +40,7 @@ jobs:
 
       # Build
       - name: Build with Maven
-        run: ./mvnw clean verify -U -B -ntp -T4 -DskipTests
-
-      # Get GPG private key into GPG
-      - name: Import GPG Owner Trust
-        run: echo "${{ secrets.GPG_OWNERTRUST }}" | base64 --decode | gpg --import-ownertrust
-
-      - name: Import GPG key
-        run: echo "${{ secrets.GPG_SECRET_KEYS }}" | base64 --decode | gpg --import --no-tty --batch --yes --always-trust
-
-      # Publish release
-      - name: Deploy a new snapshot version to Maven Central
-        run: ./mvnw clean deploy -B -ntp -DskipTests -DskipExamples -Prelease -Dgpg.keyname="${{ secrets.GPG_KEYNAME }}" -Dgpg.passphrase="${{ secrets.GPG_PASSPHRASE }}"
-        env:
-          OSS_CENTRAL_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
-          OSS_CENTRAL_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
-
+        run: ./mvnw clean verify -U -B -ntp -T4
 
       - name: Upload coverage to Codecov
         if: github.event_name == 'push' && github.actor != 'dependabot[bot]'
