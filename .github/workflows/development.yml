@@ -57,8 +57,8 @@ jobs:
           OSS_CENTRAL_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
 
 
-#      - name: Upload coverage to Codecov
-#        if: github.event_name == 'push' && github.actor != 'dependabot[bot]'
-#        uses: codecov/codecov-action@v1.0.2
-#        with:
-#          token: ${{secrets.CODECOV_TOKEN}}
+      - name: Upload coverage to Codecov
+        if: github.event_name == 'push' && github.actor != 'dependabot[bot]'
+        uses: codecov/codecov-action@v1.0.2
+        with:
+          token: ${{secrets.CODECOV_TOKEN}}
