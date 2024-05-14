@@ -33,36 +33,6 @@ class CompletionAutoConfiguration {
 
   @Bean
   @ConditionalOnProperty(prefix = DEFAULT_PREFIX, name = ["user-tasks.completion-strategy"], havingValue = "tasklist")
-  fun camundaTaskListClientSaaS(
-    zeebeClientCloudConfigurationProperties: ZeebeClientConfigurationProperties,
-    c8AdapterProperties: C8AdapterProperties
-  ): CamundaTaskListClient {
-    /*
-    val jwtConfig = JwtConfig()
-    jwtConfig.addProduct(Product.TASKLIST,
-      JwtCredential(
-        zeebeClientCloudConfigurationProperties.cloud.clientId,
-        zeebeClientCloudConfigurationProperties.cloud.clientSecret,
-        "tasklist.camunda.io",
-        "https://login.cloud.camunda.io/oauth/token")
-    )
-    val authentication = SaaSAuthentication.builder().jwtConfig(jwtConfig).build()
-    */
-
-    return CamundaTaskListClient
-      .builder()
-      .taskListUrl(c8AdapterProperties.userTasks.tasklistUrl)
-      .saaSAuthentication(
-        zeebeClientCloudConfigurationProperties.cloud.clientId,
-        zeebeClientCloudConfigurationProperties.cloud.clientSecret,
-      )
-      .shouldReturnVariables()
-      // .authentication(authentication) // produces NPE
-      .build()
-  }
-
-  @Bean
-  @ConditionalOnProperty(prefix = DEFAULT_PREFIX, name = ["user-tasks.completion-strategy"], havingValue = "tasklist")
   fun tasklistUserTaskCompletionStrategy(
     taskListClient: CamundaTaskListClient,
     subscriptionRepository: SubscriptionRepository
