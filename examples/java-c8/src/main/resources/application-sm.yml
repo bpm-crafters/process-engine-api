@@ -12,6 +12,7 @@ dev:
             fixed-rate-schedule-rate: 2000 # every 2 seconds
             tasklist-url: http://localhost:8082
             fixed-rate-refresh-rate: 2000 # every 2 seconds
+            completion-strategy: job
           service-tasks:
             delivery-strategy: subscription
             worker-id: worker
@@ -24,10 +25,7 @@ tasklist:
 
 zeebe:
   client:
-    connection-mode: ADDRESS # CLOUD for SaaS OR ADDRESS for Self-Managed
-    cloud:
-      clientId: ${ZEEBE_CLIENT_ID}
-      clientSecret: ${ZEEBE_CLIENT_SECRET}
+    connection-mode: ADDRESS
     broker:
       gateway-address: 127.0.0.1:26500
     security:
