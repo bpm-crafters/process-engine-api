@@ -1,0 +1,67 @@
+### Start process
+< {%
+    client.global.clearAll()
+%}
+// @no-log
+POST http://localhost:8081/simple-service-tasks/start-process?value=string&intValue=1
+
+> {%
+  client.test("Request executed successfully", function () {
+    client.assert(response.status === 201, "Response status is not 201");
+  });
+
+  client.global.set("instanceId", response.headers.valueOf("Location"));
+%}
+
+### Get user tasks
+< {%
+  import {wait} from "wait";
+  console.log("waiting 5 secs");
+  wait(5);
+%}
+
+// @no-log
+GET http://localhost:8081/simple-service-tasks/tasks
+Accept: application/json
+
+> {%
+  client.test("Request executed successfully", function () {
+    client.assert(response.status === 200, "Response status is not 201");
+  });
+  client.test("Content-Type is application/json", () => {
+    const contentType = response.headers.valueOf("content-type");
+    client.assert(contentType == "application/json",
+      `Expected Content-Type is application/json, but actual is ${contentType}`)
+  })
+
+  const tasks = response.body;
+  const taskId = jsonPath(tasks, "$[0].taskId");
+  console.log("Created user task: ", taskId);
+  client.global.set("taskId", taskId);
+%}
+
+### Complete user task
+// @no-log
+POST http://localhost:8081/simple-service-tasks/tasks/{{ taskId }}/error?value=value-of-user-task-error
+
+> {%
+  client.test("Request executed successfully", function () {
+    client.assert(response.status === 204, "Response status is not 204");
+  });
+%}
+
+### Correlate signal
+< {%
+  import {wait} from "wait";
+  console.log("waiting 5 secs");
+  wait(5);
+%}
+
+// @no-log
+POST http://localhost:8081/simple-service-tasks/signal?value=value-delivered-by-signal
+
+> {%
+  client.test("Request executed successfully", function () {
+    client.assert(response.status === 204, "Response status is not 204");
+  });
+%}

@@ -1,0 +1,89 @@
+### Generate correlationKey
+< {%
+  client.global.clearAll();
+%}
+// @no-log
+GET https://www.uuidtools.com/api/generate/v4
+Accept: application/json
+
+> {%
+  const correlationKey = jsonPath(response.body, "$[0]");
+  console.log("Correlation key", correlationKey);
+  client.global.set("correlationKey", correlationKey);
+%}
+
+### Deploy process
+// @no-log
+POST http://localhost:8081/simple-service-tasks/deploy
+
+> {%
+  client.test("Request executed successfully", function () {
+    client.assert(response.status === 201, "Response status is not 201");
+  });
+
+  client.global.set("deploymentKey", response.headers.valueOf("Location"));
+%}
+
+
+### Start process
+// @no-log
+POST http://localhost:8081/simple-service-tasks/start-process?value={{ correlationKey }}&intValue=1
+
+> {%
+  client.test("Request executed successfully", function () {
+    client.assert(response.status === 201, "Response status is not 201");
+  });
+
+  client.global.set("instanceId", response.headers.valueOf("Location"));
+%}
+
+### Get user tasks
+< {%
+  import {wait} from "wait";
+  console.log("waiting 5 secs");
+  wait(5);
+%}
+// @no-log
+GET http://localhost:8081/simple-service-tasks/tasks
+Accept: application/json
+
+> {%
+  client.test("Request executed successfully", function () {
+    client.assert(response.status === 200, "Response status is not 201");
+  });
+  client.test("Content-Type is application/json", () => {
+    const contentType = response.headers.valueOf("content-type");
+    client.assert(contentType == "application/json",
+      `Expected Content-Type is application/json, but actual is ${contentType}`);
+  })
+
+  const tasks = response.body;
+  const taskId = jsonPath(tasks, "$[0].taskId");
+  console.log("Created user task: ", taskId);
+  client.global.set("taskId", taskId);
+%}
+
+### Complete user task
+// @no-log
+POST http://localhost:8081/simple-service-tasks/tasks/{{ taskId }}/complete?value=value-of-user-task-completion
+
+> {%
+  client.test("Request executed successfully", function () {
+    client.assert(response.status === 204, "Response status is not 204");
+  });
+%}
+
+### Correlate message
+< {%
+  import {wait} from "wait";
+  console.log("waiting 5 secs");
+  wait(5);
+%}
+// @no-log
+POST http://localhost:8081/simple-service-tasks/correlate/{{ correlationKey }}?value=value-delivered-by-correlation
+
+> {%
+  client.test("Request executed successfully", function () {
+    client.assert(response.status === 204, "Response status is not 204");
+  });
+%}

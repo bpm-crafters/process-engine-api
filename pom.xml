@@ -11,13 +11,15 @@
 
   <groupId>dev.bpm-crafters.process-engine-api</groupId>
   <artifactId>process-engine-api-root</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
-  <name>${project.artifactId}</name>
+  <version>0.0.1</version>
+  <name>POM: Project root</name>
   <description>Process Engine API</description>
   <url>https://github.com/bpm-crafters/process-engine-api/</url>
   <packaging>pom</packaging>
 
   <properties>
+    <spring-boot.version>3.2.5</spring-boot.version>
+
     <!-- TEST -->
     <mockito.version>5.1.0</mockito.version>
     <assertj.version>3.24.2</assertj.version>
@@ -25,6 +27,16 @@
 
   <modules>
     <module>api</module>
+    <module>bom</module>
+    <module>engine-adapter/adapter-commons</module>
+    <module>engine-adapter/adapter-testing</module>
+    <module>engine-adapter/camunda-platform-7-embedded-core</module>
+    <module>engine-adapter/camunda-platform-7-embedded-spring-boot-starter</module>
+    <module>engine-adapter/camunda-platform-7-remote-core</module>
+    <module>engine-adapter/camunda-platform-7-remote-spring-boot-starter</module>
+    <module>engine-adapter/camunda-platform-8-core</module>
+    <module>engine-adapter/camunda-platform-8-spring-boot-starter</module>
+    <!-- more modules see profiles -->
   </modules>
 
   <dependencyManagement>
@@ -99,8 +111,20 @@
         <artifactId>jacoco-maven-plugin</artifactId>
       </plugin>
       <plugin>
-        <groupId>org.jetbrains.kotlin</groupId>
+        <!-- kotlin compiler -->
         <artifactId>kotlin-maven-plugin</artifactId>
+        <groupId>org.jetbrains.kotlin</groupId>
+        <configuration>
+          <jvmTarget>17</jvmTarget>
+          <compilerPlugins>
+            <plugin>spring</plugin>
+            <plugin>no-arg</plugin>
+            <plugin>all-open</plugin>
+          </compilerPlugins>
+          <pluginOptions>
+            <option>all-open:annotation=io.toolisticon.testing.jgiven.JGivenKotlinStage</option>
+          </pluginOptions>
+        </configuration>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -108,6 +132,20 @@
       </plugin>
     </plugins>
   </build>
+
+  <profiles>
+    <profile>
+      <id>examples</id>
+      <activation>
+        <property>
+          <name>!skipExamples</name>
+        </property>
+      </activation>
+      <modules>
+        <module>examples</module>
+      </modules>
+    </profile>
+  </profiles>
 
   <licenses>
     <license>
@@ -182,7 +220,7 @@
     </developer>
     <developer>
       <id>__</id>
-      <name>Thomas Hinrichs</name>
+      <name>Thomas Heinrichs</name>
       <roles>
         <role>Developer</role>
       </roles>

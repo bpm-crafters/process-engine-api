@@ -1,0 +1,31 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: Java Camunda Platform 7 Remote
+
+springdoc:
+  swagger-ui:
+    try-it-out-enabled: true
+
+dev:
+  bpm-crafters:
+    process-api:
+      adapter:
+        c7:
+          remote:
+            external-service-tasks:
+              delivery-strategy: remote_scheduled
+              fixed-rate-schedule-rate: 10
+              worker-id: embedded-worker
+              lock-time-in-seconds: 10
+            user-tasks:
+              fixed-rate-schedule-rate: 10
+              delivery-strategy: remote_scheduled
+
+feign:
+  client:
+    config:
+      default:
+        url: "http://localhost:9090/engine-rest/"

@@ -1,7 +1,22 @@
 package dev.bpmcrafters.processengineapi.task
 
-class CompleteTaskByErrorCmd(
-  taskId: String,
-  payload: () -> Map<String, Any>,
-  val error: String
-) : CompleteTaskCmd(taskId = taskId, payload = payload)
+import dev.bpmcrafters.processengineapi.PayloadSupplier
+
+/**
+ * Command to complete the task by BPMN error.
+ * @since 0.0.1
+ */
+open class CompleteTaskByErrorCmd(
+  /**
+   * Task id.
+   */
+  val taskId: String,
+  /**
+   * Error.
+   */
+  val errorCode: String,
+  /**
+   * Payload supplier.
+   */
+  private val payloadSupplier: PayloadSupplier
+) : PayloadSupplier by payloadSupplier

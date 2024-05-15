@@ -4,13 +4,11 @@
   <parent>
     <groupId>dev.bpm-crafters.process-engine-api</groupId>
     <artifactId>process-engine-api-root</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.1</version>
   </parent>
 
   <artifactId>process-engine-api</artifactId>
-
-  <dependencies>
-
-  </dependencies>
+  <name>API: ${project.artifactId}</name>
+  <description>Java API for engine-independent process functionality.</description>
 
 </project>

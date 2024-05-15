@@ -2,10 +2,17 @@ package dev.bpmcrafters.processengineapi.process
 
 import dev.bpmcrafters.processengineapi.PayloadSupplier
 
-data class StartProcessByDefinitionCmd (
+/**
+ * Command to start a new process instance by process definition key.
+ * @since 0.0.1
+ */
+data class StartProcessByDefinitionCmd(
+  /**
+   * Process definition key.
+   */
   val definitionKey: String,
-  val payload: () -> Map<String, Any>
-) : PayloadSupplier {
-
-  override fun payload(): () -> Map<String, Any> = payload
-}
+  /**
+   * Payload supplier to pass to the new process instance.
+   */
+  val payloadSupplier: PayloadSupplier
+) : StartProcessCommand, PayloadSupplier by payloadSupplier

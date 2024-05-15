@@ -1,5 +1,9 @@
 package dev.bpmcrafters.processengineapi
 
-interface PayloadSupplier {
-  fun payload(): () -> Map<String, Any>
-}
+import java.util.function.Supplier
+
+/**
+ * Supplier for the payload.
+ * @since 0.0.1
+ */
+fun interface PayloadSupplier : Supplier<Map<String, Any>>

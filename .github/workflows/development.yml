@@ -3,8 +3,16 @@ name: Development branches
 on:
   push:
     branches:
+      - '*'         # matches every branch that doesn't contain a '/'
+      - '*/*'       # matches every branch containing a single '/'
+      - '**'        # matches every branch
       - '!master'
   pull_request:
+    branches:
+      - '*'         # matches every branch that doesn't contain a '/'
+      - '*/*'       # matches every branch containing a single '/'
+      - '**'        # matches every branch
+      - '!master'
 
 jobs:
   build:
@@ -13,14 +21,14 @@ jobs:
     steps:
       # Checkout the code
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Expose branch name
         run: echo ${{ github.ref }}
 
       # Setup JDK and Maven
       - name: Set up JDK
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           java-version: 17
           distribution: 'zulu'
@@ -34,12 +42,8 @@ jobs:
       - name: Build with Maven
         run: ./mvnw clean verify -U -B -ntp -T4
 
-      # itest
-      - name: Run itest
-        run: ./mvnw integration-test failsafe:verify -Pitest -ntp -U -B -T4
-
-#      - name: Upload coverage to Codecov
-#        if: github.event_name == 'push' && github.actor != 'dependabot[bot]'
-#        uses: codecov/codecov-action@v1.0.2
-#        with:
-#          token: ${{secrets.CODECOV_TOKEN}}
+      - name: Upload coverage to Codecov
+        if: github.event_name == 'push' && github.actor != 'dependabot[bot]'
+        uses: codecov/codecov-action@v1.0.2
+        with:
+          token: ${{secrets.CODECOV_TOKEN}}

@@ -1,0 +1,6 @@
+server:
+  port: 18082
+
+springdoc:
+  swagger-ui:
+    try-it-out-enabled: true

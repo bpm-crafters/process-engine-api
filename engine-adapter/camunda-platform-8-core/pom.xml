@@ -1,0 +1,45 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>dev.bpm-crafters.process-engine-api</groupId>
+    <artifactId>process-engine-api-root</artifactId>
+    <version>0.0.1</version>
+    <relativePath>../../pom.xml</relativePath>
+  </parent>
+
+  <artifactId>process-engine-api-adapter-camunda-platform-c8-core</artifactId>
+  <name>Adapter: C8 Core</name>
+  <properties>
+    <zeebe-client-java.version>8.4.0</zeebe-client-java.version>
+    <camunda-tasklist-client-java.version>8.4.0.7</camunda-tasklist-client-java.version>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>dev.bpm-crafters.process-engine-api</groupId>
+      <artifactId>process-engine-api</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>dev.bpm-crafters.process-engine-api</groupId>
+      <artifactId>process-engine-api-adapter-commons</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>io.camunda</groupId>
+      <artifactId>zeebe-client-java</artifactId>
+      <version>${zeebe-client-java.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.camunda</groupId>
+      <artifactId>camunda-tasklist-client-java</artifactId>
+      <version>${camunda-tasklist-client-java.version}</version>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
+
+</project>
