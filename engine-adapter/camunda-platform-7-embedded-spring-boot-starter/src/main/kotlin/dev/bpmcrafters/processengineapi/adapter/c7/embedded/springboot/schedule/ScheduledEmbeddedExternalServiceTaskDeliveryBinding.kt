@@ -13,7 +13,7 @@ class ScheduledEmbeddedExternalServiceTaskDeliveryBinding(
   @Scheduled(fixedRateString = "\${dev.bpm-crafters.process-api.adapter.c7.embedded.external-service-tasks.fixed-rate-schedule-rate}")
   fun scheduleExternalTaskDelivery() {
     logger.trace { "[SCHEDULER]: Delivering external tasks..." }
-    embeddedPullExternalTaskDelivery.deliverAll()
+    embeddedPullExternalTaskDelivery.refresh()
     logger.trace { "[SCHEDULER]: Delivered external tasks." }
   }
 

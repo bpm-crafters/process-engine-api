@@ -13,8 +13,8 @@
   <name>Example: Java C8</name>
   <properties>
     <spring-boot.version>3.2.5</spring-boot.version>
-    <camunda-tasklist-client-java.version>8.4.0.7</camunda-tasklist-client-java.version>
-    <spring-zeebe.version>8.4.0</spring-zeebe.version>
+    <camunda-tasklist-client-java.version>8.5.3.5</camunda-tasklist-client-java.version>
+    <spring-zeebe.version>8.5.9</spring-zeebe.version>
   </properties>
 
   <dependencyManagement>
@@ -54,6 +54,16 @@
       <groupId>io.camunda</groupId>
       <artifactId>camunda-tasklist-client-java</artifactId>
       <version>${camunda-tasklist-client-java.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>io.camunda</groupId>
+          <artifactId>zeebe-client-java</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.camunda.spring</groupId>
+          <artifactId>java-common</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <dependency>

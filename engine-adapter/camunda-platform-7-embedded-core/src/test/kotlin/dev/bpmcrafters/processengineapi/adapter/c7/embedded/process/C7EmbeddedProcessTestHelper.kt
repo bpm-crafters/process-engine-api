@@ -6,7 +6,6 @@ import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.pull.E
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.pull.EmbeddedPullUserTaskDelivery
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.subscription.C7TaskSubscriptionApiImpl
 import dev.bpmcrafters.processengineapi.adapter.commons.task.InMemSubscriptionRepository
-import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionRepository
 import dev.bpmcrafters.processengineapi.process.ProcessInformation
 import dev.bpmcrafters.processengineapi.process.StartProcessApi
 import dev.bpmcrafters.processengineapi.task.ExternalTaskCompletionApi
@@ -54,12 +53,12 @@ class C7EmbeddedProcessTestHelper(private val processEngine: ProcessEngine) : Pr
     subscriptionRepository = subscriptionRepository
   )
 
-  override fun triggerPullingUserTaskDeliveryManually() = embeddedPullUserTaskDelivery.deliverAll()
+  override fun triggerPullingUserTaskDeliveryManually() = embeddedPullUserTaskDelivery.refresh()
   override fun subscribeForUserTasks() {
     TODO("Not yet implemented")
   }
 
-  override fun triggerExternalTaskDeliveryManually() = embeddedPullExternalTaskDelivery.deliverAll()
+  override fun triggerExternalTaskDeliveryManually() = embeddedPullExternalTaskDelivery.refresh()
 
   override fun getProcessInformation(instanceId: String): ProcessInformation =
     processEngine.runtimeService

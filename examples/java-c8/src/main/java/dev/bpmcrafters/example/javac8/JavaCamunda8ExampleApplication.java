@@ -2,6 +2,7 @@ package dev.bpmcrafters.example.javac8;
 
 import dev.bpmcrafters.processengineapi.adapter.c8.springboot.C8AdapterProperties;
 import io.camunda.tasklist.CamundaTaskListClient;
+import io.camunda.zeebe.spring.client.properties.CamundaClientProperties;
 import io.camunda.zeebe.spring.client.properties.ZeebeClientConfigurationProperties;
 import lombok.SneakyThrows;
 import org.springframework.boot.SpringApplication;
@@ -19,18 +20,18 @@ public class JavaCamunda8ExampleApplication {
   }
 
   @Bean
-  @ConditionalOnProperty(prefix = DEFAULT_PREFIX, name = "user-tasks.completion-strategy", havingValue = "tasklist")
+  @ConditionalOnProperty(prefix = DEFAULT_PREFIX, name = "engines.default.user-tasks.completion-strategy", havingValue = "tasklist")
   @SneakyThrows
   public CamundaTaskListClient camundaTaskListClientSaaS(
-    ZeebeClientConfigurationProperties zeebeClientCloudConfigurationProperties,
+    CamundaClientProperties camundaClientProperties,
     C8AdapterProperties c8AdapterProperties
   ) {
     return CamundaTaskListClient
       .builder()
-      .taskListUrl(c8AdapterProperties.getUserTasks().getTasklistUrl())
+      .taskListUrl(c8AdapterProperties.getEngines().values().stream().findFirst().get().getUserTasks().getTasklistUrl())
       .saaSAuthentication(
-        zeebeClientCloudConfigurationProperties.getCloud().getClientId(),
-        zeebeClientCloudConfigurationProperties.getCloud().getClientSecret()
+        camundaClientProperties.getAuth().getClientId(),
+        camundaClientProperties.getAuth().getClientSecret()
       )
       .shouldReturnVariables()
       .build();

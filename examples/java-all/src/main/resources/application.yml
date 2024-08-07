@@ -13,17 +13,18 @@ dev:
   bpm-crafters:
     process-api:
       adapter:
-        c7:
-          embedded:
-            external-service-tasks:
-              delivery-strategy: embedded_job
-              worker-id: embedded-worker
-              lock-time-in-seconds: 10
-              execute-initial-pull-on-startup: true
-            user-tasks:
-              delivery-strategy: embedded_job
-              execute-initial-pull-on-startup: true
-          remote:
+        c7-embedded:
+          external-service-tasks:
+            delivery-strategy: embedded_job
+            worker-id: embedded-worker
+            lock-time-in-seconds: 10
+            execute-initial-pull-on-startup: true
+          user-tasks:
+            delivery-strategy: embedded_job
+            execute-initial-pull-on-startup: true
+        c7-remote:
+          enabled: true
+          engines:
             one:
               external-service-tasks:
                 delivery-strategy: remote_scheduled
@@ -42,16 +43,19 @@ dev:
               user-tasks:
                 fixed-rate-schedule-rate: 10
                 delivery-strategy: remote_scheduled
-          c8-eventually:
-            user-tasks:
-              delivery-strategy: subscription_refreshing
-              completion-strategy: job
-              fixed-rate-schedule-rate: 2000 # every 2 seconds
-              tasklist-url: https://${zeebe.client.cloud.region}.tasklist.camunda.io/${zeebe.client.cloud.clusterId}
-              fixed-rate-refresh-rate: 2000 # every 2 seconds
-            service-tasks:
-              delivery-strategy: subscription
-              worker-id: worker
+        c8:
+          enabled: true
+          engines:
+            c8-eventually:
+              service-tasks:
+                delivery-strategy: subscription
+                worker-id: worker
+              user-tasks:
+                delivery-strategy: subscription_refreshing
+                completion-strategy: job
+                fixed-rate-schedule-rate: 2000 # every 2 seconds
+                tasklist-url: https://${zeebe.client.cloud.region}.tasklist.camunda.io/${zeebe.client.cloud.clusterId}
+                fixed-rate-refresh-rate: 2000 # every 2 seconds
 
 camunda:
   bpm:

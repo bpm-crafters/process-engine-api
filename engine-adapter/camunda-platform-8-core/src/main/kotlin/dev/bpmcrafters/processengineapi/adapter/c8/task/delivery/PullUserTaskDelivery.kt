@@ -1,5 +1,6 @@
 package dev.bpmcrafters.processengineapi.adapter.c8.task.delivery
 
+import dev.bpmcrafters.processengineapi.adapter.commons.task.RefreshableDelivery
 import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionRepository
 import dev.bpmcrafters.processengineapi.adapter.commons.task.TaskSubscriptionHandle
 import dev.bpmcrafters.processengineapi.task.TaskType
@@ -11,9 +12,9 @@ import io.camunda.tasklist.dto.TaskState
 class PullUserTaskDelivery(
   private val taskListClient: CamundaTaskListClient,
   private val subscriptionRepository: SubscriptionRepository
-) {
+) : RefreshableDelivery {
 
-  fun deliverAll() {
+  override fun refresh() {
     val subscriptions = subscriptionRepository.getTaskSubscriptions()
 
     // FIXME -> reverse lookup for all active subscriptions
@@ -22,10 +23,8 @@ class PullUserTaskDelivery(
     taskListClient.getTasks(
       TaskSearch()
         .forSubscriptions(subscriptions)
-        .apply {
-          withVariables = true
-          state = TaskState.CREATED // deliver only open tasks
-        }
+        .setWithVariables(true)
+        .setState(TaskState.CREATED) // deliver only open tasks
     ).forEach { task ->
       subscriptions
         .firstOrNull { subscription -> subscription.matches(task) }
@@ -65,5 +64,5 @@ class PullUserTaskDelivery(
 
   private fun TaskSubscriptionHandle.matches(task: Task): Boolean =
     this.taskType == TaskType.USER && (this.taskDescriptionKey == null || this.taskDescriptionKey == task.taskDefinitionId)
-  //FIXME -> more restrictions
+    // FIXME -> more restrictions
 }

@@ -7,29 +7,30 @@ dev:
     process-api:
       adapter:
         c8:
-          user-tasks:
-            delivery-strategy: subscription_refreshing
-            fixed-rate-schedule-rate: 2000 # every 2 seconds
-            tasklist-url: http://localhost:8082
-            fixed-rate-refresh-rate: 2000 # every 2 seconds
-            completion-strategy: job
-          service-tasks:
-            delivery-strategy: subscription
-            worker-id: worker
+          enabled: true
+          engines:
+            default:
+              user-tasks:
+                delivery-strategy: subscription_refreshing
+                fixed-rate-schedule-rate: 2000 # every 2 seconds
+                tasklist-url: http://localhost:8082
+                fixed-rate-refresh-rate: 2000 # every 2 seconds
+                completion-strategy: job
+              service-tasks:
+                delivery-strategy: subscription
+                worker-id: worker
 
-tasklist:
+camunda:
   client:
-    url: http://localhost:8082
-    username: demo
-    password: demo
+    mode: simple
+    auth:
+      username: demo
+      password: demo
+    zeebe:
+      base-url: http://127.0.0.1:26500
+    tasklist:
+      base-url: http://localhost:8082
 
-zeebe:
-  client:
-    connection-mode: ADDRESS
-    broker:
-      gateway-address: 127.0.0.1:26500
-    security:
-      plaintext: true
 
 logging:
   level:

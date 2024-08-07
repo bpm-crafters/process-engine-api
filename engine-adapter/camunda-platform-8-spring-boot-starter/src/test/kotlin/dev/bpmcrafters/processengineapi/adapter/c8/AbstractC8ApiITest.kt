@@ -42,8 +42,8 @@ abstract class AbstractC8ApiITest(processTestHelperImpl: ProcessTestHelper) : JG
   @Autowired
   lateinit var zeebe: ZeebeClient
 
-  /**
-   * In tests we have no task list so also no need for the real client
+  /*
+   * We have no task list in test, so there is no need for the real client either
    */
   @MockBean
   lateinit var camundaTaskListClient: CamundaTaskListClient

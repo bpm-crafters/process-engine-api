@@ -14,6 +14,7 @@
   <name>Test: Adapter Fixtures</name>
 
   <properties>
+    <spring-boot.version>3.2.5</spring-boot.version>
     <h2.version>2.2.224</h2.version>
     <camunda-platform-7-mockito.version>7.21.0</camunda-platform-7-mockito.version>
     <mockk.version>1.13.10</mockk.version>

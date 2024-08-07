@@ -41,19 +41,4 @@ class C8TestApplication {
     externalTaskCompletionApi = externalTaskCompletionApi,
     subscriptionRepository = subscriptionRepository
   )
-
-  /**
-   * Currently not both are supportet in parallel in non-test env
-   */
-  @Bean
-  fun scheduledUserTaskDelivery(
-    subscriptionRepository: SubscriptionRepository,
-    taskListClient: CamundaTaskListClient,
-  ): PullUserTaskDelivery {
-    return PullUserTaskDelivery(
-      subscriptionRepository = subscriptionRepository,
-      taskListClient = taskListClient
-    )
-  }
-
 }

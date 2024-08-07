@@ -18,8 +18,6 @@
   <packaging>pom</packaging>
 
   <properties>
-    <spring-boot.version>3.2.5</spring-boot.version>
-
     <!-- TEST -->
     <mockito.version>5.1.0</mockito.version>
     <assertj.version>3.24.2</assertj.version>
