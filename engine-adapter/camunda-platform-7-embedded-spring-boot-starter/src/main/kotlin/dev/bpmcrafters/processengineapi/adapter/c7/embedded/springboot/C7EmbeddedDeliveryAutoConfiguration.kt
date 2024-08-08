@@ -6,16 +6,17 @@ import dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.C7Embedde
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.event.EventBasedEmbeddedUserTaskDeliveryBinding
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.schedule.ScheduledEmbeddedExternalServiceTaskDeliveryBinding
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.schedule.ScheduledEmbeddedUserTaskDeliveryBinding
-import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.event.EmbeddedEventBasedUserTaskDelivery
-import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.pull.EmbeddedPullExternalTaskDelivery
-import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.pull.EmbeddedPullUserTaskDelivery
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.UserTaskDelivery
+import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.event.EmbeddedEventBasedUserTaskDelivery
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.job.EmbeddedTaskDeliveryEnginePlugin
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.job.EmbeddedTaskDeliveryJobHandler
+import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.pull.EmbeddedPullExternalTaskDelivery
+import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.pull.EmbeddedPullUserTaskDelivery
 import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionRepository
 import mu.KLogging
 import org.camunda.bpm.engine.ExternalTaskService
 import org.camunda.bpm.engine.TaskService
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.boot.autoconfigure.AutoConfigureAfter
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
@@ -31,7 +32,8 @@ class C7EmbeddedDeliveryAutoConfiguration {
 
   companion object : KLogging()
 
-  @Bean
+  @Bean("c7embedded-user-task-delivery")
+  @Qualifier("c7embedded-user-task-delivery")
   @ConditionalOnProperty(prefix = DEFAULT_PREFIX, name = ["user-tasks.delivery-strategy"], havingValue = "embedded_event")
   fun embeddedEventUserTaskDelivery(
     subscriptionRepository: SubscriptionRepository,
@@ -43,13 +45,17 @@ class C7EmbeddedDeliveryAutoConfiguration {
     )
   }
 
-  @Bean
+  @Bean("c7embedded-user-task-delivery-scheduler")
   @ConditionalOnProperty(prefix = DEFAULT_PREFIX, name = ["user-tasks.delivery-strategy"], havingValue = "embedded_event")
-  fun configureEventingForUserTaskDelivery(embeddedEventBasedUserTaskDelivery: EmbeddedEventBasedUserTaskDelivery) = EventBasedEmbeddedUserTaskDeliveryBinding(
+  fun configureEventingForUserTaskDelivery(
+    @Qualifier("c7embedded-user-task-delivery")
+    embeddedEventBasedUserTaskDelivery: EmbeddedEventBasedUserTaskDelivery
+  ) = EventBasedEmbeddedUserTaskDeliveryBinding(
     embeddedEventBasedUserTaskDelivery
   )
 
-  @Bean
+  @Bean("c7embedded-service-task-delivery")
+  @Qualifier("c7embedded-service-task-delivery")
   @ConditionalOnProperty(prefix = DEFAULT_PREFIX, name = ["external-service-tasks.delivery-strategy"], havingValue = "embedded_scheduled")
   fun externalTaskDelivery(
     subscriptionRepository: SubscriptionRepository,
@@ -64,7 +70,8 @@ class C7EmbeddedDeliveryAutoConfiguration {
     retryTimeout = c7AdapterProperties.externalServiceTasks.retryTimeoutInSeconds,
   )
 
-  @Bean
+  @Bean("c7embedded-user-task-delivery")
+  @Qualifier("c7embedded-user-task-delivery")
   @ConditionalOnProperty(prefix = DEFAULT_PREFIX, name = ["user-tasks.delivery-strategy"], havingValue = "embedded_scheduled")
   fun embeddedScheduledUserTaskDelivery(
     subscriptionRepository: SubscriptionRepository,
@@ -77,29 +84,34 @@ class C7EmbeddedDeliveryAutoConfiguration {
     )
   }
 
-  @Bean
+  @Bean("c7embedded-service-task-delivery-scheduler")
   @ConditionalOnProperty(prefix = DEFAULT_PREFIX, name = ["external-service-tasks.delivery-strategy"], havingValue = "embedded_scheduled")
-  fun embeddedScheduledExternalServiceTaskDeliveryBinding(embeddedPullExternalTaskDelivery: EmbeddedPullExternalTaskDelivery): ScheduledEmbeddedExternalServiceTaskDeliveryBinding {
+  fun embeddedScheduledExternalServiceTaskDeliveryBinding(
+    @Qualifier("c7embedded-service-task-delivery")
+    embeddedPullExternalTaskDelivery: EmbeddedPullExternalTaskDelivery): ScheduledEmbeddedExternalServiceTaskDeliveryBinding {
     return ScheduledEmbeddedExternalServiceTaskDeliveryBinding(
       embeddedPullExternalTaskDelivery = embeddedPullExternalTaskDelivery
     )
   }
 
-  @Bean
+  @Bean("c7embedded-user-task-delivery-scheduler")
   @ConditionalOnProperty(prefix = DEFAULT_PREFIX, name = ["user-tasks.delivery-strategy"], havingValue = "embedded_scheduled")
-  fun embeddedScheduledUserTaskDeliveryBinding(embeddedPullUserTaskDelivery: EmbeddedPullUserTaskDelivery): ScheduledEmbeddedUserTaskDeliveryBinding {
+  fun embeddedScheduledUserTaskDeliveryBinding(
+    @Qualifier("c7embedded-user-task-delivery")
+    embeddedPullUserTaskDelivery: EmbeddedPullUserTaskDelivery
+  ): ScheduledEmbeddedUserTaskDeliveryBinding {
     return ScheduledEmbeddedUserTaskDeliveryBinding(
       embeddedPullUserTaskDelivery = embeddedPullUserTaskDelivery
     )
   }
 
-  @Bean
+  @Bean("c7embedded-task-delivery-job-handler")
   @ConditionalOnExpression(
-    "'\${dev.bpm-crafters.process-api.adapter.c7.embedded.external-service-tasks.delivery-strategy}'.equals('embedded_job')"
+    "'\${$DEFAULT_PREFIX.external-service-tasks.delivery-strategy}'.equals('embedded_job')"
       + " or "
-      + "'\${dev.bpm-crafters.process-api.adapter.c7.embedded.user-tasks.delivery-strategy}'.equals('embedded_job')"
+      + "'\${$DEFAULT_PREFIX.user-tasks.delivery-strategy}'.equals('embedded_job')"
   )
-  fun embeddedJobTaskDeliveryJobHandler(
+  fun embeddedTaskDeliveryJobHandler(
     subscriptionRepository: SubscriptionRepository,
     c7AdapterProperties: C7EmbeddedAdapterProperties
   ): EmbeddedTaskDeliveryJobHandler {
@@ -111,13 +123,16 @@ class C7EmbeddedDeliveryAutoConfiguration {
   }
 
 
-  @Bean
+  @Bean("c7embedded-task-delivery-engine-plugin")
   @ConditionalOnExpression(
-    "'\${dev.bpm-crafters.process-api.adapter.c7.embedded.external-service-tasks.delivery-strategy}'.equals('embedded_job')"
+    "'\${$DEFAULT_PREFIX.external-service-tasks.delivery-strategy}'.equals('embedded_job')"
       + " or "
-      + "'\${dev.bpm-crafters.process-api.adapter.c7.embedded.user-tasks.delivery-strategy}'.equals('embedded_job')"
+      + "'\${$DEFAULT_PREFIX.user-tasks.delivery-strategy}'.equals('embedded_job')"
   )
-  fun embeddedJobTaskDeliveryBinding(jobHandler: EmbeddedTaskDeliveryJobHandler, c7AdapterProperties: C7EmbeddedAdapterProperties): EmbeddedTaskDeliveryEnginePlugin {
+  fun embeddedTaskDeliveryBinding(
+    jobHandler: EmbeddedTaskDeliveryJobHandler,
+    c7AdapterProperties: C7EmbeddedAdapterProperties
+  ): EmbeddedTaskDeliveryEnginePlugin {
     return EmbeddedTaskDeliveryEnginePlugin(
       jobHandler = jobHandler,
       deliverServiceTasks = c7AdapterProperties.externalServiceTasks.deliveryStrategy == ExternalServiceTaskDeliveryStrategy.EMBEDDED_JOB,

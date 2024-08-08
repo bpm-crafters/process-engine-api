@@ -3,7 +3,6 @@ package dev.bpmcrafters.example.javac8;
 import dev.bpmcrafters.processengineapi.adapter.c8.springboot.C8AdapterProperties;
 import io.camunda.tasklist.CamundaTaskListClient;
 import io.camunda.zeebe.spring.client.properties.CamundaClientProperties;
-import io.camunda.zeebe.spring.client.properties.ZeebeClientConfigurationProperties;
 import lombok.SneakyThrows;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -36,5 +35,4 @@ public class JavaCamunda8ExampleApplication {
       .shouldReturnVariables()
       .build();
   }
-
 }

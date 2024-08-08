@@ -27,11 +27,11 @@ import org.springframework.scheduling.annotation.EnableScheduling
 @Configuration
 @EnableScheduling
 @AutoConfigureAfter(C7RemoteServiceApiAutoConfiguration::class)
+@ConditionalOnProperty(prefix = DEFAULT_PREFIX, name = ["enabled"], havingValue = "true", matchIfMissing = true)
 class C7RemoteServiceExternalTaskAutoConfiguration {
 
-  companion object : KLogging()
-
-  @Bean
+  @Bean("c7remote-service-task-completion-api")
+  @Qualifier("c7remote-service-task-completion-api")
   @ConditionalOnProperty(prefix = DEFAULT_PREFIX, name = ["external-service-tasks.delivery-strategy"], havingValue = "remote_scheduled")
   fun externalTaskCompletionApi(
     @Qualifier("remote") externalTaskService: ExternalTaskService,
@@ -44,7 +44,8 @@ class C7RemoteServiceExternalTaskAutoConfiguration {
       subscriptionRepository = subscriptionRepository
     )
 
-  @Bean
+  @Bean("c7remote-user-task-completion-api")
+  @Qualifier("c7remote-user-task-completion-api")
   @ConditionalOnProperty(prefix = DEFAULT_PREFIX, name = ["user-tasks.delivery-strategy"], havingValue = "remote_scheduled")
   fun userTaskCompletionApi(
     @Qualifier("remote") taskService: TaskService,
@@ -56,7 +57,8 @@ class C7RemoteServiceExternalTaskAutoConfiguration {
     )
 
 
-  @Bean
+  @Bean("c7remote-user-task-delivery")
+  @Qualifier("c7remote-user-task-delivery")
   @ConditionalOnProperty(prefix = DEFAULT_PREFIX, name = ["user-tasks.delivery-strategy"], havingValue = "remote_scheduled")
   fun scheduledUserTaskDelivery(
     @Qualifier("remote") taskService: TaskService,
@@ -69,7 +71,8 @@ class C7RemoteServiceExternalTaskAutoConfiguration {
     )
   }
 
-  @Bean
+  @Bean("c7remote-service-task-delivery")
+  @Qualifier("c7remote-service-task-delivery")
   @ConditionalOnProperty(prefix = DEFAULT_PREFIX, name = ["external-service-tasks.delivery-strategy"], havingValue = "remote_scheduled")
   fun scheduledExternalTaskDelivery(
     @Qualifier("remote") externalTaskService: ExternalTaskService,
@@ -84,17 +87,23 @@ class C7RemoteServiceExternalTaskAutoConfiguration {
     retryTimeout = c7AdapterProperties.externalServiceTasks.retryTimeoutInSeconds,
   )
 
-  @Bean
+  @Bean("c7remote-service-task-delivery-scheduler")
   @ConditionalOnProperty(prefix = DEFAULT_PREFIX, name = ["external-service-tasks.delivery-strategy"], havingValue = "remote_scheduled")
-  fun remoteScheduledExternalServiceTaskDeliveryBinding(remotePullExternalTaskDelivery: RemotePullExternalTaskDelivery): ScheduledRemoteExternalServiceTaskDeliveryBinding {
+  fun remoteScheduledExternalServiceTaskDeliveryBinding(
+    @Qualifier("c7remote-service-task-delivery")
+    remotePullExternalTaskDelivery: RemotePullExternalTaskDelivery
+  ): ScheduledRemoteExternalServiceTaskDeliveryBinding {
     return ScheduledRemoteExternalServiceTaskDeliveryBinding(
       externalTaskDelivery = remotePullExternalTaskDelivery
     )
   }
 
-  @Bean
+  @Bean("c7remote-user-task-delivery-scheduler")
   @ConditionalOnProperty(prefix = DEFAULT_PREFIX, name = ["user-tasks.delivery-strategy"], havingValue = "remote_scheduled")
-  fun remoteScheduledUserTaskDeliveryBinding(remotePullUserTaskDelivery: RemotePullUserTaskDelivery): ScheduledEmbeddedUserTaskDeliveryBinding {
+  fun remoteScheduledUserTaskDeliveryBinding(
+    @Qualifier("c7remote-user-task-delivery")
+    remotePullUserTaskDelivery: RemotePullUserTaskDelivery
+  ): ScheduledEmbeddedUserTaskDeliveryBinding {
     return ScheduledEmbeddedUserTaskDeliveryBinding(
       userTaskDelivery = remotePullUserTaskDelivery
     )

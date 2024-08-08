@@ -7,6 +7,10 @@ import org.springframework.boot.context.properties.NestedConfigurationProperty
 @ConfigurationProperties(prefix = DEFAULT_PREFIX)
 class C7RemoteAdapterProperties(
   /**
+   * Flag to enable or disable the entire C7 remote adapter.
+   */
+  val enabled: Boolean = true,
+  /**
    * Configuration for external service tasks.
    */
   @NestedConfigurationProperty
@@ -20,7 +24,7 @@ class C7RemoteAdapterProperties(
 ) {
 
   companion object {
-    const val DEFAULT_PREFIX = "dev.bpm-crafters.process-api.adapter.c7.remote"
+    const val DEFAULT_PREFIX = "dev.bpm-crafters.process-api.adapter.c7remote"
   }
 
   /**

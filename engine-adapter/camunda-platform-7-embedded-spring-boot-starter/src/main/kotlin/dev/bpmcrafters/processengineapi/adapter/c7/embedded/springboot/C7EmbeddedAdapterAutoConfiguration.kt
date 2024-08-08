@@ -20,9 +20,12 @@ import org.camunda.bpm.engine.ExternalTaskService
 import org.camunda.bpm.engine.RepositoryService
 import org.camunda.bpm.engine.RuntimeService
 import org.camunda.bpm.engine.TaskService
+import org.springframework.beans.factory.annotation.Qualifier
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Primary
 import org.springframework.scheduling.annotation.EnableScheduling
 
 @Configuration
@@ -30,35 +33,42 @@ import org.springframework.scheduling.annotation.EnableScheduling
 @EnableConfigurationProperties(value = [C7EmbeddedAdapterProperties::class])
 class C7EmbeddedAdapterAutoConfiguration {
 
-  @Bean
+  @Bean("c7embedded-start-process-api")
+  @Qualifier("c7embedded-start-process-api")
   fun startProcessApi(runtimeService: RuntimeService): StartProcessApi = StartProcessApiImpl(
     runtimeService = runtimeService
   )
 
-  @Bean
+  @Bean("c7embedded-task-subscription-api")
+  @Qualifier("c7embedded-task-subscription-api")
   fun taskSubscriptionApi(subscriptionRepository: SubscriptionRepository): TaskSubscriptionApi = C7TaskSubscriptionApiImpl(
     subscriptionRepository = subscriptionRepository
   )
 
-  @Bean
+  @Bean("c7embedded-correlation-api")
+  @Qualifier("c7embedded-correlation-api")
   fun correlationApi(runtimeService: RuntimeService): CorrelationApi = CorrelationApiImpl(
     runtimeService = runtimeService
   )
 
-  @Bean
+  @Bean("c7embedded-signal-api")
+  @Qualifier("c7embedded-signal-api")
   fun signalApi(runtimeService: RuntimeService): SignalApi = SignalApiImpl(
     runtimeService = runtimeService
   )
 
-  @Bean
+  @Bean("c7embedded-deployment-api")
+  @Qualifier("c7embedded-deployment-api")
   fun deploymentApi(repositoryService: RepositoryService): DeploymentApi = DeploymentApiImpl(
     repositoryService = repositoryService
   )
 
   @Bean
+  @ConditionalOnMissingBean
   fun subscriptionRepository(): SubscriptionRepository = InMemSubscriptionRepository()
 
-  @Bean
+  @Bean("c7embedded-service-task-completion-api")
+  @Qualifier("c7embedded-service-task-completion-api")
   fun externalTaskCompletionApi(
     externalTaskService: ExternalTaskService,
     subscriptionRepository: SubscriptionRepository,
@@ -70,7 +80,8 @@ class C7EmbeddedAdapterAutoConfiguration {
       subscriptionRepository = subscriptionRepository
     )
 
-  @Bean
+  @Bean("c7embedded-user-task-completion-api")
+  @Qualifier("c7embedded-user-task-completion-api")
   fun userTaskCompletionApi(
     taskService: TaskService,
     subscriptionRepository: SubscriptionRepository

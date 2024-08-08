@@ -9,11 +9,14 @@ import org.camunda.bpm.client.impl.ExternalTaskClientImpl
 import org.camunda.bpm.client.spring.annotation.EnableExternalTaskClient
 import org.camunda.bpm.client.task.ExternalTaskService
 import org.camunda.bpm.client.task.impl.ExternalTaskServiceImpl
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.boot.autoconfigure.AutoConfigureAfter
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Configuration
 
 
+@Configuration
 @AutoConfigureAfter(C7RemoteAdapterAutoConfiguration::class)
 @ConditionalOnProperty(prefix = C7RemoteAdapterProperties.DEFAULT_PREFIX, name = ["external-service-tasks.delivery-strategy"], havingValue = "remote_subscribed")
 @EnableExternalTaskClient
@@ -26,7 +29,8 @@ class C7RemoteClientExternalTaskAutoConfiguration {
     return ExternalTaskServiceImpl(externalTaskClient.topicSubscriptionManager.engineClient)
   }
 
-  @Bean
+  @Bean("c7remote-service-task-completion-api")
+  @Qualifier("c7remote-service-task-completion-api")
   @ConditionalOnProperty(prefix = C7RemoteAdapterProperties.DEFAULT_PREFIX, name = ["external-service-tasks.delivery-strategy"], havingValue = "remote_subscribed")
   fun externalTaskClientCompletionApi(
     externalTaskService: ExternalTaskService,
@@ -37,7 +41,7 @@ class C7RemoteClientExternalTaskAutoConfiguration {
       subscriptionRepository = subscriptionRepository
     )
 
-  @Bean
+  @Bean("c7remote-service-task-delivery")
   @ConditionalOnProperty(prefix = C7RemoteAdapterProperties.DEFAULT_PREFIX, name = ["external-service-tasks.delivery-strategy"], havingValue = "remote_subscribed")
   fun subscribingClientExternalTaskDelivery(
     subscriptionRepository: SubscriptionRepository,

@@ -40,7 +40,7 @@ import java.util.function.Supplier
 /**
  * Factory for creating the named C8 adapter API implementations.
  */
-class C8EnginesProxyFactory(
+class C8EnginesBeanDefinitionPostProcessor(
   private val engines: Map<String, C8AdapterProperties.C8EngineConfiguration>,
   private val subscriptionRepository: SubscriptionRepository,
   private val taskListClient: CamundaTaskListClient?
@@ -53,15 +53,14 @@ class C8EnginesProxyFactory(
   override fun postProcessBeanDefinitionRegistry(registry: BeanDefinitionRegistry) {
 
     if (this::applicationContext.isInitialized) {
+      val primary = engines.size == 1
       val zeebeClient = requireNotNull(applicationContext.getBean("zeebeClient", ZeebeClient::class.java)) { "ZeebeClient is a mandatory requirement" }
-      logger.debug { "Creating C8 adapter components: ${engines.keys.joinToString(", ")}" }
+      logger.debug { "Creating C8 adapter components for engines: ${engines.keys.joinToString(", ")}" }
 
       engines.forEach { (name, engineConfigurationProperties) ->
-
         /*
-       * Incoming API implementations
-       */
-
+         * Incoming API implementations
+         */
         when (engineConfigurationProperties.serviceTasks.deliveryStrategy) {
           SUBSCRIPTION -> {
             val delivery = SubscribingServiceTaskDelivery(
@@ -70,7 +69,7 @@ class C8EnginesProxyFactory(
               workerId = engineConfigurationProperties.serviceTasks.workerId
             )
 
-            registry.register<SubscribingServiceTaskDelivery>("$name-service-task-delivery", SubscribingServiceTaskDelivery::subscribe.name) { delivery }
+            registry.registerBeanDefinition<SubscribingServiceTaskDelivery>("$name-service-task-delivery", primary, SubscribingServiceTaskDelivery::subscribe.name) { delivery }
 
 //          applicationContext.registerBean(
 //            "$name-service-task-delivery",
@@ -90,7 +89,7 @@ class C8EnginesProxyFactory(
               taskListClient = requireNotNull(taskListClient) { "TaskListClient is mandatory if using ${SCHEDULED.name} user task delivery." }
             )
 
-            registry.register<PullUserTaskDelivery>("$name-user-task-delivery") { delivery }
+            registry.registerBeanDefinition<PullUserTaskDelivery>("$name-user-task-delivery", primary) { delivery }
 
 
 //          applicationContext.registerBean(
@@ -109,10 +108,7 @@ class C8EnginesProxyFactory(
               userTaskLockTimeoutMs = engineConfigurationProperties.userTasks.fixedRateRefreshRate
             )
 
-            registry.register<SubscribingRefreshingUserTaskDelivery>(
-              "$name-user-task-delivery",
-              SubscribingRefreshingUserTaskDelivery::subscribe.name
-            ) { delivery }
+            registry.registerBeanDefinition<SubscribingRefreshingUserTaskDelivery>("$name-user-task-delivery", primary, SubscribingRefreshingUserTaskDelivery::subscribe.name) { delivery }
 
 
 //          applicationContext.registerBean(
@@ -139,7 +135,7 @@ class C8EnginesProxyFactory(
 //        )
 //      )
 
-        registry.register<ExternalTaskCompletionApi>("$name-service-task-completion") {
+        registry.registerBeanDefinition<ExternalTaskCompletionApi>("$name-service-task-completion-api", primary) {
           C8ZeebeExternalServiceTaskCompletionApiImpl(
             zeebeClient = zeebeClient,
             subscriptionRepository = subscriptionRepository
@@ -161,7 +157,7 @@ class C8EnginesProxyFactory(
             )
           }
         }
-        registry.register<UserTaskCompletionApi>("$name-user-task-completion") { userTaskCompletionApi }
+        registry.registerBeanDefinition<UserTaskCompletionApi>("$name-user-task-completion-api", primary) { userTaskCompletionApi }
 
 
         // applicationContext.registerBean("$name-user-task-completion", UserTaskCompletionApi::class.java, userTaskCompletionApi)
@@ -172,10 +168,10 @@ class C8EnginesProxyFactory(
 //      applicationContext.registerBean("$name-signal-api", SignalApi::class.java, SignalApiImpl(zeebeClient = zeebeClient))
 //      applicationContext.registerBean("$name-deployment-api", DeploymentApi::class.java, DeploymentApiImpl(zeebeClient = zeebeClient))
 
-        registry.register<StartProcessApi>("$name-start-process-api") { StartProcessApiImpl(zeebeClient = zeebeClient) }
-        registry.register<CorrelationApi>("$name-correlation-api") { CorrelationApiImpl(zeebeClient = zeebeClient) }
-        registry.register<SignalApi>("$name-signal-api") { SignalApiImpl(zeebeClient = zeebeClient) }
-        registry.register<DeploymentApi>("$name-deployment-api") { DeploymentApiImpl(zeebeClient = zeebeClient) }
+        registry.registerBeanDefinition<StartProcessApi>("$name-start-process-api", primary) { StartProcessApiImpl(zeebeClient = zeebeClient) }
+        registry.registerBeanDefinition<CorrelationApi>("$name-correlation-api", primary) { CorrelationApiImpl(zeebeClient = zeebeClient) }
+        registry.registerBeanDefinition<SignalApi>("$name-signal-api", primary) { SignalApiImpl(zeebeClient = zeebeClient) }
+        registry.registerBeanDefinition<DeploymentApi>("$name-deployment-api", primary) { DeploymentApiImpl(zeebeClient = zeebeClient) }
 
 
 //      applicationContext.registerBean(
@@ -186,7 +182,7 @@ class C8EnginesProxyFactory(
 //      )
 
         registry
-          .register<TaskSubscriptionApi>("$name-task-subscription-api") {
+          .registerBeanDefinition<TaskSubscriptionApi>("$name-task-subscription-api", primary) {
             C8TaskSubscriptionApiImpl(
               subscriptionRepository = subscriptionRepository,
               subscribingUserTaskDelivery = subscribingUserTaskDelivery,
@@ -202,8 +198,9 @@ class C8EnginesProxyFactory(
   }
 
 
-  private inline fun <reified T : Any> BeanDefinitionRegistry.register(
+  private inline fun <reified T : Any> BeanDefinitionRegistry.registerBeanDefinition(
     beanName: String,
+    markPrimary: Boolean,
     initMethodName: String? = null,
     instanceSupplier: Supplier<T>
   ) {

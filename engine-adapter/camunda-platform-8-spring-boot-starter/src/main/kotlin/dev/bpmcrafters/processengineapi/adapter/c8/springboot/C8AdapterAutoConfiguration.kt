@@ -23,19 +23,19 @@ import org.springframework.core.env.ConfigurableEnvironment
 class C8AdapterAutoConfiguration {
 
   @Bean
-  fun c8EnginesProxyFactory(
+  fun c8EnginesBeanPostProcessor(
     environment: ConfigurableEnvironment,
     subscriptionRepository: SubscriptionRepository,
     @Autowired(required = false)
     taskListClient: CamundaTaskListClient?,
-  ): C8EnginesProxyFactory? {
+  ): C8EnginesBeanDefinitionPostProcessor? {
     val binder = Binder(ConfigurationPropertySources.get(environment))
     val enabled = binder.bind("$DEFAULT_PREFIX.enabled", Boolean::class.java)
       .orElse(false)
     return if (enabled) {
       val properties = binder.bind(DEFAULT_PREFIX, C8AdapterProperties::class.java)
         .orElseThrow { IllegalStateException("Could not bind C8 configuration properties") }
-      C8EnginesProxyFactory(
+      C8EnginesBeanDefinitionPostProcessor(
         engines = properties.engines,
         subscriptionRepository = subscriptionRepository,
         taskListClient = taskListClient
