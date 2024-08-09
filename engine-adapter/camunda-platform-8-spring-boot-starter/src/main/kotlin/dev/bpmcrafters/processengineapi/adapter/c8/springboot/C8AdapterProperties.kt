@@ -9,43 +9,27 @@ import org.springframework.boot.context.properties.NestedConfigurationProperty
  */
 @ConfigurationProperties(prefix = DEFAULT_PREFIX)
 class C8AdapterProperties(
-
   /**
-   * Flag controlling if the entire adapter is activated (default) or not.
+   * Flag controlling if the entire adapter is active.
    */
   val enabled: Boolean = true,
-
   /**
-   * Configuration of the engines.
+   * Configuration for external service tasks.
    */
   @NestedConfigurationProperty
-  val engines: Map<String, C8EngineConfiguration>,
+  val serviceTasks: ServiceTasks,
+
+  /**
+   * Configuration of user tasks.
+   */
+  @NestedConfigurationProperty
+  val userTasks: UserTasks
 ) {
 
   companion object {
     const val DEFAULT_PREFIX = "dev.bpm-crafters.process-api.adapter.c8"
   }
 
-  /**
-   * Configuration of an engine.
-   */
-  class C8EngineConfiguration(
-    /**
-     * Configuration for external service tasks.
-     */
-    @NestedConfigurationProperty
-    val serviceTasks: ServiceTasks,
-
-    /**
-     * Configuration of user tasks.
-     */
-    @NestedConfigurationProperty
-    val userTasks: UserTasks
-  )
-
-  /**
-   * Configuration of the service tasks.
-   */
   class ServiceTasks(
     /**
      * Delivery strategy for user tasks.
@@ -57,9 +41,6 @@ class C8AdapterProperties(
     val workerId: String,
   )
 
-  /**
-   * Configuration of the user tasks.
-   */
   data class UserTasks(
     /**
      * Delivery strategy for user tasks.

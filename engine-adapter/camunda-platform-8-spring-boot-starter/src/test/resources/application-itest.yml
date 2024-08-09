@@ -2,31 +2,18 @@ spring:
   application:
     name: ITest
 
-
 dev:
   bpm-crafters:
     process-api:
       adapter:
         c8:
           enabled: true
-          engines:
-            itest:
-              service-tasks:
-                delivery-strategy: subscription
-                worker-id: execute-action-external
-              user-tasks:
-                delivery-strategy: subscription_refreshing
-                fixed-rate-schedule-rate: 100000
-                tasklist-url: http://localhost
-                fixed-rate-refresh-rate: 100000
-                completion-strategy: tasklist
-            itest2:
-              service-tasks:
-                delivery-strategy: subscription
-                worker-id: execute-action-external
-              user-tasks:
-                delivery-strategy: scheduled
-                fixed-rate-schedule-rate: 100000
-                tasklist-url: http://localhost
-                fixed-rate-refresh-rate: 100000
-                completion-strategy: job
+          service-tasks:
+            delivery-strategy: subscription
+            worker-id: execute-action-external
+          user-tasks:
+            delivery-strategy: subscription_refreshing # or scheduled
+            fixed-rate-schedule-rate: 100000
+            tasklist-url: http://localhost
+            fixed-rate-refresh-rate: 100000
+            completion-strategy: job # or tasklist
