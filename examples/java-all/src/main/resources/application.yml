@@ -3,7 +3,7 @@ server:
 
 spring:
   application:
-    name: Java Camunda Platform 7 Embedded/Remote 8
+    name: Java Camunda Platform 7 Embedded / 7 Remote / 8
 
 springdoc:
   swagger-ui:
@@ -24,38 +24,25 @@ dev:
             execute-initial-pull-on-startup: true
         c7-remote:
           enabled: true
-          engines:
-            one:
-              external-service-tasks:
-                delivery-strategy: remote_scheduled
-                fixed-rate-schedule-rate: 10
-                worker-id: embedded-worker
-                lock-time-in-seconds: 10
-              user-tasks:
-                fixed-rate-schedule-rate: 10
-                delivery-strategy: remote_scheduled
-            two:
-              external-service-tasks:
-                delivery-strategy: remote_scheduled
-                fixed-rate-schedule-rate: 10
-                worker-id: embedded-worker
-                lock-time-in-seconds: 10
-              user-tasks:
-                fixed-rate-schedule-rate: 10
-                delivery-strategy: remote_scheduled
+          external-service-tasks:
+            delivery-strategy: remote_scheduled
+            fixed-rate-schedule-rate: 10
+            worker-id: embedded-worker
+            lock-time-in-seconds: 10
+          user-tasks:
+            fixed-rate-schedule-rate: 10
+            delivery-strategy: remote_scheduled
         c8:
           enabled: true
-          engines:
-            c8-eventually:
-              service-tasks:
-                delivery-strategy: subscription
-                worker-id: worker
-              user-tasks:
-                delivery-strategy: subscription_refreshing
-                completion-strategy: job
-                fixed-rate-schedule-rate: 2000 # every 2 seconds
-                tasklist-url: https://${zeebe.client.cloud.region}.tasklist.camunda.io/${zeebe.client.cloud.clusterId}
-                fixed-rate-refresh-rate: 2000 # every 2 seconds
+          service-tasks:
+            delivery-strategy: subscription
+            worker-id: worker
+          user-tasks:
+            delivery-strategy: subscription_refreshing
+            completion-strategy: job
+            fixed-rate-schedule-rate: 2000 # every 2 seconds
+            tasklist-url: https://${zeebe.client.cloud.region}.tasklist.camunda.io/${zeebe.client.cloud.clusterId}
+            fixed-rate-refresh-rate: 2000 # every 2 seconds
 
 camunda:
   bpm:
@@ -74,21 +61,19 @@ camunda:
 feign:
   client:
     config:
-      one:
-        url: "http://localhost:9090/engine-rest/"
-      two:
+      default:
         url: "http://localhost:9090/engine-rest/"
 
-#tasklist:
-#  client:
-#    url: http://localhost:8082
-#    username: demo
-#    password: demo
+tasklist:
+  client:
+    url: http://localhost:8082
+    username: demo
+    password: demo
 
-#zeebe:
-#  client:
-#    connection-mode: ADDRESS
-#    broker:
-#      gateway-address: 127.0.0.1:26500
-#    security:
-#      plaintext: true
+zeebe:
+  client:
+    connection-mode: ADDRESS
+    broker:
+      gateway-address: 127.0.0.1:26500
+    security:
+      plaintext: true
