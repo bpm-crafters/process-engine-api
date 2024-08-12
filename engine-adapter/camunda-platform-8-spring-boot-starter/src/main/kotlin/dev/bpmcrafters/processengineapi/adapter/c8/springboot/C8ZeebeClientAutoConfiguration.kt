@@ -3,28 +3,31 @@ package dev.bpmcrafters.processengineapi.adapter.c8.springboot
 import dev.bpmcrafters.processengineapi.adapter.c8.springboot.C8AdapterProperties.Companion.DEFAULT_PREFIX
 import dev.bpmcrafters.processengineapi.adapter.c8.springboot.schedule.RefreshingUserTaskDeliveryBinding
 import dev.bpmcrafters.processengineapi.adapter.c8.springboot.schedule.ScheduledUserTaskDeliveryBinding
+import dev.bpmcrafters.processengineapi.adapter.c8.task.completion.C8ZeebeExternalServiceTaskCompletionApiImpl
+import dev.bpmcrafters.processengineapi.adapter.c8.task.completion.C8ZeebeUserTaskCompletionApiImpl
 import dev.bpmcrafters.processengineapi.adapter.c8.task.delivery.PullUserTaskDelivery
 import dev.bpmcrafters.processengineapi.adapter.c8.task.delivery.SubscribingRefreshingUserTaskDelivery
 import dev.bpmcrafters.processengineapi.adapter.c8.task.delivery.SubscribingServiceTaskDelivery
 import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionRepository
-import io.camunda.tasklist.CamundaTaskListClient
+import dev.bpmcrafters.processengineapi.task.ExternalTaskCompletionApi
+import dev.bpmcrafters.processengineapi.task.UserTaskCompletionApi
 import io.camunda.zeebe.client.ZeebeClient
-import mu.KLogging
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.boot.autoconfigure.AutoConfigureAfter
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
 /**
- * Auto-configuration for delivery.
+ * Configuration for task completion.
  */
 @Configuration
 @AutoConfigureAfter(C8AdapterAutoConfiguration::class)
-class DeliveryAutoConfiguration {
+@ConditionalOnProperty(prefix = DEFAULT_PREFIX, name = ["enabled"], havingValue = "true", matchIfMissing = true)
+class C8ZeebeClientAutoConfiguration {
 
-  companion object : KLogging()
-
-  @Bean(initMethod = "subscribe")
+  @Bean(initMethod = "subscribe", name = ["c8-service-task-delivery"])
+  @Qualifier("c8-service-task-delivery")
   @ConditionalOnProperty(prefix = DEFAULT_PREFIX, name = ["service-tasks.delivery-strategy"], havingValue = "subscription")
   fun subscribingServiceTaskDelivery(
     subscriptionRepository: SubscriptionRepository,
@@ -36,19 +39,8 @@ class DeliveryAutoConfiguration {
     workerId = c8AdapterProperties.serviceTasks.workerId
   )
 
-  @Bean
-  @ConditionalOnProperty(prefix = DEFAULT_PREFIX, name = ["user-tasks.delivery-strategy"], havingValue = "scheduled")
-  fun scheduledUserTaskDelivery(
-    subscriptionRepository: SubscriptionRepository,
-    taskListClient: CamundaTaskListClient,
-  ): PullUserTaskDelivery {
-    return PullUserTaskDelivery(
-      subscriptionRepository = subscriptionRepository,
-      taskListClient = taskListClient
-    )
-  }
-
-  @Bean(initMethod = "subscribe")
+  @Bean(initMethod = "subscribe", name = ["c8-user-task-delivery"])
+  @Qualifier("c8-user-task-delivery")
   @ConditionalOnProperty(prefix = DEFAULT_PREFIX, name = ["user-tasks.delivery-strategy"], havingValue = "subscription_refreshing")
   fun subscribingRefreshingUserTaskDelivery(
     subscriptionRepository: SubscriptionRepository,
@@ -63,20 +55,49 @@ class DeliveryAutoConfiguration {
     )
   }
 
-  @Bean
+  @Bean("c8-user-task-delivery-scheduler")
   @ConditionalOnProperty(prefix = DEFAULT_PREFIX, name = ["user-tasks.delivery-strategy"], havingValue = "scheduled")
-  fun scheduledUserTaskDeliveryBinding(pullUserTaskDelivery: PullUserTaskDelivery): ScheduledUserTaskDeliveryBinding {
+  fun scheduledUserTaskDeliveryBinding(
+    @Qualifier("c8-user-task-delivery")
+    pullUserTaskDelivery: PullUserTaskDelivery
+  ): ScheduledUserTaskDeliveryBinding {
     return ScheduledUserTaskDeliveryBinding(
       pullUserTaskDelivery = pullUserTaskDelivery
     )
   }
 
-  @Bean
+  @Bean("c8-user-task-delivery-scheduler")
   @ConditionalOnProperty(prefix = DEFAULT_PREFIX, name = ["user-tasks.delivery-strategy"], havingValue = "subscription_refreshing")
-  fun refreshingUserTaskDeliveryBinding(subscribingRefreshingUserTaskDelivery: SubscribingRefreshingUserTaskDelivery): RefreshingUserTaskDeliveryBinding {
+  fun refreshingUserTaskDeliveryBinding(
+    @Qualifier("c8-user-task-delivery")
+    subscribingRefreshingUserTaskDelivery: SubscribingRefreshingUserTaskDelivery
+  ): RefreshingUserTaskDeliveryBinding {
     return RefreshingUserTaskDeliveryBinding(
       subscribingRefreshingUserTaskDelivery = subscribingRefreshingUserTaskDelivery
     )
   }
+
+  @Bean("c8-service-task-completion")
+  @Qualifier("c8-service-task-completion")
+  fun externalTaskCompletionStrategy(
+    zeebeClient: ZeebeClient,
+    subscriptionRepository: SubscriptionRepository,
+  ): ExternalTaskCompletionApi =
+    C8ZeebeExternalServiceTaskCompletionApiImpl(
+      zeebeClient = zeebeClient,
+      subscriptionRepository = subscriptionRepository
+    )
+
+  @Bean("c8-user-task-completion")
+  @Qualifier("c8-user-task-completion")
+  @ConditionalOnProperty(prefix = DEFAULT_PREFIX, name = ["user-tasks.completion-strategy"], havingValue = "job")
+  fun zeebeUserTaskCompletionStrategy(
+    zeebeClient: ZeebeClient,
+    subscriptionRepository: SubscriptionRepository
+  ): UserTaskCompletionApi =
+    C8ZeebeUserTaskCompletionApiImpl(
+      zeebeClient = zeebeClient,
+      subscriptionRepository = subscriptionRepository
+    )
 
 }

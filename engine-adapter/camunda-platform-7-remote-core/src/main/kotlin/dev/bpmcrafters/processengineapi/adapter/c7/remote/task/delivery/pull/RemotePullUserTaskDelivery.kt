@@ -2,6 +2,7 @@ package dev.bpmcrafters.processengineapi.adapter.c7.remote.task.delivery.pull
 
 import dev.bpmcrafters.processengineapi.adapter.c7.remote.task.delivery.UserTaskDelivery
 import dev.bpmcrafters.processengineapi.adapter.c7.remote.task.delivery.toTaskInformation
+import dev.bpmcrafters.processengineapi.adapter.commons.task.RefreshableDelivery
 import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionRepository
 import dev.bpmcrafters.processengineapi.adapter.commons.task.TaskSubscriptionHandle
 import dev.bpmcrafters.processengineapi.task.TaskType
@@ -17,14 +18,14 @@ import org.camunda.bpm.engine.task.TaskQuery
 class RemotePullUserTaskDelivery(
   private val taskService: TaskService,
   private val subscriptionRepository: SubscriptionRepository
-) : UserTaskDelivery {
+) : UserTaskDelivery, RefreshableDelivery {
 
   companion object : KLogging()
 
   /**
    * Delivers all tasks found in user task service to corresponding subscriptions.
    */
-  override fun deliverAll() {
+  override fun refresh() {
     val subscriptions = subscriptionRepository.getTaskSubscriptions()
     if(subscriptions.isNotEmpty()) {
       logger.trace { "Pull remote user tasks for subscriptions: $subscriptions" }

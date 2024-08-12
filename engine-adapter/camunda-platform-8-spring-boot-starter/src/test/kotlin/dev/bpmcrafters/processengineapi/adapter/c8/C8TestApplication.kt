@@ -55,5 +55,4 @@ class C8TestApplication {
       taskListClient = taskListClient
     )
   }
-
 }

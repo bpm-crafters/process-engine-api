@@ -11,6 +11,7 @@
 
   <artifactId>process-engine-api-adapter-camunda-platform-c8-spring-boot-starter</artifactId>
   <name>Adapter: C8 Spring-Boot Starter</name>
+
   <properties>
     <spring-boot.version>3.2.5</spring-boot.version>
     <camunda-tasklist-client-java.version>8.4.0.7</camunda-tasklist-client-java.version>

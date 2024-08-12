@@ -2,6 +2,7 @@ package dev.bpmcrafters.processengineapi.adapter.c7.remote.task.delivery.pull
 
 import dev.bpmcrafters.processengineapi.adapter.c7.remote.task.delivery.ExternalServiceTaskDelivery
 import dev.bpmcrafters.processengineapi.adapter.c7.remote.task.delivery.toTaskInformation
+import dev.bpmcrafters.processengineapi.adapter.commons.task.RefreshableDelivery
 import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionRepository
 import dev.bpmcrafters.processengineapi.adapter.commons.task.TaskSubscriptionHandle
 import dev.bpmcrafters.processengineapi.task.TaskType
@@ -21,14 +22,14 @@ class RemotePullExternalTaskDelivery(
   private val maxTasks: Int,
   private val lockDuration: Long,
   private val retryTimeout: Long
-) : ExternalServiceTaskDelivery {
+) : ExternalServiceTaskDelivery, RefreshableDelivery {
 
   companion object : KLogging()
 
   /**
    * Delivers all tasks found in the external service to corresponding subscriptions.
    */
-  override fun deliverAll() {
+  override fun refresh() {
 
     val subscriptions = subscriptionRepository.getTaskSubscriptions()
     if(subscriptions.isNotEmpty()) {

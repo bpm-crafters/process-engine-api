@@ -68,14 +68,14 @@ dev:
   bpm-crafters:
     process-api:
       adapter:
-        c7:
-          embedded:
-            external-service-tasks:
-              delivery-strategy: embedded_job
-              worker-id: embedded-worker
-              lock-time-in-seconds: 10
-            user-tasks:
-              delivery-strategy: embedded_job
+        c7embedded:
+          enabled: true
+          external-service-tasks:
+            delivery-strategy: embedded_job
+            worker-id: embedded-worker
+            lock-time-in-seconds: 10
+          user-tasks:
+            delivery-strategy: embedded_job
 
 ```
 
@@ -122,16 +122,16 @@ dev:
   bpm-crafters:
     process-api:
       adapter:
-        c7:
-          remote:
-            external-service-tasks:
-              delivery-strategy: remote_scheduled
-              fixed-rate-schedule-rate: 10
-              worker-id: embedded-worker
-              lock-time-in-seconds: 10
-            user-tasks:
-              fixed-rate-schedule-rate: 10
-              delivery-strategy: remote_scheduled
+        c7remote:
+          enabled: true
+          external-service-tasks:
+            delivery-strategy: remote_scheduled
+            fixed-rate-schedule-rate: 10
+            worker-id: embedded-worker
+            lock-time-in-seconds: 10
+          user-tasks:
+            fixed-rate-schedule-rate: 10
+            delivery-strategy: remote_scheduled
 
 # to tell the client library where the engine is located provide the correct details below:
 feign:
@@ -176,14 +176,15 @@ dev:
     process-api:
       adapter:
         c8:
+          enabled: true
+          service-tasks:
+            delivery-strategy: subscription
+            worker-id: worker
           user-tasks:
             delivery-strategy: subscription_refreshing
             fixed-rate-schedule-rate: 5000 # every 5 seconds
             tasklist-url: https://${zeebe.client.cloud.region}.tasklist.camunda.io/${zeebe.client.cloud.clusterId}
             fixed-rate-refresh-rate: 5000 # every 5 seconds
-          service-tasks:
-            delivery-strategy: subscription
-            worker-id: worker
 
 zeebe:
   client:

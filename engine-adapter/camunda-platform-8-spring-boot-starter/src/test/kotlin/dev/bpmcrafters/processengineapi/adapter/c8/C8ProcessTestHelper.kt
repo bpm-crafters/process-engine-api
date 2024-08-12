@@ -28,7 +28,7 @@ class C8ProcessTestHelper(
   override fun getUserTaskCompletionApi(): UserTaskCompletionApi = userTaskCompletionApi
   override fun getExternalTaskCompletionApi(): ExternalTaskCompletionApi = externalTaskCompletionApi
 
-  override fun triggerPullingUserTaskDeliveryManually() = pullUserTaskDelivery.deliverAll()
+  override fun triggerPullingUserTaskDeliveryManually() = pullUserTaskDelivery.refresh()
   override fun subscribeForUserTasks() = subscribingUserTaskDelivery.subscribe()
 
   override fun triggerExternalTaskDeliveryManually() = subscribingServiceTaskDelivery.subscribe()

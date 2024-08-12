@@ -7,6 +7,10 @@ import org.springframework.boot.context.properties.NestedConfigurationProperty
 @ConfigurationProperties(prefix = DEFAULT_PREFIX)
 class C7EmbeddedAdapterProperties(
   /**
+   * Flag, controlling if the C7 adapter is active.
+   */
+  val enabled: Boolean = true,
+  /**
    * Configuration for external service tasks.
    */
   @NestedConfigurationProperty
@@ -20,7 +24,7 @@ class C7EmbeddedAdapterProperties(
 ) {
 
   companion object {
-    const val DEFAULT_PREFIX = "dev.bpm-crafters.process-api.adapter.c7.embedded"
+    const val DEFAULT_PREFIX = "dev.bpm-crafters.process-api.adapter.c7embedded"
   }
 
   /**

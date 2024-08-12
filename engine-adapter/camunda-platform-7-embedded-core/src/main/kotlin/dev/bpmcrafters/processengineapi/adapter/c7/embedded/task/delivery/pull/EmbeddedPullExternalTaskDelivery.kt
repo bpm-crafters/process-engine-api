@@ -2,8 +2,8 @@ package dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.pull
 
 import dev.bpmcrafters.processengineapi.CommonRestrictions
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.ExternalServiceTaskDelivery
-import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.pull.EmbeddedPullUserTaskDelivery.Companion.logger
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.toTaskInformation
+import dev.bpmcrafters.processengineapi.adapter.commons.task.RefreshableDelivery
 import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionRepository
 import dev.bpmcrafters.processengineapi.adapter.commons.task.TaskSubscriptionHandle
 import dev.bpmcrafters.processengineapi.task.TaskType
@@ -23,14 +23,14 @@ class EmbeddedPullExternalTaskDelivery(
   private val maxTasks: Int,
   private val lockDuration: Long,
   private val retryTimeout: Long
-) : ExternalServiceTaskDelivery {
+) : ExternalServiceTaskDelivery, RefreshableDelivery {
 
   companion object : KLogging()
 
   /**
    * Delivers all tasks found in the external service to corresponding subscriptions.
    */
-  fun deliverAll() {
+  override fun refresh() {
 
     val subscriptions = subscriptionRepository.getTaskSubscriptions()
     if(subscriptions.isNotEmpty()) {

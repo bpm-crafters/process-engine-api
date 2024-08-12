@@ -3,7 +3,6 @@ package dev.bpmcrafters.processengineapi.adapter.c7.remote.springboot
 import dev.bpmcrafters.processengineapi.adapter.c7.remote.process.toProcessInformation
 import dev.bpmcrafters.processengineapi.adapter.c7.remote.task.delivery.UserTaskDelivery
 import dev.bpmcrafters.processengineapi.adapter.c7.remote.task.delivery.pull.RemotePullExternalTaskDelivery
-import dev.bpmcrafters.processengineapi.adapter.c7.remote.task.delivery.pull.RemotePullUserTaskDelivery
 import dev.bpmcrafters.processengineapi.adapter.commons.task.InMemSubscriptionRepository
 import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionRepository
 import dev.bpmcrafters.processengineapi.process.ProcessInformation
@@ -12,7 +11,6 @@ import dev.bpmcrafters.processengineapi.task.ExternalTaskCompletionApi
 import dev.bpmcrafters.processengineapi.task.TaskSubscriptionApi
 import dev.bpmcrafters.processengineapi.task.UserTaskCompletionApi
 import dev.bpmcrafters.processengineapi.test.ProcessTestHelper
-import org.camunda.bpm.engine.ProcessEngine
 import org.camunda.bpm.engine.RuntimeService
 
 class C7RemoteProcessTestHelper(
@@ -31,12 +29,12 @@ class C7RemoteProcessTestHelper(
   override fun getUserTaskCompletionApi(): UserTaskCompletionApi = userTaskCompletionApi
   override fun getExternalTaskCompletionApi(): ExternalTaskCompletionApi = externalTaskCompletionApi
 
-  override fun triggerPullingUserTaskDeliveryManually() = userTaskDelivery.deliverAll()
+  override fun triggerPullingUserTaskDeliveryManually() = userTaskDelivery.refresh()
   override fun subscribeForUserTasks() {
     TODO("Not yet implemented")
   }
 
-  override fun triggerExternalTaskDeliveryManually() = externalTaskDelivery.deliverAll()
+  override fun triggerExternalTaskDeliveryManually() = externalTaskDelivery.refresh()
 
   override fun getProcessInformation(instanceId: String): ProcessInformation =
     runtimeService

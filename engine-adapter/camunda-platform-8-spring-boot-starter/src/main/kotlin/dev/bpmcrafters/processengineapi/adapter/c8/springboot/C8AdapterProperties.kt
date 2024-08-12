@@ -10,6 +10,10 @@ import org.springframework.boot.context.properties.NestedConfigurationProperty
 @ConfigurationProperties(prefix = DEFAULT_PREFIX)
 class C8AdapterProperties(
   /**
+   * Flag controlling if the entire adapter is active.
+   */
+  val enabled: Boolean = true,
+  /**
    * Configuration for external service tasks.
    */
   @NestedConfigurationProperty
