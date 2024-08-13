@@ -12,6 +12,11 @@
   <artifactId>process-engine-api-examples-java-all</artifactId>
   <name>Example: Java C7 Embedded, Remote and C8 in one</name>
 
+  <properties>
+    <spring-zeebe.version>8.4.0</spring-zeebe.version>
+    <camunda-tasklist-client-java.version>8.4.0.7</camunda-tasklist-client-java.version>
+  </properties>
+
   <dependencyManagement>
     <dependencies>
       <dependency>
@@ -27,6 +32,13 @@
         <version>7.21.0</version>
         <scope>import</scope>
         <type>pom</type>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.cloud</groupId>
+        <artifactId>spring-cloud-dependencies</artifactId>
+        <version>2023.0.1</version>
+        <type>pom</type>
+        <scope>import</scope>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -50,6 +62,58 @@
       <artifactId>process-engine-api-adapter-camunda-platform-c8-spring-boot-starter</artifactId>
     </dependency>
 
+    <!-- C7 embedded -->
+    <dependency>
+      <groupId>org.camunda.bpm.springboot</groupId>
+      <artifactId>camunda-bpm-spring-boot-starter-webapp</artifactId>
+    </dependency>
+    <!-- C7 Remote -->
+    <dependency>
+      <groupId>org.camunda.community.rest</groupId>
+      <artifactId>camunda-platform-7-rest-client-spring-boot-starter</artifactId>
+      <version>7.21.0</version>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.module</groupId>
+      <artifactId>jackson-module-kotlin</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.cloud</groupId>
+      <artifactId>spring-cloud-starter-openfeign</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.github.openfeign</groupId>
+      <artifactId>feign-httpclient</artifactId>
+    </dependency>
+    <!-- C8 -->
+    <dependency>
+      <groupId>io.camunda.spring</groupId>
+      <artifactId>spring-boot-starter-camunda</artifactId>
+      <version>${spring-zeebe.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.camunda.spring</groupId>
+      <artifactId>java-common</artifactId>
+      <version>${spring-zeebe.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>io.camunda</groupId>
+      <artifactId>camunda-tasklist-client-java</artifactId>
+      <version>${camunda-tasklist-client-java.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>io.camunda</groupId>
+          <artifactId>zeebe-client-java</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>io.camunda.spring</groupId>
+          <artifactId>java-common</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-web</artifactId>
@@ -60,10 +124,6 @@
       <version>2.3.0</version>
     </dependency>
 
-    <dependency>
-      <groupId>org.camunda.bpm.springboot</groupId>
-      <artifactId>camunda-bpm-spring-boot-starter-webapp</artifactId>
-    </dependency>
     <dependency>
       <groupId>io.holunda</groupId>
       <artifactId>camunda-platform-7-autologin</artifactId>
