@@ -5,24 +5,22 @@
   <parent>
     <groupId>dev.bpm-crafters.maven.parent</groupId>
     <artifactId>maven-parent</artifactId>
-    <version>2024.1.1</version>
+    <version>2024.8.1</version>
     <relativePath/>
   </parent>
 
   <groupId>dev.bpm-crafters.process-engine-api</groupId>
   <artifactId>process-engine-api-root</artifactId>
-  <version>0.0.1</version>
+  <version>0.0.2</version>
   <name>POM: Project root</name>
   <description>Process Engine API</description>
   <url>https://github.com/bpm-crafters/process-engine-api/</url>
   <packaging>pom</packaging>
 
   <properties>
-    <spring-boot.version>3.2.5</spring-boot.version>
-
     <!-- TEST -->
-    <mockito.version>5.1.0</mockito.version>
-    <assertj.version>3.24.2</assertj.version>
+    <mockito.version>5.4.0</mockito.version>
+    <assertj.version>3.26.3</assertj.version>
   </properties>
 
   <modules>

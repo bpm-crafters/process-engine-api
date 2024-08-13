@@ -6,6 +6,7 @@ import dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.startup.I
 import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionRepository
 import org.camunda.bpm.engine.ExternalTaskService
 import org.camunda.bpm.engine.TaskService
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.boot.autoconfigure.AutoConfigureAfter
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.context.annotation.Bean
@@ -16,7 +17,8 @@ import org.springframework.context.annotation.Configuration
 class C7EmbeddedInitialPullOnStartupAutoConfiguration {
 
 
-  @Bean
+  @Bean("c7embedded-user-task-initial-pull")
+  @Qualifier("c7embedded-user-task-initial-pull")
   @ConditionalOnProperty(prefix = DEFAULT_PREFIX, name = ["user-tasks.execute-initial-pull-on-startup"])
   fun configureInitialPullForUserTaskDelivery(
     taskService: TaskService,
@@ -26,7 +28,8 @@ class C7EmbeddedInitialPullOnStartupAutoConfiguration {
     subscriptionRepository = subscriptionRepository
   )
 
-  @Bean
+  @Bean("c7embedded-service-task-initial-pull")
+  @Qualifier("c7embedded-service-task-initial-pull")
   @ConditionalOnProperty(prefix = DEFAULT_PREFIX, name = ["external-service-tasks.execute-initial-pull-on-startup"])
   fun configureInitialPullForExternalServiceTaskDelivery(
     externalTaskService: ExternalTaskService,

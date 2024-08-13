@@ -5,7 +5,7 @@
   <parent>
     <groupId>dev.bpm-crafters.process-engine-api</groupId>
     <artifactId>process-engine-api-root</artifactId>
-    <version>0.0.1</version>
+    <version>0.0.2</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -54,6 +54,7 @@
     <module>java-c7</module>
     <module>java-c7-remote</module>
     <module>java-c8</module>
+    <module>java-all</module>
   </modules>
 
 </project>

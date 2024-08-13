@@ -9,10 +9,10 @@
     <relativePath>../pom.xml</relativePath>
   </parent>
 
-  <artifactId>process-engine-api-examples-java-c8</artifactId>
-  <name>Example: Java C8</name>
+  <artifactId>process-engine-api-examples-java-all</artifactId>
+  <name>Example: Java C7 Embedded, Remote and C8 in one</name>
+
   <properties>
-    <spring-boot.version>3.3.2</spring-boot.version>
     <spring-zeebe.version>8.4.0</spring-zeebe.version>
     <camunda-tasklist-client-java.version>8.4.0.7</camunda-tasklist-client-java.version>
   </properties>
@@ -22,9 +22,23 @@
       <dependency>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-dependencies</artifactId>
-        <version>${spring-boot.version}</version>
+        <version>3.3.2</version>
         <scope>import</scope>
         <type>pom</type>
+      </dependency>
+      <dependency>
+        <groupId>org.camunda.bpm</groupId>
+        <artifactId>camunda-bom</artifactId>
+        <version>7.21.0</version>
+        <scope>import</scope>
+        <type>pom</type>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.cloud</groupId>
+        <artifactId>spring-cloud-dependencies</artifactId>
+        <version>2023.0.3</version>
+        <type>pom</type>
+        <scope>import</scope>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -37,9 +51,41 @@
 
     <dependency>
       <groupId>dev.bpm-crafters.process-engine-api</groupId>
+      <artifactId>process-engine-api-adapter-camunda-platform-c7-embedded-spring-boot-starter</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>dev.bpm-crafters.process-engine-api</groupId>
+      <artifactId>process-engine-api-adapter-camunda-platform-c7-remote-spring-boot-starter</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>dev.bpm-crafters.process-engine-api</groupId>
       <artifactId>process-engine-api-adapter-camunda-platform-c8-spring-boot-starter</artifactId>
     </dependency>
 
+    <!-- C7 embedded -->
+    <dependency>
+      <groupId>org.camunda.bpm.springboot</groupId>
+      <artifactId>camunda-bpm-spring-boot-starter-webapp</artifactId>
+    </dependency>
+    <!-- C7 Remote -->
+    <dependency>
+      <groupId>org.camunda.community.rest</groupId>
+      <artifactId>camunda-platform-7-rest-client-spring-boot-starter</artifactId>
+      <version>7.21.0</version>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.module</groupId>
+      <artifactId>jackson-module-kotlin</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.cloud</groupId>
+      <artifactId>spring-cloud-starter-openfeign</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.github.openfeign</groupId>
+      <artifactId>feign-httpclient</artifactId>
+    </dependency>
+    <!-- C8 -->
     <dependency>
       <groupId>io.camunda.spring</groupId>
       <artifactId>spring-boot-starter-camunda</artifactId>
@@ -67,15 +113,25 @@
       </exclusions>
     </dependency>
 
+
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-web</artifactId>
     </dependency>
-
     <dependency>
       <groupId>org.springdoc</groupId>
       <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
       <version>2.6.0</version>
+    </dependency>
+
+    <dependency>
+      <groupId>io.holunda</groupId>
+      <artifactId>camunda-platform-7-autologin</artifactId>
+      <version>0.1.0</version>
+    </dependency>
+    <dependency>
+      <groupId>com.h2database</groupId>
+      <artifactId>h2</artifactId>
     </dependency>
   </dependencies>
 

@@ -13,7 +13,7 @@ class ScheduledUserTaskDeliveryBinding(
   @Scheduled(fixedRateString = "\${dev.bpm-crafters.process-api.adapter.c8.user-tasks.fixed-rate-schedule-rate}")
   fun scheduleUserTaskDelivery() {
     logger.trace { "[SCHEDULER]: Delivering user tasks..." }
-    pullUserTaskDelivery.deliverAll()
+    pullUserTaskDelivery.refresh()
     logger.trace { "[SCHEDULER]: Delivered user tasks." }
   }
 

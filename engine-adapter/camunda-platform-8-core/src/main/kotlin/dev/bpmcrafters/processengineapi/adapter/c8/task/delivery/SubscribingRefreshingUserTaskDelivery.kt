@@ -1,6 +1,7 @@
 package dev.bpmcrafters.processengineapi.adapter.c8.task.delivery
 
 import dev.bpmcrafters.processengineapi.adapter.c8.task.SubscribingUserTaskDelivery
+import dev.bpmcrafters.processengineapi.adapter.commons.task.RefreshableDelivery
 import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionRepository
 import dev.bpmcrafters.processengineapi.adapter.commons.task.TaskSubscriptionHandle
 import dev.bpmcrafters.processengineapi.task.TaskSubscription
@@ -18,7 +19,7 @@ class SubscribingRefreshingUserTaskDelivery(
   private val subscriptionRepository: SubscriptionRepository,
   private val workerId: String,
   private val userTaskLockTimeoutMs: Long,
-) : SubscribingUserTaskDelivery {
+) : SubscribingUserTaskDelivery, RefreshableDelivery {
 
   companion object : KLogging() {
     const val ZEEBE_USER_TASK = "io.camunda.zeebe:userTask"
@@ -26,36 +27,6 @@ class SubscribingRefreshingUserTaskDelivery(
   }
 
   private var jobWorkerRegistry: Map<String, JobWorker> = emptyMap()
-
-  fun refresh() {
-    logger.trace { "[USER TASK DELIVERY] Refreshing user tasks." }
-    subscriptionRepository
-      .getDeliveredTaskIds(TaskType.USER)
-      .forEach { taskId ->
-        try {
-          logger.trace { "Extending job $taskId..." }
-          zeebeClient
-            .newUpdateTimeoutCommand(taskId.toLong())
-            .timeout(userTaskLockTimeoutMs)
-            .send()
-            .join()
-          logger.trace { "Extended job $taskId." }
-        } catch (e: ClientStatusException) {
-          when (e.statusCode) {
-            Status.Code.NOT_FOUND -> {
-              subscriptionRepository.getActiveSubscriptionForTask(taskId)?.let {
-                logger.trace { "User task is gone, sending termination to the handler." }
-                it.termination.accept(taskId)
-                subscriptionRepository.deactivateSubscriptionForTask(taskId)
-                logger.trace { "Termination sent to handler and user task is removed." }
-              }
-            }
-
-            else -> logger.error(e) { "Error extending job $taskId." }
-          }
-        }
-      }
-  }
 
   fun subscribe() {
     logger.info { "[USER TASK DELIVERY] Subscribing for user tasks." }
@@ -102,6 +73,36 @@ class SubscribingRefreshingUserTaskDelivery(
           .let {
             jobWorkerRegistry + (subscription.taskDescriptionKey to it)
           }
+      }
+  }
+
+  override fun refresh() {
+    logger.trace { "[USER TASK DELIVERY] Refreshing user tasks." }
+    subscriptionRepository
+      .getDeliveredTaskIds(TaskType.USER)
+      .forEach { taskId ->
+        try {
+          logger.trace { "Extending job $taskId..." }
+          zeebeClient
+            .newUpdateTimeoutCommand(taskId.toLong())
+            .timeout(userTaskLockTimeoutMs)
+            .send()
+            .join()
+          logger.trace { "Extended job $taskId." }
+        } catch (e: ClientStatusException) {
+          when (e.statusCode) {
+            Status.Code.NOT_FOUND -> {
+              subscriptionRepository.getActiveSubscriptionForTask(taskId)?.let {
+                logger.trace { "User task is gone, sending termination to the handler." }
+                it.termination.accept(taskId)
+                subscriptionRepository.deactivateSubscriptionForTask(taskId)
+                logger.trace { "Termination sent to handler and user task is removed." }
+              }
+            }
+
+            else -> logger.error(e) { "Error extending job $taskId." }
+          }
+        }
       }
   }
 

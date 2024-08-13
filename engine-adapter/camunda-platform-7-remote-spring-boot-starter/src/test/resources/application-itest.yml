@@ -6,22 +6,22 @@ dev:
   bpm-crafters:
     process-api:
       adapter:
-        c7:
-          remote:
-            external-service-tasks:
+        c7remote:
+          enabled: true
+          external-service-tasks:
               delivery-strategy: remote_scheduled
               fixed-rate-schedule-rate: 1000
               worker-id: execute-action-external
               lock-time-in-seconds: 1000
-            user-tasks:
-              fixed-rate-schedule-rate: 1000
-              delivery-strategy: remote_scheduled
+          user-tasks:
+            fixed-rate-schedule-rate: 1000
+            delivery-strategy: remote_scheduled
 
 feign:
   client:
     config:
       default:
-        url: "http://localhost:18080/engine-rest/"
-        loggerLevel: BASIC
+        url: "http://localhost:38080/engine-rest/"
+        logger-level: BASIC
 
 
