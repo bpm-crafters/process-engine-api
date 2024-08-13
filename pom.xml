@@ -19,7 +19,7 @@
 
   <properties>
     <!-- TEST -->
-    <mockito.version>5.1.0</mockito.version>
+    <mockito.version>5.4.0</mockito.version>
     <assertj.version>3.24.2</assertj.version>
   </properties>
 
