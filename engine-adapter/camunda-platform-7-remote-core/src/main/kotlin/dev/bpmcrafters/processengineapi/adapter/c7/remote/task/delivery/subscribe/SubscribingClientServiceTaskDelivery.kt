@@ -11,7 +11,7 @@ import org.camunda.bpm.client.topic.TopicSubscriptionBuilder
 /**
  *
  */
-class SubscribingClientExternalTaskDelivery(
+class SubscribingClientServiceTaskDelivery(
   private val externalTaskClient: ExternalTaskClient,
   private val subscriptionRepository: SubscriptionRepository,
   private val lockDuration: Long

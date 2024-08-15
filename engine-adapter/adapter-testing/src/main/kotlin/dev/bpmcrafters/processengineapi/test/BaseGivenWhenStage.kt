@@ -6,7 +6,6 @@ import com.tngtech.jgiven.annotation.ProvidedScenarioState
 import dev.bpmcrafters.processengineapi.process.StartProcessByDefinitionCmd
 import dev.bpmcrafters.processengineapi.process.StartProcessByMessageCmd
 import dev.bpmcrafters.processengineapi.task.*
-import io.mockk.mockk
 import io.toolisticon.testing.jgiven.JGivenKotlinStage
 import io.toolisticon.testing.jgiven.step
 import mu.KLogging
@@ -99,7 +98,7 @@ class BaseGivenWhenStage : Stage<BaseGivenWhenStage>() {
   fun `complete the external task`() = step {
     assertThat(externalTaskId).isNotEmpty()
 
-    processTestHelper.getExternalTaskCompletionApi().completeTask(
+    processTestHelper.getServiceTaskCompletionApi().completeTask(
       CompleteTaskCmd(
         taskId = externalTaskId!!,
         payloadSupplier = { emptyMap() }

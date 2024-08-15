@@ -70,7 +70,7 @@ dev:
       adapter:
         c7embedded:
           enabled: true
-          external-service-tasks:
+          service-tasks:
             delivery-strategy: embedded_job
             worker-id: embedded-worker
             lock-time-in-seconds: 10
@@ -124,13 +124,13 @@ dev:
       adapter:
         c7remote:
           enabled: true
-          external-service-tasks:
+          service-tasks:
             delivery-strategy: remote_scheduled
-            fixed-rate-schedule-rate: 10
+            schedule-delivery-fixed-rate-in-seconds: 10
             worker-id: embedded-worker
             lock-time-in-seconds: 10
           user-tasks:
-            fixed-rate-schedule-rate: 10
+            schedule-delivery-fixed-rate-in-seconds: 10
             delivery-strategy: remote_scheduled
 
 # to tell the client library where the engine is located provide the correct details below:
@@ -182,7 +182,7 @@ dev:
             worker-id: worker
           user-tasks:
             delivery-strategy: subscription_refreshing
-            fixed-rate-schedule-rate: 5000 # every 5 seconds
+            schedule-delivery-fixed-rate-in-seconds: 5000 # every 5 seconds
             tasklist-url: https://${zeebe.client.cloud.region}.tasklist.camunda.io/${zeebe.client.cloud.clusterId}
             fixed-rate-refresh-rate: 5000 # every 5 seconds
 

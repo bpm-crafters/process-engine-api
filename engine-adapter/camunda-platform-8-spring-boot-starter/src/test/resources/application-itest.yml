@@ -11,9 +11,10 @@ dev:
           service-tasks:
             delivery-strategy: subscription
             worker-id: execute-action-external
+            subscribing-delivery-initial-delay-in-seconds: 1000
           user-tasks:
             delivery-strategy: subscription_refreshing # or scheduled
-            fixed-rate-schedule-rate: 100000
+            schedule-delivery-fixed-rate-in-seconds: 100000
             tasklist-url: http://localhost
-            fixed-rate-refresh-rate: 100000
+            subscribing-delivery-initial-delay-in-seconds: 100000
             completion-strategy: job # or tasklist

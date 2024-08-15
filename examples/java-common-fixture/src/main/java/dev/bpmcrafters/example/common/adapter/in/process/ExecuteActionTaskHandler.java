@@ -1,6 +1,6 @@
 package dev.bpmcrafters.example.common.adapter.in.process;
 
-import dev.bpmcrafters.processengineapi.task.ExternalTaskCompletionApi;
+import dev.bpmcrafters.processengineapi.task.ServiceTaskCompletionApi;
 import dev.bpmcrafters.processengineapi.task.TaskInformation;
 import dev.bpmcrafters.processengineapi.task.TaskSubscriptionApi;
 import lombok.extern.slf4j.Slf4j;
@@ -11,7 +11,7 @@ import java.util.Map;
 
 @Slf4j
 public class ExecuteActionTaskHandler extends AbstractSynchronousTaskHandler {
-  public ExecuteActionTaskHandler(TaskSubscriptionApi taskSubscriptionApi, ExternalTaskCompletionApi externalTaskCompletionApi) {
+  public ExecuteActionTaskHandler(TaskSubscriptionApi taskSubscriptionApi, ServiceTaskCompletionApi externalTaskCompletionApi) {
     super(taskSubscriptionApi, externalTaskCompletionApi, "execute-action-external");
   }
 

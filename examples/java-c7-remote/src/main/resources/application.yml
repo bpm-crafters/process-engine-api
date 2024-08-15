@@ -13,16 +13,15 @@ dev:
   bpm-crafters:
     process-api:
       adapter:
-        c7:
-          remote:
-            external-service-tasks:
-              delivery-strategy: remote_scheduled
-              fixed-rate-schedule-rate: 10
-              worker-id: embedded-worker
-              lock-time-in-seconds: 10
-            user-tasks:
-              fixed-rate-schedule-rate: 10
-              delivery-strategy: remote_scheduled
+        c7remote:
+          service-tasks:
+            delivery-strategy: remote_scheduled
+            schedule-delivery-fixed-rate-in-seconds: 10
+            worker-id: embedded-worker
+            lock-time-in-seconds: 10
+          user-tasks:
+            schedule-delivery-fixed-rate-in-seconds: 10
+            delivery-strategy: remote_scheduled
 
 feign:
   client:

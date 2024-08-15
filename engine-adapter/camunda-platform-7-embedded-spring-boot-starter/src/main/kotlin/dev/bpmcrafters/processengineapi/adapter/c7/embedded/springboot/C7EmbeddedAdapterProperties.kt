@@ -14,7 +14,7 @@ class C7EmbeddedAdapterProperties(
    * Configuration for external service tasks.
    */
   @NestedConfigurationProperty
-  val externalServiceTasks: ExternalServiceTasks,
+  val serviceTasks: ServiceTasks,
 
   /**
    * Configuration of user tasks.
@@ -38,7 +38,7 @@ class C7EmbeddedAdapterProperties(
     /**
      * Fixed rate for scheduled user task delivery.
      */
-    val fixedRateScheduleRate: Long = 5_000L,
+    val scheduleDeliveryFixedRateInSeconds: Long = 5_000L,
     /**
      * Should an initial pull be executed on startup.
      */
@@ -48,7 +48,7 @@ class C7EmbeddedAdapterProperties(
   /**
    * Configuration for external service task handling.
    */
-  data class ExternalServiceTasks(
+  data class ServiceTasks(
     /**
      * Default id of the worker used for the external task.
      */
@@ -68,7 +68,7 @@ class C7EmbeddedAdapterProperties(
     /**
      * Fixed rate for scheduled user task delivery.
      */
-    val fixedRateScheduleRate: Long = 13_000L,
+    val scheduleDeliveryFixedRateInSeconds: Long = 13_000L,
     /**
      * Delivery strategy for external service tasks.
      */

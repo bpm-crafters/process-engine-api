@@ -1,14 +1,14 @@
 package dev.bpmcrafters.processengineapi.adapter.c7.embedded.process
 
-import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.completion.C7ExternalTaskCompletionApiImpl
+import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.completion.C7ServiceTaskCompletionApiImpl
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.completion.C7UserTaskCompletionApiImpl
-import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.pull.EmbeddedPullExternalTaskDelivery
+import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.pull.EmbeddedPullServiceTaskDelivery
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.pull.EmbeddedPullUserTaskDelivery
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.subscription.C7TaskSubscriptionApiImpl
 import dev.bpmcrafters.processengineapi.adapter.commons.task.InMemSubscriptionRepository
 import dev.bpmcrafters.processengineapi.process.ProcessInformation
 import dev.bpmcrafters.processengineapi.process.StartProcessApi
-import dev.bpmcrafters.processengineapi.task.ExternalTaskCompletionApi
+import dev.bpmcrafters.processengineapi.task.ServiceTaskCompletionApi
 import dev.bpmcrafters.processengineapi.task.TaskSubscriptionApi
 import dev.bpmcrafters.processengineapi.task.UserTaskCompletionApi
 import dev.bpmcrafters.processengineapi.test.ProcessTestHelper
@@ -25,7 +25,7 @@ class C7EmbeddedProcessTestHelper(private val processEngine: ProcessEngine) : Pr
     subscriptionRepository = subscriptionRepository
   )
 
-  private var embeddedPullExternalTaskDelivery: EmbeddedPullExternalTaskDelivery = EmbeddedPullExternalTaskDelivery(
+  private var embeddedPullExternalTaskDelivery: EmbeddedPullServiceTaskDelivery = EmbeddedPullServiceTaskDelivery(
     externalTaskService = processEngine.externalTaskService,
     workerId = WORKER_ID,
     subscriptionRepository = subscriptionRepository,
@@ -47,7 +47,7 @@ class C7EmbeddedProcessTestHelper(private val processEngine: ProcessEngine) : Pr
     subscriptionRepository = subscriptionRepository
   )
 
-  override fun getExternalTaskCompletionApi(): ExternalTaskCompletionApi = C7ExternalTaskCompletionApiImpl(
+  override fun getServiceTaskCompletionApi(): ServiceTaskCompletionApi = C7ServiceTaskCompletionApiImpl(
     workerId = WORKER_ID,
     externalTaskService = processEngine.externalTaskService,
     subscriptionRepository = subscriptionRepository

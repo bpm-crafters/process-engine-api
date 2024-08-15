@@ -1,19 +1,17 @@
 package dev.bpmcrafters.processengineapi.adapter.c8
 
 import com.tngtech.jgiven.integration.spring.EnableJGiven
-import dev.bpmcrafters.processengineapi.adapter.c8.springboot.C8AdapterProperties.Companion.DEFAULT_PREFIX
 import dev.bpmcrafters.processengineapi.adapter.c8.task.delivery.PullUserTaskDelivery
 import dev.bpmcrafters.processengineapi.adapter.c8.task.delivery.SubscribingRefreshingUserTaskDelivery
 import dev.bpmcrafters.processengineapi.adapter.c8.task.delivery.SubscribingServiceTaskDelivery
 import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionRepository
 import dev.bpmcrafters.processengineapi.process.StartProcessApi
-import dev.bpmcrafters.processengineapi.task.ExternalTaskCompletionApi
+import dev.bpmcrafters.processengineapi.task.ServiceTaskCompletionApi
 import dev.bpmcrafters.processengineapi.task.TaskSubscriptionApi
 import dev.bpmcrafters.processengineapi.task.UserTaskCompletionApi
 import dev.bpmcrafters.processengineapi.test.ProcessTestHelper
 import io.camunda.tasklist.CamundaTaskListClient
 import org.springframework.boot.autoconfigure.SpringBootApplication
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.context.annotation.Bean
 
 
@@ -29,7 +27,7 @@ class C8TestApplication {
     subscribingUserTaskDelivery: SubscribingRefreshingUserTaskDelivery,
     subscribingServiceTaskDelivery: SubscribingServiceTaskDelivery,
     userTaskCompletionApi: UserTaskCompletionApi,
-    externalTaskCompletionApi: ExternalTaskCompletionApi,
+    serviceTaskCompletionApi: ServiceTaskCompletionApi,
     subscriptionRepository: SubscriptionRepository,
   ): ProcessTestHelper = C8ProcessTestHelper(
     startProcessApi = startProcessApi,
@@ -38,7 +36,7 @@ class C8TestApplication {
     subscribingUserTaskDelivery = subscribingUserTaskDelivery,
     subscribingServiceTaskDelivery = subscribingServiceTaskDelivery,
     userTaskCompletionApi = userTaskCompletionApi,
-    externalTaskCompletionApi = externalTaskCompletionApi,
+    serviceTaskCompletionApi = serviceTaskCompletionApi,
     subscriptionRepository = subscriptionRepository
   )
 
