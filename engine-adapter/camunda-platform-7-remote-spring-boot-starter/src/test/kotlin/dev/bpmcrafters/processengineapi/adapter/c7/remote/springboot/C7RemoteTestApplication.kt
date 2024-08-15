@@ -6,11 +6,10 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import com.tngtech.jgiven.integration.spring.EnableJGiven
 import dev.bpmcrafters.processengineapi.adapter.c7.remote.task.delivery.UserTaskDelivery
-import dev.bpmcrafters.processengineapi.adapter.c7.remote.task.delivery.pull.RemotePullExternalTaskDelivery
-import dev.bpmcrafters.processengineapi.adapter.commons.task.InMemSubscriptionRepository
+import dev.bpmcrafters.processengineapi.adapter.c7.remote.task.delivery.pull.RemotePullServiceTaskDelivery
 import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionRepository
 import dev.bpmcrafters.processengineapi.process.StartProcessApi
-import dev.bpmcrafters.processengineapi.task.ExternalTaskCompletionApi
+import dev.bpmcrafters.processengineapi.task.ServiceTaskCompletionApi
 import dev.bpmcrafters.processengineapi.task.TaskSubscriptionApi
 import dev.bpmcrafters.processengineapi.task.UserTaskCompletionApi
 import dev.bpmcrafters.processengineapi.test.ProcessTestHelper
@@ -37,9 +36,9 @@ class C7RemoteTestApplication {
     startProcessApi: StartProcessApi,
     taskSubscriptionApi: TaskSubscriptionApi,
     userTaskDelivery: UserTaskDelivery,
-    externalTaskDelivery: RemotePullExternalTaskDelivery,
+    externalTaskDelivery: RemotePullServiceTaskDelivery,
     userTaskCompletionApi: UserTaskCompletionApi,
-    externalTaskCompletionApi: ExternalTaskCompletionApi,
+    serviceTaskCompletionApi: ServiceTaskCompletionApi,
     subscriptionRepository: SubscriptionRepository,
   ): ProcessTestHelper = C7RemoteProcessTestHelper(
     runtimeService = runtimeService,
@@ -48,7 +47,7 @@ class C7RemoteTestApplication {
     userTaskDelivery = userTaskDelivery,
     externalTaskDelivery = externalTaskDelivery,
     userTaskCompletionApi = userTaskCompletionApi,
-    externalTaskCompletionApi = externalTaskCompletionApi,
+    serviceTaskCompletionApi = serviceTaskCompletionApi,
     subscriptionRepository = subscriptionRepository
   )
 

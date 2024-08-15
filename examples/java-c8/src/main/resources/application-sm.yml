@@ -8,17 +8,15 @@ dev:
       adapter:
         c8:
           enabled: true
-          engines:
-            default:
-              user-tasks:
-                delivery-strategy: subscription_refreshing
-                fixed-rate-schedule-rate: 2000 # every 2 seconds
-                tasklist-url: http://localhost:8082
-                fixed-rate-refresh-rate: 2000 # every 2 seconds
-                completion-strategy: job
-              service-tasks:
-                delivery-strategy: subscription
-                worker-id: worker
+          service-tasks:
+            delivery-strategy: subscription
+            worker-id: worker
+          user-tasks:
+            delivery-strategy: subscription_refreshing
+            schedule-delivery-fixed-rate-in-seconds: 2000 # every 2 seconds
+            tasklist-url: http://localhost:8082
+            fixed-rate-refresh-rate: 2000 # every 2 seconds
+            completion-strategy: job
 
 camunda:
   client:

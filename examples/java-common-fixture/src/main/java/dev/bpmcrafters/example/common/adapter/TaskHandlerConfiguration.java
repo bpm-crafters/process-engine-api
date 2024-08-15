@@ -3,7 +3,7 @@ package dev.bpmcrafters.example.common.adapter;
 import dev.bpmcrafters.example.common.adapter.in.process.ExecuteActionTaskHandler;
 import dev.bpmcrafters.example.common.adapter.in.process.SendingTaskHandler;
 import dev.bpmcrafters.example.common.adapter.out.process.InMemUserTaskAdapter;
-import dev.bpmcrafters.processengineapi.task.ExternalTaskCompletionApi;
+import dev.bpmcrafters.processengineapi.task.ServiceTaskCompletionApi;
 import dev.bpmcrafters.processengineapi.task.TaskSubscriptionApi;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,14 +13,14 @@ public class TaskHandlerConfiguration {
 
   @Bean(initMethod = "register", destroyMethod = "unregister")
   public ExecuteActionTaskHandler doAction1(
-    TaskSubscriptionApi taskSubscriptionApi,
-    ExternalTaskCompletionApi externalTaskCompletionApi
+      TaskSubscriptionApi taskSubscriptionApi,
+      ServiceTaskCompletionApi externalTaskCompletionApi
   ) {
     return new ExecuteActionTaskHandler(taskSubscriptionApi, externalTaskCompletionApi);
   }
 
   @Bean(initMethod = "register", destroyMethod = "unregister")
-  public SendingTaskHandler doAction2(TaskSubscriptionApi taskSubscriptionApi, ExternalTaskCompletionApi externalTaskCompletionApi) {
+  public SendingTaskHandler doAction2(TaskSubscriptionApi taskSubscriptionApi, ServiceTaskCompletionApi externalTaskCompletionApi) {
     return new SendingTaskHandler(taskSubscriptionApi, externalTaskCompletionApi);
   }
 

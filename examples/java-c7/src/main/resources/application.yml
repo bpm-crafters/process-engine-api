@@ -14,7 +14,7 @@ dev:
     process-api:
       adapter:
         c7embedded:
-          external-service-tasks:
+          service-tasks:
             delivery-strategy: embedded_job
             worker-id: embedded-worker
             lock-time-in-seconds: 10

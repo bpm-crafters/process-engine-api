@@ -4,7 +4,7 @@ import dev.bpmcrafters.processengineapi.Empty
 import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionRepository
 import dev.bpmcrafters.processengineapi.task.CompleteTaskByErrorCmd
 import dev.bpmcrafters.processengineapi.task.CompleteTaskCmd
-import dev.bpmcrafters.processengineapi.task.ExternalTaskCompletionApi
+import dev.bpmcrafters.processengineapi.task.ServiceTaskCompletionApi
 import dev.bpmcrafters.processengineapi.task.FailTaskCmd
 import io.camunda.zeebe.client.ZeebeClient
 import mu.KLogging
@@ -14,7 +14,7 @@ import java.util.concurrent.Future
 class C8ZeebeExternalServiceTaskCompletionApiImpl(
   private val zeebeClient: ZeebeClient,
   private val subscriptionRepository: SubscriptionRepository
-) : ExternalTaskCompletionApi {
+) : ServiceTaskCompletionApi {
 
   companion object : KLogging()
 

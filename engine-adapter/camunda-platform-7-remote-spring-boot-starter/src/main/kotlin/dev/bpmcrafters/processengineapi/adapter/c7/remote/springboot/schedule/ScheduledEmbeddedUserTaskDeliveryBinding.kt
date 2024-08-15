@@ -10,7 +10,7 @@ class ScheduledEmbeddedUserTaskDeliveryBinding(
 
   companion object : KLogging()
 
-  @Scheduled(fixedRateString = "\${dev.bpm-crafters.process-api.adapter.c7remote.user-tasks.fixed-rate-schedule-rate}")
+  @Scheduled(fixedRateString = "\${dev.bpm-crafters.process-api.adapter.c7remote.user-tasks.schedule-delivery-fixed-rate-in-seconds}")
   fun scheduleUserTaskDelivery() {
     logger.trace { "[SCHEDULER]: Delivering user tasks..." }
     userTaskDelivery.refresh()
