@@ -150,6 +150,7 @@ fun ProcessEngineConfigurationImpl.createJob(configuration: EmbeddedTaskDelivery
       jobHandlerConfigurationRaw = configuration.toCanonicalString()
       jobHandlerType = EmbeddedTaskDeliveryJobHandler.TYPE
       duedate = Date.from(Instant.now())
+      executionId = configuration.id
       // we don't want to retry the delivery for the moment.
       setRetriesFromPersistence(1) // FIXME -> move to properties?
     }
