@@ -76,7 +76,7 @@ class EmbeddedPullServiceTaskDelivery(
       .distinct()
       .forEach { topic ->
         this.topic(topic, lockDuration)
-          // .enableCustomObjectDeserialization()
+          .enableCustomObjectDeserialization()
       }
     return this
   }
