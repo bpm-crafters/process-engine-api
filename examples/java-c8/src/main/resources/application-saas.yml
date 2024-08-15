@@ -8,17 +8,15 @@ dev:
       adapter:
         c8:
           enabled: true
-          engines:
-            default:
-              user-tasks:
-                delivery-strategy: subscription_refreshing
-                completion-strategy: job
-                fixed-rate-schedule-rate: 2000 # every 2 seconds
-                tasklist-url: https://${zeebe.client.cloud.region}.tasklist.camunda.io/${zeebe.client.cloud.clusterId}
-                fixed-rate-refresh-rate: 2000 # every 2 seconds
-              service-tasks:
-                delivery-strategy: subscription
-                worker-id: worker
+          service-tasks:
+            delivery-strategy: subscription
+            worker-id: worker
+          user-tasks:
+            delivery-strategy: subscription_refreshing
+            completion-strategy: job
+            schedule-delivery-fixed-rate-in-seconds: 2000 # every 2 seconds
+            tasklist-url: https://${zeebe.client.cloud.region}.tasklist.camunda.io/${zeebe.client.cloud.clusterId}
+            fixed-rate-refresh-rate: 2000 # every 2 seconds
 
 zeebe:
   client:

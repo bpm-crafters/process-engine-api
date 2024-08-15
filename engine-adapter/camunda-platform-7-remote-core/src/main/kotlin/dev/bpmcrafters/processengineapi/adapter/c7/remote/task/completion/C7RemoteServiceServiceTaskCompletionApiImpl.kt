@@ -5,62 +5,61 @@ import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionReposit
 import dev.bpmcrafters.processengineapi.task.CompleteTaskByErrorCmd
 import dev.bpmcrafters.processengineapi.task.CompleteTaskCmd
 import dev.bpmcrafters.processengineapi.task.FailTaskCmd
-import dev.bpmcrafters.processengineapi.task.ExternalTaskCompletionApi
+import dev.bpmcrafters.processengineapi.task.ServiceTaskCompletionApi
 import mu.KLogging
+import org.camunda.bpm.engine.ExternalTaskService
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.Future
-import org.camunda.bpm.client.task.ExternalTaskService as ClientExternalTaskService
 
 /**
- * External task completion API implementation using official client-based external task service.
- * @param externalTaskService external task service provided by the official Camunda Platform 7 client
- * @param subscriptionRepository repository for subscriptions.
+ * Strategy for completing external tasks using Camunda externalTaskService Java API.
  */
-class C7RemoteClientExternalTaskCompletionApiImpl(
-  private val externalTaskService: ClientExternalTaskService,
+class C7RemoteServiceServiceTaskCompletionApiImpl(
+  private val workerId: String,
+  private val externalTaskService: ExternalTaskService,
   private val subscriptionRepository: SubscriptionRepository
-) : ExternalTaskCompletionApi {
+) : ServiceTaskCompletionApi {
 
   companion object : KLogging()
 
   override fun completeTask(cmd: CompleteTaskCmd): Future<Empty> {
-    externalTaskService
-      .complete(
-        cmd.taskId,
-        cmd.get(),
-        mapOf()
-      )
+    externalTaskService.complete(
+      cmd.taskId,
+      workerId,
+      cmd.get()
+    )
     subscriptionRepository.deactivateSubscriptionForTask(cmd.taskId)?.apply {
       termination.accept(cmd.taskId)
+      logger.info { "Successfully completed external task ${cmd.taskId}." }
     }
     return CompletableFuture.completedFuture(Empty)
   }
 
   override fun completeTaskByError(cmd: CompleteTaskByErrorCmd): Future<Empty> {
-    externalTaskService
-      .handleBpmnError(
-        cmd.taskId,
-        cmd.errorCode,
-        "",
-        cmd.get()
-      )
+    externalTaskService.handleBpmnError(
+      cmd.taskId,
+      workerId,
+      cmd.errorCode
+    )
     subscriptionRepository.deactivateSubscriptionForTask(cmd.taskId)?.apply {
       termination.accept(cmd.taskId)
+      logger.info { "Completed external task ${cmd.taskId} with error." }
     }
     return CompletableFuture.completedFuture(Empty)
   }
 
   override fun failTask(cmd: FailTaskCmd): Future<Empty> {
-    externalTaskService
-      .handleFailure(
-        cmd.taskId,
-        cmd.reason,
-        cmd.errorDetails,
-        100, // FIXME
-        1000 // FIXME
-      )
+    externalTaskService.handleFailure(
+      cmd.taskId,
+      workerId,
+      cmd.reason,
+      cmd.errorDetails,
+      100, // FIXME -> how to get those, they are only in the job
+      1000 // FIXME -> retry timeout from props?
+    )
     subscriptionRepository.deactivateSubscriptionForTask(cmd.taskId)?.apply {
       termination.accept(cmd.taskId)
+      logger.info { "Failure occurred on external task ${cmd.taskId} handling." }
     }
     return CompletableFuture.completedFuture(Empty)
   }

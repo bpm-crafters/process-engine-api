@@ -5,7 +5,7 @@ import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionReposit
 import dev.bpmcrafters.processengineapi.task.CompleteTaskByErrorCmd
 import dev.bpmcrafters.processengineapi.task.CompleteTaskCmd
 import dev.bpmcrafters.processengineapi.task.FailTaskCmd
-import dev.bpmcrafters.processengineapi.task.ExternalTaskCompletionApi
+import dev.bpmcrafters.processengineapi.task.ServiceTaskCompletionApi
 import mu.KLogging
 import org.camunda.bpm.engine.ExternalTaskService
 import java.util.concurrent.CompletableFuture
@@ -14,11 +14,11 @@ import java.util.concurrent.Future
 /**
  * Strategy for completing external tasks using Camunda externalTaskService Java API.
  */
-class C7ExternalTaskCompletionApiImpl(
+class C7ServiceTaskCompletionApiImpl(
   private val workerId: String,
   private val externalTaskService: ExternalTaskService,
   private val subscriptionRepository: SubscriptionRepository
-) : ExternalTaskCompletionApi {
+) : ServiceTaskCompletionApi {
 
   companion object : KLogging()
 

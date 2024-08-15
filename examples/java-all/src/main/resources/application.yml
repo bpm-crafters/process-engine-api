@@ -14,7 +14,7 @@ dev:
     process-api:
       adapter:
         c7-embedded:
-          external-service-tasks:
+          service-tasks:
             delivery-strategy: embedded_job
             worker-id: embedded-worker
             lock-time-in-seconds: 10
@@ -24,13 +24,13 @@ dev:
             execute-initial-pull-on-startup: true
         c7-remote:
           enabled: true
-          external-service-tasks:
+          service-tasks:
             delivery-strategy: remote_scheduled
-            fixed-rate-schedule-rate: 10
+            schedule-delivery-fixed-rate-in-seconds: 10
             worker-id: embedded-worker
             lock-time-in-seconds: 10
           user-tasks:
-            fixed-rate-schedule-rate: 10
+            schedule-delivery-fixed-rate-in-seconds: 10
             delivery-strategy: remote_scheduled
         c8:
           enabled: true
@@ -40,7 +40,7 @@ dev:
           user-tasks:
             delivery-strategy: subscription_refreshing
             completion-strategy: job
-            fixed-rate-schedule-rate: 2000 # every 2 seconds
+            schedule-delivery-fixed-rate-in-seconds: 2000 # every 2 seconds
             tasklist-url: https://${zeebe.client.cloud.region}.tasklist.camunda.io/${zeebe.client.cloud.clusterId}
             fixed-rate-refresh-rate: 2000 # every 2 seconds
 

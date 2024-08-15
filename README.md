@@ -49,9 +49,14 @@ The Correlation API provides functionality to correlate messages and signals wit
 It is intended to be used in outbound adapters of the port/adapter architecture in order to control the process engine from your application.
 
 
-### Task API
+### User Task Completion API
 
-The Task API provides functionality to deal with tasks. The task handlers can be registered and get invoked when tasks 
+The Task API provides functionality to deal with user tasks. Since the Task API allows asynchronous processing, 
+we provide a special API to complete user tasks.
+
+### Service Task Completion API
+
+The Task API provides functionality to deal with service tasks. The task handlers can be registered and get invoked when tasks 
 appear in the process engine. Since the Task API allows asynchronous processing, we provide a special API to complete tasks.
  
 ## Usage

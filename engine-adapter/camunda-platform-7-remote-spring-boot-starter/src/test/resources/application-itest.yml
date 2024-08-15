@@ -8,13 +8,13 @@ dev:
       adapter:
         c7remote:
           enabled: true
-          external-service-tasks:
+          service-tasks:
               delivery-strategy: remote_scheduled
-              fixed-rate-schedule-rate: 1000
+              schedule-delivery-fixed-rate-in-seconds: 1000
               worker-id: execute-action-external
               lock-time-in-seconds: 1000
           user-tasks:
-            fixed-rate-schedule-rate: 1000
+            schedule-delivery-fixed-rate-in-seconds: 1000
             delivery-strategy: remote_scheduled
 
 feign:

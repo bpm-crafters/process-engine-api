@@ -2,12 +2,12 @@ package dev.bpmcrafters.processengineapi.adapter.c7.remote.springboot
 
 import dev.bpmcrafters.processengineapi.adapter.c7.remote.process.toProcessInformation
 import dev.bpmcrafters.processengineapi.adapter.c7.remote.task.delivery.UserTaskDelivery
-import dev.bpmcrafters.processengineapi.adapter.c7.remote.task.delivery.pull.RemotePullExternalTaskDelivery
+import dev.bpmcrafters.processengineapi.adapter.c7.remote.task.delivery.pull.RemotePullServiceTaskDelivery
 import dev.bpmcrafters.processengineapi.adapter.commons.task.InMemSubscriptionRepository
 import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionRepository
 import dev.bpmcrafters.processengineapi.process.ProcessInformation
 import dev.bpmcrafters.processengineapi.process.StartProcessApi
-import dev.bpmcrafters.processengineapi.task.ExternalTaskCompletionApi
+import dev.bpmcrafters.processengineapi.task.ServiceTaskCompletionApi
 import dev.bpmcrafters.processengineapi.task.TaskSubscriptionApi
 import dev.bpmcrafters.processengineapi.task.UserTaskCompletionApi
 import dev.bpmcrafters.processengineapi.test.ProcessTestHelper
@@ -17,17 +17,17 @@ class C7RemoteProcessTestHelper(
   private val runtimeService: RuntimeService,
   private val startProcessApi: StartProcessApi,
   private val userTaskDelivery: UserTaskDelivery,
-  private val externalTaskDelivery: RemotePullExternalTaskDelivery,
+  private val externalTaskDelivery: RemotePullServiceTaskDelivery,
   private val taskSubscriptionApi: TaskSubscriptionApi,
   private val userTaskCompletionApi: UserTaskCompletionApi,
-  private val externalTaskCompletionApi: ExternalTaskCompletionApi,
+  private val serviceTaskCompletionApi: ServiceTaskCompletionApi,
   private val subscriptionRepository: SubscriptionRepository
 ) : ProcessTestHelper {
 
   override fun getStartProcessApi(): StartProcessApi = startProcessApi
   override fun getTaskSubscriptionApi(): TaskSubscriptionApi = taskSubscriptionApi
   override fun getUserTaskCompletionApi(): UserTaskCompletionApi = userTaskCompletionApi
-  override fun getExternalTaskCompletionApi(): ExternalTaskCompletionApi = externalTaskCompletionApi
+  override fun getServiceTaskCompletionApi(): ServiceTaskCompletionApi = serviceTaskCompletionApi
 
   override fun triggerPullingUserTaskDeliveryManually() = userTaskDelivery.refresh()
   override fun subscribeForUserTasks() {

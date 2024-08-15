@@ -1,4 +1,4 @@
 dev.bpmcrafters.processengineapi.adapter.c7.remote.springboot.C7RemoteAdapterAutoConfiguration
 dev.bpmcrafters.processengineapi.adapter.c7.remote.springboot.C7RemoteServiceApiAutoConfiguration
 dev.bpmcrafters.processengineapi.adapter.c7.remote.springboot.C7RemoteServiceExternalTaskAutoConfiguration
-dev.bpmcrafters.processengineapi.adapter.c7.remote.springboot.C7RemoteClientExternalTaskAutoConfiguration
+dev.bpmcrafters.processengineapi.adapter.c7.remote.springboot.C7RemoteClientServiceTaskAutoConfiguration
