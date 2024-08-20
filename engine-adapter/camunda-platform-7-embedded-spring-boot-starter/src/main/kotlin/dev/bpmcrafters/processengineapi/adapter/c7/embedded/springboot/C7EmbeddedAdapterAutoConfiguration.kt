@@ -6,6 +6,8 @@ import dev.bpmcrafters.processengineapi.adapter.c7.embedded.deploy.DeploymentApi
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.process.StartProcessApiImpl
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.completion.C7ServiceTaskCompletionApiImpl
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.completion.C7UserTaskCompletionApiImpl
+import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.completion.FailureRetrySupplier
+import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.completion.LinearMemoryFailureRetrySupplier
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.subscription.C7TaskSubscriptionApiImpl
 import dev.bpmcrafters.processengineapi.adapter.commons.task.InMemSubscriptionRepository
 import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionRepository
@@ -68,19 +70,28 @@ class C7EmbeddedAdapterAutoConfiguration {
   @ConditionalOnMissingBean
   fun subscriptionRepository(): SubscriptionRepository = InMemSubscriptionRepository()
 
+  @Bean
+  @ConditionalOnMissingBean
+  fun defaultFailureRetrySupplier(c7AdapterProperties: C7EmbeddedAdapterProperties): FailureRetrySupplier {
+    return LinearMemoryFailureRetrySupplier(
+      retry = c7AdapterProperties.serviceTasks.retries,
+      retryTimeout = c7AdapterProperties.serviceTasks.retryTimeoutInSeconds
+    )
+  }
+
   @Bean("c7embedded-service-task-completion-api")
   @Qualifier("c7embedded-service-task-completion-api")
   fun serviceTaskCompletionApi(
     externalTaskService: ExternalTaskService,
     subscriptionRepository: SubscriptionRepository,
-    c7AdapterProperties: C7EmbeddedAdapterProperties
+    c7AdapterProperties: C7EmbeddedAdapterProperties,
+    failureRetrySupplier: FailureRetrySupplier
   ): ServiceTaskCompletionApi =
     C7ServiceTaskCompletionApiImpl(
       workerId = c7AdapterProperties.serviceTasks.workerId,
       externalTaskService = externalTaskService,
       subscriptionRepository = subscriptionRepository,
-      retries = c7AdapterProperties.serviceTasks.retries,
-      retryTimeoutInSeconds = c7AdapterProperties.serviceTasks.retryTimeoutInSeconds
+      failureRetrySupplier = failureRetrySupplier
     )
 
   @Bean("c7embedded-user-task-completion-api")
@@ -93,7 +104,4 @@ class C7EmbeddedAdapterAutoConfiguration {
       taskService = taskService,
       subscriptionRepository = subscriptionRepository
     )
-
-
-
 }

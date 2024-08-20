@@ -18,8 +18,7 @@ class C7ServiceTaskCompletionApiImpl(
   private val workerId: String,
   private val externalTaskService: ExternalTaskService,
   private val subscriptionRepository: SubscriptionRepository,
-  private val retries: Int,
-  private val retryTimeoutInSeconds: Long
+  private val failureRetrySupplier: FailureRetrySupplier
 ) : ServiceTaskCompletionApi {
 
   companion object : KLogging()
@@ -52,6 +51,7 @@ class C7ServiceTaskCompletionApiImpl(
   }
 
   override fun failTask(cmd: FailTaskCmd): Future<Empty> {
+    val (retries, retryTimeoutInSeconds) = failureRetrySupplier.apply(cmd.taskId)
     externalTaskService.handleFailure(
       cmd.taskId,
       workerId,
