@@ -76,7 +76,11 @@ class C7EmbeddedAdapterProperties(
     /**
      * Should an initial pull be executed on startup.
      */
-    val executeInitialPullOnStartup: Boolean = true
+    val executeInitialPullOnStartup: Boolean = true,
+    /**
+     * Default initial number of retries.
+     */
+    val retries: Int = 3
   )
 
   /**

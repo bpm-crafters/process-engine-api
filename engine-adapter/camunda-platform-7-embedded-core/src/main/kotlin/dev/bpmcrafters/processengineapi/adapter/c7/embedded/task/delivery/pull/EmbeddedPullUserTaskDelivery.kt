@@ -1,6 +1,7 @@
 package dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.pull
 
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.UserTaskDelivery
+import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.filterBySubscription
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.toTaskInformation
 import dev.bpmcrafters.processengineapi.adapter.commons.task.RefreshableDelivery
 import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionRepository
@@ -40,15 +41,8 @@ class EmbeddedPullUserTaskDelivery(
 
               subscriptionRepository.activateSubscriptionForTask(task.id, activeSubscription)
 
-              val variables = if (activeSubscription.payloadDescription == null) {
-                taskService.getVariables(task.id)
-              } else {
-                if (activeSubscription.payloadDescription!!.isEmpty()) {
-                  mapOf()
-                } else {
-                  taskService.getVariables(task.id, activeSubscription.payloadDescription)
-                }
-              }
+              val variables = taskService.getVariables(task.id).filterBySubscription(activeSubscription)
+
               try {
                 activeSubscription.action.accept(task.toTaskInformation(), variables)
               } catch (e: Exception) {

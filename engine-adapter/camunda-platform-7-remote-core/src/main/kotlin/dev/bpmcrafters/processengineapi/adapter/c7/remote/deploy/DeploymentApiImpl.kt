@@ -37,7 +37,8 @@ class DeploymentApiImpl(
   }
 
   private fun Deployment.toDeploymentInformation() = DeploymentInformation(
-    deploymentKey = this.id
-    // FIXME -> tenant
+    deploymentKey = this.id,
+    deploymentTime = this.deploymentTime.toInstant(),
+    tenantId = this.tenantId
   )
 }

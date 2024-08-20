@@ -6,12 +6,16 @@ import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionReposit
 import mu.KLogging
 import org.camunda.bpm.engine.ExternalTaskService
 import org.camunda.bpm.spring.boot.starter.event.ProcessApplicationStartedEvent
+import org.springframework.beans.factory.annotation.Qualifier
+import org.springframework.context.ApplicationEventPublisher
 import org.springframework.context.event.EventListener
+import java.util.concurrent.ExecutorService
 
 class InitialPullServiceTasksDeliveryBinding(
   externalTaskService: ExternalTaskService,
   subscriptionRepository: SubscriptionRepository,
-  c7AdapterProperties: C7EmbeddedAdapterProperties
+  c7AdapterProperties: C7EmbeddedAdapterProperties,
+  executorService: ExecutorService
 ) {
   companion object : KLogging()
 
@@ -22,6 +26,8 @@ class InitialPullServiceTasksDeliveryBinding(
     maxTasks = c7AdapterProperties.serviceTasks.maxTaskCount,
     lockDuration = c7AdapterProperties.serviceTasks.lockTimeInSeconds,
     retryTimeout = c7AdapterProperties.serviceTasks.retryTimeoutInSeconds,
+    retries = c7AdapterProperties.serviceTasks.retries,
+    executorService = executorService
   )
 
   @EventListener

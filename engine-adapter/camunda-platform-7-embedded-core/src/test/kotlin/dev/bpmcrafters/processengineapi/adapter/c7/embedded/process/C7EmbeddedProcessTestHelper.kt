@@ -2,6 +2,7 @@ package dev.bpmcrafters.processengineapi.adapter.c7.embedded.process
 
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.completion.C7ServiceTaskCompletionApiImpl
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.completion.C7UserTaskCompletionApiImpl
+import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.completion.LinearMemoryFailureRetrySupplier
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.pull.EmbeddedPullServiceTaskDelivery
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.pull.EmbeddedPullUserTaskDelivery
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.subscription.C7TaskSubscriptionApiImpl
@@ -13,6 +14,7 @@ import dev.bpmcrafters.processengineapi.task.TaskSubscriptionApi
 import dev.bpmcrafters.processengineapi.task.UserTaskCompletionApi
 import dev.bpmcrafters.processengineapi.test.ProcessTestHelper
 import org.camunda.bpm.engine.ProcessEngine
+import java.util.concurrent.Executors
 
 const val WORKER_ID = "execute-action-external"
 
@@ -31,7 +33,9 @@ class C7EmbeddedProcessTestHelper(private val processEngine: ProcessEngine) : Pr
     subscriptionRepository = subscriptionRepository,
     maxTasks = 100,
     lockDuration = 10L,
-    retryTimeout = 10L
+    retryTimeout = 10L,
+    retries = 3,
+    executorService = Executors.newFixedThreadPool(3)
   )
 
   override fun getStartProcessApi(): StartProcessApi = StartProcessApiImpl(
@@ -50,10 +54,15 @@ class C7EmbeddedProcessTestHelper(private val processEngine: ProcessEngine) : Pr
   override fun getServiceTaskCompletionApi(): ServiceTaskCompletionApi = C7ServiceTaskCompletionApiImpl(
     workerId = WORKER_ID,
     externalTaskService = processEngine.externalTaskService,
-    subscriptionRepository = subscriptionRepository
+    subscriptionRepository = subscriptionRepository,
+    failureRetrySupplier = LinearMemoryFailureRetrySupplier(
+      retry = 1,
+      retryTimeout = 10
+    )
   )
 
   override fun triggerPullingUserTaskDeliveryManually() = embeddedPullUserTaskDelivery.refresh()
+
   override fun subscribeForUserTasks() {
     TODO("Not yet implemented")
   }

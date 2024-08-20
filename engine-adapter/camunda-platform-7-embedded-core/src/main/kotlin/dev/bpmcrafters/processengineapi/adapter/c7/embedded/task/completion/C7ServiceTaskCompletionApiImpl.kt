@@ -17,12 +17,14 @@ import java.util.concurrent.Future
 class C7ServiceTaskCompletionApiImpl(
   private val workerId: String,
   private val externalTaskService: ExternalTaskService,
-  private val subscriptionRepository: SubscriptionRepository
+  private val subscriptionRepository: SubscriptionRepository,
+  private val failureRetrySupplier: FailureRetrySupplier
 ) : ServiceTaskCompletionApi {
 
   companion object : KLogging()
 
   override fun completeTask(cmd: CompleteTaskCmd): Future<Empty> {
+
     externalTaskService.complete(
       cmd.taskId,
       workerId,
@@ -49,13 +51,14 @@ class C7ServiceTaskCompletionApiImpl(
   }
 
   override fun failTask(cmd: FailTaskCmd): Future<Empty> {
+    val (retries, retryTimeoutInSeconds) = failureRetrySupplier.apply(cmd.taskId)
     externalTaskService.handleFailure(
       cmd.taskId,
       workerId,
       cmd.reason,
       cmd.errorDetails,
-      100, // FIXME -> how to get those, they are only in the job
-      1000 // FIXME -> retry timeout from props?
+      retries,
+      retryTimeoutInSeconds
     )
     subscriptionRepository.deactivateSubscriptionForTask(cmd.taskId)?.apply {
       termination.accept(cmd.taskId)
