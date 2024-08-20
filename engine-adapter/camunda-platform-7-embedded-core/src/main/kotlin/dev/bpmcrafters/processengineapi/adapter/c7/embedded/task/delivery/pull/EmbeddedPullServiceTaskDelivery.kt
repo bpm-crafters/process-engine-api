@@ -11,6 +11,7 @@ import mu.KLogging
 import org.camunda.bpm.engine.ExternalTaskService
 import org.camunda.bpm.engine.externaltask.ExternalTaskQueryBuilder
 import org.camunda.bpm.engine.externaltask.LockedExternalTask
+import java.util.concurrent.ExecutorService
 
 /**
  * Delivers external tasks to subscriptions.
@@ -22,7 +23,9 @@ class EmbeddedPullServiceTaskDelivery(
   private val subscriptionRepository: SubscriptionRepository,
   private val maxTasks: Int,
   private val lockDuration: Long,
-  private val retryTimeout: Long
+  private val retryTimeout: Long,
+  private val retries: Int,
+  private val executorService: ExecutorService
 ) : ExternalServiceTaskDelivery, RefreshableDelivery {
 
   companion object : KLogging()
@@ -57,9 +60,12 @@ class EmbeddedPullServiceTaskDelivery(
                 }
               }
               try {
-                activeSubscription.action.accept(lockedTask.toTaskInformation(), variables)
+                executorService.submit {
+                  activeSubscription.action.accept(lockedTask.toTaskInformation(), variables)
+                }.get()
               } catch (e: Exception) {
-                externalTaskService.handleFailure(lockedTask.id, workerId, e.message, lockedTask.retries - 1, retryTimeout)
+                val jobRetries: Int = lockedTask.retries ?: retries
+                externalTaskService.handleFailure(lockedTask.id, workerId, e.message, jobRetries - 1, retryTimeout)
                 logger.error { "[PROCESS-ENGINE-C7-EMBEDDED]: Error delivering task ${lockedTask.id}: ${e.message}" }
                 subscriptionRepository.deactivateSubscriptionForTask(taskId = lockedTask.id)
               }

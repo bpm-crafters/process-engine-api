@@ -11,6 +11,7 @@ import org.springframework.boot.autoconfigure.AutoConfigureAfter
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import java.util.concurrent.ExecutorService
 
 @Configuration
 @AutoConfigureAfter(C7EmbeddedDeliveryAutoConfiguration::class)
@@ -34,10 +35,13 @@ class C7EmbeddedInitialPullOnStartupAutoConfiguration {
   fun configureInitialPullForExternalServiceTaskDelivery(
     externalTaskService: ExternalTaskService,
     subscriptionRepository: SubscriptionRepository,
-    c7AdapterProperties: C7EmbeddedAdapterProperties
+    c7AdapterProperties: C7EmbeddedAdapterProperties,
+    @Qualifier("processEngineWorkerTaskExecutor")
+    executorService: ExecutorService
   ) = InitialPullServiceTasksDeliveryBinding(
     externalTaskService = externalTaskService,
     subscriptionRepository = subscriptionRepository,
-    c7AdapterProperties = c7AdapterProperties
+    c7AdapterProperties = c7AdapterProperties,
+    executorService = executorService
   )
 }

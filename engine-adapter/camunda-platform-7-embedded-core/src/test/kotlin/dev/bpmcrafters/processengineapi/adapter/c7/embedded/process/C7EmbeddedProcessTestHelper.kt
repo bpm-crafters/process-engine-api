@@ -13,6 +13,7 @@ import dev.bpmcrafters.processengineapi.task.TaskSubscriptionApi
 import dev.bpmcrafters.processengineapi.task.UserTaskCompletionApi
 import dev.bpmcrafters.processengineapi.test.ProcessTestHelper
 import org.camunda.bpm.engine.ProcessEngine
+import java.util.concurrent.Executors
 
 const val WORKER_ID = "execute-action-external"
 
@@ -31,7 +32,9 @@ class C7EmbeddedProcessTestHelper(private val processEngine: ProcessEngine) : Pr
     subscriptionRepository = subscriptionRepository,
     maxTasks = 100,
     lockDuration = 10L,
-    retryTimeout = 10L
+    retryTimeout = 10L,
+    retries = 3,
+    executorService = Executors.newFixedThreadPool(3)
   )
 
   override fun getStartProcessApi(): StartProcessApi = StartProcessApiImpl(

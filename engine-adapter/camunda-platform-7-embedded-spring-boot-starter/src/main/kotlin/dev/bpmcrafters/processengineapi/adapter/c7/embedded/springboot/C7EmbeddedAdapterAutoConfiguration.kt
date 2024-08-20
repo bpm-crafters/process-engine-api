@@ -26,6 +26,8 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.scheduling.annotation.EnableScheduling
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
 
 @Configuration
 @EnableScheduling
@@ -89,4 +91,15 @@ class C7EmbeddedAdapterAutoConfiguration {
       taskService = taskService,
       subscriptionRepository = subscriptionRepository
     )
+
+
+
+  /**
+   * Creates a default fixed thread pool for 10 threads used for process engine worker executions.
+   */
+  @Bean
+  @ConditionalOnMissingBean
+  @Qualifier("processEngineWorkerTaskExecutor")
+  fun processEngineWorkerTaskExecutor(): ExecutorService = Executors.newFixedThreadPool(10)
+
 }

@@ -9,6 +9,7 @@ import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.toTask
 import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionRepository
 import dev.bpmcrafters.processengineapi.adapter.commons.task.TaskSubscriptionHandle
 import dev.bpmcrafters.processengineapi.task.TaskType
+import mu.KLogging
 import org.camunda.bpm.engine.impl.cfg.ProcessEngineConfigurationImpl
 import org.camunda.bpm.engine.impl.interceptor.CommandContext
 import org.camunda.bpm.engine.impl.jobexecutor.JobHandler
@@ -26,7 +27,7 @@ class EmbeddedTaskDeliveryJobHandler(
   private val lockTimeInSeconds: Long
 ) : JobHandler<EmbeddedTaskDeliveryJobHandler.EmbeddedTaskDeliveryJobHandlerConfiguration> {
 
-  companion object {
+  companion object: KLogging() {
     const val TYPE = "dev.bpm-crafters.processengineapi.EmbeddedTaskDeliveryJobHandler"
   }
 
@@ -36,6 +37,9 @@ class EmbeddedTaskDeliveryJobHandler(
     commandContext: CommandContext,
     tenantId: String?
   ) {
+
+    logger.info { "Executing c7embedded task via JOB: $configuration" }
+
     val subscriptions = subscriptionRepository.getTaskSubscriptions()
 
     when (configuration.operation) {
@@ -150,7 +154,6 @@ fun ProcessEngineConfigurationImpl.createJob(configuration: EmbeddedTaskDelivery
       jobHandlerConfigurationRaw = configuration.toCanonicalString()
       jobHandlerType = EmbeddedTaskDeliveryJobHandler.TYPE
       duedate = Date.from(Instant.now())
-      executionId = configuration.id
       // we don't want to retry the delivery for the moment.
       setRetriesFromPersistence(1) // FIXME -> move to properties?
     }

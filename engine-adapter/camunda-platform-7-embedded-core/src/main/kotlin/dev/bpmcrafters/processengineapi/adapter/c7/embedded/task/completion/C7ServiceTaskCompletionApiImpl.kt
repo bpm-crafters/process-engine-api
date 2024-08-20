@@ -23,6 +23,7 @@ class C7ServiceTaskCompletionApiImpl(
   companion object : KLogging()
 
   override fun completeTask(cmd: CompleteTaskCmd): Future<Empty> {
+
     externalTaskService.complete(
       cmd.taskId,
       workerId,

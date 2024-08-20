@@ -19,9 +19,12 @@ import org.camunda.bpm.engine.TaskService
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.boot.autoconfigure.AutoConfigureAfter
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
 
 /**
  * Auto-configuration for delivery.
@@ -60,7 +63,9 @@ class C7EmbeddedDeliveryAutoConfiguration {
   fun serviceTaskDelivery(
     subscriptionRepository: SubscriptionRepository,
     externalTaskService: ExternalTaskService,
-    c7AdapterProperties: C7EmbeddedAdapterProperties
+    c7AdapterProperties: C7EmbeddedAdapterProperties,
+    @Qualifier("processEngineWorkerTaskExecutor")
+    executorService: ExecutorService
   ) = EmbeddedPullServiceTaskDelivery(
     subscriptionRepository = subscriptionRepository,
     externalTaskService = externalTaskService,
@@ -68,6 +73,8 @@ class C7EmbeddedDeliveryAutoConfiguration {
     maxTasks = c7AdapterProperties.serviceTasks.maxTaskCount,
     lockDuration = c7AdapterProperties.serviceTasks.lockTimeInSeconds,
     retryTimeout = c7AdapterProperties.serviceTasks.retryTimeoutInSeconds,
+    retries = c7AdapterProperties.serviceTasks.retries,
+    executorService = executorService
   )
 
   @Bean("c7embedded-user-task-delivery")
@@ -139,5 +146,4 @@ class C7EmbeddedDeliveryAutoConfiguration {
       deliverUserTasks = c7AdapterProperties.userTasks.deliveryStrategy == UserTaskDeliveryStrategy.EMBEDDED_JOB,
     )
   }
-
 }

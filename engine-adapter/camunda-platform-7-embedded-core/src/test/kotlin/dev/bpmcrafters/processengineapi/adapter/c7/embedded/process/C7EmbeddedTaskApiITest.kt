@@ -18,7 +18,7 @@ class C7EmbeddedTaskApiITest : AbstractC7EmbeddedApiITest(C7EmbeddedProcessTestH
   }
 
   @Test
-  fun `should get subscribed for user task with pull strategie`() {
+  fun `should get subscribed for user task with pull strategy`() {
     GIVEN
       .`a active user task subscription`(USER_TASK)
 
@@ -30,7 +30,7 @@ class C7EmbeddedTaskApiITest : AbstractC7EmbeddedApiITest(C7EmbeddedProcessTestH
   }
 
   @Test
-  fun `should get subscribed for external task with pull strategie`() {
+  fun `should get subscribed for external task with pull strategy`() {
     GIVEN
       .`a active external task subscription`(EXTERNAL_TASK)
 
@@ -42,7 +42,7 @@ class C7EmbeddedTaskApiITest : AbstractC7EmbeddedApiITest(C7EmbeddedProcessTestH
   }
 
   @Test
-  fun `should not get subscribed for user task with pull strategie after unsubscribe`() {
+  fun `should not get subscribed for user task with pull strategy after unsubscribe`() {
     GIVEN
       .`a active user task subscription`(USER_TASK)
 
@@ -55,7 +55,7 @@ class C7EmbeddedTaskApiITest : AbstractC7EmbeddedApiITest(C7EmbeddedProcessTestH
   }
 
   @Test
-  fun `should not get subscribed for external task with pull strategie after unsubscribe`() {
+  fun `should not get subscribed for external task with pull strategy after unsubscribe`() {
     GIVEN
       .`a active external task subscription`(USER_TASK)
 
