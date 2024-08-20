@@ -2,6 +2,7 @@ package dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.pull
 
 import dev.bpmcrafters.processengineapi.CommonRestrictions
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.ExternalServiceTaskDelivery
+import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.filterBySubscription
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.toTaskInformation
 import dev.bpmcrafters.processengineapi.adapter.commons.task.RefreshableDelivery
 import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionRepository
@@ -50,15 +51,8 @@ class EmbeddedPullServiceTaskDelivery(
 
               subscriptionRepository.activateSubscriptionForTask(lockedTask.id, activeSubscription)
 
-              val variables = if (activeSubscription.payloadDescription == null) {
-                lockedTask.variables
-              } else {
-                if (activeSubscription.payloadDescription!!.isEmpty()) {
-                  mapOf()
-                } else {
-                  lockedTask.variables.filter { activeSubscription.payloadDescription!!.contains(it.key) }
-                }
-              }
+              val variables = lockedTask.variables.filterBySubscription(activeSubscription)
+
               try {
                 executorService.submit {
                   activeSubscription.action.accept(lockedTask.toTaskInformation(), variables)

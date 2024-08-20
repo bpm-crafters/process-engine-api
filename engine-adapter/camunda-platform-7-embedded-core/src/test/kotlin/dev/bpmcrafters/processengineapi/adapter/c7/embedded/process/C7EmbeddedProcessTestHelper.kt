@@ -53,10 +53,13 @@ class C7EmbeddedProcessTestHelper(private val processEngine: ProcessEngine) : Pr
   override fun getServiceTaskCompletionApi(): ServiceTaskCompletionApi = C7ServiceTaskCompletionApiImpl(
     workerId = WORKER_ID,
     externalTaskService = processEngine.externalTaskService,
-    subscriptionRepository = subscriptionRepository
+    subscriptionRepository = subscriptionRepository,
+    retries = 1,
+    retryTimeoutInSeconds = 10
   )
 
   override fun triggerPullingUserTaskDeliveryManually() = embeddedPullUserTaskDelivery.refresh()
+
   override fun subscribeForUserTasks() {
     TODO("Not yet implemented")
   }

@@ -17,7 +17,9 @@ import java.util.concurrent.Future
 class C7ServiceTaskCompletionApiImpl(
   private val workerId: String,
   private val externalTaskService: ExternalTaskService,
-  private val subscriptionRepository: SubscriptionRepository
+  private val subscriptionRepository: SubscriptionRepository,
+  private val retries: Int,
+  private val retryTimeoutInSeconds: Long
 ) : ServiceTaskCompletionApi {
 
   companion object : KLogging()
@@ -55,8 +57,8 @@ class C7ServiceTaskCompletionApiImpl(
       workerId,
       cmd.reason,
       cmd.errorDetails,
-      100, // FIXME -> how to get those, they are only in the job
-      1000 // FIXME -> retry timeout from props?
+      retries,
+      retryTimeoutInSeconds
     )
     subscriptionRepository.deactivateSubscriptionForTask(cmd.taskId)?.apply {
       termination.accept(cmd.taskId)

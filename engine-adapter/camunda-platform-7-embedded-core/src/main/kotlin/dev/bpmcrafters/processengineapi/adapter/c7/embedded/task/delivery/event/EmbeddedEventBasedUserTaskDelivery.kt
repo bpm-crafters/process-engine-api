@@ -1,6 +1,7 @@
 package dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.event
 
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.UserTaskDelivery
+import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.filterBySubscription
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.pull.EmbeddedPullUserTaskDelivery.Companion.logger
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.toTaskInformation
 import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionRepository
@@ -21,15 +22,8 @@ class EmbeddedEventBasedUserTaskDelivery(
 
         subscriptionRepository.activateSubscriptionForTask(delegateTask.id, activeSubscription)
 
-        val variables = if (activeSubscription.payloadDescription == null) {
-          delegateTask.variables
-        } else {
-          if (activeSubscription.payloadDescription!!.isEmpty()) {
-            mapOf()
-          } else {
-            delegateTask.variables.filterKeys { key -> activeSubscription.payloadDescription!!.contains(key) }
-          }
-        }
+        val variables = delegateTask.variables.filterBySubscription(activeSubscription)
+
         try {
           activeSubscription.action.accept(delegateTask.toTaskInformation(), variables)
         } catch (e: Exception) {

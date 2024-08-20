@@ -41,7 +41,8 @@ class DeploymentApiImpl(
   }
 
   private fun DeploymentEvent.toDeploymentInformation() = DeploymentInformation(
-    deploymentKey = "${this.key}"
-    // FIXME -> tenant, process definitions, decision definitions
+    deploymentKey = "${this.key}",
+    deploymentTime = null,
+    tenantId = this.tenantId
   )
 }

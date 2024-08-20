@@ -146,4 +146,14 @@ class C7EmbeddedDeliveryAutoConfiguration {
       deliverUserTasks = c7AdapterProperties.userTasks.deliveryStrategy == UserTaskDeliveryStrategy.EMBEDDED_JOB,
     )
   }
+
+  /**
+   * Creates a default fixed thread pool for 10 threads used for process engine worker executions.
+   * This one is used for pull-strategies only.
+   */
+  @Bean
+  @ConditionalOnMissingBean
+  @Qualifier("processEngineWorkerTaskExecutor")
+  fun processEngineWorkerTaskExecutor(): ExecutorService = Executors.newFixedThreadPool(10)
+
 }

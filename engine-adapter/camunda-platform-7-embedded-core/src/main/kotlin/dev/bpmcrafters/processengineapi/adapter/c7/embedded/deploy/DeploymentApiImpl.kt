@@ -32,12 +32,14 @@ class DeploymentApiImpl(
     }
   }
 
+  private fun Deployment.toDeploymentInformation() = DeploymentInformation(
+    deploymentKey = this.id,
+    tenantId = this.tenantId,
+    deploymentTime = this.deploymentTime.toInstant()
+  )
+
   override fun meta(instance: MetaInfoAware): MetaInfo {
     TODO("Not yet implemented")
   }
 
-  private fun Deployment.toDeploymentInformation() = DeploymentInformation(
-    deploymentKey = this.id
-    // FIXME -> tenant
-  )
 }

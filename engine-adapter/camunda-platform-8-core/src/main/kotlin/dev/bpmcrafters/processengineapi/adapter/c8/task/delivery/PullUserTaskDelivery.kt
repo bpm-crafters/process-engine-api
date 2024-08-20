@@ -54,7 +54,6 @@ class PullUserTaskDelivery(
   }
 
   private fun TaskSearch.forSubscriptions(subscriptions: List<TaskSubscriptionHandle>): TaskSearch {
-    // FIXME: implement the filters
     subscriptions
       .filter { it.taskType == TaskType.USER } // only user task subscriptions
       .map { it.taskDescriptionKey to it.restrictions }
@@ -64,5 +63,4 @@ class PullUserTaskDelivery(
 
   private fun TaskSubscriptionHandle.matches(task: Task): Boolean =
     this.taskType == TaskType.USER && (this.taskDescriptionKey == null || this.taskDescriptionKey == task.taskDefinitionId)
-    // FIXME -> more restrictions
 }

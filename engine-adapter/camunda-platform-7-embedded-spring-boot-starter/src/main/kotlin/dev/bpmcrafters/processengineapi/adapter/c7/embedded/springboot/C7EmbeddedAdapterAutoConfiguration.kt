@@ -78,7 +78,9 @@ class C7EmbeddedAdapterAutoConfiguration {
     C7ServiceTaskCompletionApiImpl(
       workerId = c7AdapterProperties.serviceTasks.workerId,
       externalTaskService = externalTaskService,
-      subscriptionRepository = subscriptionRepository
+      subscriptionRepository = subscriptionRepository,
+      retries = c7AdapterProperties.serviceTasks.retries,
+      retryTimeoutInSeconds = c7AdapterProperties.serviceTasks.retryTimeoutInSeconds
     )
 
   @Bean("c7embedded-user-task-completion-api")
@@ -93,13 +95,5 @@ class C7EmbeddedAdapterAutoConfiguration {
     )
 
 
-
-  /**
-   * Creates a default fixed thread pool for 10 threads used for process engine worker executions.
-   */
-  @Bean
-  @ConditionalOnMissingBean
-  @Qualifier("processEngineWorkerTaskExecutor")
-  fun processEngineWorkerTaskExecutor(): ExecutorService = Executors.newFixedThreadPool(10)
 
 }
