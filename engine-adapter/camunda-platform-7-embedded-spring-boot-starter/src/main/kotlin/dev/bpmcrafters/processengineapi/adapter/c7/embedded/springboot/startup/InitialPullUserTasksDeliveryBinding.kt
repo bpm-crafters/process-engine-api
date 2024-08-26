@@ -7,9 +7,10 @@ import org.camunda.bpm.engine.RepositoryService
 import org.camunda.bpm.engine.TaskService
 import org.camunda.bpm.spring.boot.starter.event.ProcessApplicationStartedEvent
 import org.springframework.context.event.EventListener
+import org.springframework.scheduling.annotation.Async
 
 
-class InitialPullUserTasksDeliveryBinding(
+open class InitialPullUserTasksDeliveryBinding(
   subscriptionRepository: SubscriptionRepository,
   taskService: TaskService,
   repositoryService: RepositoryService
@@ -25,7 +26,8 @@ class InitialPullUserTasksDeliveryBinding(
 
   @EventListener
   @Suppress("UNUSED_PARAMETER")
-  fun pullUserTasks(event: ProcessApplicationStartedEvent) {
+  @Async
+  open fun pullUserTasks(event: ProcessApplicationStartedEvent) {
     logger.trace { "[INITIAL PULL]: Delivering user tasks..." }
     pullDelivery.refresh()
     logger.trace { "[INITIAL PULL]: Delivered user tasks." }

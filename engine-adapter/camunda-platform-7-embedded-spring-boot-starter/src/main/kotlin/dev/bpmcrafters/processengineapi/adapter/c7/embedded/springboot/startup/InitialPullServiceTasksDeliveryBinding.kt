@@ -9,9 +9,10 @@ import org.camunda.bpm.spring.boot.starter.event.ProcessApplicationStartedEvent
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.context.event.EventListener
+import org.springframework.scheduling.annotation.Async
 import java.util.concurrent.ExecutorService
 
-class InitialPullServiceTasksDeliveryBinding(
+open class InitialPullServiceTasksDeliveryBinding(
   externalTaskService: ExternalTaskService,
   subscriptionRepository: SubscriptionRepository,
   c7AdapterProperties: C7EmbeddedAdapterProperties,
@@ -32,7 +33,8 @@ class InitialPullServiceTasksDeliveryBinding(
 
   @EventListener
   @Suppress("UNUSED_PARAMETER")
-  fun pullUserTasks(event: ProcessApplicationStartedEvent) {
+  @Async
+  open fun pullUserTasks(event: ProcessApplicationStartedEvent) {
     logger.trace { "[INITIAL PULL]: Delivering service tasks..." }
     pullDelivery.refresh()
     logger.trace { "[INITIAL PULL]: Delivered service tasks." }

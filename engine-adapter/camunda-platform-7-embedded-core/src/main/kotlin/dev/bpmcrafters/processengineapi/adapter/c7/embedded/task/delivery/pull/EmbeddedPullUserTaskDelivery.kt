@@ -25,6 +25,8 @@ class EmbeddedPullUserTaskDelivery(
 
   companion object : KLogging()
 
+  private val cachingProcessDefinitionKeyResolver = CachingProcessDefinitionKeyResolver(repositoryService)
+
   /**
    * Delivers all tasks found in user task service to corresponding subscriptions.
    */
@@ -45,16 +47,7 @@ class EmbeddedPullUserTaskDelivery(
               val variables = taskService.getVariables(task.id).filterBySubscription(activeSubscription)
 
               try {
-                val processDefinitionKey = if (task.processDefinitionId != null) {
-                  repositoryService
-                    .createProcessDefinitionQuery()
-                    .processDefinitionId(task.processDefinitionId)
-                    .singleResult()
-                    .key
-                } else {
-                  null
-                }
-
+                val processDefinitionKey = cachingProcessDefinitionKeyResolver.getProcessDefinitionKey(task.processDefinitionId)
                 activeSubscription.action.accept(task.toTaskInformation(processDefinitionKey), variables)
               } catch (e: Exception) {
                 logger.error { "[PROCESS-ENGINE-C7-EMBEDDED]: Error delivering task ${task.id}: ${e.message}" }

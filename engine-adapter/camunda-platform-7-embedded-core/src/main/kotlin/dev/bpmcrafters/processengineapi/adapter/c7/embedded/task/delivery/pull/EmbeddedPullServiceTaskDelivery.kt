@@ -37,7 +37,7 @@ class EmbeddedPullServiceTaskDelivery(
   override fun refresh() {
 
     val subscriptions = subscriptionRepository.getTaskSubscriptions()
-    if(subscriptions.isNotEmpty()) {
+    if (subscriptions.isNotEmpty()) {
       logger.trace { "Pull external tasks for subscriptions: $subscriptions" }
       // FIXME -> how many queries do we want? 1:1 subscriptions, or 1 query for all?
       externalTaskService
@@ -48,18 +48,18 @@ class EmbeddedPullServiceTaskDelivery(
           subscriptions
             .firstOrNull { subscription -> subscription.matches(lockedTask) }
             ?.let { activeSubscription ->
-              subscriptionRepository.activateSubscriptionForTask(lockedTask.id, activeSubscription)
-              val variables = lockedTask.variables.filterBySubscription(activeSubscription)
-              try {
-                executorService.submit {
+              executorService.submit {  // in another thread
+                subscriptionRepository.activateSubscriptionForTask(lockedTask.id, activeSubscription)
+                val variables = lockedTask.variables.filterBySubscription(activeSubscription)
+                try {
                   activeSubscription.action.accept(lockedTask.toTaskInformation(), variables)
-                }.get()
-              } catch (e: Exception) {
-                val jobRetries: Int = lockedTask.retries ?: retries
-                externalTaskService.handleFailure(lockedTask.id, workerId, e.message, jobRetries - 1, retryTimeout)
-                logger.error { "[PROCESS-ENGINE-C7-EMBEDDED]: Error delivering task ${lockedTask.id}: ${e.message}" }
-                subscriptionRepository.deactivateSubscriptionForTask(taskId = lockedTask.id)
-              }
+                } catch (e: Exception) {
+                  val jobRetries: Int = lockedTask.retries ?: retries
+                  externalTaskService.handleFailure(lockedTask.id, workerId, e.message, jobRetries - 1, retryTimeout)
+                  logger.error { "[PROCESS-ENGINE-C7-EMBEDDED]: Error delivering task ${lockedTask.id}: ${e.message}" }
+                  subscriptionRepository.deactivateSubscriptionForTask(taskId = lockedTask.id)
+                }
+              }.get()
             }
         }
     } else {
