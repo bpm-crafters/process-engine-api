@@ -14,7 +14,7 @@
   <properties>
     <spring-boot.version>3.3.3</spring-boot.version>
     <spring-zeebe.version>8.4.0</spring-zeebe.version>
-    <camunda-tasklist-client-java.version>8.4.0.7</camunda-tasklist-client-java.version>
+    <camunda-tasklist-client-java.version>8.5.3.6</camunda-tasklist-client-java.version>
   </properties>
 
   <dependencyManagement>
