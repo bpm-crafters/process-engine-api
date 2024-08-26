@@ -9,7 +9,7 @@ class LinearMemoryFailureRetrySupplier(
 
   override fun apply(taskId: String): FailureRetrySupplier.FailureRetry {
     val last = taskFailures.getOrPut(taskId) { FailureRetrySupplier.FailureRetry(retryCount = retry, retryTimeout = retryTimeout) }
-    val new = last.copy(retryCount = last.retryCount - 1)
+    val new = last.copy(retryCount = (last.retryCount - 1).coerceAtLeast(0)) // there must be no negative retries ever
     taskFailures[taskId] = new
     return new
   }

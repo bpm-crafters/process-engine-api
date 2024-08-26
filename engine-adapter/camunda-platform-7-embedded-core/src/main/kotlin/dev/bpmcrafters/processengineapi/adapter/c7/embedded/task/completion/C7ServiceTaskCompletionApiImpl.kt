@@ -32,7 +32,7 @@ class C7ServiceTaskCompletionApiImpl(
     )
     subscriptionRepository.deactivateSubscriptionForTask(cmd.taskId)?.apply {
       termination.accept(cmd.taskId)
-      logger.info { "[PROCESS-ENGINE-C7-EMBEDDED]: Successfully completed external task ${cmd.taskId}." }
+      logger.debug { "[PROCESS-ENGINE-C7-EMBEDDED]: Successfully completed external task ${cmd.taskId}." }
     }
     return CompletableFuture.completedFuture(Empty)
   }
@@ -41,11 +41,13 @@ class C7ServiceTaskCompletionApiImpl(
     externalTaskService.handleBpmnError(
       cmd.taskId,
       workerId,
-      cmd.errorCode
+      cmd.errorCode,
+      cmd.errorMessage,
+      cmd.get()
     )
     subscriptionRepository.deactivateSubscriptionForTask(cmd.taskId)?.apply {
       termination.accept(cmd.taskId)
-      logger.info { "[PROCESS-ENGINE-C7-EMBEDDED]: Completed external task ${cmd.taskId} with error." }
+      logger.debug { "[PROCESS-ENGINE-C7-EMBEDDED]: Completed external task ${cmd.taskId} with error." }
     }
     return CompletableFuture.completedFuture(Empty)
   }
@@ -62,7 +64,7 @@ class C7ServiceTaskCompletionApiImpl(
     )
     subscriptionRepository.deactivateSubscriptionForTask(cmd.taskId)?.apply {
       termination.accept(cmd.taskId)
-      logger.info { "[PROCESS-ENGINE-C7-EMBEDDED]: Failure occurred on external task ${cmd.taskId} handling." }
+      logger.debug { "[PROCESS-ENGINE-C7-EMBEDDED]: Failure occurred on external task ${cmd.taskId} handling." }
     }
     return CompletableFuture.completedFuture(Empty)
   }

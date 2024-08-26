@@ -48,11 +48,8 @@ class EmbeddedPullServiceTaskDelivery(
           subscriptions
             .firstOrNull { subscription -> subscription.matches(lockedTask) }
             ?.let { activeSubscription ->
-
               subscriptionRepository.activateSubscriptionForTask(lockedTask.id, activeSubscription)
-
               val variables = lockedTask.variables.filterBySubscription(activeSubscription)
-
               try {
                 executorService.submit {
                   activeSubscription.action.accept(lockedTask.toTaskInformation(), variables)

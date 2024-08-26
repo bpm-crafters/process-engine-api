@@ -15,6 +15,7 @@ import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.pull.E
 import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionRepository
 import mu.KLogging
 import org.camunda.bpm.engine.ExternalTaskService
+import org.camunda.bpm.engine.RepositoryService
 import org.camunda.bpm.engine.TaskService
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.boot.autoconfigure.AutoConfigureAfter
@@ -83,11 +84,13 @@ class C7EmbeddedDeliveryAutoConfiguration {
   fun embeddedScheduledUserTaskDelivery(
     subscriptionRepository: SubscriptionRepository,
     taskService: TaskService,
+    repositoryService: RepositoryService,
     c7AdapterProperties: C7EmbeddedAdapterProperties
   ): UserTaskDelivery {
     return EmbeddedPullUserTaskDelivery(
       subscriptionRepository = subscriptionRepository,
-      taskService = taskService
+      taskService = taskService,
+      repositoryService = repositoryService
     )
   }
 
