@@ -13,7 +13,7 @@
   <name>Adapter: C8 Spring-Boot Starter</name>
 
   <properties>
-    <spring-boot.version>3.3.2</spring-boot.version>
+    <spring-boot.version>3.3.3</spring-boot.version>
     <camunda-tasklist-client-java.version>8.4.0.7</camunda-tasklist-client-java.version>
     <spring-zeebe.version>8.4.0</spring-zeebe.version>
   </properties>
