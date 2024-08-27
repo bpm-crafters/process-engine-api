@@ -23,8 +23,8 @@ import java.util.concurrent.ExecutorService
 @Configuration
 @AutoConfigureAfter(C7EmbeddedJobDeliveryAutoConfiguration::class)
 @EnableAsync
+@ConditionalOnProperty(prefix = DEFAULT_PREFIX, name = ["enabled"], havingValue = "true", matchIfMissing = true)
 class C7EmbeddedInitialPullOnStartupAutoConfiguration {
-
 
   @Bean("c7embedded-user-task-initial-pull")
   @Qualifier("c7embedded-user-task-initial-pull")

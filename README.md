@@ -33,28 +33,13 @@ The library contains of the following Maven modules:
 
 The API consists of different parts independent of each other.
 
-### Process API
-
-The Process API provides functionality, required to control the lifecycle of the processes. It allows to start a new process instance.
-It is intended to be used in outbound adapters of the port/adapter architecture in order to control the process engine from your application.
-
-### Correlation API
-
-The Correlation API provides functionality to correlate messages and signals with running process instances.
-It is intended to be used in outbound adapters of the port/adapter architecture in order to control the process engine from your application.
-
-### Signal API
-
-The Correlation API provides functionality to correlate messages and signals with running process instances.
-It is intended to be used in outbound adapters of the port/adapter architecture in order to control the process engine from your application.
-
-
-### User Task Completion API
-
-The Task API provides functionality to deal with user tasks. Since the Task API allows asynchronous processing, 
-we provide a special API to complete user tasks.
-
-### Service Task Completion API
+- Deployment API
+- Process API
+- Correlation API
+- Signal API
+- Task Subscription API
+- User Task Completion API
+- Service Task Completion API
 
 The Task API provides functionality to deal with service tasks. The task handlers can be registered and get invoked when tasks 
 appear in the process engine. Since the Task API allows asynchronous processing, we provide a special API to complete tasks.
@@ -67,6 +52,13 @@ If you want to try the library with Camunda 7, please add the following dependen
 <dependency>
   <groupId>dev.bpm-crafters.process-engine-api</groupId>
   <artifactId>process-engine-api-adapter-camunda-platform-c7-embedded-spring-boot-starter</artifactId>
+</dependency>
+```
+or
+```xml
+<dependency>
+  <groupId>dev.bpm-crafters.process-engine-api</groupId>
+  <artifactId>process-engine-api-adapter-camunda-platform-c7-remote-spring-boot-starter</artifactId>
 </dependency>
 ```
 

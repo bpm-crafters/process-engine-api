@@ -23,6 +23,7 @@ import org.springframework.context.annotation.Configuration
  */
 @Configuration
 @AutoConfigureAfter(C7EmbeddedAdapterAutoConfiguration::class)
+@ConditionalOnProperty(prefix = DEFAULT_PREFIX, name = ["enabled"], havingValue = "true", matchIfMissing = true)
 class C7EmbeddedJobDeliveryAutoConfiguration {
 
   companion object : KLogging()
