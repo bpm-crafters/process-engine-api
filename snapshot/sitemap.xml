@@ -36,7 +36,42 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>https://bpm-crafters.dev/process-engine-api/snapshot/reference-guide/correlation-api.html</loc>
+         <lastmod>2024-08-27</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>https://bpm-crafters.dev/process-engine-api/snapshot/reference-guide/correlation.html</loc>
+         <lastmod>2024-08-27</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://bpm-crafters.dev/process-engine-api/snapshot/reference-guide/deployment-api.html</loc>
+         <lastmod>2024-08-27</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://bpm-crafters.dev/process-engine-api/snapshot/reference-guide/process-api.html</loc>
+         <lastmod>2024-08-27</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://bpm-crafters.dev/process-engine-api/snapshot/reference-guide/service-task-completion-api.html</loc>
+         <lastmod>2024-08-27</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://bpm-crafters.dev/process-engine-api/snapshot/reference-guide/signal-api.html</loc>
+         <lastmod>2024-08-27</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://bpm-crafters.dev/process-engine-api/snapshot/reference-guide/task-subscription-api.html</loc>
+         <lastmod>2024-08-27</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://bpm-crafters.dev/process-engine-api/snapshot/reference-guide/user-task-completion-api.html</loc>
          <lastmod>2024-08-27</lastmod>
          <changefreq>daily</changefreq>
     </url>

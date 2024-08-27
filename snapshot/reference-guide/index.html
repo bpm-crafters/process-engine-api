@@ -18,7 +18,7 @@
         <link rel="prev" href="../getting-started/index.html">
       
       
-        <link rel="next" href="correlation.html">
+        <link rel="next" href="deployment-api.html">
       
       
       <link rel="icon" href="../assets/images/favicon.png">
@@ -78,6 +78,11 @@
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
+      
+        
+        <a href="#api" class="md-skip">
+          Skip to content
+        </a>
       
     </div>
     <div data-md-component="announce">
@@ -540,6 +545,17 @@
       
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Overview
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="index.html" class="md-nav__link md-nav__link--active">
         
   
@@ -549,6 +565,101 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#api" class="md-nav__link">
+    <span class="md-ellipsis">
+      API
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="API">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#deployment-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      Deployment API
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#process-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      Process API
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#correlation-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      Correlation API
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#signal-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      Signal API
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#task-subscription-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      Task Subscription API
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#service-task-completion-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      Service Task Completion API
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#user-task-completion-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      User Task Completion API
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -562,11 +673,137 @@
   
   
     <li class="md-nav__item">
-      <a href="correlation.html" class="md-nav__link">
+      <a href="deployment-api.html" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Message Correlation
+    Deployment API
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="process-api.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Process API
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="correlation-api.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Correlation API
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="signal-api.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Signal API
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="task-subscription-api.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Task Subscription API
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="service-task-completion-api.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Service Task Completion API
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="user-task-completion-api.html" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    User Task Completion API
   </span>
   
 
@@ -692,7 +929,34 @@
 
   <h1>Overview</h1>
 
-
+<p>The <code>process-engine-api</code> provides an API to abstract from concrete process engine implementation, with the ability
+to write your application code engine-agnostic and later (re-)configure for the usage of a particular process engine.</p>
+<h2 id="api">API<a class="headerlink" href="#api" title="Permanent link">#</a></h2>
+<p>The API consists of different parts independent of each other.</p>
+<h3 id="deployment-api">Deployment API<a class="headerlink" href="#deployment-api" title="Permanent link">#</a></h3>
+<p>The <a href="deployment-api.html">Deployment API</a> allows to deploy process-related resources in a bundle into the engine.</p>
+<h3 id="process-api">Process API<a class="headerlink" href="#process-api" title="Permanent link">#</a></h3>
+<p>The <a href="process-api.html">Process API</a> provides functionality, required to control the lifecycle of the processes. It allows to start new process instances.
+It is intended to be used in outbound adapters of the port/adapter architecture in order to control the process engine 
+from your application.</p>
+<h3 id="correlation-api"><a href="correlation-api.html">Correlation API</a><a class="headerlink" href="#correlation-api" title="Permanent link">#</a></h3>
+<p>The Correlation API provides functionality to correlate messages with running process instances.
+It is intended to be used in outbound adapters of the port/adapter architecture in order to control 
+the process engine from your application.</p>
+<h3 id="signal-api">Signal API<a class="headerlink" href="#signal-api" title="Permanent link">#</a></h3>
+<p>The <a href="signal-api.html">Signal API</a> provides functionality to send signals to running process instances.
+It is intended to be used in outbound adapters of the port/adapter architecture in order 
+to control the process engine from your application.</p>
+<h3 id="task-subscription-api">Task Subscription API<a class="headerlink" href="#task-subscription-api" title="Permanent link">#</a></h3>
+<p>The <a href="task-subscription-api.html">Task Subscription API</a> allows for subscribing for different tasks. The process-engine-api adapter implementation
+then takes care of the delivery of the tasks matching the intended subscription.</p>
+<h3 id="service-task-completion-api">Service Task Completion API<a class="headerlink" href="#service-task-completion-api" title="Permanent link">#</a></h3>
+<p>The <a href="service-task-completion-api.html">Service Task Completion API</a> provides functionality to deal with service tasks. The task handlers can be registered 
+and get invoked when tasks appear in the process engine. Since the Task Subscription API allows asynchronous processing, 
+we provide a special API to complete tasks.</p>
+<h3 id="user-task-completion-api">User Task Completion API<a class="headerlink" href="#user-task-completion-api" title="Permanent link">#</a></h3>
+<p>The <a href="user-task-completion-api.html">User Task Completion API</a> provides functionality to deal with user tasks. Since the Task Subscription API allows asynchronous processing,
+we provide a special API to complete tasks. </p>
 
 
 
