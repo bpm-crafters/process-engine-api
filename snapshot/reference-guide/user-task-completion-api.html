@@ -820,6 +820,33 @@
 
 <p>The User Task Completion API provides functionality to deal with user tasks. Since the Task Subscription API allows asynchronous processing,
 we provide a special API to complete tasks. </p>
+<div class="highlight"><pre><span></span><code><span class="nd">@Component</span>
+<span class="nd">@RequiredArgsConstructor</span>
+<span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">PerformUserTaskUseCase</span><span class="w"> </span><span class="p">{</span>
+
+<span class="w">  </span><span class="kd">private</span><span class="w"> </span><span class="kd">final</span><span class="w"> </span><span class="n">UserTaskCompletionApi</span><span class="w"> </span><span class="n">taskCompletionApi</span><span class="p">;</span>
+
+<span class="w">  </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">complete</span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">taskId</span><span class="p">,</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="n">value</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">taskCompletionApi</span><span class="p">.</span><span class="na">completeTask</span><span class="p">(</span>
+<span class="w">      </span><span class="k">new</span><span class="w"> </span><span class="n">CompleteTaskCmd</span><span class="p">(</span>
+<span class="w">        </span><span class="n">taskId</span><span class="p">,</span>
+<span class="w">        </span><span class="p">()</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">Map</span><span class="p">.</span><span class="na">of</span><span class="p">(</span><span class="s">&quot;some-user-value&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">value</span><span class="p">)</span>
+<span class="w">      </span><span class="p">)</span>
+<span class="w">    </span><span class="p">).</span><span class="na">get</span><span class="p">();</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w">  </span><span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">completeWithError</span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">taskId</span><span class="p">,</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="n">value</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">taskCompletionApi</span><span class="p">.</span><span class="na">completeTaskByError</span><span class="p">(</span>
+<span class="w">      </span><span class="k">new</span><span class="w"> </span><span class="n">CompleteTaskByErrorCmd</span><span class="p">(</span>
+<span class="w">        </span><span class="n">taskId</span><span class="p">,</span>
+<span class="w">        </span><span class="s">&quot;user_error&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s">&quot;some error&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="p">()</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">Map</span><span class="p">.</span><span class="na">of</span><span class="p">(</span><span class="s">&quot;some-user-value&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">value</span><span class="p">)</span>
+<span class="w">      </span><span class="p">)</span>
+<span class="w">    </span><span class="p">).</span><span class="na">get</span><span class="p">();</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
 
 
 
