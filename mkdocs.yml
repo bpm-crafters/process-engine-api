@@ -95,7 +95,13 @@ nav:
   - Quick Start: getting-started/index.md
   - Reference:
     - Overview: reference-guide/index.md
-    - Message Correlation: reference-guide/correlation.md
+    - Deployment API: reference-guide/deployment-api.md
+    - Process API: reference-guide/process-api.md
+    - Correlation API: reference-guide/correlation-api.md
+    - Signal API: reference-guide/signal-api.md
+    - Task Subscription API: reference-guide/task-subscription-api.md
+    - Service Task Completion API: reference-guide/service-task-completion-api.md
+    - User Task Completion API: reference-guide/user-task-completion-api.md
   - Developers:
     - Contribution: developer-guide/contribution.md
     - Project Setup: developer-guide/project-setup.md

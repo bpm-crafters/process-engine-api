@@ -6,6 +6,7 @@ import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.pull.E
 import mu.KLogging
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.boot.autoconfigure.AutoConfigureAfter
+import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.context.annotation.Configuration
 import org.springframework.scheduling.TaskScheduler
@@ -19,8 +20,12 @@ import java.time.temporal.ChronoUnit
  * Dynamic / imperative scheduling configuration using own task scheduler for service tasks.
  */
 @EnableScheduling
-@ConditionalOnProperty(prefix = DEFAULT_PREFIX, name = ["service-tasks.delivery-strategy"], havingValue = "embedded_scheduled")
 @Configuration
+@ConditionalOnExpression(
+  "'\${$DEFAULT_PREFIX.enabled}'.equals('true')"
+    + " and "
+    + "'\${$DEFAULT_PREFIX.service-tasks.delivery-strategy}'.equals('embedded_scheduled')"
+)
 @AutoConfigureAfter(C7SchedulingAutoConfiguration::class)
 class DynamicServiceTaskPullStrategySchedulingConfigurerAutoConfiguration(
   private val embeddedPullServiceTaskDelivery: EmbeddedPullServiceTaskDelivery,

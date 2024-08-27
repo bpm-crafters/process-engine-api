@@ -29,9 +29,12 @@ import java.util.concurrent.ExecutorService
 @EnableAsync
 @AutoConfigureAfter(C7EmbeddedJobDeliveryAutoConfiguration::class)
 @ConditionalOnExpression(
-  "'\${$DEFAULT_PREFIX.service-tasks.delivery-strategy}'.equals('embedded_scheduled')"
+  "'\${$DEFAULT_PREFIX.enabled}'.equals('true')"
+    + " and ("
+    + "'\${$DEFAULT_PREFIX.service-tasks.delivery-strategy}'.equals('embedded_scheduled')"
     + " or "
     + "'\${$DEFAULT_PREFIX.user-tasks.delivery-strategy}'.equals('embedded_scheduled')"
+    + ")"
 )
 class C7SchedulingAutoConfiguration {
 
