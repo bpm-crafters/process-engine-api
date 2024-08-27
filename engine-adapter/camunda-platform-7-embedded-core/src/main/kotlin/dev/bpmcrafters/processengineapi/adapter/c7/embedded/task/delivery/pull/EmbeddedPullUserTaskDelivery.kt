@@ -12,6 +12,7 @@ import org.camunda.bpm.engine.RepositoryService
 import org.camunda.bpm.engine.TaskService
 import org.camunda.bpm.engine.task.Task
 import org.camunda.bpm.engine.task.TaskQuery
+import java.util.concurrent.ExecutorService
 
 /**
  * Delivers user tasks to subscriptions.
@@ -20,7 +21,8 @@ import org.camunda.bpm.engine.task.TaskQuery
 class EmbeddedPullUserTaskDelivery(
   private val taskService: TaskService,
   private val repositoryService: RepositoryService,
-  private val subscriptionRepository: SubscriptionRepository
+  private val subscriptionRepository: SubscriptionRepository,
+  private val executorService: ExecutorService
 ) : UserTaskDelivery, RefreshableDelivery {
 
   companion object : KLogging()
@@ -33,36 +35,38 @@ class EmbeddedPullUserTaskDelivery(
   override fun refresh() {
     val subscriptions = subscriptionRepository.getTaskSubscriptions()
     if (subscriptions.isNotEmpty()) {
-      logger.trace { "Pull user tasks for subscriptions: $subscriptions" }
+      logger.trace { "PROCESS-ENGINE-C7-EMBEDDED-036: pulling user tasks for subscriptions: $subscriptions" }
       taskService
         .createTaskQuery()
         .forSubscriptions(subscriptions)
         .list()
+        .parallelStream()
         .forEach { task ->
           subscriptions
             .firstOrNull { subscription -> subscription.matches(task) }
             ?.let { activeSubscription ->
-
-              subscriptionRepository.activateSubscriptionForTask(task.id, activeSubscription)
-              val variables = taskService.getVariables(task.id).filterBySubscription(activeSubscription)
-
-              try {
-                val processDefinitionKey = cachingProcessDefinitionKeyResolver.getProcessDefinitionKey(task.processDefinitionId)
-                activeSubscription.action.accept(task.toTaskInformation(processDefinitionKey), variables)
-              } catch (e: Exception) {
-                logger.error { "[PROCESS-ENGINE-C7-EMBEDDED]: Error delivering task ${task.id}: ${e.message}" }
-                subscriptionRepository.deactivateSubscriptionForTask(taskId = task.id)
+              executorService.submit {  // in another thread
+                subscriptionRepository.activateSubscriptionForTask(task.id, activeSubscription)
+                val variables = taskService.getVariables(task.id).filterBySubscription(activeSubscription)
+                try {
+                  logger.debug { "PROCESS-ENGINE-C7-EMBEDDED-037: delivering user task ${task.id}." }
+                  val processDefinitionKey = cachingProcessDefinitionKeyResolver.getProcessDefinitionKey(task.processDefinitionId)
+                  activeSubscription.action.accept(task.toTaskInformation(processDefinitionKey), variables)
+                } catch (e: Exception) {
+                  logger.error { "PROCESS-ENGINE-C7-EMBEDDED-038: error delivering task ${task.id}: ${e.message}" }
+                  subscriptionRepository.deactivateSubscriptionForTask(taskId = task.id)
+                }
               }
             }
         }
     } else {
-      logger.trace { "Pull user tasks disabled because of no active subscriptions" }
+      logger.trace { "PROCESS-ENGINE-C7-EMBEDDED-039: pull user tasks disabled because of no active subscriptions" }
     }
   }
 
   @Suppress("UNUSED_PARAMETER")
   private fun TaskQuery.forSubscriptions(subscriptions: List<TaskSubscriptionHandle>): TaskQuery {
-    // FIXME: narrow down, for the moment take all tasks
+    // TODO: narrow down, for the moment take all tasks
     return this
       .active()
   }

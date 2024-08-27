@@ -2,6 +2,7 @@ package dev.bpmcrafters.processengineapi.adapter.c7.embedded.deploy
 
 import dev.bpmcrafters.processengineapi.MetaInfo
 import dev.bpmcrafters.processengineapi.MetaInfoAware
+import dev.bpmcrafters.processengineapi.adapter.c7.embedded.correlation.SignalApiImpl.Companion.logger
 import dev.bpmcrafters.processengineapi.deploy.DeployBundleCommand
 import dev.bpmcrafters.processengineapi.deploy.DeploymentApi
 import dev.bpmcrafters.processengineapi.deploy.DeploymentInformation
@@ -16,6 +17,7 @@ class DeploymentApiImpl(
 
   override fun deploy(cmd: DeployBundleCommand): Future<DeploymentInformation> {
     require(cmd.resources.isNotEmpty()) { "Resources must not be empty, at least one resource must be provided." }
+    logger.debug { "PROCESS-ENGINE-C7-EMBEDDED-003: executing a bundle deployment with ${cmd.resources.size} resources." }
     return CompletableFuture.supplyAsync {
       repositoryService
         .createDeployment()
