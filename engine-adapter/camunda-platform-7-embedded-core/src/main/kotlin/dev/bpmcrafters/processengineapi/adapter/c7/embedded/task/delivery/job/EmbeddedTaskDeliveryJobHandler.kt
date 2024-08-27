@@ -42,15 +42,15 @@ class EmbeddedTaskDeliveryJobHandler(
       OPERATION_CREATE -> when (configuration.type) {
         TYPE_USER -> {
           val userTask = commandContext.taskManager.findTaskById(configuration.executionId)
-          logger.debug { "[PROCESS-ENGINE-C7-EMBEDDED]: Delivering user task for execution ${configuration.executionId}, with task ${userTask.id}" }
+          logger.debug { "PROCESS-ENGINE-C7-EMBEDDED-020: Delivering user task for execution ${configuration.executionId}, with task ${userTask.id}" }
           subscriptions.firstOrNull { subscription -> subscription.matches(userTask) }?.let { activeSubscription ->
-            logger.debug { "[PROCESS-ENGINE-C7-EMBEDDED]: Found subscription for user task." }
+            logger.debug { "PROCESS-ENGINE-C7-EMBEDDED-021: Found subscription for user task." }
             subscriptionRepository.activateSubscriptionForTask(userTask.id, activeSubscription)
             val variables = userTask.variables.filterBySubscription(activeSubscription)
             try {
               activeSubscription.action.accept(userTask.toTaskInformation(), variables)
             } catch (e: Exception) {
-              logger.error { "[PROCESS-ENGINE-C7-EMBEDDED]: Error delivering task ${userTask.id}: ${e.message}" }
+              logger.error { "PROCESS-ENGINE-C7-EMBEDDED-022: Error delivering task ${userTask.id}: ${e.message}" }
               subscriptionRepository.deactivateSubscriptionForTask(taskId = userTask.id)
             }
           }
@@ -58,15 +58,15 @@ class EmbeddedTaskDeliveryJobHandler(
 
         TYPE_SERVICE -> {
           val serviceTask = commandContext.fetchAndLockExternalTask(configuration.executionId, workerId, lockTimeInSeconds)
-          logger.debug { "[PROCESS-ENGINE-C7-EMBEDDED]: Delivering external service task for execution ${configuration.executionId}, with task ${serviceTask.id}" }
+          logger.debug { "PROCESS-ENGINE-C7-EMBEDDED-023: Delivering external service task for execution ${configuration.executionId}, with task ${serviceTask.id}" }
           subscriptions.firstOrNull { subscription -> subscription.matches(serviceTask) }?.let { activeSubscription ->
             try {
-              logger.debug { "[PROCESS-ENGINE-C7-EMBEDDED]: Found subscription for topic '${activeSubscription.taskDescriptionKey}'" }
+              logger.debug { "PROCESS-ENGINE-C7-EMBEDDED-024: Found subscription for topic '${activeSubscription.taskDescriptionKey}'" }
               subscriptionRepository.activateSubscriptionForTask(taskId = serviceTask.id, subscription = activeSubscription)
               val variables = serviceTask.variables.filterBySubscription(activeSubscription)
               activeSubscription.action.accept(serviceTask.toTaskInformation(), variables)
             } catch (e: Exception) {
-              logger.error { "[PROCESS-ENGINE-C7-EMBEDDED]: Error delivering task ${serviceTask.id}: ${e.message}" }
+              logger.error { "PROCESS-ENGINE-C7-EMBEDDED-025: Error delivering task ${serviceTask.id}: ${e.message}" }
               subscriptionRepository.deactivateSubscriptionForTask(taskId = serviceTask.id)
             }
           }

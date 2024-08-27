@@ -104,4 +104,23 @@ class C7EmbeddedAdapterAutoConfiguration {
       taskService = taskService,
       subscriptionRepository = subscriptionRepository
     )
+
+  /**
+   * Creates a default fixed thread pool for 10 threads used for process engine worker executions.
+   * This one is used for pull-strategies only.
+   */
+  @Bean("c7embedded-service-task-worker-executor")
+  @ConditionalOnMissingBean
+  @Qualifier("c7embedded-service-task-worker-executor")
+  fun serviceTaskWorkerExecutor(): ExecutorService = Executors.newFixedThreadPool(10)
+
+  /**
+   * Creates a default fixed thread pool for 10 threads used for process engine worker executions.
+   * This one is used for pull-strategies only.
+   */
+  @Bean("c7embedded-user-task-worker-executor")
+  @ConditionalOnMissingBean
+  @Qualifier("c7embedded-user-task-worker-executor")
+  fun userTaskWorkerExecutor(): ExecutorService = Executors.newFixedThreadPool(10)
+
 }

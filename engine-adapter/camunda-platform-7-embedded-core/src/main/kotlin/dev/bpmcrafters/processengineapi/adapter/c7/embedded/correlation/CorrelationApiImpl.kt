@@ -20,7 +20,7 @@ class CorrelationApiImpl(
   override fun correlateMessage(cmd: CorrelateMessageCmd): Future<Empty> {
     return CompletableFuture.supplyAsync {
       val correlation = cmd.correlation.get()
-      logger.info { "correlating message ${cmd.messageName} using local variable ${correlation.correlationVariable} with value ${correlation.correlationKey}" }
+      logger.debug { "PROCESS-ENGINE-C7-EMBEDDED-001: Correlating message ${cmd.messageName} using local variable ${correlation.correlationVariable} with value ${correlation.correlationKey}" }
       runtimeService
         .createMessageCorrelation(cmd.messageName)
         .localVariableEquals(correlation.correlationVariable, correlation.correlationKey)

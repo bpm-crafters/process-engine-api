@@ -37,33 +37,37 @@ class EmbeddedPullServiceTaskDelivery(
   override fun refresh() {
 
     val subscriptions = subscriptionRepository.getTaskSubscriptions()
-    if(subscriptions.isNotEmpty()) {
-      logger.trace { "Pull external tasks for subscriptions: $subscriptions" }
+    if (subscriptions.isNotEmpty()) {
+      logger.trace { "PROCESS-ENGINE-C7-EMBEDDED-030: pulling service tasks for subscriptions: $subscriptions" }
       // FIXME -> how many queries do we want? 1:1 subscriptions, or 1 query for all?
       externalTaskService
         .fetchAndLock(maxTasks, workerId)
         .forSubscriptions(subscriptions)
         .execute()
+        .parallelStream()
         .forEach { lockedTask ->
           subscriptions
             .firstOrNull { subscription -> subscription.matches(lockedTask) }
             ?.let { activeSubscription ->
-              subscriptionRepository.activateSubscriptionForTask(lockedTask.id, activeSubscription)
-              val variables = lockedTask.variables.filterBySubscription(activeSubscription)
-              try {
-                executorService.submit {
+              executorService.submit {  // in another thread
+                subscriptionRepository.activateSubscriptionForTask(lockedTask.id, activeSubscription)
+                val variables = lockedTask.variables.filterBySubscription(activeSubscription)
+                try {
+                  logger.debug { "PROCESS-ENGINE-C7-EMBEDDED-031: delivering service task ${lockedTask.id}." }
                   activeSubscription.action.accept(lockedTask.toTaskInformation(), variables)
-                }.get()
-              } catch (e: Exception) {
-                val jobRetries: Int = lockedTask.retries ?: retries
-                externalTaskService.handleFailure(lockedTask.id, workerId, e.message, jobRetries - 1, retryTimeout)
-                logger.error { "[PROCESS-ENGINE-C7-EMBEDDED]: Error delivering task ${lockedTask.id}: ${e.message}" }
-                subscriptionRepository.deactivateSubscriptionForTask(taskId = lockedTask.id)
-              }
+                  logger.debug { "PROCESS-ENGINE-C7-EMBEDDED-032: successfully delivered service task ${lockedTask.id}." }
+                } catch (e: Exception) {
+                  val jobRetries: Int = lockedTask.retries ?: retries
+                  logger.error { "PROCESS-ENGINE-C7-EMBEDDED-033: failing delivering task ${lockedTask.id}: ${e.message}" }
+                  externalTaskService.handleFailure(lockedTask.id, workerId, e.message, jobRetries - 1, retryTimeout)
+                  subscriptionRepository.deactivateSubscriptionForTask(taskId = lockedTask.id)
+                  logger.error { "PROCESS-ENGINE-C7-EMBEDDED-034: successfully failed delivering task ${lockedTask.id}: ${e.message}" }
+                }
+              }.get()
             }
         }
     } else {
-      logger.trace { "Pull external tasks disabled because of no active subscriptions" }
+      logger.trace { "PROCESS-ENGINE-C7-EMBEDDED-035: Pull external tasks disabled because of no active subscriptions" }
     }
   }
 

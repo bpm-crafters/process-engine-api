@@ -25,7 +25,8 @@ class C7EmbeddedProcessTestHelper(private val processEngine: ProcessEngine) : Pr
   private var embeddedPullUserTaskDelivery: EmbeddedPullUserTaskDelivery = EmbeddedPullUserTaskDelivery(
     taskService = processEngine.taskService,
     subscriptionRepository = subscriptionRepository,
-    repositoryService = processEngine.repositoryService
+    repositoryService = processEngine.repositoryService,
+    executorService = Executors.newFixedThreadPool(3)
   )
 
   private var embeddedPullExternalTaskDelivery: EmbeddedPullServiceTaskDelivery = EmbeddedPullServiceTaskDelivery(

@@ -25,6 +25,7 @@ class C7ServiceTaskCompletionApiImpl(
 
   override fun completeTask(cmd: CompleteTaskCmd): Future<Empty> {
 
+    logger.debug { "PROCESS-ENGINE-C7-EMBEDDED-006: completing service task ${cmd.taskId}." }
     externalTaskService.complete(
       cmd.taskId,
       workerId,
@@ -32,12 +33,13 @@ class C7ServiceTaskCompletionApiImpl(
     )
     subscriptionRepository.deactivateSubscriptionForTask(cmd.taskId)?.apply {
       termination.accept(cmd.taskId)
-      logger.debug { "[PROCESS-ENGINE-C7-EMBEDDED]: Successfully completed external task ${cmd.taskId}." }
+      logger.debug { "PROCESS-ENGINE-C7-EMBEDDED-007: successfully completed service task ${cmd.taskId}." }
     }
     return CompletableFuture.completedFuture(Empty)
   }
 
   override fun completeTaskByError(cmd: CompleteTaskByErrorCmd): Future<Empty> {
+    logger.debug { "PROCESS-ENGINE-C7-EMBEDDED-008: throwing error ${cmd.errorCode} in service task ${cmd.taskId}." }
     externalTaskService.handleBpmnError(
       cmd.taskId,
       workerId,
@@ -47,12 +49,13 @@ class C7ServiceTaskCompletionApiImpl(
     )
     subscriptionRepository.deactivateSubscriptionForTask(cmd.taskId)?.apply {
       termination.accept(cmd.taskId)
-      logger.debug { "[PROCESS-ENGINE-C7-EMBEDDED]: Completed external task ${cmd.taskId} with error." }
+      logger.debug { "PROCESS-ENGINE-C7-EMBEDDED-009: successfully thrown error in service task ${cmd.taskId}." }
     }
     return CompletableFuture.completedFuture(Empty)
   }
 
   override fun failTask(cmd: FailTaskCmd): Future<Empty> {
+    logger.debug { "PROCESS-ENGINE-C7-EMBEDDED-010: failing service task ${cmd.taskId}." }
     val (retries, retryTimeoutInSeconds) = failureRetrySupplier.apply(cmd.taskId)
     externalTaskService.handleFailure(
       cmd.taskId,
@@ -64,7 +67,7 @@ class C7ServiceTaskCompletionApiImpl(
     )
     subscriptionRepository.deactivateSubscriptionForTask(cmd.taskId)?.apply {
       termination.accept(cmd.taskId)
-      logger.debug { "[PROCESS-ENGINE-C7-EMBEDDED]: Failure occurred on external task ${cmd.taskId} handling." }
+      logger.debug { "PROCESS-ENGINE-C7-EMBEDDED-011: successfully failed service task ${cmd.taskId} handling." }
     }
     return CompletableFuture.completedFuture(Empty)
   }
