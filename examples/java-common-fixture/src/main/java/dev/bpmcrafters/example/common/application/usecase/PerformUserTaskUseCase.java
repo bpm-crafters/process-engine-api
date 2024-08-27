@@ -58,6 +58,7 @@ public class PerformUserTaskUseCase implements PerformUserTaskInPort {
           new CompleteTaskByErrorCmd(
             taskId,
             "user_error",
+            "some error",
             () -> Map.of("some-user-value", value)
           )
         ).get();

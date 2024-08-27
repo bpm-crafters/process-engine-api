@@ -6,7 +6,7 @@ and are used combined to achieve some software quality values like:
 - Good Testability
 - Independence of external systems
 
-Our experience of building process applications showed that the application of Clean Architecture delivers those values to process applications as well.
+Our experience of building Process Applications showed that the application of Clean Architecture delivers those values to process applications as well.
 Considering application of Clean Architecture principle, the architectural blueprint would result in something similar to the following:
 
 ![Clean Architecture](../assets/img/clean-architecture.png)

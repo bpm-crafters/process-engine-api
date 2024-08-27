@@ -4,16 +4,20 @@ import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.job.Em
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.job.EmbeddedTaskDeliveryJobHandler.EmbeddedTaskDeliveryJobHandlerConfiguration.Companion.OPERATION_DELETE
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.job.EmbeddedTaskDeliveryJobHandler.EmbeddedTaskDeliveryJobHandlerConfiguration.Companion.TYPE_SERVICE
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.job.EmbeddedTaskDeliveryJobHandler.EmbeddedTaskDeliveryJobHandlerConfiguration.Companion.TYPE_USER
-import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.pull.EmbeddedPullUserTaskDelivery.Companion.logger
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.toTaskInformation
 import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionRepository
 import dev.bpmcrafters.processengineapi.adapter.commons.task.TaskSubscriptionHandle
 import dev.bpmcrafters.processengineapi.task.TaskType
-import org.camunda.bpm.engine.impl.cfg.ProcessEngineConfigurationImpl
+import mu.KLogging
+import org.camunda.bpm.engine.ExternalTaskService
+import org.camunda.bpm.engine.externaltask.LockedExternalTask
+import org.camunda.bpm.engine.impl.context.Context
+import org.camunda.bpm.engine.impl.externaltask.LockedExternalTaskImpl
 import org.camunda.bpm.engine.impl.interceptor.CommandContext
 import org.camunda.bpm.engine.impl.jobexecutor.JobHandler
 import org.camunda.bpm.engine.impl.jobexecutor.JobHandlerConfiguration
 import org.camunda.bpm.engine.impl.persistence.entity.*
+import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.filterBySubscription
 import java.time.Instant
 import java.util.*
 
@@ -26,77 +30,51 @@ class EmbeddedTaskDeliveryJobHandler(
   private val lockTimeInSeconds: Long
 ) : JobHandler<EmbeddedTaskDeliveryJobHandler.EmbeddedTaskDeliveryJobHandlerConfiguration> {
 
-  companion object {
+  companion object : KLogging() {
     const val TYPE = "dev.bpm-crafters.processengineapi.EmbeddedTaskDeliveryJobHandler"
   }
 
   override fun execute(
-    configuration: EmbeddedTaskDeliveryJobHandlerConfiguration,
-    execution: ExecutionEntity?,
-    commandContext: CommandContext,
-    tenantId: String?
+    configuration: EmbeddedTaskDeliveryJobHandlerConfiguration, execution: ExecutionEntity?, commandContext: CommandContext, tenantId: String?
   ) {
     val subscriptions = subscriptionRepository.getTaskSubscriptions()
-
     when (configuration.operation) {
-      OPERATION_CREATE ->
-        when (configuration.type) {
-          TYPE_USER -> {
-            val userTask = commandContext.taskManager.findTaskById(configuration.id)
-            subscriptions
-              .firstOrNull { subscription -> subscription.matches(userTask) }
-              ?.let { activeSubscription ->
-                subscriptionRepository.activateSubscriptionForTask(userTask.id, activeSubscription)
-                val variables = if (activeSubscription.payloadDescription == null) {
-                  userTask.variables
-                } else {
-                  if (activeSubscription.payloadDescription!!.isEmpty()) {
-                    mapOf()
-                  } else {
-                    userTask.variables.filterKeys { key -> activeSubscription.payloadDescription!!.contains(key) }
-                  }
-                }
-                try {
-                  activeSubscription.action.accept(userTask.toTaskInformation(), variables)
-                } catch (e: Exception) {
-                  logger.error { "[PROCESS-ENGINE-C7-EMBEDDED]: Error delivering task ${userTask.id}: ${e.message}" }
-                  subscriptionRepository.deactivateSubscriptionForTask(taskId = userTask.id)
-                }
-              }
-          }
-
-          TYPE_SERVICE -> {
-            val tasks = commandContext.externalTaskManager.findExternalTasksByExecutionId(configuration.id)
-            if (tasks != null) {
-              val task = tasks.first() // FIXME? can it really happen?
-              subscriptions
-                .firstOrNull { subscription -> subscription.matches(task) }
-                ?.let { activeSubscription ->
-                  task.lock(workerId, lockTimeInSeconds) // lock external task
-                  // FIXME -> check if already active for other subscription and notify it (delete)
-                  subscriptionRepository.activateSubscriptionForTask(task.id, activeSubscription)
-                  val variables = if (activeSubscription.payloadDescription == null) {
-                    task.execution.variables
-                  } else {
-                    if (activeSubscription.payloadDescription!!.isEmpty()) {
-                      mapOf()
-                    } else {
-                      task.execution.variables.filterKeys { key -> activeSubscription.payloadDescription!!.contains(key) }
-                    }
-                  }
-                  try {
-                    activeSubscription.action.accept(task.toTaskInformation(), variables)
-                  } catch (e: Exception) {
-                    logger.error { "[PROCESS-ENGINE-C7-EMBEDDED]: Error delivering task ${task.id}: ${e.message}" }
-                    subscriptionRepository.deactivateSubscriptionForTask(taskId = task.id)
-                  }
-                }
+      OPERATION_CREATE -> when (configuration.type) {
+        TYPE_USER -> {
+          val userTask = commandContext.taskManager.findTaskById(configuration.executionId)
+          logger.debug { "PROCESS-ENGINE-C7-EMBEDDED-020: Delivering user task for execution ${configuration.executionId}, with task ${userTask.id}" }
+          subscriptions.firstOrNull { subscription -> subscription.matches(userTask) }?.let { activeSubscription ->
+            logger.debug { "PROCESS-ENGINE-C7-EMBEDDED-021: Found subscription for user task." }
+            subscriptionRepository.activateSubscriptionForTask(userTask.id, activeSubscription)
+            val variables = userTask.variables.filterBySubscription(activeSubscription)
+            try {
+              activeSubscription.action.accept(userTask.toTaskInformation(), variables)
+            } catch (e: Exception) {
+              logger.error { "PROCESS-ENGINE-C7-EMBEDDED-022: Error delivering task ${userTask.id}: ${e.message}" }
+              subscriptionRepository.deactivateSubscriptionForTask(taskId = userTask.id)
             }
           }
         }
 
-      OPERATION_DELETE -> subscriptionRepository.getActiveSubscriptionForTask(configuration.id)?.apply {
-        termination.accept(configuration.id)
+        TYPE_SERVICE -> {
+          val serviceTask = commandContext.fetchAndLockExternalTask(configuration.executionId, workerId, lockTimeInSeconds)
+          logger.debug { "PROCESS-ENGINE-C7-EMBEDDED-023: Delivering external service task for execution ${configuration.executionId}, with task ${serviceTask.id}" }
+          subscriptions.firstOrNull { subscription -> subscription.matches(serviceTask) }?.let { activeSubscription ->
+            try {
+              logger.debug { "PROCESS-ENGINE-C7-EMBEDDED-024: Found subscription for topic '${activeSubscription.taskDescriptionKey}'" }
+              subscriptionRepository.activateSubscriptionForTask(taskId = serviceTask.id, subscription = activeSubscription)
+              val variables = serviceTask.variables.filterBySubscription(activeSubscription)
+              activeSubscription.action.accept(serviceTask.toTaskInformation(), variables)
+            } catch (e: Exception) {
+              logger.error { "PROCESS-ENGINE-C7-EMBEDDED-025: Error delivering task ${serviceTask.id}: ${e.message}" }
+              subscriptionRepository.deactivateSubscriptionForTask(taskId = serviceTask.id)
+            }
+          }
+        }
+      }
+
+      OPERATION_DELETE -> subscriptionRepository.getActiveSubscriptionForTask(configuration.executionId)?.apply {
+        termination.accept(configuration.executionId)
       }
     }
   }
@@ -113,13 +91,18 @@ class EmbeddedTaskDeliveryJobHandler(
   private fun TaskSubscriptionHandle.matches(taskEntity: TaskEntity): Boolean =
     this.taskType == TaskType.USER && (this.taskDescriptionKey == null || this.taskDescriptionKey == taskEntity.taskDefinitionKey || this.taskDescriptionKey == taskEntity.id)
 
-  private fun TaskSubscriptionHandle.matches(taskEntity: ExternalTaskEntity): Boolean =
+  private fun TaskSubscriptionHandle.matches(taskEntity: LockedExternalTask): Boolean =
     this.taskType == TaskType.EXTERNAL && (this.taskDescriptionKey == null || this.taskDescriptionKey == taskEntity.topicName)
 
+  /**
+   * Job configuration.
+   */
   data class EmbeddedTaskDeliveryJobHandlerConfiguration(
-    val id: String,
+    val executionId: String,
     val type: String,
-    val operation: String
+    val operation: String,
+    val processDefinitionId: String,
+    val processInstanceId: String
   ) : JobHandlerConfiguration {
 
     companion object {
@@ -132,29 +115,66 @@ class EmbeddedTaskDeliveryJobHandler(
       const val TYPE_SERVICE = "service"
 
       @JvmStatic
-      fun new(canonicalString: String) = EmbeddedTaskDeliveryJobHandlerConfiguration(
-        id = canonicalString.split(SEPARATOR)[0],
-        type = canonicalString.split(SEPARATOR)[1],
-        operation = canonicalString.split(SEPARATOR)[2]
-      )
+      fun new(canonicalString: String) = canonicalString.split(SEPARATOR).let { parameters ->
+        EmbeddedTaskDeliveryJobHandlerConfiguration(
+          executionId = parameters[0],
+          type = parameters[1],
+          operation = parameters[2],
+          processDefinitionId = parameters[3],
+          processInstanceId = parameters[4]
+        )
+      }
     }
 
-    override fun toCanonicalString(): String = "${id}$SEPARATOR${type}$SEPARATOR${operation}"
+    override fun toCanonicalString(): String =
+      arrayOf(
+        executionId,
+        type,
+        operation,
+        processDefinitionId,
+        processInstanceId,
+      ).joinToString(SEPARATOR)
   }
 }
 
-fun ProcessEngineConfigurationImpl.createJob(configuration: EmbeddedTaskDeliveryJobHandler.EmbeddedTaskDeliveryJobHandlerConfiguration) {
-  this.commandExecutorTxRequired.execute { context ->
-
-    val job = MessageEntity().apply {
+/**
+ * Creates a new job.
+ */
+fun createJob(
+  configuration: EmbeddedTaskDeliveryJobHandler.EmbeddedTaskDeliveryJobHandlerConfiguration,
+  context: CommandContext = Context.getCommandContext()
+) {
+  context.dbEntityManager.insert(
+    MessageEntity().apply {
       jobHandlerConfigurationRaw = configuration.toCanonicalString()
       jobHandlerType = EmbeddedTaskDeliveryJobHandler.TYPE
       duedate = Date.from(Instant.now())
       // we don't want to retry the delivery for the moment.
-      setRetriesFromPersistence(1) // FIXME -> move to properties?
+      setRetriesFromPersistence(1)
     }
-    // send / store job.
-    context.jobManager.send(job)
-  }
+  )
+}
+
+/**
+ * References external task service via process engine configuration of the command context.
+ */
+val CommandContext.externalTaskService: ExternalTaskService get() = this.processEngineConfiguration.externalTaskService
+
+/**
+ * Fetches and locks external task for given execution id.
+ * @param executionId execution id.
+ * @param workerId worker id to lock the task for.
+ * @param lockDuration lock duration in seconds.
+ */
+fun CommandContext.fetchAndLockExternalTask(executionId: String, workerId: String, lockDuration: Long): LockedExternalTask {
+  val taskEntity: ExternalTaskEntity = requireNotNull(
+    externalTaskService.createExternalTaskQuery().executionId(executionId).singleResult()
+  ) { "ExternalTask for executionId=$executionId not found" } as ExternalTaskEntity
+
+  externalTaskService.lock(taskEntity.id, workerId, lockDuration)
+
+  return LockedExternalTaskImpl.fromEntity(
+    taskEntity, null, false, true, false
+  )
 }
 

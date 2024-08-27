@@ -27,7 +27,7 @@ camunda:
     zeebe:
       base-url: http://127.0.0.1:26500
     tasklist:
-      base-url: http://localhost:8082
+      base-url: ${dev.bpm-crafters.process-api.adapter.c8.user-tasks.tasklist-url}
 
 
 logging:

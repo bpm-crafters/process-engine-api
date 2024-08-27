@@ -39,7 +39,7 @@ public class CompleteUserTaskUseCase implements CompleteUserTaskInPort {
 
 ```
 
-As you can see, the code above doesn't contain any engine-specific code, but rather uses only the `process-engine-api`.
+As you can see, the code above doesn't contain any engine-specific code, but rather uses only code from `process-engine-api`.
 This means that the resulting code is portable and the decision about used engine doesn't influence the implementation
 of you application logic.
 
@@ -71,11 +71,15 @@ dev:
         c7embedded:
           enabled: true
           service-tasks:
-            delivery-strategy: embedded_job
+            delivery-strategy: embedded_scheduled
             worker-id: embedded-worker
             lock-time-in-seconds: 10
+            execute-initial-pull-on-startup: true
+            schedule-delivery-fixed-rate-in-seconds: 5
           user-tasks:
-            delivery-strategy: embedded_job
+            delivery-strategy: embedded_scheduled
+            execute-initial-pull-on-startup: true
+            schedule-delivery-fixed-rate-in-seconds: 5
 
 ```
 
@@ -130,8 +134,8 @@ dev:
             worker-id: embedded-worker
             lock-time-in-seconds: 10
           user-tasks:
-            schedule-delivery-fixed-rate-in-seconds: 10
             delivery-strategy: remote_scheduled
+            schedule-delivery-fixed-rate-in-seconds: 10
 
 # to tell the client library where the engine is located provide the correct details below:
 feign:

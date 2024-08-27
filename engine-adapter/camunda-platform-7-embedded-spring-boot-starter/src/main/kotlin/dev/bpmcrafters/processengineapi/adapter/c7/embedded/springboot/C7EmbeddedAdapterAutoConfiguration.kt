@@ -4,8 +4,11 @@ import dev.bpmcrafters.processengineapi.adapter.c7.embedded.correlation.Correlat
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.correlation.SignalApiImpl
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.deploy.DeploymentApiImpl
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.process.StartProcessApiImpl
+import dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.C7EmbeddedAdapterProperties.Companion.DEFAULT_PREFIX
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.completion.C7ServiceTaskCompletionApiImpl
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.completion.C7UserTaskCompletionApiImpl
+import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.completion.FailureRetrySupplier
+import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.completion.LinearMemoryFailureRetrySupplier
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.subscription.C7TaskSubscriptionApiImpl
 import dev.bpmcrafters.processengineapi.adapter.commons.task.InMemSubscriptionRepository
 import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionRepository
@@ -22,14 +25,18 @@ import org.camunda.bpm.engine.RuntimeService
 import org.camunda.bpm.engine.TaskService
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.scheduling.annotation.EnableScheduling
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
 
 @Configuration
 @EnableScheduling
 @EnableConfigurationProperties(value = [C7EmbeddedAdapterProperties::class])
+@ConditionalOnProperty(prefix = DEFAULT_PREFIX, name = ["enabled"], havingValue = "true", matchIfMissing = true)
 class C7EmbeddedAdapterAutoConfiguration {
 
   @Bean("c7embedded-start-process-api")
@@ -66,17 +73,28 @@ class C7EmbeddedAdapterAutoConfiguration {
   @ConditionalOnMissingBean
   fun subscriptionRepository(): SubscriptionRepository = InMemSubscriptionRepository()
 
+  @Bean
+  @ConditionalOnMissingBean
+  fun defaultFailureRetrySupplier(c7AdapterProperties: C7EmbeddedAdapterProperties): FailureRetrySupplier {
+    return LinearMemoryFailureRetrySupplier(
+      retry = c7AdapterProperties.serviceTasks.retries,
+      retryTimeout = c7AdapterProperties.serviceTasks.retryTimeoutInSeconds
+    )
+  }
+
   @Bean("c7embedded-service-task-completion-api")
   @Qualifier("c7embedded-service-task-completion-api")
   fun serviceTaskCompletionApi(
     externalTaskService: ExternalTaskService,
     subscriptionRepository: SubscriptionRepository,
-    c7AdapterProperties: C7EmbeddedAdapterProperties
+    c7AdapterProperties: C7EmbeddedAdapterProperties,
+    failureRetrySupplier: FailureRetrySupplier
   ): ServiceTaskCompletionApi =
     C7ServiceTaskCompletionApiImpl(
       workerId = c7AdapterProperties.serviceTasks.workerId,
       externalTaskService = externalTaskService,
-      subscriptionRepository = subscriptionRepository
+      subscriptionRepository = subscriptionRepository,
+      failureRetrySupplier = failureRetrySupplier
     )
 
   @Bean("c7embedded-user-task-completion-api")
@@ -89,4 +107,23 @@ class C7EmbeddedAdapterAutoConfiguration {
       taskService = taskService,
       subscriptionRepository = subscriptionRepository
     )
+
+  /**
+   * Creates a default fixed thread pool for 10 threads used for process engine worker executions.
+   * This one is used for pull-strategies only.
+   */
+  @Bean("c7embedded-service-task-worker-executor")
+  @ConditionalOnMissingBean
+  @Qualifier("c7embedded-service-task-worker-executor")
+  fun serviceTaskWorkerExecutor(): ExecutorService = Executors.newFixedThreadPool(10)
+
+  /**
+   * Creates a default fixed thread pool for 10 threads used for process engine worker executions.
+   * This one is used for pull-strategies only.
+   */
+  @Bean("c7embedded-user-task-worker-executor")
+  @ConditionalOnMissingBean
+  @Qualifier("c7embedded-user-task-worker-executor")
+  fun userTaskWorkerExecutor(): ExecutorService = Executors.newFixedThreadPool(10)
+
 }

@@ -43,6 +43,7 @@ public abstract class AbstractSynchronousTaskHandler {
             externalTaskCompletionApi.completeTaskByError(new CompleteTaskByErrorCmd(
                 taskInfo.getTaskId(),
                 e.getErrorCode(),
+                e.getMessage(),
                 e::getPayload
               )
             );

@@ -6,32 +6,33 @@ import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.job.Em
 import mu.KLogging
 import org.camunda.bpm.engine.delegate.DelegateExecution
 import org.camunda.bpm.engine.delegate.ExecutionListener
-import org.camunda.bpm.engine.impl.cfg.ProcessEngineConfigurationImpl
 
 /**
  * Task listener writing a job to notify delivery.
  */
-open class JobCreatingExternalServiceTaskListener(
-  private val processEngineConfigurationImpl: ProcessEngineConfigurationImpl
-) : ExecutionListener {
+open class JobCreatingExternalServiceTaskListener : ExecutionListener {
 
   companion object : KLogging()
 
   override fun notify(delegateExecution: DelegateExecution) {
     when (delegateExecution.eventName) {
-      ExecutionListener.EVENTNAME_START -> processEngineConfigurationImpl.createJob(
+      ExecutionListener.EVENTNAME_START -> createJob(
         EmbeddedTaskDeliveryJobHandler.EmbeddedTaskDeliveryJobHandlerConfiguration(
-          id = delegateExecution.id,
+          executionId = delegateExecution.id,
           type = TYPE_SERVICE,
-          operation = OPERATION_CREATE
+          operation = OPERATION_CREATE,
+          processDefinitionId = delegateExecution.processDefinitionId,
+          processInstanceId = delegateExecution.processInstanceId
         )
       )
 
-      ExecutionListener.EVENTNAME_END -> processEngineConfigurationImpl.createJob(
+      ExecutionListener.EVENTNAME_END -> createJob(
         EmbeddedTaskDeliveryJobHandler.EmbeddedTaskDeliveryJobHandlerConfiguration(
-          id = delegateExecution.id,
+          executionId = delegateExecution.id,
           type = TYPE_SERVICE,
-          operation = OPERATION_DELETE
+          operation = OPERATION_DELETE,
+          processDefinitionId = delegateExecution.processDefinitionId,
+          processInstanceId = delegateExecution.processInstanceId
         )
       )
     }

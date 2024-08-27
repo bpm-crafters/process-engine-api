@@ -3,6 +3,7 @@ package dev.bpmcrafters.processengineapi.adapter.c7.embedded.process
 import dev.bpmcrafters.processengineapi.CommonRestrictions
 import dev.bpmcrafters.processengineapi.MetaInfo
 import dev.bpmcrafters.processengineapi.MetaInfoAware
+import dev.bpmcrafters.processengineapi.adapter.c7.embedded.correlation.SignalApiImpl.Companion.logger
 import dev.bpmcrafters.processengineapi.process.*
 import org.camunda.bpm.engine.RuntimeService
 import org.camunda.bpm.engine.runtime.ProcessInstance
@@ -17,6 +18,7 @@ class StartProcessApiImpl(
     return when (cmd) {
       is StartProcessByDefinitionCmd ->
         CompletableFuture.supplyAsync {
+          logger.debug { "PROCESS-ENGINE-C7-EMBEDDED-004: starting a new process instance by definition ${cmd.definitionKey}." }
           runtimeService.startProcessInstanceByKey(
             cmd.definitionKey,
             cmd.payloadSupplier.get()
@@ -25,6 +27,7 @@ class StartProcessApiImpl(
 
       is StartProcessByMessageCmd ->
         CompletableFuture.supplyAsync {
+          logger.debug { "PROCESS-ENGINE-C7-EMBEDDED-005: starting a new process instance by message ${cmd.messageName}." }
           runtimeService
             .createMessageCorrelation(cmd.messageName)
             .setVariables(cmd.payloadSupplier.get())

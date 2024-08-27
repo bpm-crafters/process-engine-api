@@ -38,7 +38,7 @@ class C7EmbeddedAdapterProperties(
     /**
      * Fixed rate for scheduled user task delivery.
      */
-    val scheduleDeliveryFixedRateInSeconds: Long = 5_000L,
+    val scheduleDeliveryFixedRateInSeconds: Long = 5L,
     /**
      * Should an initial pull be executed on startup.
      */
@@ -68,7 +68,7 @@ class C7EmbeddedAdapterProperties(
     /**
      * Fixed rate for scheduled user task delivery.
      */
-    val scheduleDeliveryFixedRateInSeconds: Long = 13_000L,
+    val scheduleDeliveryFixedRateInSeconds: Long = 13L,
     /**
      * Delivery strategy for external service tasks.
      */
@@ -76,7 +76,11 @@ class C7EmbeddedAdapterProperties(
     /**
      * Should an initial pull be executed on startup.
      */
-    val executeInitialPullOnStartup: Boolean = true
+    val executeInitialPullOnStartup: Boolean = true,
+    /**
+     * Default initial number of retries.
+     */
+    val retries: Int = 3
   )
 
   /**

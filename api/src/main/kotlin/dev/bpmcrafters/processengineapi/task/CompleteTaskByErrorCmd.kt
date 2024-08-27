@@ -16,6 +16,10 @@ open class CompleteTaskByErrorCmd(
    */
   val errorCode: String,
   /**
+   * Optional error details.
+   */
+  val errorMessage: String? = null,
+  /**
    * Payload supplier.
    */
   private val payloadSupplier: PayloadSupplier

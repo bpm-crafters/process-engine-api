@@ -1,6 +1,7 @@
 package dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.event
 
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.UserTaskDelivery
+import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.filterBySubscription
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.pull.EmbeddedPullUserTaskDelivery.Companion.logger
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.toTaskInformation
 import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionRepository
@@ -18,29 +19,24 @@ class EmbeddedEventBasedUserTaskDelivery(
     subscriptions
       .firstOrNull { subscription -> subscription.matches(delegateTask) }
       ?.let { activeSubscription ->
-
         subscriptionRepository.activateSubscriptionForTask(delegateTask.id, activeSubscription)
+        val variables = delegateTask.variables.filterBySubscription(activeSubscription)
 
-        val variables = if (activeSubscription.payloadDescription == null) {
-          delegateTask.variables
-        } else {
-          if (activeSubscription.payloadDescription!!.isEmpty()) {
-            mapOf()
-          } else {
-            delegateTask.variables.filterKeys { key -> activeSubscription.payloadDescription!!.contains(key) }
-          }
-        }
         try {
+          logger.debug { "PROCESS-ENGINE-C7-EMBEDDED-013: delivering user task ${delegateTask.id}." }
           activeSubscription.action.accept(delegateTask.toTaskInformation(), variables)
+          logger.debug { "PROCESS-ENGINE-C7-EMBEDDED-014: successfully delivered user task ${delegateTask.id}." }
         } catch (e: Exception) {
-          logger.error { "[PROCESS-ENGINE-C7-EMBEDDED] Error delivering task ${delegateTask.id}: ${e.message}" }
           subscriptionRepository.deactivateSubscriptionForTask(taskId = delegateTask.id)
+          logger.error { "PROCESS-ENGINE-C7-EMBEDDED-015: Error delivering user task ${delegateTask.id}: ${e.message}" }
         }
       }
   }
 
   fun userTaskDeleted(delegateTask: DelegateTask) {
+    logger.debug { "PROCESS-ENGINE-C7-EMBEDDED-016: deleting user task ${delegateTask.id}." }
     subscriptionRepository.getActiveSubscriptionForTask(delegateTask.id)?.termination?.accept(delegateTask.id)
+    logger.debug { "PROCESS-ENGINE-C7-EMBEDDED-017: successfully deleted user task ${delegateTask.id}." }
   }
 
 

@@ -4,34 +4,36 @@ import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.job.Em
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.job.EmbeddedTaskDeliveryJobHandler.EmbeddedTaskDeliveryJobHandlerConfiguration.Companion.OPERATION_DELETE
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.job.EmbeddedTaskDeliveryJobHandler.EmbeddedTaskDeliveryJobHandlerConfiguration.Companion.TYPE_USER
 import mu.KLogging
+import org.camunda.bpm.engine.delegate.DelegateExecution
 import org.camunda.bpm.engine.delegate.DelegateTask
 import org.camunda.bpm.engine.delegate.TaskListener
-import org.camunda.bpm.engine.impl.cfg.ProcessEngineConfigurationImpl
 
 /**
  * Task listener writing a job to notify delivery.
  */
-open class JobCreatingUserTaskListener(
-  private val processEngineConfigurationImpl: ProcessEngineConfigurationImpl
-) : TaskListener {
+open class JobCreatingUserTaskListener : TaskListener {
 
   companion object : KLogging()
 
   override fun notify(delegateTask: DelegateTask) {
     when (delegateTask.eventName) {
-      TaskListener.EVENTNAME_CREATE -> processEngineConfigurationImpl.createJob(
+      TaskListener.EVENTNAME_CREATE -> createJob(
         EmbeddedTaskDeliveryJobHandler.EmbeddedTaskDeliveryJobHandlerConfiguration(
-          id = delegateTask.id,
+          executionId = delegateTask.id,
           type = TYPE_USER,
-          operation = OPERATION_CREATE
+          operation = OPERATION_CREATE,
+          processDefinitionId = delegateTask.processDefinitionId,
+          processInstanceId = delegateTask.processInstanceId
         )
       )
 
-      TaskListener.EVENTNAME_DELETE, TaskListener.EVENTNAME_TIMEOUT, TaskListener.EVENTNAME_COMPLETE -> processEngineConfigurationImpl.createJob(
+      TaskListener.EVENTNAME_DELETE, TaskListener.EVENTNAME_TIMEOUT, TaskListener.EVENTNAME_COMPLETE -> createJob(
         EmbeddedTaskDeliveryJobHandler.EmbeddedTaskDeliveryJobHandlerConfiguration(
-          id = delegateTask.id,
+          executionId = delegateTask.id,
           type = TYPE_USER,
-          operation = OPERATION_DELETE
+          operation = OPERATION_DELETE,
+          processDefinitionId = delegateTask.processDefinitionId,
+          processInstanceId = delegateTask.processInstanceId
         )
       )
     }
