@@ -11,8 +11,10 @@ dev:
           service-tasks:
             delivery-strategy: subscription
             worker-id: worker
+            subscribing-delivery-initial-delay-in-seconds: 1000
           user-tasks:
             delivery-strategy: subscription_refreshing
+            subscribing-delivery-initial-delay-in-seconds: 1000
             schedule-delivery-fixed-rate-in-seconds: 2000 # every 2 seconds
             tasklist-url: http://localhost:8082
             fixed-rate-refresh-rate: 2000 # every 2 seconds
