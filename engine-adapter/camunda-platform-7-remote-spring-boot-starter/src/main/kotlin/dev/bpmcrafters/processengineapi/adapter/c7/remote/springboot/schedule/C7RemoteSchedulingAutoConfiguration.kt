@@ -41,7 +41,7 @@ class C7RemoteSchedulingAutoConfiguration {
 
   @PostConstruct
   fun report() {
-    logger.debug { "PROCESS-REMOTE-C7-EMBEDDED-202: Configuration applied." }
+    logger.debug { "PROCESS-ENGINE-C7-REMOTE-202: Configuration applied." }
   }
 
   @Bean("c7remote-task-scheduler")

@@ -16,15 +16,20 @@ dev:
         c7remote:
           service-tasks:
             delivery-strategy: remote_scheduled
-            schedule-delivery-fixed-rate-in-seconds: 10
+            schedule-delivery-fixed-rate-in-seconds: 1
             worker-id: embedded-worker
             lock-time-in-seconds: 10
           user-tasks:
-            schedule-delivery-fixed-rate-in-seconds: 10
+            schedule-delivery-fixed-rate-in-seconds: 1
             delivery-strategy: remote_scheduled
+          enabled: true
 
 feign:
   client:
     config:
       default:
         url: "http://localhost:9090/engine-rest/"
+
+logging:
+  level:
+    dev.bpmcrafters.processengineapi: DEBUG

@@ -44,7 +44,7 @@ class C7RemoteAdapterAutoConfiguration {
 
   @PostConstruct
   fun report() {
-    logger.debug { "PROCESS-REMOTE-C7-REMOTE-200: Configuration applied." }
+    logger.debug { "PROCESS-ENGINE-C7-REMOTE-200: Configuration applied." }
   }
 
 

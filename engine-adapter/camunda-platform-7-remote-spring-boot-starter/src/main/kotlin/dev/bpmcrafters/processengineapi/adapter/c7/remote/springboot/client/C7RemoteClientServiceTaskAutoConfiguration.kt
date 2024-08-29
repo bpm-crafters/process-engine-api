@@ -34,7 +34,7 @@ class C7RemoteClientServiceTaskAutoConfiguration {
 
   @PostConstruct
   fun report() {
-    logger.debug { "PROCESS-REMOTE-C7-EMBEDDED-201: Configuration applied." }
+    logger.debug { "PROCESS-ENGINE-C7-REMOTE-201: Configuration applied." }
   }
 
   @Bean
