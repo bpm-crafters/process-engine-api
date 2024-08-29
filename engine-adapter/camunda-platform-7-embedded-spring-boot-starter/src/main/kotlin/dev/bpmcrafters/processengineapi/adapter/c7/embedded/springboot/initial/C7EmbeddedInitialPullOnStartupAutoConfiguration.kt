@@ -1,8 +1,8 @@
-package dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot
+package dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.initial
 
+import dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.C7EmbeddedAdapterProperties
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.C7EmbeddedAdapterProperties.Companion.DEFAULT_PREFIX
-import dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.initial.InitialPullServiceTasksDeliveryBinding
-import dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.initial.InitialPullUserTasksDeliveryBinding
+import dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.job.C7EmbeddedJobDeliveryAutoConfiguration
 import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionRepository
 import org.camunda.bpm.engine.ExternalTaskService
 import org.camunda.bpm.engine.RepositoryService
@@ -35,7 +35,7 @@ class C7EmbeddedInitialPullOnStartupAutoConfiguration {
     subscriptionRepository: SubscriptionRepository,
     @Qualifier("c7embedded-user-task-worker-executor")
     executorService: ExecutorService
-  ) = InitialPullUserTasksDeliveryBinding(
+  ) = C7EmbeddedInitialPullUserTasksDeliveryBinding(
     taskService = taskService,
     subscriptionRepository = subscriptionRepository,
     repositoryService = repositoryService,
@@ -51,7 +51,7 @@ class C7EmbeddedInitialPullOnStartupAutoConfiguration {
     c7AdapterProperties: C7EmbeddedAdapterProperties,
     @Qualifier("c7embedded-service-task-worker-executor")
     executorService: ExecutorService
-  ) = InitialPullServiceTasksDeliveryBinding(
+  ) = C7EmbeddedInitialPullServiceTasksDeliveryBinding(
     externalTaskService = externalTaskService,
     subscriptionRepository = subscriptionRepository,
     c7AdapterProperties = c7AdapterProperties,

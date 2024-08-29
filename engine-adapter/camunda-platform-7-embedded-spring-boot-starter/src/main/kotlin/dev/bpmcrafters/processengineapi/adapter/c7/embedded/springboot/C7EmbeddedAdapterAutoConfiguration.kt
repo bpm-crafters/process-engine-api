@@ -34,7 +34,6 @@ import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
 @Configuration
-@EnableScheduling
 @EnableConfigurationProperties(value = [C7EmbeddedAdapterProperties::class])
 @ConditionalOnProperty(prefix = DEFAULT_PREFIX, name = ["enabled"], havingValue = "true", matchIfMissing = true)
 class C7EmbeddedAdapterAutoConfiguration {

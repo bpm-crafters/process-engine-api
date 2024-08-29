@@ -1,6 +1,6 @@
 package dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.initial
 
-import dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.initial.InitialPullUserTasksDeliveryBinding.Companion.ORDER
+import dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.initial.C7EmbeddedInitialPullUserTasksDeliveryBinding.Companion.ORDER
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.pull.EmbeddedPullUserTaskDelivery
 import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionRepository
 import mu.KLogging
@@ -20,7 +20,7 @@ import java.util.concurrent.ExecutorService
  * execute an initial pull (e.g. for event-based delivery)
  */
 @Order(ORDER)
-open class InitialPullUserTasksDeliveryBinding(
+open class C7EmbeddedInitialPullUserTasksDeliveryBinding(
   subscriptionRepository: SubscriptionRepository,
   taskService: TaskService,
   repositoryService: RepositoryService,

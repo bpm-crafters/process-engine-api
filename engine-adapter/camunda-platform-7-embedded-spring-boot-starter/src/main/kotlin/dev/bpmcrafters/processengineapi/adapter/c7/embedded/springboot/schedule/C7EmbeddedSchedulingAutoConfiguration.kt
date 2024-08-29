@@ -2,7 +2,7 @@ package dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.schedule
 
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.C7EmbeddedAdapterProperties
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.C7EmbeddedAdapterProperties.Companion.DEFAULT_PREFIX
-import dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.C7EmbeddedJobDeliveryAutoConfiguration
+import dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.job.C7EmbeddedJobDeliveryAutoConfiguration
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.UserTaskDelivery
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.pull.EmbeddedPullServiceTaskDelivery
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.pull.EmbeddedPullUserTaskDelivery
@@ -38,7 +38,7 @@ import java.util.concurrent.ExecutorService
     + "'\${$DEFAULT_PREFIX.user-tasks.delivery-strategy}'.equals('embedded_scheduled')"
     + ")"
 )
-class C7SchedulingAutoConfiguration {
+class C7EmbeddedSchedulingAutoConfiguration {
 
   companion object: KLogging()
 
