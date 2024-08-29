@@ -7,6 +7,8 @@ import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.UserTa
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.pull.EmbeddedPullServiceTaskDelivery
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.pull.EmbeddedPullUserTaskDelivery
 import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionRepository
+import jakarta.annotation.PostConstruct
+import mu.KLogging
 import org.camunda.bpm.engine.ExternalTaskService
 import org.camunda.bpm.engine.RepositoryService
 import org.camunda.bpm.engine.TaskService
@@ -37,6 +39,13 @@ import java.util.concurrent.ExecutorService
     + ")"
 )
 class C7SchedulingAutoConfiguration {
+
+  companion object: KLogging()
+
+  @PostConstruct
+  fun report() {
+    logger.debug { "PROCESS-ENGINE-C7-EMBEDDED-100: applied scheduling configuration" }
+  }
 
   @Bean("c7embedded-task-scheduler")
   @Qualifier("c7embedded-task-scheduler")

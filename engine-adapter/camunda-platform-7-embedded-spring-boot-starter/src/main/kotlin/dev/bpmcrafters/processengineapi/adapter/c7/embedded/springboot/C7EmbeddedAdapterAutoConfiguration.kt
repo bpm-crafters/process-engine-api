@@ -73,7 +73,8 @@ class C7EmbeddedAdapterAutoConfiguration {
   @ConditionalOnMissingBean
   fun subscriptionRepository(): SubscriptionRepository = InMemSubscriptionRepository()
 
-  @Bean
+  @Bean("c7embedded-failure-retry-supplier")
+  @Qualifier("c7embedded-failure-retry-supplier")
   @ConditionalOnMissingBean
   fun defaultFailureRetrySupplier(c7AdapterProperties: C7EmbeddedAdapterProperties): FailureRetrySupplier {
     return LinearMemoryFailureRetrySupplier(
@@ -88,6 +89,7 @@ class C7EmbeddedAdapterAutoConfiguration {
     externalTaskService: ExternalTaskService,
     subscriptionRepository: SubscriptionRepository,
     c7AdapterProperties: C7EmbeddedAdapterProperties,
+    @Qualifier("c7embedded-failure-retry-supplier")
     failureRetrySupplier: FailureRetrySupplier
   ): ServiceTaskCompletionApi =
     C7ServiceTaskCompletionApiImpl(
