@@ -1,13 +1,21 @@
 package dev.bpmcrafters.processengineapi.adapter.c7.remote.springboot.schedule
 
+import dev.bpmcrafters.processengineapi.adapter.c7.remote.springboot.C7RemoteAdapterEnabledCondition
 import dev.bpmcrafters.processengineapi.adapter.c7.remote.springboot.C7RemoteAdapterProperties
 import dev.bpmcrafters.processengineapi.adapter.c7.remote.springboot.C7RemoteAdapterProperties.Companion.DEFAULT_PREFIX
+import dev.bpmcrafters.processengineapi.adapter.c7.remote.springboot.C7RemoteAdapterProperties.ExternalServiceTaskDeliveryStrategy.REMOTE_SCHEDULED
 import dev.bpmcrafters.processengineapi.adapter.c7.remote.task.delivery.pull.RemotePullServiceTaskDelivery
 import mu.KLogging
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.boot.autoconfigure.AutoConfigureAfter
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression
+import org.springframework.boot.context.properties.bind.BindResult
+import org.springframework.boot.context.properties.bind.Binder
+import org.springframework.context.annotation.Condition
+import org.springframework.context.annotation.ConditionContext
+import org.springframework.context.annotation.Conditional
 import org.springframework.context.annotation.Configuration
+import org.springframework.core.type.AnnotatedTypeMetadata
 import org.springframework.scheduling.TaskScheduler
 import org.springframework.scheduling.annotation.EnableScheduling
 import org.springframework.scheduling.annotation.SchedulingConfigurer
@@ -20,10 +28,9 @@ import java.time.temporal.ChronoUnit
  */
 @EnableScheduling
 @Configuration
-@ConditionalOnExpression(
-  "'\${$DEFAULT_PREFIX.enabled}'.equals('true')"
-    + " and "
-    + "'\${$DEFAULT_PREFIX.service-tasks.delivery-strategy}'.equals('remote_scheduled')"
+@Conditional(
+  C7RemoteAdapterEnabledCondition::class,
+  C7RemoteAdapterServiceTaskSchedulesDeliveryCondition::class
 )
 @AutoConfigureAfter(C7RemoteSchedulingAutoConfiguration::class)
 class C7RemoteServiceTaskPullStrategyAutoConfiguration(
@@ -47,4 +54,21 @@ class C7RemoteServiceTaskPullStrategyAutoConfiguration(
     )
   }
 
+}
+
+/**
+ * Condition which returns true if `dev.bpm-crafters.process-api.adapter.c7remote.serviceTasks.deliveryStrategy` has value `REMOTE_SCHEDULED`
+ */
+class C7RemoteAdapterServiceTaskSchedulesDeliveryCondition : Condition {
+  override fun matches(context: ConditionContext, metadata: AnnotatedTypeMetadata): Boolean {
+    val propertiesBindResult: BindResult<C7RemoteAdapterProperties> = Binder.get(context.environment)
+      .bind(DEFAULT_PREFIX, C7RemoteAdapterProperties::class.java)
+
+    if (propertiesBindResult.isBound) {
+      val properties: C7RemoteAdapterProperties = propertiesBindResult.get()
+      return properties.serviceTasks.deliveryStrategy == REMOTE_SCHEDULED
+    }
+
+    return false
+  }
 }

@@ -22,7 +22,6 @@ dev:
           user-tasks:
             schedule-delivery-fixed-rate-in-seconds: 1
             delivery-strategy: remote_scheduled
-          enabled: true
 
 feign:
   client:
@@ -32,4 +31,4 @@ feign:
 
 logging:
   level:
-    dev.bpmcrafters.processengineapi: DEBUG
+    dev.bpmcrafters.processengineapi: TRACE
