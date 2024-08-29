@@ -2,10 +2,10 @@ package dev.bpmcrafters.processengineapi.adapter.c7.embedded.deploy
 
 import dev.bpmcrafters.processengineapi.MetaInfo
 import dev.bpmcrafters.processengineapi.MetaInfoAware
-import dev.bpmcrafters.processengineapi.adapter.c7.embedded.correlation.SignalApiImpl.Companion.logger
 import dev.bpmcrafters.processengineapi.deploy.DeployBundleCommand
 import dev.bpmcrafters.processengineapi.deploy.DeploymentApi
 import dev.bpmcrafters.processengineapi.deploy.DeploymentInformation
+import mu.KLogging
 import org.camunda.bpm.engine.RepositoryService
 import org.camunda.bpm.engine.repository.Deployment
 import java.util.concurrent.CompletableFuture
@@ -14,6 +14,8 @@ import java.util.concurrent.Future
 class DeploymentApiImpl(
   private val repositoryService: RepositoryService
 ) : DeploymentApi {
+
+  companion object : KLogging()
 
   override fun deploy(cmd: DeployBundleCommand): Future<DeploymentInformation> {
     require(cmd.resources.isNotEmpty()) { "Resources must not be empty, at least one resource must be provided." }
