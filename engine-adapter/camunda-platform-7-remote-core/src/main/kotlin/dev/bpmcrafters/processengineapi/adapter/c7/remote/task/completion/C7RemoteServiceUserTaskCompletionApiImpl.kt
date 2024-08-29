@@ -21,23 +21,27 @@ class C7RemoteServiceUserTaskCompletionApiImpl(
   companion object : KLogging()
 
   override fun completeTask(cmd: CompleteTaskCmd): Future<Empty> {
+    logger.debug { "PROCESS-ENGINE-C7-REMOTE-011: completing user task ${cmd.taskId}." }
     taskService.complete(
       cmd.taskId,
       cmd.get()
     )
     subscriptionRepository.deactivateSubscriptionForTask(cmd.taskId)?.apply {
       termination.accept(cmd.taskId)
+      logger.debug { "PROCESS-ENGINE-C7-REMOTE-012: successfully completed user task ${cmd.taskId}." }
     }
     return CompletableFuture.completedFuture(Empty)
   }
 
   override fun completeTaskByError(cmd: CompleteTaskByErrorCmd): Future<Empty> {
+    logger.debug { "PROCESS-ENGINE-C7-REMOTE-013: throwing error on user task ${cmd.taskId}." }
     taskService.handleBpmnError(
       cmd.taskId,
       cmd.errorCode
     )
     subscriptionRepository.deactivateSubscriptionForTask(cmd.taskId)?.apply {
       termination.accept(cmd.taskId)
+      logger.debug { "PROCESS-ENGINE-C7-REMOTE-014: successfully thrown error on user task ${cmd.taskId}." }
     }
     return CompletableFuture.completedFuture(Empty)
   }
