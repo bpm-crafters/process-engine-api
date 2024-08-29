@@ -40,11 +40,11 @@ import java.util.concurrent.ExecutorService
 )
 class C7EmbeddedSchedulingAutoConfiguration {
 
-  companion object: KLogging()
+  companion object : KLogging()
 
   @PostConstruct
   fun report() {
-    logger.debug { "PROCESS-ENGINE-C7-EMBEDDED-100: applied scheduling configuration" }
+    logger.debug { "PROCESS-ENGINE-C7-EMBEDDED-201: Configuration applied." }
   }
 
   @Bean("c7embedded-task-scheduler")

@@ -6,6 +6,7 @@ import dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.C7Embedde
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.UserTaskDelivery
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.event.EmbeddedEventBasedUserTaskDelivery
 import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionRepository
+import jakarta.annotation.PostConstruct
 import mu.KLogging
 import org.camunda.bpm.engine.TaskService
 import org.springframework.beans.factory.annotation.Qualifier
@@ -22,7 +23,13 @@ import org.springframework.context.annotation.Configuration
 @ConditionalOnProperty(prefix = DEFAULT_PREFIX, name = ["enabled"], havingValue = "true", matchIfMissing = true)
 class C7EmbeddedEventDeliveryAutoConfiguration {
 
+
   companion object : KLogging()
+
+  @PostConstruct
+  fun report() {
+    logger.debug { "PROCESS-ENGINE-C7-EMBEDDED-204: Configuration applied." }
+  }
 
   @Bean("c7embedded-user-task-delivery")
   @Qualifier("c7embedded-user-task-delivery")

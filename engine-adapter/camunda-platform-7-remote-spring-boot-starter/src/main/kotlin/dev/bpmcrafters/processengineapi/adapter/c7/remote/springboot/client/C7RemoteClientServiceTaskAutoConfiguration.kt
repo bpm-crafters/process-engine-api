@@ -1,11 +1,14 @@
-package dev.bpmcrafters.processengineapi.adapter.c7.remote.springboot
+package dev.bpmcrafters.processengineapi.adapter.c7.remote.springboot.client
 
+import dev.bpmcrafters.processengineapi.adapter.c7.remote.springboot.C7RemoteAdapterAutoConfiguration
+import dev.bpmcrafters.processengineapi.adapter.c7.remote.springboot.C7RemoteAdapterProperties
 import dev.bpmcrafters.processengineapi.adapter.c7.remote.task.completion.C7RemoteClientServiceTaskCompletionApiImpl
 import dev.bpmcrafters.processengineapi.adapter.c7.remote.task.completion.FailureRetrySupplier
-import dev.bpmcrafters.processengineapi.adapter.c7.remote.task.completion.LinearMemoryFailureRetrySupplier
 import dev.bpmcrafters.processengineapi.adapter.c7.remote.task.delivery.subscribe.SubscribingClientServiceTaskDelivery
 import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionRepository
 import dev.bpmcrafters.processengineapi.task.ServiceTaskCompletionApi
+import jakarta.annotation.PostConstruct
+import mu.KLogging
 import org.camunda.bpm.client.ExternalTaskClient
 import org.camunda.bpm.client.impl.ExternalTaskClientImpl
 import org.camunda.bpm.client.spring.annotation.EnableExternalTaskClient
@@ -13,7 +16,6 @@ import org.camunda.bpm.client.task.ExternalTaskService
 import org.camunda.bpm.client.task.impl.ExternalTaskServiceImpl
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.boot.autoconfigure.AutoConfigureAfter
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -27,6 +29,13 @@ import org.springframework.context.annotation.Configuration
 @ConditionalOnProperty(prefix = C7RemoteAdapterProperties.DEFAULT_PREFIX, name = ["service-tasks.delivery-strategy"], havingValue = "remote_subscribed")
 @EnableExternalTaskClient
 class C7RemoteClientServiceTaskAutoConfiguration {
+
+  companion object : KLogging()
+
+  @PostConstruct
+  fun report() {
+    logger.debug { "PROCESS-REMOTE-C7-EMBEDDED-201: Configuration applied." }
+  }
 
   @Bean
   @ConditionalOnProperty(prefix = C7RemoteAdapterProperties.DEFAULT_PREFIX, name = ["service-tasks.delivery-strategy"], havingValue = "remote_subscribed")

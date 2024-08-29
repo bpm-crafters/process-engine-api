@@ -8,6 +8,7 @@ import dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.C7Embedde
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.job.EmbeddedTaskDeliveryEnginePlugin
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.job.EmbeddedTaskDeliveryJobHandler
 import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionRepository
+import jakarta.annotation.PostConstruct
 import mu.KLogging
 import org.springframework.boot.autoconfigure.AutoConfigureAfter
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression
@@ -23,7 +24,13 @@ import org.springframework.context.annotation.Configuration
 @ConditionalOnProperty(prefix = DEFAULT_PREFIX, name = ["enabled"], havingValue = "true", matchIfMissing = true)
 class C7EmbeddedJobDeliveryAutoConfiguration {
 
+
   companion object : KLogging()
+
+  @PostConstruct
+  fun report() {
+    logger.debug { "PROCESS-ENGINE-C7-EMBEDDED-202: Configuration applied." }
+  }
 
   @Bean("c7embedded-task-delivery-job-handler")
   @ConditionalOnExpression(
