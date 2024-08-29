@@ -13,8 +13,8 @@
   <name>Example: Java C7 Embedded, Remote and C8 in one</name>
 
   <properties>
-    <spring-zeebe.version>8.4.0</spring-zeebe.version>
-    <camunda-tasklist-client-java.version>8.4.0.7</camunda-tasklist-client-java.version>
+    <spring-zeebe.version>8.5.3</spring-zeebe.version>
+    <camunda-tasklist-client-java.version>8.5.3.6</camunda-tasklist-client-java.version>
   </properties>
 
   <dependencyManagement>
