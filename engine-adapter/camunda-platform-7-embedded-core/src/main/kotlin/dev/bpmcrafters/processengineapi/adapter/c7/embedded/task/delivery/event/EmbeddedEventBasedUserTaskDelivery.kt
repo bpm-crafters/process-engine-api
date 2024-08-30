@@ -1,7 +1,7 @@
 package dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.event
 
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.UserTaskDelivery
-import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.filterBySubscription
+import dev.bpmcrafters.processengineapi.adapter.commons.task.filterBySubscription
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.pull.EmbeddedPullUserTaskDelivery.Companion.logger
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.toTaskInformation
 import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionRepository

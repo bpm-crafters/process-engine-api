@@ -1,12 +1,12 @@
-package dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.initial
+package dev.bpmcrafters.processengineapi.adapter.c7.remote.springboot.initial
 
-import dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.C7EmbeddedAdapterProperties
-import dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.initial.InitialPullServiceTasksDeliveryBinding.Companion.ORDER
-import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.pull.EmbeddedPullServiceTaskDelivery
+import dev.bpmcrafters.processengineapi.adapter.c7.remote.springboot.C7RemoteAdapterProperties
+import dev.bpmcrafters.processengineapi.adapter.c7.remote.springboot.initial.C7RemoteInitialPullServiceTasksDeliveryBinding.Companion.ORDER
+import dev.bpmcrafters.processengineapi.adapter.c7.remote.task.delivery.pull.RemotePullServiceTaskDelivery
 import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionRepository
 import mu.KLogging
 import org.camunda.bpm.engine.ExternalTaskService
-import org.camunda.bpm.spring.boot.starter.event.ProcessApplicationStartedEvent
+import org.springframework.boot.context.event.ApplicationStartedEvent
 import org.springframework.context.event.EventListener
 import org.springframework.core.Ordered
 import org.springframework.core.annotation.Order
@@ -16,21 +16,21 @@ import java.util.concurrent.ExecutorService
 /**
  * This class is responsible for the initial pull of user tasks.
  * We are not relying on the pull delivery strategy configured centrally, because for other deliveries we still want to
- * execute an initial pull (e.g. for event-based delivery)
+ * execute an initial pull.
  */
 @Order(ORDER)
-open class InitialPullServiceTasksDeliveryBinding(
+open class C7RemoteInitialPullServiceTasksDeliveryBinding(
   externalTaskService: ExternalTaskService,
   subscriptionRepository: SubscriptionRepository,
-  c7AdapterProperties: C7EmbeddedAdapterProperties,
+  c7AdapterProperties: C7RemoteAdapterProperties,
   executorService: ExecutorService
 ) {
-  companion object: KLogging() {
+  companion object : KLogging() {
     const val ORDER = Ordered.HIGHEST_PRECEDENCE + 1000
   }
 
 
-  private val pullDelivery = EmbeddedPullServiceTaskDelivery(
+  private val pullDelivery = RemotePullServiceTaskDelivery(
     subscriptionRepository = subscriptionRepository,
     externalTaskService = externalTaskService,
     workerId = c7AdapterProperties.serviceTasks.workerId,
@@ -43,10 +43,10 @@ open class InitialPullServiceTasksDeliveryBinding(
 
   @EventListener
   @Async
-  open fun pullUserTasks(event: ProcessApplicationStartedEvent) {
-    logger.trace { "PROCESS-ENGINE-C7-EMBEDDED-101: Delivering service tasks..." }
+  open fun pullUserTasks(event: ApplicationStartedEvent) {
+    logger.trace { "PROCESS-ENGINE-C7-REMOTE-101: Delivering service tasks..." }
     pullDelivery.refresh()
-    logger.trace { "PROCESS-ENGINE-C7-EMBEDDED-102: Delivered service tasks." }
+    logger.trace { "PROCESS-ENGINE-C7-REMOTE-102: Delivered service tasks." }
   }
 
 }

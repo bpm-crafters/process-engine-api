@@ -10,6 +10,7 @@ import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.completion.C7Us
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.completion.FailureRetrySupplier
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.completion.LinearMemoryFailureRetrySupplier
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.subscription.C7TaskSubscriptionApiImpl
+import dev.bpmcrafters.processengineapi.adapter.commons.spring.ConditionalOnMissingQualifiedBean
 import dev.bpmcrafters.processengineapi.adapter.commons.task.InMemSubscriptionRepository
 import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionRepository
 import dev.bpmcrafters.processengineapi.correlation.CorrelationApi
@@ -19,6 +20,8 @@ import dev.bpmcrafters.processengineapi.process.StartProcessApi
 import dev.bpmcrafters.processengineapi.task.ServiceTaskCompletionApi
 import dev.bpmcrafters.processengineapi.task.TaskSubscriptionApi
 import dev.bpmcrafters.processengineapi.task.UserTaskCompletionApi
+import jakarta.annotation.PostConstruct
+import mu.KLogging
 import org.camunda.bpm.engine.ExternalTaskService
 import org.camunda.bpm.engine.RepositoryService
 import org.camunda.bpm.engine.RuntimeService
@@ -29,15 +32,20 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.scheduling.annotation.EnableScheduling
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
 @Configuration
-@EnableScheduling
 @EnableConfigurationProperties(value = [C7EmbeddedAdapterProperties::class])
 @ConditionalOnProperty(prefix = DEFAULT_PREFIX, name = ["enabled"], havingValue = "true", matchIfMissing = true)
 class C7EmbeddedAdapterAutoConfiguration {
+
+  companion object : KLogging()
+
+  @PostConstruct
+  fun report() {
+    logger.debug { "PROCESS-ENGINE-C7-EMBEDDED-200: Configuration applied." }
+  }
 
   @Bean("c7embedded-start-process-api")
   @Qualifier("c7embedded-start-process-api")
@@ -73,7 +81,8 @@ class C7EmbeddedAdapterAutoConfiguration {
   @ConditionalOnMissingBean
   fun subscriptionRepository(): SubscriptionRepository = InMemSubscriptionRepository()
 
-  @Bean
+  @Bean("c7embedded-failure-retry-supplier")
+  @Qualifier("c7embedded-failure-retry-supplier")
   @ConditionalOnMissingBean
   fun defaultFailureRetrySupplier(c7AdapterProperties: C7EmbeddedAdapterProperties): FailureRetrySupplier {
     return LinearMemoryFailureRetrySupplier(
@@ -88,6 +97,7 @@ class C7EmbeddedAdapterAutoConfiguration {
     externalTaskService: ExternalTaskService,
     subscriptionRepository: SubscriptionRepository,
     c7AdapterProperties: C7EmbeddedAdapterProperties,
+    @Qualifier("c7embedded-failure-retry-supplier")
     failureRetrySupplier: FailureRetrySupplier
   ): ServiceTaskCompletionApi =
     C7ServiceTaskCompletionApiImpl(
@@ -113,7 +123,7 @@ class C7EmbeddedAdapterAutoConfiguration {
    * This one is used for pull-strategies only.
    */
   @Bean("c7embedded-service-task-worker-executor")
-  @ConditionalOnMissingBean
+  @ConditionalOnMissingQualifiedBean(beanClass = ExecutorService::class, qualifier = "c7embedded-service-task-worker-executor")
   @Qualifier("c7embedded-service-task-worker-executor")
   fun serviceTaskWorkerExecutor(): ExecutorService = Executors.newFixedThreadPool(10)
 
@@ -122,7 +132,7 @@ class C7EmbeddedAdapterAutoConfiguration {
    * This one is used for pull-strategies only.
    */
   @Bean("c7embedded-user-task-worker-executor")
-  @ConditionalOnMissingBean
+  @ConditionalOnMissingQualifiedBean(beanClass = ExecutorService::class, qualifier = "c7embedded-user-task-worker-executor")
   @Qualifier("c7embedded-user-task-worker-executor")
   fun userTaskWorkerExecutor(): ExecutorService = Executors.newFixedThreadPool(10)
 

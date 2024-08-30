@@ -3,7 +3,9 @@ package dev.bpmcrafters.processengineapi.adapter.c7.remote.task.delivery.subscri
 import dev.bpmcrafters.processengineapi.adapter.c7.remote.task.delivery.toTaskInformation
 import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionRepository
 import dev.bpmcrafters.processengineapi.adapter.commons.task.TaskSubscriptionHandle
+import dev.bpmcrafters.processengineapi.adapter.commons.task.filterBySubscription
 import dev.bpmcrafters.processengineapi.task.TaskType
+import mu.KLogging
 import org.camunda.bpm.client.ExternalTaskClient
 import org.camunda.bpm.client.task.ExternalTask
 import org.camunda.bpm.client.topic.TopicSubscriptionBuilder
@@ -14,55 +16,65 @@ import org.camunda.bpm.client.topic.TopicSubscriptionBuilder
 class SubscribingClientServiceTaskDelivery(
   private val externalTaskClient: ExternalTaskClient,
   private val subscriptionRepository: SubscriptionRepository,
-  private val lockDuration: Long
-) {
+  private val lockDuration: Long,
+  private val retryTimeout: Long,
+  private val retries: Int,
+  ) {
+
+  companion object: KLogging()
 
   fun subscribe() {
-    subscriptionRepository.getTaskSubscriptions()
-      .forEach { subscription ->
-        // this is a job to subscribe to.
-        externalTaskClient
-          .subscribe(subscription.taskDescriptionKey)
-          .lockDuration(lockDuration)
-          .handler { externalTask, externalTaskService ->
-            if (subscription.matches(externalTask)) {
-              subscriptionRepository.activateSubscriptionForTask(externalTask.id, subscription)
 
-              val variables = if (subscription.payloadDescription == null) {
-                externalTask.allVariables
-              } else {
-                if (subscription.payloadDescription!!.isEmpty()) {
-                  mapOf()
-                } else {
-                  externalTask.allVariables.filter { subscription.payloadDescription!!.contains(it.key) }
+    val subscriptions = subscriptionRepository.getTaskSubscriptions()
+    if (subscriptions.isNotEmpty()) {
+      logger.trace { "PROCESS-ENGINE-C7-REMOTE-030: subscribing to external tasks for: $subscriptions" }
+
+      subscriptions
+        .forEach { subscription ->
+          // this is a job to subscribe to.
+          externalTaskClient
+            .subscribe(subscription.taskDescriptionKey)
+            .lockDuration(lockDuration)
+            .handler { externalTask, externalTaskService ->
+              if (subscription.matches(externalTask)) {
+                subscriptionRepository.activateSubscriptionForTask(externalTask.id, subscription)
+
+                val variables = externalTask.allVariables.filterBySubscription(subscription)
+
+                try {
+                  logger.debug { "PROCESS-ENGINE-C7-REMOTE-031: delivering service task ${externalTask.id}." }
+                  subscription.action.accept(externalTask.toTaskInformation(), variables)
+                  logger.debug { "PROCESS-ENGINE-C7-REMOTE-032: successfully delivered service task ${externalTask.id}." }
+                } catch (e: Exception) {
+                  val jobRetries: Int = externalTask.retries ?: retries
+                  logger.error { "PROCESS-ENGINE-C7-REMOTE-033: failing delivering task ${externalTask.id}: ${e.message}" }
+                  externalTaskService.handleFailure(
+                    externalTask.id,
+                    "Error delivering external task",
+                    e.message,
+                    jobRetries - 1,
+                    retryTimeout
+                  )
+                  subscriptionRepository.deactivateSubscriptionForTask(taskId = externalTask.id)
+                  logger.error { "PROCESS-ENGINE-C7-REMOTE-034: successfully failed delivering task ${externalTask.id}: ${e.message}" }
                 }
+              } else {
+                // put it back
+                externalTaskService.handleFailure(
+                  externalTask.id,
+                  "PROCESS-ENGINE-C7-REMOTE-031: No matching handler",
+                  "",
+                  externalTask.retries, // no changes on retries
+                  retryTimeout
+                )
               }
-
-              try {
-                subscription.action.accept(externalTask.toTaskInformation(), variables)
-              } catch (e: Exception) {
-                externalTaskService.handleFailure(externalTask.id,
-                  "Error delivering external task",
-                  e.message,
-                  externalTask.retries - 1,
-                  10
-                ) // FIXME -> props  // could not deliver
-              }
-            } else {
-              // put it back
-              // TODO: check this, is it ok to put the job this way back?
-              externalTaskService.handleFailure(externalTask.id,
-                "No matching handler",
-                "",
-                externalTask.retries,
-                10
-              ) // FIXME -> props  // could not deliver
             }
-          }
-          .forSubscription(subscription)
-          .open()
-      }
-
+            .forSubscription(subscription)
+            .open()
+        }
+    } else {
+      logger.trace { "PROCESS-ENGINE-C7-REMOTE-035: external tasks subscribing is disabled because of no active subscriptions" }
+    }
   }
 
   /*

@@ -5,11 +5,14 @@ import dev.bpmcrafters.processengineapi.adapter.c7.remote.task.delivery.toTaskIn
 import dev.bpmcrafters.processengineapi.adapter.commons.task.RefreshableDelivery
 import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionRepository
 import dev.bpmcrafters.processengineapi.adapter.commons.task.TaskSubscriptionHandle
+import dev.bpmcrafters.processengineapi.adapter.commons.task.filterBySubscription
 import dev.bpmcrafters.processengineapi.task.TaskType
 import mu.KLogging
+import org.camunda.bpm.engine.RepositoryService
 import org.camunda.bpm.engine.TaskService
 import org.camunda.bpm.engine.task.Task
 import org.camunda.bpm.engine.task.TaskQuery
+import java.util.concurrent.ExecutorService
 
 /**
  * Delivers user tasks to subscriptions.
@@ -17,10 +20,13 @@ import org.camunda.bpm.engine.task.TaskQuery
  */
 class RemotePullUserTaskDelivery(
   private val taskService: TaskService,
-  private val subscriptionRepository: SubscriptionRepository
+  private val repositoryService: RepositoryService,
+  private val subscriptionRepository: SubscriptionRepository,
+  private val executorService: ExecutorService
 ) : UserTaskDelivery, RefreshableDelivery {
 
   companion object : KLogging()
+
 
   /**
    * Delivers all tasks found in user task service to corresponding subscriptions.
@@ -28,33 +34,31 @@ class RemotePullUserTaskDelivery(
   override fun refresh() {
     val subscriptions = subscriptionRepository.getTaskSubscriptions()
     if(subscriptions.isNotEmpty()) {
-      logger.trace { "Pull remote user tasks for subscriptions: $subscriptions" }
+      logger.trace { "PROCESS-ENGINE-C7-REMOTE-036: pulling user tasks for subscriptions: $subscriptions" }
       taskService
         .createTaskQuery()
         .forSubscriptions(subscriptions)
         .list()
+        .parallelStream()
         .forEach { task ->
           subscriptions
             .firstOrNull { subscription -> subscription.matches(task) }
             ?.let { activeSubscription ->
-
-              subscriptionRepository.activateSubscriptionForTask(task.id, activeSubscription)
-
-              val variables = if (activeSubscription.payloadDescription == null) {
-                taskService.getVariables(task.id)
-              } else {
-                if (activeSubscription.payloadDescription!!.isEmpty()) {
-                  mapOf()
-                } else {
-                  taskService.getVariables(task.id, activeSubscription.payloadDescription)
+              executorService.submit {  // in another thread
+                subscriptionRepository.activateSubscriptionForTask(task.id, activeSubscription)
+                val variables = taskService.getVariables(task.id).filterBySubscription(activeSubscription)
+                try {
+                  logger.debug { "PROCESS-ENGINE-C7-REMOTE-037: delivering user task ${task.id}." }
+                  activeSubscription.action.accept(task.toTaskInformation(), variables)
+                } catch (e: Exception) {
+                  logger.error { "PROCESS-ENGINE-C7-REMOTE-038: error delivering task ${task.id}: ${e.message}" }
+                  subscriptionRepository.deactivateSubscriptionForTask(taskId = task.id)
                 }
-              }
-
-              activeSubscription.action.accept(task.toTaskInformation(), variables)
+              }.get()
             }
         }
     } else {
-      logger.trace { "Skipped pull remote user task because of no active subscriptions" }
+      logger.trace { "PROCESS-ENGINE-C7-REMOTE-039: pull user tasks disabled because of no active subscriptions" }
     }
   }
 

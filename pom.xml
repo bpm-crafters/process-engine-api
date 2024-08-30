@@ -21,12 +21,14 @@
     <!-- TEST -->
     <mockito.version>5.4.0</mockito.version>
     <assertj.version>3.26.3</assertj.version>
+    <spring-boot.version>3.3.3</spring-boot.version>
   </properties>
 
   <modules>
     <module>api</module>
     <module>bom</module>
     <module>engine-adapter/adapter-commons</module>
+    <module>engine-adapter/adapter-commons-spring-boot-starter</module>
     <module>engine-adapter/adapter-testing</module>
     <module>engine-adapter/camunda-platform-7-embedded-core</module>
     <module>engine-adapter/camunda-platform-7-embedded-spring-boot-starter</module>

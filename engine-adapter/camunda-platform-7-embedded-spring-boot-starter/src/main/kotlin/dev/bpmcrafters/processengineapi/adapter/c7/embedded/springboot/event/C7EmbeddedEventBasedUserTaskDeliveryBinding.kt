@@ -1,6 +1,6 @@
 package dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.event
 
-import dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.event.EventBasedEmbeddedUserTaskDeliveryBinding.Companion.ORDER
+import dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.event.C7EmbeddedEventBasedUserTaskDeliveryBinding.Companion.ORDER
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.event.EmbeddedEventBasedUserTaskDelivery
 import org.camunda.bpm.engine.delegate.DelegateTask
 import org.springframework.context.event.EventListener
@@ -8,7 +8,7 @@ import org.springframework.core.Ordered
 import org.springframework.core.annotation.Order
 
 @Order(ORDER)
-class EventBasedEmbeddedUserTaskDeliveryBinding(
+class C7EmbeddedEventBasedUserTaskDeliveryBinding(
   private val embeddedEventBasedUserTaskDelivery: EmbeddedEventBasedUserTaskDelivery
 ) {
 

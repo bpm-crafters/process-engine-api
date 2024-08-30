@@ -19,7 +19,7 @@ import org.testcontainers.junit.jupiter.Testcontainers
 @ActiveProfiles("itest")
 @DirtiesContext
 @Testcontainers
-abstract class AbstractC7RemoteApiITest(processTestHelperImpl: ProcessTestHelper) : JGivenSpringBaseIntegrationTest(processTestHelperImpl) {
+abstract class AbstractC7RemoteApiITestBase(processTestHelperImpl: ProcessTestHelper) : JGivenSpringBaseIntegrationTest(processTestHelperImpl) {
 
   companion object {
     const val KEY = "simple-process"

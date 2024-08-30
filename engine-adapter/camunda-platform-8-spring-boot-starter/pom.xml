@@ -13,11 +13,9 @@
   <name>Adapter: C8 Spring-Boot Starter</name>
 
   <properties>
-    <spring-boot.version>3.3.3</spring-boot.version>
     <camunda-tasklist-client-java.version>8.5.3.6</camunda-tasklist-client-java.version>
     <spring-zeebe.version>8.5.3</spring-zeebe.version>
   </properties>
-
 
   <dependencyManagement>
     <dependencies>
@@ -30,22 +28,16 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
-
   <dependencies>
-    <dependency>
-      <groupId>dev.bpm-crafters.process-engine-api</groupId>
-      <artifactId>process-engine-api</artifactId>
-      <version>${project.version}</version>
-    </dependency>
     <dependency>
       <groupId>dev.bpm-crafters.process-engine-api</groupId>
       <artifactId>process-engine-api-adapter-camunda-platform-c8-core</artifactId>
       <version>${project.version}</version>
     </dependency>
-
     <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-autoconfigure</artifactId>
+      <groupId>dev.bpm-crafters.process-engine-api</groupId>
+      <artifactId>process-engine-api-adapter-commons-spring-boot-starter</artifactId>
+      <version>${project.version}</version>
     </dependency>
 
     <!-- https://mvnrepository.com/artifact/io.camunda.spring/spring-boot-starter-camunda -->
@@ -71,24 +63,15 @@
 
     <!-- Testing -->
     <dependency>
-      <groupId>io.camunda.spring</groupId>
-      <artifactId>spring-boot-starter-camunda-test-testcontainer</artifactId>
-      <version>${spring-zeebe.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
       <groupId>dev.bpm-crafters.process-engine-api</groupId>
       <artifactId>process-engine-api-adapter-testing</artifactId>
       <version>${project.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-test</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.testcontainers</groupId>
-      <artifactId>junit-jupiter</artifactId>
+      <groupId>io.camunda.spring</groupId>
+      <artifactId>spring-boot-starter-camunda-test-testcontainer</artifactId>
+      <version>${spring-zeebe.version}</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

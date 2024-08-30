@@ -2,11 +2,13 @@ package dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.schedule
 
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.C7EmbeddedAdapterProperties
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.C7EmbeddedAdapterProperties.Companion.DEFAULT_PREFIX
-import dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.C7EmbeddedJobDeliveryAutoConfiguration
+import dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.job.C7EmbeddedJobDeliveryAutoConfiguration
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.UserTaskDelivery
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.pull.EmbeddedPullServiceTaskDelivery
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.pull.EmbeddedPullUserTaskDelivery
 import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionRepository
+import jakarta.annotation.PostConstruct
+import mu.KLogging
 import org.camunda.bpm.engine.ExternalTaskService
 import org.camunda.bpm.engine.RepositoryService
 import org.camunda.bpm.engine.TaskService
@@ -36,7 +38,14 @@ import java.util.concurrent.ExecutorService
     + "'\${$DEFAULT_PREFIX.user-tasks.delivery-strategy}'.equals('embedded_scheduled')"
     + ")"
 )
-class C7SchedulingAutoConfiguration {
+class C7EmbeddedSchedulingAutoConfiguration {
+
+  companion object : KLogging()
+
+  @PostConstruct
+  fun report() {
+    logger.debug { "PROCESS-ENGINE-C7-EMBEDDED-201: Configuration applied." }
+  }
 
   @Bean("c7embedded-task-scheduler")
   @Qualifier("c7embedded-task-scheduler")

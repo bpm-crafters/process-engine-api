@@ -17,12 +17,14 @@ import java.util.concurrent.Future
 class C7RemoteServiceServiceTaskCompletionApiImpl(
   private val workerId: String,
   private val externalTaskService: ExternalTaskService,
-  private val subscriptionRepository: SubscriptionRepository
+  private val subscriptionRepository: SubscriptionRepository,
+  private val failureRetrySupplier: FailureRetrySupplier
 ) : ServiceTaskCompletionApi {
 
   companion object : KLogging()
 
   override fun completeTask(cmd: CompleteTaskCmd): Future<Empty> {
+    logger.debug { "PROCESS-ENGINE-C7-REMOTE-006: completing service task ${cmd.taskId}." }
     externalTaskService.complete(
       cmd.taskId,
       workerId,
@@ -30,36 +32,41 @@ class C7RemoteServiceServiceTaskCompletionApiImpl(
     )
     subscriptionRepository.deactivateSubscriptionForTask(cmd.taskId)?.apply {
       termination.accept(cmd.taskId)
-      logger.info { "Successfully completed external task ${cmd.taskId}." }
+      logger.debug { "PROCESS-ENGINE-C7-REMOTE-007: successfully completed service task ${cmd.taskId}." }
     }
     return CompletableFuture.completedFuture(Empty)
   }
 
   override fun completeTaskByError(cmd: CompleteTaskByErrorCmd): Future<Empty> {
+    logger.debug { "PROCESS-ENGINE-C7-REMOTE-008: throwing error ${cmd.errorCode} in service task ${cmd.taskId}." }
     externalTaskService.handleBpmnError(
       cmd.taskId,
       workerId,
-      cmd.errorCode
+      cmd.errorCode,
+      cmd.errorMessage,
+      cmd.get()
     )
     subscriptionRepository.deactivateSubscriptionForTask(cmd.taskId)?.apply {
       termination.accept(cmd.taskId)
-      logger.info { "Completed external task ${cmd.taskId} with error." }
+      logger.debug { "PROCESS-ENGINE-C7-REMOTE-009: successfully thrown error in service task ${cmd.taskId}." }
     }
     return CompletableFuture.completedFuture(Empty)
   }
 
   override fun failTask(cmd: FailTaskCmd): Future<Empty> {
+    logger.debug { "PROCESS-ENGINE-C7-REMOTE-010: failing service task ${cmd.taskId}." }
+    val (retries, retryTimeoutInSeconds) = failureRetrySupplier.apply(cmd.taskId)
     externalTaskService.handleFailure(
       cmd.taskId,
       workerId,
       cmd.reason,
       cmd.errorDetails,
-      100, // FIXME -> how to get those, they are only in the job
-      1000 // FIXME -> retry timeout from props?
+      retries,
+      retryTimeoutInSeconds
     )
     subscriptionRepository.deactivateSubscriptionForTask(cmd.taskId)?.apply {
       termination.accept(cmd.taskId)
-      logger.info { "Failure occurred on external task ${cmd.taskId} handling." }
+      logger.debug { "PROCESS-ENGINE-C7-REMOTE-011: successfully failed service task ${cmd.taskId} handling." }
     }
     return CompletableFuture.completedFuture(Empty)
   }
