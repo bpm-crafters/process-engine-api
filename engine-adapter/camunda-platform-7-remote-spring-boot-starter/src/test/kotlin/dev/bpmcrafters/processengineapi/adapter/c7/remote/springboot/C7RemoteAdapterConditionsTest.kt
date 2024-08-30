@@ -2,6 +2,7 @@ package dev.bpmcrafters.processengineapi.adapter.c7.remote.springboot
 
 import dev.bpmcrafters.processengineapi.adapter.c7.remote.task.delivery.pull.RemotePullServiceTaskDelivery
 import dev.bpmcrafters.processengineapi.adapter.c7.remote.task.delivery.pull.RemotePullUserTaskDelivery
+import dev.bpmcrafters.processengineapi.adapter.c7.remote.task.delivery.subscribe.SubscribingClientServiceTaskDelivery
 import dev.bpmcrafters.processengineapi.task.ServiceTaskCompletionApi
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -28,6 +29,28 @@ class C7RemoteAdapterScheduledStrategyConditionsTest {
   @Test
   fun test() {
     assertThat(context.getBean(RemotePullServiceTaskDelivery::class.java)).isNotNull()
+    assertThat(context.getBean(ServiceTaskCompletionApi::class.java)).isNotNull()
+    assertThat(context.getBean(RemotePullUserTaskDelivery::class.java)).isNotNull()
+  }
+
+}
+
+
+@SpringBootTest(
+  properties = [
+    "dev.bpm-crafters.process-api.adapter.c7remote.service-tasks.delivery-strategy = remote_subscribed",
+    "dev.bpm-crafters.process-api.adapter.c7remote.user-tasks.delivery-strategy = remote_scheduled"
+  ]
+)
+@ActiveProfiles("itest")
+class C7RemoteAdapterSubscribedStrategyConditionsTest {
+
+  @Autowired
+  lateinit var context: ApplicationContext
+
+  @Test
+  fun test() {
+    assertThat(context.getBean(SubscribingClientServiceTaskDelivery::class.java)).isNotNull()
     assertThat(context.getBean(ServiceTaskCompletionApi::class.java)).isNotNull()
     assertThat(context.getBean(RemotePullUserTaskDelivery::class.java)).isNotNull()
   }
