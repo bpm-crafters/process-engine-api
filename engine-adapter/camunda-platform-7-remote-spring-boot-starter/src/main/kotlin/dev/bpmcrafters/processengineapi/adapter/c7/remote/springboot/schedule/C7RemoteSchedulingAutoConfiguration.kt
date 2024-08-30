@@ -1,11 +1,10 @@
 package dev.bpmcrafters.processengineapi.adapter.c7.remote.springboot.schedule
 
-import dev.bpmcrafters.processengineapi.adapter.c7.remote.springboot.C7RemoteAdapterAutoConfiguration
-import dev.bpmcrafters.processengineapi.adapter.c7.remote.springboot.C7RemoteAdapterProperties
-import dev.bpmcrafters.processengineapi.adapter.c7.remote.springboot.C7RemoteAdapterProperties.Companion.DEFAULT_PREFIX
+import dev.bpmcrafters.processengineapi.adapter.c7.remote.springboot.*
+import dev.bpmcrafters.processengineapi.adapter.c7.remote.springboot.C7RemoteAdapterProperties.ExternalServiceTaskDeliveryStrategy
+import dev.bpmcrafters.processengineapi.adapter.c7.remote.springboot.C7RemoteAdapterProperties.UserTaskDeliveryStrategy
 import dev.bpmcrafters.processengineapi.adapter.c7.remote.task.completion.C7RemoteServiceServiceTaskCompletionApiImpl
 import dev.bpmcrafters.processengineapi.adapter.c7.remote.task.completion.FailureRetrySupplier
-import dev.bpmcrafters.processengineapi.adapter.c7.remote.task.delivery.UserTaskDelivery
 import dev.bpmcrafters.processengineapi.adapter.c7.remote.task.delivery.pull.RemotePullServiceTaskDelivery
 import dev.bpmcrafters.processengineapi.adapter.c7.remote.task.delivery.pull.RemotePullUserTaskDelivery
 import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionRepository
@@ -18,8 +17,8 @@ import org.camunda.bpm.engine.TaskService
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.boot.autoconfigure.AutoConfigureAfter
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Conditional
 import org.springframework.context.annotation.Configuration
 import org.springframework.scheduling.TaskScheduler
 import org.springframework.scheduling.annotation.EnableAsync
@@ -34,7 +33,7 @@ import java.util.concurrent.ExecutorService
 @EnableScheduling
 @EnableAsync
 @AutoConfigureAfter(C7RemoteAdapterAutoConfiguration::class)
-@ConditionalOnProperty(prefix = DEFAULT_PREFIX, name = ["enabled"], havingValue = "true", matchIfMissing = true)
+@Conditional(C7RemoteAdapterEnabledCondition::class)
 class C7RemoteSchedulingAutoConfiguration {
 
   companion object : KLogging()
@@ -56,7 +55,9 @@ class C7RemoteSchedulingAutoConfiguration {
 
   @Bean("c7remote-service-task-delivery")
   @Qualifier("c7remote-service-task-delivery")
-  @ConditionalOnProperty(prefix = DEFAULT_PREFIX, name = ["service-tasks.delivery-strategy"], havingValue = "remote_scheduled")
+  @ConditionalOnServiceTaskDeliveryStrategy(
+    strategy = ExternalServiceTaskDeliveryStrategy.REMOTE_SCHEDULED
+  )
   fun scheduledServiceTaskDelivery(
     @Qualifier("remote") externalTaskService: ExternalTaskService,
     subscriptionRepository: SubscriptionRepository,
@@ -75,7 +76,9 @@ class C7RemoteSchedulingAutoConfiguration {
 
   @Bean("c7remote-service-task-completion-api")
   @Qualifier("c7remote-service-task-completion-api")
-  @ConditionalOnProperty(prefix = DEFAULT_PREFIX, name = ["service-tasks.delivery-strategy"], havingValue = "remote_scheduled")
+  @ConditionalOnServiceTaskDeliveryStrategy(
+    strategy = ExternalServiceTaskDeliveryStrategy.REMOTE_SCHEDULED
+  )
   fun serviceTaskCompletionApi(
     @Qualifier("remote") externalTaskService: ExternalTaskService,
     subscriptionRepository: SubscriptionRepository,
@@ -92,7 +95,9 @@ class C7RemoteSchedulingAutoConfiguration {
 
   @Bean("c7remote-user-task-delivery")
   @Qualifier("c7remote-user-task-delivery")
-  @ConditionalOnProperty(prefix = DEFAULT_PREFIX, name = ["user-tasks.delivery-strategy"], havingValue = "remote_scheduled")
+  @ConditionalOnUserTaskDeliveryStrategy(
+    strategy = UserTaskDeliveryStrategy.REMOTE_SCHEDULED
+  )
   fun userTaskDelivery(
     @Qualifier("remote") taskService: TaskService,
     subscriptionRepository: SubscriptionRepository,

@@ -3,13 +3,15 @@ package dev.bpmcrafters.processengineapi.adapter.c7.remote.springboot
 import dev.bpmcrafters.processengineapi.adapter.c7.remote.springboot.C7RemoteAdapterProperties.Companion.DEFAULT_PREFIX
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.boot.context.properties.NestedConfigurationProperty
+import org.springframework.validation.annotation.Validated
 
+@Validated
 @ConfigurationProperties(prefix = DEFAULT_PREFIX)
 class C7RemoteAdapterProperties(
   /**
    * Flag to enable or disable the entire C7 remote adapter.
    */
-  val enabled: Boolean = true,
+  val enabled: Boolean = false,
   /**
    * Configuration for external service tasks.
    */

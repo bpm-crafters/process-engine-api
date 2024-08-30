@@ -44,7 +44,6 @@
       <version>${project.version}</version>
     </dependency>
 
-
     <!-- Use subscription-based delivery using official client -->
     <dependency>
       <groupId>org.camunda.bpm.springboot</groupId>
