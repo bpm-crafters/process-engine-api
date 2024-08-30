@@ -38,6 +38,7 @@ class C7RemoteAdapterScheduledStrategyConditionsTest {
 
 @SpringBootTest(
   properties = [
+    "camunda.bpm.client.base-url = http://localhost:8080/engine-rest",
     "dev.bpm-crafters.process-api.adapter.c7remote.service-tasks.delivery-strategy = remote_subscribed",
     "dev.bpm-crafters.process-api.adapter.c7remote.user-tasks.delivery-strategy = remote_scheduled"
   ]

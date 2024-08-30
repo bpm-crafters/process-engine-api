@@ -57,6 +57,11 @@
       <version>7.21.0</version>
     </dependency>
     <dependency>
+      <groupId>org.camunda.bpm.springboot</groupId>
+      <artifactId>camunda-bpm-spring-boot-starter-external-task-client</artifactId>
+      <version>7.21.0</version>
+    </dependency>
+    <dependency>
       <groupId>com.fasterxml.jackson.module</groupId>
       <artifactId>jackson-module-kotlin</artifactId>
     </dependency>

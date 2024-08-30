@@ -32,7 +32,7 @@ import org.springframework.context.annotation.Configuration
 @ConditionalOnServiceTaskDeliveryStrategy(
   strategy = REMOTE_SUBSCRIBED
 )
-@EnableExternalTaskClient
+@EnableExternalTaskClient(baseUrl = "#{camunda.bpm.client.base-url}")
 class C7RemoteClientServiceTaskAutoConfiguration {
 
   companion object : KLogging()

@@ -24,6 +24,10 @@ dev:
             schedule-delivery-fixed-rate-in-seconds: 1
             delivery-strategy: remote_scheduled
 
+#Just needed if you use remote_subscribed as delivery-strategy for service-tasks
+camunda.bpm.client:
+  base-url: http://localhost:9090/engine-rest/
+
 feign:
   client:
     config:
