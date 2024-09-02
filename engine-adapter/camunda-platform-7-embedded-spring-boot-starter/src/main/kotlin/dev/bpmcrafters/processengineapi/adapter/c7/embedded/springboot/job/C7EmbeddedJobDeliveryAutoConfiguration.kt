@@ -1,6 +1,7 @@
 package dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.job
 
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.C7EmbeddedAdapterAutoConfiguration
+import dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.C7EmbeddedAdapterEnabledCondition
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.C7EmbeddedAdapterProperties
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.C7EmbeddedAdapterProperties.Companion.DEFAULT_PREFIX
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.C7EmbeddedAdapterProperties.ExternalServiceTaskDeliveryStrategy
@@ -14,6 +15,7 @@ import org.springframework.boot.autoconfigure.AutoConfigureAfter
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Conditional
 import org.springframework.context.annotation.Configuration
 
 /**
@@ -21,7 +23,7 @@ import org.springframework.context.annotation.Configuration
  */
 @Configuration
 @AutoConfigureAfter(C7EmbeddedAdapterAutoConfiguration::class)
-@ConditionalOnProperty(prefix = DEFAULT_PREFIX, name = ["enabled"], havingValue = "true", matchIfMissing = true)
+@Conditional(C7EmbeddedAdapterEnabledCondition::class)
 class C7EmbeddedJobDeliveryAutoConfiguration {
 
 

@@ -29,6 +29,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Conditional
 import org.springframework.context.annotation.Configuration
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
@@ -36,7 +37,7 @@ import java.util.concurrent.Executors
 
 @Configuration
 @EnableConfigurationProperties(value = [C7RemoteAdapterProperties::class])
-@ConditionalOnProperty(prefix = C7RemoteAdapterProperties.DEFAULT_PREFIX, name = ["enabled"], havingValue = "true", matchIfMissing = true)
+@Conditional(C7RemoteAdapterEnabledCondition::class)
 @EnableCamundaRestClient
 class C7RemoteAdapterAutoConfiguration {
 

@@ -1,5 +1,6 @@
 package dev.bpmcrafters.processengineapi.adapter.c7.remote.springboot.initial
 
+import dev.bpmcrafters.processengineapi.adapter.c7.remote.springboot.C7RemoteAdapterEnabledCondition
 import dev.bpmcrafters.processengineapi.adapter.c7.remote.springboot.C7RemoteAdapterProperties
 import dev.bpmcrafters.processengineapi.adapter.c7.remote.springboot.C7RemoteAdapterProperties.Companion.DEFAULT_PREFIX
 import dev.bpmcrafters.processengineapi.adapter.c7.remote.springboot.client.C7RemoteClientServiceTaskAutoConfiguration
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.boot.autoconfigure.AutoConfigureAfter
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Conditional
 import org.springframework.context.annotation.Configuration
 import org.springframework.scheduling.annotation.EnableAsync
 import java.util.concurrent.ExecutorService
@@ -25,7 +27,7 @@ import java.util.concurrent.ExecutorService
 @Configuration
 @AutoConfigureAfter(C7RemoteClientServiceTaskAutoConfiguration::class)
 @EnableAsync
-@ConditionalOnProperty(prefix = DEFAULT_PREFIX, name = ["enabled"], havingValue = "true", matchIfMissing = true)
+@Conditional(C7RemoteAdapterEnabledCondition::class)
 class C7RemoteInitialPullOnStartupAutoConfiguration {
 
 

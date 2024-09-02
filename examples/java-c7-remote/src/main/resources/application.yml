@@ -14,6 +14,7 @@ dev:
     process-api:
       adapter:
         c7remote:
+          enabled: true
           service-tasks:
             delivery-strategy: remote_scheduled
             schedule-delivery-fixed-rate-in-seconds: 1
@@ -22,6 +23,10 @@ dev:
           user-tasks:
             schedule-delivery-fixed-rate-in-seconds: 1
             delivery-strategy: remote_scheduled
+
+#Just needed if you use remote_subscribed as delivery-strategy for service-tasks
+camunda.bpm.client:
+  base-url: http://localhost:9090/engine-rest/
 
 feign:
   client:
