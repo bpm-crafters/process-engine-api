@@ -17,7 +17,7 @@ import org.camunda.bpm.engine.impl.interceptor.CommandContext
 import org.camunda.bpm.engine.impl.jobexecutor.JobHandler
 import org.camunda.bpm.engine.impl.jobexecutor.JobHandlerConfiguration
 import org.camunda.bpm.engine.impl.persistence.entity.*
-import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.filterBySubscription
+import dev.bpmcrafters.processengineapi.adapter.commons.task.filterBySubscription
 import java.time.Instant
 import java.util.*
 

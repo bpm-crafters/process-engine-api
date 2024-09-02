@@ -6,7 +6,9 @@ import io.toolisticon.testing.jgiven.WHEN
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 
-class C7RemoteStartProcessApiITest(@Autowired  processTestHelperImpl: ProcessTestHelper) : AbstractC7RemoteApiITest(processTestHelperImpl) {
+class C7RemoteStartProcessApiITest(
+  @Autowired processTestHelperImpl: ProcessTestHelper
+) : AbstractC7RemoteApiITestBase(processTestHelperImpl) {
 
   @Test
   fun `should start process by definition without payload`() {

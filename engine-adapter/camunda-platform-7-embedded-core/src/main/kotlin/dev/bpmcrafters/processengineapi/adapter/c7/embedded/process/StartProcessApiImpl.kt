@@ -3,8 +3,8 @@ package dev.bpmcrafters.processengineapi.adapter.c7.embedded.process
 import dev.bpmcrafters.processengineapi.CommonRestrictions
 import dev.bpmcrafters.processengineapi.MetaInfo
 import dev.bpmcrafters.processengineapi.MetaInfoAware
-import dev.bpmcrafters.processengineapi.adapter.c7.embedded.correlation.SignalApiImpl.Companion.logger
 import dev.bpmcrafters.processengineapi.process.*
+import mu.KLogging
 import org.camunda.bpm.engine.RuntimeService
 import org.camunda.bpm.engine.runtime.ProcessInstance
 import java.util.concurrent.CompletableFuture
@@ -13,6 +13,8 @@ import java.util.concurrent.Future
 class StartProcessApiImpl(
   private val runtimeService: RuntimeService
 ) : StartProcessApi {
+
+  companion object: KLogging()
 
   override fun startProcess(cmd: StartProcessCommand): Future<ProcessInformation> {
     return when (cmd) {

@@ -6,7 +6,7 @@
   <parent>
     <groupId>dev.bpm-crafters.process-engine-api</groupId>
     <artifactId>process-engine-api-root</artifactId>
-    <version>0.0.5</version>
+    <version>0.0.6</version>
     <relativePath>../../pom.xml</relativePath>
   </parent>
 
@@ -14,7 +14,6 @@
   <name>Test: Adapter Fixtures</name>
 
   <properties>
-    <spring-boot.version>3.3.3</spring-boot.version>
     <h2.version>2.2.224</h2.version>
     <camunda-platform-7-mockito.version>7.21.0</camunda-platform-7-mockito.version>
     <mockk.version>1.13.12</mockk.version>
@@ -34,22 +33,32 @@
   </dependencyManagement>
 
 	<dependencies>
-    <!-- For JGiven Spring -->
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.tngtech.jgiven</groupId>
-      <artifactId>jgiven-spring-junit5</artifactId>
-      <version>${jgiven.version}</version>
-      <scope>compile</scope>
-    </dependency>
+    <!-- This is a library used on a test scope, so we put everything into compile scope -->
 
     <dependency>
       <groupId>dev.bpm-crafters.process-engine-api</groupId>
       <artifactId>process-engine-api</artifactId>
       <version>${project.version}</version>
+      <scope>compile</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-test</artifactId>
+      <scope>compile</scope>
+    </dependency>
+
+
+    <!-- For JGiven Spring -->
+    <dependency>
+      <groupId>com.tngtech.jgiven</groupId>
+      <artifactId>jgiven-spring-junit5</artifactId>
+      <version>${jgiven.version}</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
@@ -83,6 +92,27 @@
     <dependency>
       <groupId>org.awaitility</groupId>
       <artifactId>awaitility</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.testcontainers</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <scope>compile</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>com.fasterxml.jackson.datatype</groupId>
+      <artifactId>jackson-datatype-jdk8</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.datatype</groupId>
+      <artifactId>jackson-datatype-jsr310</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.module</groupId>
+      <artifactId>jackson-module-kotlin</artifactId>
       <scope>compile</scope>
     </dependency>
   </dependencies>

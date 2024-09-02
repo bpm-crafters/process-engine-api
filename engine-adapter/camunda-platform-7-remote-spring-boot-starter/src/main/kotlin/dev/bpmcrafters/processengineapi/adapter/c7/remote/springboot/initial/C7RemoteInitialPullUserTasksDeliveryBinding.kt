@@ -1,12 +1,12 @@
-package dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.initial
+package dev.bpmcrafters.processengineapi.adapter.c7.remote.springboot.initial
 
-import dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.initial.InitialPullUserTasksDeliveryBinding.Companion.ORDER
-import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.pull.EmbeddedPullUserTaskDelivery
+import dev.bpmcrafters.processengineapi.adapter.c7.remote.springboot.initial.C7RemoteInitialPullUserTasksDeliveryBinding.Companion.ORDER
+import dev.bpmcrafters.processengineapi.adapter.c7.remote.task.delivery.pull.RemotePullUserTaskDelivery
 import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionRepository
 import mu.KLogging
 import org.camunda.bpm.engine.RepositoryService
 import org.camunda.bpm.engine.TaskService
-import org.camunda.bpm.spring.boot.starter.event.ProcessApplicationStartedEvent
+import org.springframework.boot.context.event.ApplicationStartedEvent
 import org.springframework.context.event.EventListener
 import org.springframework.core.Ordered
 import org.springframework.core.annotation.Order
@@ -20,18 +20,18 @@ import java.util.concurrent.ExecutorService
  * execute an initial pull (e.g. for event-based delivery)
  */
 @Order(ORDER)
-open class InitialPullUserTasksDeliveryBinding(
+open class C7RemoteInitialPullUserTasksDeliveryBinding(
   subscriptionRepository: SubscriptionRepository,
   taskService: TaskService,
   repositoryService: RepositoryService,
   executorService: ExecutorService
 ) {
 
-  companion object: KLogging() {
+  companion object : KLogging() {
     const val ORDER = Ordered.HIGHEST_PRECEDENCE + 2000
   }
 
-  private val pullDelivery = EmbeddedPullUserTaskDelivery(
+  private val pullDelivery = RemotePullUserTaskDelivery(
     subscriptionRepository = subscriptionRepository,
     taskService = taskService,
     repositoryService = repositoryService,
@@ -40,9 +40,9 @@ open class InitialPullUserTasksDeliveryBinding(
 
   @EventListener
   @Async
-  open fun pullUserTasks(event: ProcessApplicationStartedEvent) {
-    logger.trace { "PROCESS-ENGINE-C7-EMBEDDED-103: Delivering user tasks..." }
+  open fun pullUserTasks(event: ApplicationStartedEvent) {
+    logger.trace { "PROCESS-ENGINE-C7-REMOTE-103: Delivering user tasks..." }
     pullDelivery.refresh()
-    logger.trace { "PROCESS-ENGINE-C7-EMBEDDED-104: Delivered user tasks." }
+    logger.trace { "PROCESS-ENGINE-C7-REMOTE-104: Delivered user tasks." }
   }
 }

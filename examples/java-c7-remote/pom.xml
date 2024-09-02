@@ -5,7 +5,7 @@
   <parent>
     <groupId>dev.bpm-crafters.process-engine-api</groupId>
     <artifactId>process-engine-api-examples</artifactId>
-    <version>0.0.5</version>
+    <version>0.0.6</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -54,6 +54,11 @@
     <dependency>
       <groupId>org.camunda.community.rest</groupId>
       <artifactId>camunda-platform-7-rest-client-spring-boot-starter</artifactId>
+      <version>7.21.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.camunda.bpm.springboot</groupId>
+      <artifactId>camunda-bpm-spring-boot-starter-external-task-client</artifactId>
       <version>7.21.0</version>
     </dependency>
     <dependency>

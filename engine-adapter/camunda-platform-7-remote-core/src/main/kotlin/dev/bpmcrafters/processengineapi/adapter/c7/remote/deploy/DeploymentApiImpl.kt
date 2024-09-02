@@ -5,6 +5,7 @@ import dev.bpmcrafters.processengineapi.MetaInfoAware
 import dev.bpmcrafters.processengineapi.deploy.DeployBundleCommand
 import dev.bpmcrafters.processengineapi.deploy.DeploymentApi
 import dev.bpmcrafters.processengineapi.deploy.DeploymentInformation
+import mu.KLogging
 import org.camunda.bpm.engine.RepositoryService
 import org.camunda.bpm.engine.repository.Deployment
 import java.util.concurrent.CompletableFuture
@@ -14,8 +15,11 @@ class DeploymentApiImpl(
   private val repositoryService: RepositoryService
 ) : DeploymentApi {
 
+  companion object: KLogging()
+
   override fun deploy(cmd: DeployBundleCommand): Future<DeploymentInformation> {
     require(cmd.resources.isNotEmpty()) { "Resources must not be empty, at least one resource must be provided." }
+    logger.debug { "PROCESS-ENGINE-C7-REMOTE-003: executing a bundle deployment with ${cmd.resources.size} resources." }
     return CompletableFuture.supplyAsync {
       repositoryService
         .createDeployment()

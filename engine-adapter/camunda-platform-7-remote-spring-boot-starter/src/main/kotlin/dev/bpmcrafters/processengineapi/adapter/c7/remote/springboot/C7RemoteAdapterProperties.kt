@@ -3,13 +3,15 @@ package dev.bpmcrafters.processengineapi.adapter.c7.remote.springboot
 import dev.bpmcrafters.processengineapi.adapter.c7.remote.springboot.C7RemoteAdapterProperties.Companion.DEFAULT_PREFIX
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.boot.context.properties.NestedConfigurationProperty
+import org.springframework.validation.annotation.Validated
 
+@Validated
 @ConfigurationProperties(prefix = DEFAULT_PREFIX)
 class C7RemoteAdapterProperties(
   /**
    * Flag to enable or disable the entire C7 remote adapter.
    */
-  val enabled: Boolean = true,
+  val enabled: Boolean = false,
   /**
    * Configuration for external service tasks.
    */
@@ -38,8 +40,12 @@ class C7RemoteAdapterProperties(
     /**
      * Fixed rate for scheduled user task delivery.
      */
-    val scheduleDeliveryFixedRateInSeconds: Long = 5_000L
-  )
+    val scheduleDeliveryFixedRateInSeconds: Long = 5L,
+    /**
+     * Should an initial pull be executed on startup.
+     */
+    val executeInitialPullOnStartup: Boolean = true,
+    )
 
   /**
    * Configuration for external service task handling.
@@ -64,11 +70,19 @@ class C7RemoteAdapterProperties(
     /**
      * Fixed rate for scheduled user task delivery.
      */
-    val scheduleDeliveryFixedRateInSeconds: Long = 13_000L,
+    val scheduleDeliveryFixedRateInSeconds: Long = 13L,
     /**
      * Delivery strategy for external service tasks.
      */
-    val deliveryStrategy: ExternalServiceTaskDeliveryStrategy
+    val deliveryStrategy: ExternalServiceTaskDeliveryStrategy,
+    /**
+     * Should an initial pull be executed on startup.
+     */
+    val executeInitialPullOnStartup: Boolean = true,
+    /**
+     * Default initial number of retries.
+     */
+    val retries: Int = 3
   )
 
   /**

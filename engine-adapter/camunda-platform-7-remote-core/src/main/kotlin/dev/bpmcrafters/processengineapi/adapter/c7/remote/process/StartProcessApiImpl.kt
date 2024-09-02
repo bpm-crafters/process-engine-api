@@ -4,6 +4,7 @@ import dev.bpmcrafters.processengineapi.CommonRestrictions
 import dev.bpmcrafters.processengineapi.MetaInfo
 import dev.bpmcrafters.processengineapi.MetaInfoAware
 import dev.bpmcrafters.processengineapi.process.*
+import mu.KLogging
 import org.camunda.bpm.engine.RuntimeService
 import org.camunda.bpm.engine.runtime.ProcessInstance
 import java.util.concurrent.CompletableFuture
@@ -13,10 +14,13 @@ class StartProcessApiImpl(
   private val runtimeService: RuntimeService
 ) : StartProcessApi {
 
+  companion object: KLogging()
+
   override fun startProcess(cmd: StartProcessCommand): Future<ProcessInformation> {
     return when (cmd) {
       is StartProcessByDefinitionCmd ->
         CompletableFuture.supplyAsync {
+          logger.debug { "PROCESS-ENGINE-C7-REMOTE-004: starting a new process instance by definition ${cmd.definitionKey}." }
           runtimeService.startProcessInstanceByKey(
             cmd.definitionKey,
             cmd.payloadSupplier.get()
@@ -25,6 +29,7 @@ class StartProcessApiImpl(
 
       is StartProcessByMessageCmd ->
         CompletableFuture.supplyAsync {
+          logger.debug { "PROCESS-ENGINE-C7-REMOTE-005: starting a new process instance by message ${cmd.messageName}." }
           runtimeService
             .createMessageCorrelation(cmd.messageName)
             .setVariables(cmd.payloadSupplier.get())

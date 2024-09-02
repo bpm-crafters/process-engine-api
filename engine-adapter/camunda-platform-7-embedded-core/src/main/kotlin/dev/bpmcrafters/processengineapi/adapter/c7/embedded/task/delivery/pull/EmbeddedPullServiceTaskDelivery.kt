@@ -2,7 +2,7 @@ package dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.pull
 
 import dev.bpmcrafters.processengineapi.CommonRestrictions
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.ExternalServiceTaskDelivery
-import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.filterBySubscription
+import dev.bpmcrafters.processengineapi.adapter.commons.task.filterBySubscription
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.toTaskInformation
 import dev.bpmcrafters.processengineapi.adapter.commons.task.RefreshableDelivery
 import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionRepository
@@ -39,7 +39,7 @@ class EmbeddedPullServiceTaskDelivery(
     val subscriptions = subscriptionRepository.getTaskSubscriptions()
     if (subscriptions.isNotEmpty()) {
       logger.trace { "PROCESS-ENGINE-C7-EMBEDDED-030: pulling service tasks for subscriptions: $subscriptions" }
-      // FIXME -> how many queries do we want? 1:1 subscriptions, or 1 query for all?
+      // TODO -> how many queries do we want? 1:1 subscriptions, or 1 query for all?
       externalTaskService
         .fetchAndLock(maxTasks, workerId)
         .forSubscriptions(subscriptions)

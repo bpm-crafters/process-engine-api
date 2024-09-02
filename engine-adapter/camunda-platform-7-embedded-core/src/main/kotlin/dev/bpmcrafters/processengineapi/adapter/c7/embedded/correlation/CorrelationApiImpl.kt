@@ -31,10 +31,13 @@ class CorrelationApiImpl(
   }
 
   override fun getSupportedRestrictions(): Set<String> = setOf(
+    /*
+    TODO really?
     CommonRestrictions.PROCESS_INSTANCE_ID,
     CommonRestrictions.PROCESS_DEFINITION_ID,
     CommonRestrictions.TENANT_ID,
     CommonRestrictions.BUSINESS_KEY
+     */
   )
 
   override fun meta(instance: MetaInfoAware): MetaInfo {

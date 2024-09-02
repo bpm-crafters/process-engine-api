@@ -1,16 +1,19 @@
-package dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot
+package dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.initial
 
-import dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.C7EmbeddedAdapterProperties.Companion.DEFAULT_PREFIX
-import dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.initial.InitialPullServiceTasksDeliveryBinding
-import dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.initial.InitialPullUserTasksDeliveryBinding
+import dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.C7EmbeddedAdapterProperties
+import dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.C7EmbeddedAdapterServiceTaskInitialPullEnabledCondition
+import dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.C7EmbeddedAdapterUserTaskInitialPullEnabledCondition
+import dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.job.C7EmbeddedJobDeliveryAutoConfiguration
 import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionRepository
+import jakarta.annotation.PostConstruct
+import mu.KLogging
 import org.camunda.bpm.engine.ExternalTaskService
 import org.camunda.bpm.engine.RepositoryService
 import org.camunda.bpm.engine.TaskService
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.boot.autoconfigure.AutoConfigureAfter
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Conditional
 import org.springframework.context.annotation.Configuration
 import org.springframework.scheduling.annotation.EnableAsync
 import java.util.concurrent.ExecutorService
@@ -23,19 +26,26 @@ import java.util.concurrent.ExecutorService
 @Configuration
 @AutoConfigureAfter(C7EmbeddedJobDeliveryAutoConfiguration::class)
 @EnableAsync
-@ConditionalOnProperty(prefix = DEFAULT_PREFIX, name = ["enabled"], havingValue = "true", matchIfMissing = true)
 class C7EmbeddedInitialPullOnStartupAutoConfiguration {
+
+
+  companion object : KLogging()
+
+  @PostConstruct
+  fun report() {
+    logger.debug { "PROCESS-ENGINE-C7-EMBEDDED-203: Configuration applied." }
+  }
 
   @Bean("c7embedded-user-task-initial-pull")
   @Qualifier("c7embedded-user-task-initial-pull")
-  @ConditionalOnProperty(prefix = DEFAULT_PREFIX, name = ["user-tasks.execute-initial-pull-on-startup"])
+  @Conditional(C7EmbeddedAdapterUserTaskInitialPullEnabledCondition::class)
   fun configureInitialPullForUserTaskDelivery(
     taskService: TaskService,
     repositoryService: RepositoryService,
     subscriptionRepository: SubscriptionRepository,
     @Qualifier("c7embedded-user-task-worker-executor")
     executorService: ExecutorService
-  ) = InitialPullUserTasksDeliveryBinding(
+  ) = C7EmbeddedInitialPullUserTasksDeliveryBinding(
     taskService = taskService,
     subscriptionRepository = subscriptionRepository,
     repositoryService = repositoryService,
@@ -44,14 +54,14 @@ class C7EmbeddedInitialPullOnStartupAutoConfiguration {
 
   @Bean("c7embedded-service-task-initial-pull")
   @Qualifier("c7embedded-service-task-initial-pull")
-  @ConditionalOnProperty(prefix = DEFAULT_PREFIX, name = ["service-tasks.execute-initial-pull-on-startup"])
+  @Conditional(C7EmbeddedAdapterServiceTaskInitialPullEnabledCondition::class)
   fun configureInitialPullForExternalServiceTaskDelivery(
     externalTaskService: ExternalTaskService,
     subscriptionRepository: SubscriptionRepository,
     c7AdapterProperties: C7EmbeddedAdapterProperties,
     @Qualifier("c7embedded-service-task-worker-executor")
     executorService: ExecutorService
-  ) = InitialPullServiceTasksDeliveryBinding(
+  ) = C7EmbeddedInitialPullServiceTasksDeliveryBinding(
     externalTaskService = externalTaskService,
     subscriptionRepository = subscriptionRepository,
     c7AdapterProperties = c7AdapterProperties,
