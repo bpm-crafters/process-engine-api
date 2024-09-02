@@ -105,7 +105,12 @@ class C7EmbeddedAdapterProperties(
     /**
      * Custom delivery.
      */
-    CUSTOM
+    CUSTOM,
+
+    /**
+     * Disabled delivery
+     */
+    DISABLED
   }
 
 
@@ -126,6 +131,11 @@ class C7EmbeddedAdapterProperties(
     /**
      * Custom delivery.
      */
-    CUSTOM
+    CUSTOM,
+
+    /**
+     * Disabled delivery
+     */
+    DISABLED
   }
 }

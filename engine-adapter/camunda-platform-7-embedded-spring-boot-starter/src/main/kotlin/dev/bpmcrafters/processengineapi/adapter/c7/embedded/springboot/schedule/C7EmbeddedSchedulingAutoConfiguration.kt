@@ -35,7 +35,6 @@ import java.util.concurrent.ExecutorService
 @Configuration
 @EnableScheduling
 @EnableAsync
-@AutoConfigureAfter(C7EmbeddedJobDeliveryAutoConfiguration::class)
 @Conditional(C7EmbeddedAdapterEnabledCondition::class)
 class C7EmbeddedSchedulingAutoConfiguration {
 
@@ -90,7 +89,7 @@ class C7EmbeddedSchedulingAutoConfiguration {
     c7AdapterProperties: C7EmbeddedAdapterProperties,
     @Qualifier("c7embedded-service-task-worker-executor")
     executorService: ExecutorService
-  ): UserTaskDelivery {
+  ): EmbeddedPullUserTaskDelivery {
     return EmbeddedPullUserTaskDelivery(
       subscriptionRepository = subscriptionRepository,
       taskService = taskService,
