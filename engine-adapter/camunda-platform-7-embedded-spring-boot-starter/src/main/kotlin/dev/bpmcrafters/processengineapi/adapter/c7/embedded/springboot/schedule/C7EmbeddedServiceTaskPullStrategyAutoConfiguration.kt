@@ -2,6 +2,10 @@ package dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.schedule
 
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.C7EmbeddedAdapterProperties
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.C7EmbeddedAdapterProperties.Companion.DEFAULT_PREFIX
+import dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.C7EmbeddedAdapterProperties.ExternalServiceTaskDeliveryStrategy.EMBEDDED_SCHEDULED
+import dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.C7EmbeddedAdapterProperties.UserTaskDeliveryStrategy
+import dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.ConditionalOnServiceTaskDeliveryStrategy
+import dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.ConditionalOnUserTaskDeliveryStrategy
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.pull.EmbeddedPullServiceTaskDelivery
 import mu.KLogging
 import org.springframework.beans.factory.annotation.Qualifier
@@ -20,10 +24,8 @@ import java.time.temporal.ChronoUnit
  */
 @EnableScheduling
 @Configuration
-@ConditionalOnExpression(
-  "'\${$DEFAULT_PREFIX.enabled}'.equals('true')"
-    + " and "
-    + "'\${$DEFAULT_PREFIX.service-tasks.delivery-strategy}'.equals('embedded_scheduled')"
+@ConditionalOnServiceTaskDeliveryStrategy(
+  strategy = EMBEDDED_SCHEDULED
 )
 @AutoConfigureAfter(C7EmbeddedSchedulingAutoConfiguration::class)
 class C7EmbeddedServiceTaskPullStrategyAutoConfiguration(

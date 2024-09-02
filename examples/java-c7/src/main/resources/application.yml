@@ -14,6 +14,7 @@ dev:
     process-api:
       adapter:
         c7embedded:
+          enabled: true
           service-tasks:
             delivery-strategy: embedded_job
             worker-id: embedded-worker

@@ -1,7 +1,9 @@
 package dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.initial
 
+import dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.C7EmbeddedAdapterEnabledCondition
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.C7EmbeddedAdapterProperties
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.C7EmbeddedAdapterProperties.Companion.DEFAULT_PREFIX
+import dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.C7EmbeddedAdapterUserTaskInitialPullEnabledCondition
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.job.C7EmbeddedJobDeliveryAutoConfiguration
 import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionRepository
 import jakarta.annotation.PostConstruct
@@ -13,6 +15,7 @@ import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.boot.autoconfigure.AutoConfigureAfter
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Conditional
 import org.springframework.context.annotation.Configuration
 import org.springframework.scheduling.annotation.EnableAsync
 import java.util.concurrent.ExecutorService
@@ -25,7 +28,7 @@ import java.util.concurrent.ExecutorService
 @Configuration
 @AutoConfigureAfter(C7EmbeddedJobDeliveryAutoConfiguration::class)
 @EnableAsync
-@ConditionalOnProperty(prefix = DEFAULT_PREFIX, name = ["enabled"], havingValue = "true", matchIfMissing = true)
+@Conditional(C7EmbeddedAdapterUserTaskInitialPullEnabledCondition::class)
 class C7EmbeddedInitialPullOnStartupAutoConfiguration {
 
 
@@ -38,7 +41,6 @@ class C7EmbeddedInitialPullOnStartupAutoConfiguration {
 
   @Bean("c7embedded-user-task-initial-pull")
   @Qualifier("c7embedded-user-task-initial-pull")
-  @ConditionalOnProperty(prefix = DEFAULT_PREFIX, name = ["user-tasks.execute-initial-pull-on-startup"])
   fun configureInitialPullForUserTaskDelivery(
     taskService: TaskService,
     repositoryService: RepositoryService,
@@ -54,7 +56,6 @@ class C7EmbeddedInitialPullOnStartupAutoConfiguration {
 
   @Bean("c7embedded-service-task-initial-pull")
   @Qualifier("c7embedded-service-task-initial-pull")
-  @ConditionalOnProperty(prefix = DEFAULT_PREFIX, name = ["service-tasks.execute-initial-pull-on-startup"])
   fun configureInitialPullForExternalServiceTaskDelivery(
     externalTaskService: ExternalTaskService,
     subscriptionRepository: SubscriptionRepository,

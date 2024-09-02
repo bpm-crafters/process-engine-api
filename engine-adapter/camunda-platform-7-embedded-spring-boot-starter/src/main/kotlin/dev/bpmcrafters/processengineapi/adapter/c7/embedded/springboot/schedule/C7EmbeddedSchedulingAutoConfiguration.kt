@@ -1,7 +1,12 @@
 package dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.schedule
 
+import dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.C7EmbeddedAdapterEnabledCondition
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.C7EmbeddedAdapterProperties
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.C7EmbeddedAdapterProperties.Companion.DEFAULT_PREFIX
+import dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.C7EmbeddedAdapterProperties.ExternalServiceTaskDeliveryStrategy.EMBEDDED_SCHEDULED
+import dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.C7EmbeddedAdapterProperties.UserTaskDeliveryStrategy
+import dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.ConditionalOnServiceTaskDeliveryStrategy
+import dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.ConditionalOnUserTaskDeliveryStrategy
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.job.C7EmbeddedJobDeliveryAutoConfiguration
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.UserTaskDelivery
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.pull.EmbeddedPullServiceTaskDelivery
@@ -18,6 +23,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Conditional
 import org.springframework.context.annotation.Configuration
 import org.springframework.scheduling.TaskScheduler
 import org.springframework.scheduling.annotation.EnableAsync
@@ -30,14 +36,7 @@ import java.util.concurrent.ExecutorService
 @EnableScheduling
 @EnableAsync
 @AutoConfigureAfter(C7EmbeddedJobDeliveryAutoConfiguration::class)
-@ConditionalOnExpression(
-  "'\${$DEFAULT_PREFIX.enabled}'.equals('true')"
-    + " and ("
-    + "'\${$DEFAULT_PREFIX.service-tasks.delivery-strategy}'.equals('embedded_scheduled')"
-    + " or "
-    + "'\${$DEFAULT_PREFIX.user-tasks.delivery-strategy}'.equals('embedded_scheduled')"
-    + ")"
-)
+@Conditional(C7EmbeddedAdapterEnabledCondition::class)
 class C7EmbeddedSchedulingAutoConfiguration {
 
   companion object : KLogging()
@@ -59,7 +58,9 @@ class C7EmbeddedSchedulingAutoConfiguration {
 
   @Bean("c7embedded-service-task-delivery")
   @Qualifier("c7embedded-service-task-delivery")
-  @ConditionalOnProperty(prefix = DEFAULT_PREFIX, name = ["service-tasks.delivery-strategy"], havingValue = "embedded_scheduled")
+  @ConditionalOnServiceTaskDeliveryStrategy(
+    strategy = EMBEDDED_SCHEDULED
+  )
   fun serviceTaskDelivery(
     subscriptionRepository: SubscriptionRepository,
     externalTaskService: ExternalTaskService,
@@ -79,7 +80,9 @@ class C7EmbeddedSchedulingAutoConfiguration {
 
   @Bean("c7embedded-user-task-delivery")
   @Qualifier("c7embedded-user-task-delivery")
-  @ConditionalOnProperty(prefix = DEFAULT_PREFIX, name = ["user-tasks.delivery-strategy"], havingValue = "embedded_scheduled")
+  @ConditionalOnUserTaskDeliveryStrategy(
+    strategy = UserTaskDeliveryStrategy.EMBEDDED_SCHEDULED
+  )
   fun embeddedScheduledUserTaskDelivery(
     subscriptionRepository: SubscriptionRepository,
     taskService: TaskService,
