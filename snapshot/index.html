@@ -872,7 +872,28 @@
   <h1>Home</h1>
 
 <h2 id="why-should-i-use-this">Why should I use this?<a class="headerlink" href="#why-should-i-use-this" title="Permanent link">#</a></h2>
-<p>Motivate me!</p>
+<p>Our experience with different process engines led us to an idea to create a vendor-independent API abstracting main capabilities of a process engine.
+In doing so, we followed several ideas:</p>
+<ul>
+<li>The API must be asynchronous.</li>
+<li>The user should not make assumptions about the implementations of the API to stay portable if those are exchanged.</li>
+<li>The API offers the minimal set of capabilities instead of support all possible vendor specific product features, which have nothing to do with process orchestration.</li>
+<li>Different aspects of process engine integration are solved using different independent APIs.</li>
+<li>The API is command based (you pass immutable commands indicating your intent).</li>
+<li>For interaction with your software, the API uses subscriptions.</li>
+<li>The vendor-adapters implementing APIs are drop-ins to your application classpath and your application should not depend on it (rather you can configure those independently)</li>
+</ul>
+<p>Having all this in mind, we created a Process Engine API with several adapters which are ready to use in your next process application. In particular, 
+you can use Process Engine API in your application and configure the adapter to use it with the following process engines / operation modes:</p>
+<ul>
+<li>Camunda Platform 7 Embedded (Spring Boot)</li>
+<li>Camunda Platform 7 Remote (connected via REST)</li>
+<li>Camunda Platform 8 Self Managed</li>
+<li>Camunda Platform 8 SaaS / Cloud</li>
+</ul>
+<p>In doing so, you might start your application using one engine / mode and easily migrate to the other later on, by changing a dependency and providing some 
+additional configuration.</p>
+<p>Sounds interesting for you? Try it out, and provide us some feedback...</p>
 <h2 id="how-to-start">How to start?<a class="headerlink" href="#how-to-start" title="Permanent link">#</a></h2>
 <p>We provide documentation for different people and different tasks. A good starting point is the
 <a href="./introduction">Introduction</a>. You might want to look at <a href="./reference-guide">Reference Guide</a>.</p>

@@ -818,7 +818,29 @@
 
   <h1>Motivation and Goal</h1>
 
-
+<p>Instead of learning and using of vendor-specific APIs to build your process applications, you should focus on delivering business value. Construction
+of scalable, robust and future-proof applications is easy, if system components are designed to fulfill clear goals and have clear responsibilities.
+This kind of architecture is called <a href="clean-architecture.html">Clean architecture</a>, and we recommend to follow it in general situations. In doing so, technology is hidden inside
+adapters and the business and domain logic stays technology-agnostic and independent.</p>
+<p>Our experience with different process engines led us to an idea to create a vendor-independent API abstracting main capabilities of a process engine.
+In doing so, we followed several ideas:</p>
+<ul>
+<li>The API must be asynchronous</li>
+<li>The user should not make assumptions about the implementations of the API to stay portable if those are exchanged.</li>
+<li>The API offers the minimal set of capabilities instead of support all possible vendor specific product features, which have nothing to do with process orchestration.</li>
+<li>Different aspects of process engine integration are solved using different independent APIs.</li>
+<li>The API is command based (you pass immutable commands indicating your intent).</li>
+<li>For interaction with your software, the API uses subscriptions.</li>
+<li>The vendor-adapters implementing APIs are drop-ins to your application classpath and your application should not depend on it (rather you can configure those independently)</li>
+</ul>
+<p>Having all this in mind, we provide a Process Engine API with several adapters which are ready to use in your next process application. In particular,
+you can use Process Engine API in your application and configure the adapter to use it with the following process engines / operation modes:</p>
+<ul>
+<li>Camunda Platform 7 Embedded (Spring Boot)</li>
+<li>Camunda Platform 7 Remote (connected via REST)</li>
+<li>Camunda Platform 8 Self Managed</li>
+<li>Camunda Platform 8 SaaS / Cloud</li>
+</ul>
 
 
 

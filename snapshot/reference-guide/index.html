@@ -80,7 +80,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#api" class="md-skip">
+        <a href="#deployment-api" class="md-skip">
           Skip to content
         </a>
       
@@ -580,16 +580,6 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#api" class="md-nav__link">
-    <span class="md-ellipsis">
-      API
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="API">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
   <a href="#deployment-api" class="md-nav__link">
     <span class="md-ellipsis">
       Deployment API
@@ -597,8 +587,8 @@
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
+      
+        <li class="md-nav__item">
   <a href="#process-api" class="md-nav__link">
     <span class="md-ellipsis">
       Process API
@@ -606,8 +596,8 @@
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
+      
+        <li class="md-nav__item">
   <a href="#correlation-api" class="md-nav__link">
     <span class="md-ellipsis">
       Correlation API
@@ -615,8 +605,8 @@
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
+      
+        <li class="md-nav__item">
   <a href="#signal-api" class="md-nav__link">
     <span class="md-ellipsis">
       Signal API
@@ -624,8 +614,8 @@
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
+      
+        <li class="md-nav__item">
   <a href="#task-subscription-api" class="md-nav__link">
     <span class="md-ellipsis">
       Task Subscription API
@@ -633,8 +623,8 @@
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
+      
+        <li class="md-nav__item">
   <a href="#service-task-completion-api" class="md-nav__link">
     <span class="md-ellipsis">
       Service Task Completion API
@@ -642,18 +632,13 @@
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
+      
+        <li class="md-nav__item">
   <a href="#user-task-completion-api" class="md-nav__link">
     <span class="md-ellipsis">
       User Task Completion API
     </span>
   </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -931,16 +916,15 @@
 
 <p>The <code>process-engine-api</code> provides an API to abstract from concrete process engine implementation, with the ability
 to write your application code engine-agnostic and later (re-)configure for the usage of a particular process engine.</p>
-<h2 id="api">API<a class="headerlink" href="#api" title="Permanent link">#</a></h2>
-<p>The API consists of different parts independent of each other.</p>
+<p>The API consists of different parts independent of each other:</p>
 <h3 id="deployment-api">Deployment API<a class="headerlink" href="#deployment-api" title="Permanent link">#</a></h3>
 <p>The <a href="deployment-api.html">Deployment API</a> allows to deploy process-related resources in a bundle into the engine.</p>
 <h3 id="process-api">Process API<a class="headerlink" href="#process-api" title="Permanent link">#</a></h3>
 <p>The <a href="process-api.html">Process API</a> provides functionality, required to control the lifecycle of the processes. It allows to start new process instances.
 It is intended to be used in outbound adapters of the port/adapter architecture in order to control the process engine 
 from your application.</p>
-<h3 id="correlation-api"><a href="correlation-api.html">Correlation API</a><a class="headerlink" href="#correlation-api" title="Permanent link">#</a></h3>
-<p>The Correlation API provides functionality to correlate messages with running process instances.
+<h3 id="correlation-api">Correlation API<a class="headerlink" href="#correlation-api" title="Permanent link">#</a></h3>
+<p>The <a href="correlation-api.html">Correlation API</a> provides functionality to correlate messages with running process instances.
 It is intended to be used in outbound adapters of the port/adapter architecture in order to control 
 the process engine from your application.</p>
 <h3 id="signal-api">Signal API<a class="headerlink" href="#signal-api" title="Permanent link">#</a></h3>
