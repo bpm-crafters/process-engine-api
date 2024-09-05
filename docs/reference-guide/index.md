@@ -1,10 +1,7 @@
-
 The `process-engine-api` provides an API to abstract from concrete process engine implementation, with the ability
 to write your application code engine-agnostic and later (re-)configure for the usage of a particular process engine.
 
-## API
-
-The API consists of different parts independent of each other.
+The API consists of different parts independent of each other:
 
 ### Deployment API
 
@@ -16,9 +13,9 @@ The [Process API](process-api.md) provides functionality, required to control th
 It is intended to be used in outbound adapters of the port/adapter architecture in order to control the process engine 
 from your application.
 
-### [Correlation API](correlation-api.md)
+### Correlation API
 
-The Correlation API provides functionality to correlate messages with running process instances.
+The [Correlation API](correlation-api.md) provides functionality to correlate messages with running process instances.
 It is intended to be used in outbound adapters of the port/adapter architecture in order to control 
 the process engine from your application.
 
