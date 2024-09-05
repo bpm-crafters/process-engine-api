@@ -31,15 +31,11 @@ class C7EmbeddedJobDeliveryAutoConfiguration {
 
   @PostConstruct
   fun report() {
-    logger.debug { "PROCESS-ENGINE-C7-EMBEDDED-202: Configuration applied." }
+    logger.debug { "PROCESS-ENGINE-C7-EMBEDDED-202: Configuration for job-based user task delivery applied." }
   }
 
   @Bean("c7embedded-task-delivery-job-handler")
-  @ConditionalOnExpression(
-    "'\${$DEFAULT_PREFIX.service-tasks.delivery-strategy}'.equals('embedded_job')"
-      + " or "
-      + "'\${$DEFAULT_PREFIX.user-tasks.delivery-strategy}'.equals('embedded_job')"
-  )
+  @ConditionalOnProperty(prefix = DEFAULT_PREFIX, name = ["user-tasks.delivery-strategy"], havingValue = "embedded_job")
   fun embeddedTaskDeliveryJobHandler(
     subscriptionRepository: SubscriptionRepository,
     c7AdapterProperties: C7EmbeddedAdapterProperties
@@ -52,18 +48,14 @@ class C7EmbeddedJobDeliveryAutoConfiguration {
   }
 
   @Bean("c7embedded-task-delivery-engine-plugin")
-  @ConditionalOnExpression(
-    "'\${$DEFAULT_PREFIX.service-tasks.delivery-strategy}'.equals('embedded_job')"
-      + " or "
-      + "'\${$DEFAULT_PREFIX.user-tasks.delivery-strategy}'.equals('embedded_job')"
-  )
+  @ConditionalOnProperty(prefix = DEFAULT_PREFIX, name = ["user-tasks.delivery-strategy"], havingValue = "embedded_job")
   fun embeddedTaskDeliveryBinding(
     jobHandler: EmbeddedTaskDeliveryJobHandler,
     c7AdapterProperties: C7EmbeddedAdapterProperties
   ): EmbeddedTaskDeliveryEnginePlugin {
     return EmbeddedTaskDeliveryEnginePlugin(
       jobHandler = jobHandler,
-      deliverServiceTasks = c7AdapterProperties.serviceTasks.deliveryStrategy == ExternalServiceTaskDeliveryStrategy.EMBEDDED_JOB,
+      deliverServiceTasks = false, // not working properly
       deliverUserTasks = c7AdapterProperties.userTasks.deliveryStrategy == UserTaskDeliveryStrategy.EMBEDDED_JOB,
     )
   }

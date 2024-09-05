@@ -33,7 +33,7 @@ class C7EmbeddedInitialPullOnStartupAutoConfiguration {
 
   @PostConstruct
   fun report() {
-    logger.debug { "PROCESS-ENGINE-C7-EMBEDDED-203: Configuration applied." }
+    logger.debug { "PROCESS-ENGINE-C7-EMBEDDED-203: Configuration for initial pull applied." }
   }
 
   @Bean("c7embedded-user-task-initial-pull")
