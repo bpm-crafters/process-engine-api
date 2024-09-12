@@ -72,7 +72,8 @@ class SubscribingServiceTaskDelivery(
     // FIXME -> tenantId
     // FIXME -> more to setup from props
     return if (subscription.payloadDescription != null && subscription.payloadDescription!!.isNotEmpty()) {
-      this.fetchVariables(subscription.payloadDescription!!.toList())
+      this
+        .fetchVariables(subscription.payloadDescription!!.toList())
     } else {
       this
     }
