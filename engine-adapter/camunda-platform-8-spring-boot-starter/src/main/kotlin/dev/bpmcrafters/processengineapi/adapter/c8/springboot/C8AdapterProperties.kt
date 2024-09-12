@@ -53,11 +53,11 @@ class C8AdapterProperties(
     /**
      * Fixed rate for scheduled user task delivery.
      */
-    val scheduleDeliveryFixedRateInSeconds: Long = 5_000L,
+    val scheduleDeliveryFixedRateInSeconds: Long = 5L,
     /**
      * Fixed rate for refreshing user task delivery.
      */
-    val subscribingDeliveryInitialDelayInSeconds: Long = 5_000L,
+    val subscribingDeliveryInitialDelayInSeconds: Long = 5L,
     /**
      * URL of the task list.
      */
