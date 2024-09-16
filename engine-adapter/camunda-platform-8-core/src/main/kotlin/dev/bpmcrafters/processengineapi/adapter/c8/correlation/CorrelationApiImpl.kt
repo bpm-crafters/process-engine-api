@@ -10,6 +10,7 @@ import dev.bpmcrafters.processengineapi.correlation.SendSignalCmd
 import io.camunda.zeebe.client.ZeebeClient
 import io.camunda.zeebe.client.api.command.PublishMessageCommandStep1.PublishMessageCommandStep2
 import io.camunda.zeebe.client.api.command.PublishMessageCommandStep1.PublishMessageCommandStep3
+import mu.KLogging
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.Future
 
@@ -17,9 +18,12 @@ class CorrelationApiImpl(
   private val zeebeClient: ZeebeClient
 ) : CorrelationApi {
 
+  companion object: KLogging()
+
   override fun correlateMessage(cmd: CorrelateMessageCmd): Future<Empty> {
     return CompletableFuture.supplyAsync {
       val correlationKey = cmd.correlation.get().correlationKey
+      logger.debug { "PROCESS-ENGINE-C8-001: Correlating message ${cmd.messageName} using correlation key value $correlationKey." }
       zeebeClient
         .newPublishMessageCommand()
         .messageName(cmd.messageName)

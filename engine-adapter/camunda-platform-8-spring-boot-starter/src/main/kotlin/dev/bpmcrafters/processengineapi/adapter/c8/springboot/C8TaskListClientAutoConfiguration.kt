@@ -1,6 +1,8 @@
 package dev.bpmcrafters.processengineapi.adapter.c8.springboot
 
 import dev.bpmcrafters.processengineapi.adapter.c8.springboot.C8AdapterProperties.Companion.DEFAULT_PREFIX
+import dev.bpmcrafters.processengineapi.adapter.c8.springboot.C8AdapterProperties.UserTaskDeliveryStrategy.SCHEDULED
+import dev.bpmcrafters.processengineapi.adapter.c8.springboot.C8AdapterProperties.UserTaskDeliveryStrategy.SUBSCRIPTION_REFRESHING
 import dev.bpmcrafters.processengineapi.adapter.c8.task.completion.C8TaskListClientUserTaskCompletionApiImpl
 import dev.bpmcrafters.processengineapi.adapter.c8.task.delivery.PullUserTaskDelivery
 import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionRepository
@@ -10,6 +12,7 @@ import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.boot.autoconfigure.AutoConfigureAfter
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Conditional
 import org.springframework.context.annotation.Configuration
 
 /**
@@ -17,7 +20,7 @@ import org.springframework.context.annotation.Configuration
  */
 @Configuration
 @AutoConfigureAfter(C8AdapterAutoConfiguration::class)
-@ConditionalOnProperty(prefix = DEFAULT_PREFIX, name = ["enabled"], havingValue = "true", matchIfMissing = true)
+@Conditional(C8AdapterEnabledCondition::class)
 class C8TaskListClientAutoConfiguration {
 
   @Bean("c8-user-task-completion")
@@ -35,7 +38,7 @@ class C8TaskListClientAutoConfiguration {
 
   @Bean("c8-user-task-delivery")
   @Qualifier("c8-user-task-delivery")
-  @ConditionalOnProperty(prefix = DEFAULT_PREFIX, name = ["user-tasks.delivery-strategy"], havingValue = "scheduled")
+  @ConditionalOnUserTaskDeliveryStrategy(strategy = SCHEDULED)
   fun scheduledUserTaskDelivery(
     subscriptionRepository: SubscriptionRepository,
     taskListClient: CamundaTaskListClient,
@@ -45,5 +48,4 @@ class C8TaskListClientAutoConfiguration {
       taskListClient = taskListClient
     )
   }
-
 }

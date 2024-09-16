@@ -8,6 +8,7 @@ import dev.bpmcrafters.processengineapi.correlation.SendSignalCmd
 import dev.bpmcrafters.processengineapi.correlation.SignalApi
 import io.camunda.zeebe.client.ZeebeClient
 import io.camunda.zeebe.client.api.command.BroadcastSignalCommandStep1
+import mu.KLogging
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.Future
 
@@ -15,8 +16,11 @@ class SignalApiImpl(
   private val zeebeClient: ZeebeClient
 ) : SignalApi {
 
+  companion object: KLogging()
+
   override fun sendSignal(cmd: SendSignalCmd): Future<Empty> {
     return CompletableFuture.supplyAsync {
+      logger.debug { "PROCESS-ENGINE-C8-002: Sending signal ${cmd.signalName}." }
       zeebeClient
         .newBroadcastSignalCommand()
         .signalName(cmd.signalName)
