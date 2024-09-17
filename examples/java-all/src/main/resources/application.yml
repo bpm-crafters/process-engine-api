@@ -15,13 +15,18 @@ dev:
       adapter:
         c7-embedded:
           service-tasks:
-            delivery-strategy: embedded_job
+            delivery-strategy: embedded_scheduled
             worker-id: embedded-worker
             lock-time-in-seconds: 10
             execute-initial-pull-on-startup: true
+            schedule-delivery-fixed-rate-in-seconds: 10
+            retries: 3
+            max-task-count: 100
+            retry-timeout-in-seconds: 30
           user-tasks:
-            delivery-strategy: embedded_job
+            delivery-strategy: embedded_scheduled
             execute-initial-pull-on-startup: true
+            schedule-delivery-fixed-rate-in-seconds: 9
         c7-remote:
           enabled: true
           service-tasks:

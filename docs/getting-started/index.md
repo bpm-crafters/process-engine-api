@@ -1,6 +1,6 @@
 If you want to try out `process-engine-api` library in your project, there are two steps you need to perform.
 
-First, add the library to your project classpath. In maven it is just adding the following dependency into your 
+First, add the library to your project classpath. In Apache Maven it is just adding the following dependency into your 
 project's `pom.xml`:
 
 ```xml 

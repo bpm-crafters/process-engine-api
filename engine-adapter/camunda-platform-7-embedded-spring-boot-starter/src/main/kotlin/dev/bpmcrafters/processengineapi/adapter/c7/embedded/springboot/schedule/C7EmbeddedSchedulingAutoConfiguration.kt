@@ -43,7 +43,7 @@ class C7EmbeddedSchedulingAutoConfiguration {
 
   @PostConstruct
   fun report() {
-    logger.debug { "PROCESS-ENGINE-C7-EMBEDDED-201: Configuration applied." }
+    logger.debug { "PROCESS-ENGINE-C7-EMBEDDED-201: Configuration for schedule-based deliver applied." }
   }
 
   @Bean("c7embedded-task-scheduler")
