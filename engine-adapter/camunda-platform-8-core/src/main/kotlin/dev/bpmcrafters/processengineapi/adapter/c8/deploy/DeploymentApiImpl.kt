@@ -7,6 +7,7 @@ import dev.bpmcrafters.processengineapi.deploy.DeploymentApi
 import dev.bpmcrafters.processengineapi.deploy.DeploymentInformation
 import io.camunda.zeebe.client.ZeebeClient
 import io.camunda.zeebe.client.api.response.DeploymentEvent
+import mu.KLogging
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.Future
 
@@ -14,8 +15,11 @@ class DeploymentApiImpl(
   private val zeebeClient: ZeebeClient
 ) : DeploymentApi {
 
+  companion object: KLogging()
+
   override fun deploy(cmd: DeployBundleCommand): Future<DeploymentInformation> {
     require(cmd.resources.isNotEmpty()) { "Resources must not be empty, at least one resource must be provided." }
+    logger.debug { "PROCESS-ENGINE-C8-003: Executing a bundle deployment with ${cmd.resources.size} resources." }
     val first = cmd.resources.first()
     return CompletableFuture.supplyAsync {
       zeebeClient

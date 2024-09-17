@@ -20,7 +20,7 @@ class SignalApiImpl(
   companion object: KLogging()
 
   override fun sendSignal(cmd: SendSignalCmd): Future<Empty> {
-    logger.debug { "PROCESS-ENGINE-C7-REMOTE-002: sending signal ${cmd.signalName}." }
+    logger.debug { "PROCESS-ENGINE-C7-REMOTE-002: Sending signal ${cmd.signalName}." }
     return CompletableFuture.supplyAsync {
       runtimeService
         .createSignalEvent(cmd.signalName)

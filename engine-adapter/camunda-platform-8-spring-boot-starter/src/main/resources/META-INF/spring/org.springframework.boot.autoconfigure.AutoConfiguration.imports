@@ -1,3 +1,5 @@
 dev.bpmcrafters.processengineapi.adapter.c8.springboot.C8AdapterAutoConfiguration
 dev.bpmcrafters.processengineapi.adapter.c8.springboot.C8ZeebeClientAutoConfiguration
 dev.bpmcrafters.processengineapi.adapter.c8.springboot.C8TaskListClientAutoConfiguration
+dev.bpmcrafters.processengineapi.adapter.c8.springboot.subscription.C8SubscriptionAutoConfiguration
+dev.bpmcrafters.processengineapi.adapter.c8.springboot.schedule.C8SchedulingAutoConfiguration

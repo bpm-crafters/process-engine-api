@@ -18,10 +18,11 @@ class C8TaskListClientUserTaskCompletionApiImpl(
   companion object : KLogging()
 
   override fun completeTask(cmd: CompleteTaskCmd): Future<Empty> {
-    taskListClient
-      .completeTask(cmd.taskId, cmd.get())
+    logger.debug { "PROCESS-ENGINE-C8-006: completing service task ${cmd.taskId}." }
+    taskListClient.completeTask(cmd.taskId, cmd.get())
     subscriptionRepository.deactivateSubscriptionForTask(cmd.taskId)?.apply {
       termination.accept(cmd.taskId)
+      logger.debug { "PROCESS-ENGINE-C8-007: successfully completed service task ${cmd.taskId}." }
     }
     return CompletableFuture.completedFuture(Empty)
   }

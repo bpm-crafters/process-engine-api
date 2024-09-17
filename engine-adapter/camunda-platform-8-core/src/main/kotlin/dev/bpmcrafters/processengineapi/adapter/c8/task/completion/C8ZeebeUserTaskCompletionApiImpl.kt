@@ -18,11 +18,14 @@ class C8ZeebeUserTaskCompletionApiImpl(
   companion object : KLogging()
 
   override fun completeTask(cmd: CompleteTaskCmd): Future<Empty> {
+    logger.debug { "PROCESS-ENGINE-C8-012: completing user task ${cmd.taskId}." }
     zeebeClient
       .newCompleteCommand(cmd.taskId.toLong())
       .variables(cmd.get())
       .send()
+      .join()
     subscriptionRepository.deactivateSubscriptionForTask(cmd.taskId)?.apply {
+      logger.debug { "PROCESS-ENGINE-C8-013: successfully completed user task ${cmd.taskId}." }
       termination.accept(cmd.taskId)
     }
     return CompletableFuture.completedFuture(Empty)
@@ -34,8 +37,11 @@ class C8ZeebeUserTaskCompletionApiImpl(
       .errorCode(cmd.errorCode)
       .variables(cmd.get())
       .send()
+      .join()
+    logger.debug { "PROCESS-ENGINE-C8-013: throwing error ${cmd.errorCode} in user task ${cmd.taskId}." }
     subscriptionRepository.deactivateSubscriptionForTask(cmd.taskId)?.apply {
       termination.accept(cmd.taskId)
+      logger.debug { "PROCESS-ENGINE-C8-013: successfully thrown error ${cmd.errorCode} in user task ${cmd.taskId}." }
     }
     return CompletableFuture.completedFuture(Empty)
   }

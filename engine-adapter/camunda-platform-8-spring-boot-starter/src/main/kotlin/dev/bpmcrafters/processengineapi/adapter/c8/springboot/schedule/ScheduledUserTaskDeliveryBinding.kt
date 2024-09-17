@@ -1,20 +1,33 @@
 package dev.bpmcrafters.processengineapi.adapter.c8.springboot.schedule
 
+import dev.bpmcrafters.processengineapi.adapter.c8.springboot.C8AdapterProperties
 import dev.bpmcrafters.processengineapi.adapter.c8.task.delivery.PullUserTaskDelivery
 import mu.KLogging
-import org.springframework.scheduling.annotation.Scheduled
+import org.springframework.beans.factory.annotation.Qualifier
+import org.springframework.scheduling.TaskScheduler
+import org.springframework.scheduling.annotation.SchedulingConfigurer
+import org.springframework.scheduling.config.ScheduledTaskRegistrar
+import java.time.Duration
+import java.time.temporal.ChronoUnit
 
-class ScheduledUserTaskDeliveryBinding(
-  private val pullUserTaskDelivery: PullUserTaskDelivery
-) {
+open class ScheduledUserTaskDeliveryBinding(
+    private val pullUserTaskDelivery: PullUserTaskDelivery,
+    private val c8AdapterProperties: C8AdapterProperties,
+    @Qualifier("c8-task-scheduler")
+    private val c8taskScheduler: TaskScheduler
+) : SchedulingConfigurer {
 
-  companion object : KLogging()
+    companion object : KLogging()
 
-  @Scheduled(fixedRateString = "\${dev.bpm-crafters.process-api.adapter.c8.user-tasks.schedule-delivery-fixed-rate-in-seconds}")
-  fun scheduleUserTaskDelivery() {
-    logger.trace { "[SCHEDULER]: Delivering user tasks..." }
-    pullUserTaskDelivery.refresh()
-    logger.trace { "[SCHEDULER]: Delivered user tasks." }
-  }
-
+    override fun configureTasks(taskRegistrar: ScheduledTaskRegistrar) {
+        taskRegistrar.setScheduler(c8taskScheduler)
+        taskRegistrar.addFixedRateTask(
+            {
+                logger.trace { "PROCESS-ENGINE-C7-REMOTE-106: Delivering user tasks..." }
+                pullUserTaskDelivery.refresh()
+                logger.trace { "PROCESS-ENGINE-C7-REMOTE-107: Delivered user tasks." }
+            },
+            Duration.of(c8AdapterProperties.userTasks.scheduleDeliveryFixedRateInSeconds, ChronoUnit.SECONDS)
+        )
+    }
 }
