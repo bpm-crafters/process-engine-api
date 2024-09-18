@@ -66,5 +66,6 @@ class PullUserTaskDelivery(
   }
 
   private fun TaskSubscriptionHandle.matches(task: Task): Boolean =
-    this.taskType == TaskType.USER && (this.taskDescriptionKey == null || this.taskDescriptionKey == task.taskDefinitionId)
+    this.taskType == TaskType.USER
+      && (this.taskDescriptionKey == null || this.taskDescriptionKey == task.taskDefinitionId)
 }

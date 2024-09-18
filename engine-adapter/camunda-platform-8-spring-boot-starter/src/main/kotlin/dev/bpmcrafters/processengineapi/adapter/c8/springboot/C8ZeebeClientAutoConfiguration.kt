@@ -63,7 +63,7 @@ class C8ZeebeClientAutoConfiguration {
       subscriptionRepository = subscriptionRepository,
       zeebeClient = zeebeClient,
       workerId = c8AdapterProperties.serviceTasks.workerId,
-      userTaskLockTimeoutMs = c8AdapterProperties.userTasks.scheduleDeliveryFixedRateInSeconds
+      userTaskLockTimeoutMs = c8AdapterProperties.userTasks.scheduleDeliveryFixedRateInSeconds * 1000 * 2
     )
   }
 
