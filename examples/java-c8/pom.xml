@@ -12,7 +12,7 @@
   <artifactId>process-engine-api-examples-java-c8</artifactId>
   <name>Example: Java C8</name>
   <properties>
-    <spring-boot.version>3.3.3</spring-boot.version>
+    <spring-boot.version>3.3.4</spring-boot.version>
   </properties>
 
   <dependencyManagement>
