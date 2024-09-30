@@ -13,7 +13,7 @@ class C8TaskApiITest(@Autowired processTestHelperImpl: ProcessTestHelper) : Abst
 
   @Test
   @Disabled("FIXME")
-  fun `should get subscribed for user task with pull strategie`() {
+  fun `should get subscribed for user task with pull strategy`() {
     GIVEN
       .`a active user task subscription`(USER_TASK)
 
@@ -25,7 +25,7 @@ class C8TaskApiITest(@Autowired processTestHelperImpl: ProcessTestHelper) : Abst
   }
 
   @Test
-  fun `should get subscribed for user task with subscribing strategie`() {
+  fun `should get subscribed for user task with subscribing strategy`() {
     GIVEN
       .`a active user task subscription`(USER_TASK)
       .`subscribe for tasks`()
@@ -39,7 +39,7 @@ class C8TaskApiITest(@Autowired processTestHelperImpl: ProcessTestHelper) : Abst
 
   @Test
   @Disabled("FIXME")
-  fun `should not get subscribed for user task with pull strategie after unsubscribe`() {
+  fun `should not get subscribed for user task with pull strategy after unsubscribe`() {
     GIVEN
       .`a active user task subscription`(USER_TASK)
 
@@ -53,7 +53,7 @@ class C8TaskApiITest(@Autowired processTestHelperImpl: ProcessTestHelper) : Abst
 
   @Test
   @Disabled("FIXME")
-  fun `should not get subscribed for user task with subscribing strategie after unsubscribe`() {
+  fun `should not get subscribed for user task with subscribing strategy after unsubscribe`() {
     GIVEN
       .`a active user task subscription`(USER_TASK)
       .`subscribe for tasks`()
@@ -67,7 +67,7 @@ class C8TaskApiITest(@Autowired processTestHelperImpl: ProcessTestHelper) : Abst
   }
 
   @Test
-  fun `should get subscribed for external task with pull strategie`() {
+  fun `should get subscribed for external task with pull strategy`() {
     GIVEN
       .`a active external task subscription`(EXTERNAL_TASK)
 
@@ -80,7 +80,7 @@ class C8TaskApiITest(@Autowired processTestHelperImpl: ProcessTestHelper) : Abst
 
   @Test
   @Disabled("FIXME")
-  fun `should not get subscribed for external task with pull strategie after unsubscribe`() {
+  fun `should not get subscribed for external task with pull strategy after unsubscribe`() {
     GIVEN
       .`a active external task subscription`(USER_TASK)
 
