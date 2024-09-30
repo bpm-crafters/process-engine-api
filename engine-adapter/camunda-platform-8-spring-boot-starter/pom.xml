@@ -14,7 +14,7 @@
 
   <properties>
     <camunda-tasklist-client-java.version>8.5.3.6</camunda-tasklist-client-java.version>
-    <spring-zeebe.version>8.5.10</spring-zeebe.version>
+    <spring-zeebe.version>8.5.3</spring-zeebe.version>
     <zeebe-client-java.version>8.5.7</zeebe-client-java.version>
   </properties>
 

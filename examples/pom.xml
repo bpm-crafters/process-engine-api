@@ -54,7 +54,6 @@
     <module>java-c7</module>
     <module>java-c7-remote</module>
     <module>java-c8</module>
-    <module>java-all</module>
   </modules>
 
 </project>
