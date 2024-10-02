@@ -7,6 +7,7 @@ import dev.bpmcrafters.processengineapi.task.TaskType
 
 /**
  * Task subscription handle.
+ * @since 0.0.1
  */
 data class TaskSubscriptionHandle(
   val taskType: TaskType,

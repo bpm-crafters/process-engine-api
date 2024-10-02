@@ -18,7 +18,6 @@ import io.camunda.zeebe.client.api.worker.JobWorkerBuilderStep1.JobWorkerBuilder
 import io.camunda.zeebe.protocol.Protocol
 import io.grpc.Status
 import mu.KLogging
-import java.time.Duration
 
 class SubscribingRefreshingUserTaskDelivery(
   private val zeebeClient: ZeebeClient,
