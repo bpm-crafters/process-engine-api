@@ -22,6 +22,10 @@ class UserTaskSupport {
 
   companion object : KLogging()
 
+  init {
+      logger.info { "PROCESS-ENGINE-API-014: Initialized user task support."   }
+  }
+
   /**
    * Retrieves payload for task.
    * @param taskId task id of the task to query for.
@@ -115,7 +119,7 @@ class UserTaskSupport {
       )
     ).get()
       .also { subscription ->
-        logger.info { "PROCESS-ENGINE-API-010: Creating a new subscription for task support: $subscription." }
+        logger.info { "PROCESS-ENGINE-API-010: Creating a new subscription for user task support: $subscription." }
       }
   }
 
@@ -130,7 +134,7 @@ class UserTaskSupport {
           subscription = subscription,
         )
       )
-      logger.info { "PROCESS-ENGINE-API-010: Unsubscribed task support: $subscription." }
+      logger.info { "PROCESS-ENGINE-API-011: Unsubscribed user task support: $subscription." }
     }
   }
 
@@ -156,9 +160,10 @@ class UserTaskSupport {
    */
   private fun onTaskDeliveryInternal(taskInformation: TaskInformation, taskPayload: Map<String, Any>) {
     if (information.containsKey(taskInformation.taskId)) {
-      logger.trace("Received update for known task {}, {}", taskInformation, payload)
+      logger.debug { "PROCESS-ENGINE-API-012: Received update for known task ${taskInformation.taskId}." }
+      logger.trace { "PROCESS-ENGINE-API-013: Payload for task ${taskInformation.taskId} is $payload" }
     } else {
-      logger.info("Received new task {}, {}", taskInformation, payload)
+      logger.debug { "PROCESS-ENGINE-API-013: Received new task $taskInformation" }
     }
     information[taskInformation.taskId] = taskInformation
     payload[taskInformation.taskId] = taskPayload
@@ -171,6 +176,7 @@ class UserTaskSupport {
   private fun onTaskRemovalInternal(taskId: String) {
     information.remove(taskId)
     payload.remove(taskId)
+    logger.trace { "PROCESS-ENGINE-API-014: Removed task $taskId" }
   }
 
 }
