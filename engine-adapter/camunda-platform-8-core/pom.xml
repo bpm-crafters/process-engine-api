@@ -12,8 +12,10 @@
   <artifactId>process-engine-api-adapter-camunda-platform-c8-core</artifactId>
   <name>Adapter: C8 Core</name>
   <properties>
-    <zeebe-client-java.version>8.6.0</zeebe-client-java.version>
+
+    <zeebe-client-java.version>8.6.3</zeebe-client-java.version>
     <camunda-tasklist-client-java.version>8.6.0</camunda-tasklist-client-java.version>
+    <spring-zeebe.version>8.5.3</spring-zeebe.version>
   </properties>
 
   <dependencies>
@@ -56,6 +58,38 @@
         </exclusion>
       </exclusions>
     </dependency>
+
+    <!-- For JGiven Testing -->
+    <dependency>
+      <groupId>com.tngtech.jgiven</groupId>
+      <artifactId>jgiven-core</artifactId>
+      <version>1.3.1</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.awaitility</groupId>
+      <artifactId>awaitility-kotlin</artifactId>
+      <version>4.2.2</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.camunda</groupId>
+      <artifactId>zeebe-process-test-assertions</artifactId>
+      <version>${spring-zeebe.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.camunda</groupId>
+      <artifactId>zeebe-process-test-extension-testcontainer</artifactId>
+      <version>${spring-zeebe.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
   </dependencies>
 
 </project>
