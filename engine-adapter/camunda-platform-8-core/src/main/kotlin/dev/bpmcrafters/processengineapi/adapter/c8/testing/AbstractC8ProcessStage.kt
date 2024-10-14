@@ -1,10 +1,11 @@
 package dev.bpmcrafters.processengineapi.adapter.c8.testing
 
 import com.tngtech.jgiven.Stage
+import com.tngtech.jgiven.annotation.As
 import com.tngtech.jgiven.annotation.ProvidedScenarioState
+import com.tngtech.jgiven.annotation.Quoted
 import com.tngtech.jgiven.annotation.ScenarioState
 import dev.bpmcrafters.processengineapi.CommonRestrictions
-import dev.bpmcrafters.processengineapi.PayloadSupplier
 import dev.bpmcrafters.processengineapi.adapter.c8.deploy.DeploymentApiImpl
 import dev.bpmcrafters.processengineapi.adapter.c8.process.StartProcessApiImpl
 import dev.bpmcrafters.processengineapi.adapter.c8.task.completion.C8ZeebeExternalServiceTaskCompletionApiImpl
@@ -37,10 +38,10 @@ import java.util.stream.StreamSupport
 
 /**
  * Abstract stage for subtyping of JGiven stages used in process tests for Camunda 8 Engine.
- *
- * @param <SUBTYPE>
-</SUBTYPE> */
+ * @param SUBTYPE type of your stage, subclassing this one.
+ */
 abstract class AbstractC8ProcessStage<SUBTYPE : AbstractC8ProcessStage<SUBTYPE>> : Stage<SUBTYPE>() {
+
   @ProvidedScenarioState
   protected lateinit var client: ZeebeClient
 
@@ -78,6 +79,13 @@ abstract class AbstractC8ProcessStage<SUBTYPE : AbstractC8ProcessStage<SUBTYPE>>
   private lateinit var subscribingRefreshingUserTaskDelivery: SubscribingRefreshingUserTaskDelivery
 
 
+  /**
+   * Initializes the engine. should be called from a method of your test marked with `@BeforeEach`
+   * to make sure, the engine is initialized early.
+   * @param client zeebe client.
+   * @param engine zeebe test engine.
+   * @param restrictions list of restrictions used in task subscription API. Usually, contains a restriction to the process definition key. Please use `CommonRestrictions` builder.
+   */
   open fun initializeEngine(
     client: ZeebeClient,
     engine: ZeebeTestEngine,
@@ -125,13 +133,16 @@ abstract class AbstractC8ProcessStage<SUBTYPE : AbstractC8ProcessStage<SUBTYPE>>
   }
 
   /**
-   * Called after Zeebe and API is initialized.
+   * Called after Engine and API is initialized.
    */
   open fun initialize() {
   }
 
-
-  open fun external_task_exists(jobType: String, activityId: String?): SUBTYPE {
+  @As("external task of type \$jobType exists")
+  open fun external_task_exists(
+    @Quoted jobType: String,
+    activityId: String?
+  ): SUBTYPE {
     val jobs = client
       .newActivateJobsCommand()
       .jobType(jobType)
@@ -155,9 +166,9 @@ abstract class AbstractC8ProcessStage<SUBTYPE : AbstractC8ProcessStage<SUBTYPE>>
     return self()
   }
 
-
+  @As("external task of type \$jobType is completed")
   open fun external_task_is_completed(
-    jobType: String,
+    @Quoted jobType: String,
     payload: Map<String, Any> = mapOf()
   ): SUBTYPE {
     Objects.requireNonNull(
@@ -173,63 +184,6 @@ abstract class AbstractC8ProcessStage<SUBTYPE : AbstractC8ProcessStage<SUBTYPE>>
       ).get()
     return self()
   }
-
-  open fun process_waits_in(taskDescriptionKey: String): SUBTYPE {
-    // try to get the task
-    Awaitility.await().untilAsserted {
-      val taskIdOption = findTaskByActivityId(taskDescriptionKey)
-      Assertions.assertThat(taskIdOption).describedAs("Process is not waiting in user task $taskDescriptionKey", taskDescriptionKey).isNotEmpty()
-      taskIdOption.ifPresent { taskId -> this.taskInformation = userTaskSupport.getTaskInformation(taskId) }
-    }
-    return self()
-  }
-
-  private fun findTaskByActivityId(taskDescriptionKey: String): Optional<String> {
-    return Optional.ofNullable(
-      userTaskSupport.getAllTasks()
-        .find { taskInformation -> taskInformation.meta[CommonRestrictions.TASK_DEFINITION_KEY] == taskDescriptionKey }?.taskId
-    )
-  }
-
-  open fun task_is_assigned_to_user(assignee: String): SUBTYPE {
-    val taskAssignee = Objects.requireNonNull(
-      taskInformation,
-      "No active user task found, consider to assert using process_waits_in"
-    ).meta["assignee"]
-    Assertions.assertThat(taskAssignee).isNotNull()
-    Assertions.assertThat(taskAssignee).isEqualTo(assignee)
-    return self()
-  }
-
-  open fun task(): TaskInformation {
-    return Objects.requireNonNull(
-      taskInformation,
-      "No activated job found, consider to assert using process_waits_in"
-    )
-  }
-
-  open fun process_is_finished(): SUBTYPE {
-    Assertions.assertThat(
-      allProcessEngineEvents
-        .filter { record -> record.value.bpmnElementType == BpmnElementType.PROCESS }
-        .findFirst()
-    ).isNotEmpty()
-    return self()
-  }
-
-  private val allProcessEngineEvents: Stream<Record<ProcessInstanceRecordValue>>
-    get() {
-      val recordStream =
-        RecordStream.of(
-          engine.recordStreamSource
-        )
-      return StreamSupport
-        .stream(
-          recordStream.processInstanceRecords().spliterator(),
-          false
-        )
-        .filter { record -> record.recordType == RecordType.EVENT && record.intent == ProcessInstanceIntent.ELEMENT_COMPLETED }
-    }
 
   open fun process_has_passed(activityId: String?): SUBTYPE {
     Assertions.assertThat(allProcessEngineEvents.map { record -> record.value.elementId })
@@ -248,10 +202,71 @@ abstract class AbstractC8ProcessStage<SUBTYPE : AbstractC8ProcessStage<SUBTYPE>>
     return self()
   }
 
+  open fun process_is_finished(): SUBTYPE {
+    Assertions.assertThat(
+      allProcessEngineEvents
+        .filter { record -> record.value.bpmnElementType == BpmnElementType.PROCESS }
+        .findFirst()
+    ).isNotEmpty()
+    return self()
+  }
+
+  open fun process_waits_in(taskDescriptionKey: String): SUBTYPE {
+    // try to get the task
+    Awaitility.await().untilAsserted {
+      val taskIdOption = findTaskByActivityId(taskDescriptionKey)
+      Assertions.assertThat(taskIdOption).describedAs("Process is not waiting in user task $taskDescriptionKey", taskDescriptionKey).isNotEmpty()
+      taskIdOption.ifPresent { taskId -> this.taskInformation = userTaskSupport.getTaskInformation(taskId) }
+    }
+    return self()
+  }
+
+
+  open fun task_is_assigned_to_user(assignee: String): SUBTYPE {
+    val taskAssignee = Objects.requireNonNull(
+      taskInformation,
+      "No active user task found, consider to assert using process_waits_in"
+    ).meta["assignee"]
+    Assertions.assertThat(taskAssignee).isNotNull()
+    Assertions.assertThat(taskAssignee).isEqualTo(assignee)
+    return self()
+  }
+
+
   open fun timer_passes(durationInSeconds: Long): SUBTYPE {
     engine.waitForIdleState(Duration.ofSeconds(durationInSeconds))
     Thread.sleep(durationInSeconds * 1000)
     subscribingRefreshingUserTaskDelivery.refresh()
     return self()
   }
+
+  open fun task(): TaskInformation {
+    return Objects.requireNonNull(
+      taskInformation,
+      "No activated job found, consider to assert using process_waits_in"
+    )
+  }
+
+
+  private val allProcessEngineEvents: Stream<Record<ProcessInstanceRecordValue>>
+    get() {
+      val recordStream =
+        RecordStream.of(
+          engine.recordStreamSource
+        )
+      return StreamSupport
+        .stream(
+          recordStream.processInstanceRecords().spliterator(),
+          false
+        )
+        .filter { record -> record.recordType == RecordType.EVENT && record.intent == ProcessInstanceIntent.ELEMENT_COMPLETED }
+    }
+
+  private fun findTaskByActivityId(taskDescriptionKey: String): Optional<String> {
+    return Optional.ofNullable(
+      userTaskSupport.getAllTasks()
+        .find { taskInformation -> taskInformation.meta[CommonRestrictions.TASK_DEFINITION_KEY] == taskDescriptionKey }?.taskId
+    )
+  }
+
 }

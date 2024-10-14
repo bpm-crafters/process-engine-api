@@ -1,7 +1,9 @@
 package dev.bpmcrafters.processengineapi.adapter.c7.embedded.testing
 
 import com.tngtech.jgiven.Stage
+import com.tngtech.jgiven.annotation.As
 import com.tngtech.jgiven.annotation.ProvidedScenarioState
+import com.tngtech.jgiven.annotation.Quoted
 import com.tngtech.jgiven.annotation.ScenarioState
 import dev.bpmcrafters.processengineapi.CommonRestrictions
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.deploy.DeploymentApiImpl
@@ -30,6 +32,10 @@ import java.util.concurrent.Executors
 import java.util.function.Supplier
 import kotlin.collections.set
 
+/**
+ * Abstract JGiven stage for implementing BDD tests operating on  Camunda 7 Embedded.
+ * @param SUBTYPE type of your stage, subclassing this one.
+ */
 abstract class AbstractC7EmbeddedStage<SUBTYPE : AbstractC7EmbeddedStage<SUBTYPE>> : Stage<SUBTYPE>() {
 
   @ProvidedScenarioState
@@ -71,14 +77,26 @@ abstract class AbstractC7EmbeddedStage<SUBTYPE : AbstractC7EmbeddedStage<SUBTYPE
   @ProvidedScenarioState(resolution = ScenarioState.Resolution.NAME)
   private lateinit var topicToExternalTaskId: MutableMap<String, String>
 
+  @ProvidedScenarioState(resolution = ScenarioState.Resolution.NAME)
+  private lateinit var topicToElementId: MutableMap<String, String>
+
   @ProvidedScenarioState
   protected lateinit var taskInformation: TaskInformation
 
 
+  /**
+   * Initializes the engine. should be called from a method of your test marked with `@BeforeEach`
+   * to make sure, the engine is initialized early.
+   * @param processEngineServices either process engine or process engine extension.
+   * @param restrictions list of restrictions used in task subscription API. Usually, contains a restriction to the process definition key. Please use `CommonRestrictions` builder.
+   */
   open fun initializeEngine(
-    processEngineServices: ProcessEngineServices, restrictions: Map<String, String>
+    processEngineServices: ProcessEngineServices,
+    restrictions: Map<String, String>
   ): SUBTYPE {
-    this.topicToExternalTaskId = HashMap()
+    this.topicToExternalTaskId = mutableMapOf()
+    this.topicToElementId = mutableMapOf()
+
     this.restrictions = restrictions
     this.processEngineServices = processEngineServices
     this.workerId = self().javaClass.simpleName
@@ -123,28 +141,39 @@ abstract class AbstractC7EmbeddedStage<SUBTYPE : AbstractC7EmbeddedStage<SUBTYPE
   open fun initialize() {
   }
 
-  open fun process_continues(elementId: String): SUBTYPE {
-    Awaitility.await().untilAsserted {
-      val job = BpmnAwareTests.job(elementId, processInstanceSupplier.get())
-      Assertions.assertThat(job).isNotNull()
-      BpmnAwareTests.execute(job)
-    }
-    return self()
-  }
 
-  open fun process_waits_in(taskDescriptionKey: String): SUBTYPE {
-    // try to get the task
+  @As("external task of type \$topicName exists")
+  open fun external_task_exists(@Quoted topicName: String, activityId: String?): SUBTYPE {
+    taskSubscriptionApi.subscribeForTask(
+      SubscribeForTaskCmd(restrictions,
+        TaskType.EXTERNAL,
+        topicName,
+        null,
+        { ti, _ ->
+          run {
+            topicToExternalTaskId[topicName] = ti.taskId
+            topicToElementId[topicName] = ti.meta[CommonRestrictions.ACTIVITY_ID] as String
+          }
+        },
+        { _ ->
+          run {
+            topicToExternalTaskId.remove(topicName)
+            topicToElementId.remove(topicName)
+          }
+        })
+    )
     Awaitility.await().untilAsserted {
-      val taskIdOption = findTaskByActivityId(taskDescriptionKey)
-      Assertions.assertThat(taskIdOption).describedAs("Process is not waiting in user task $taskDescriptionKey", taskDescriptionKey).isNotEmpty()
-      taskIdOption.ifPresent { taskId: String? ->
-        this.taskInformation = userTaskSupport.getTaskInformation(taskId!!)
+      embeddedPullServiceTaskDelivery.refresh()
+      Assertions.assertThat(topicToExternalTaskId.containsKey(topicName)).isTrue()
+      if (activityId != null) {
+        Assertions.assertThat(topicToElementId).containsEntry(topicName, activityId)
       }
     }
     return self()
   }
 
-  open fun external_task_is_completed(topicName: String, variables: VariableMap): SUBTYPE {
+  @As("external task of type \$topicName is completed")
+  open fun external_task_is_completed(@Quoted topicName: String, variables: VariableMap): SUBTYPE {
     Objects.requireNonNull(
       topicToExternalTaskId[topicName], "No active external service task found, consider to assert using external_task_exists"
     )
@@ -154,34 +183,12 @@ abstract class AbstractC7EmbeddedStage<SUBTYPE : AbstractC7EmbeddedStage<SUBTYPE
     return self()
   }
 
-  open fun external_task_exists(topicName: String): SUBTYPE {
-    taskSubscriptionApi.subscribeForTask(
-      SubscribeForTaskCmd(restrictions,
-        TaskType.EXTERNAL,
-        topicName,
-        null,
-        { ti, _ -> topicToExternalTaskId[topicName] = ti.taskId },
-        { _ -> topicToExternalTaskId.remove(topicName) })
-    )
+  open fun process_continues(elementId: String): SUBTYPE {
     Awaitility.await().untilAsserted {
-      embeddedPullServiceTaskDelivery.refresh()
-      Assertions.assertThat(topicToExternalTaskId.containsKey(topicName)).isTrue()
+      val job = BpmnAwareTests.job(elementId, processInstanceSupplier.get())
+      Assertions.assertThat(job).isNotNull()
+      BpmnAwareTests.execute(job)
     }
-    return self()
-  }
-
-  open fun task_is_assigned_to_user(assignee: String): SUBTYPE {
-    Assertions.assertThat(task().meta["assignee"]).isEqualTo(assignee)
-    return self()
-  }
-
-  open fun process_is_finished(): SUBTYPE {
-    BpmnAwareTests.assertThat(processInstanceSupplier.get()).isEnded()
-    return self()
-  }
-
-  open fun process_has_passed(vararg elementIds: String?): SUBTYPE {
-    BpmnAwareTests.assertThat(processInstanceSupplier.get()).hasPassed(*elementIds)
     return self()
   }
 
@@ -194,8 +201,36 @@ abstract class AbstractC7EmbeddedStage<SUBTYPE : AbstractC7EmbeddedStage<SUBTYPE
     return self()
   }
 
-  open fun process_stopped(): SUBTYPE {
+  open fun process_is_finished(): SUBTYPE {
+    BpmnAwareTests.assertThat(processInstanceSupplier.get()).isEnded()
+    return self()
+  }
+
+  open fun process_has_passed(vararg elementIds: String): SUBTYPE {
+    BpmnAwareTests.assertThat(processInstanceSupplier.get()).hasPassed(*elementIds)
+    return self()
+  }
+
+  open fun process_is_stopped(): SUBTYPE {
     processEngineServices.runtimeService.deleteProcessInstance(processInstanceSupplier.get().processInstanceId, "Stopped", false, true)
+    return self()
+  }
+
+  @As("process waits in $")
+  open fun process_waits_in(@Quoted taskDescriptionKey: String): SUBTYPE {
+    // try to get the task
+    Awaitility.await().untilAsserted {
+      val taskIdOption = findTaskByActivityId(taskDescriptionKey)
+      Assertions.assertThat(taskIdOption).describedAs("Process is not waiting in user task $taskDescriptionKey", taskDescriptionKey).isNotEmpty()
+      taskIdOption.ifPresent { taskId -> this.taskInformation = userTaskSupport.getTaskInformation(taskId) }
+    }
+    return self()
+  }
+
+
+  @As("user tasks is assigned to user $")
+  open fun task_is_assigned_to_user(@Quoted assignee: String): SUBTYPE {
+    Assertions.assertThat(task().meta["assignee"]).isEqualTo(assignee)
     return self()
   }
 
