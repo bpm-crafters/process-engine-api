@@ -2,14 +2,15 @@ spring:
   application:
     name: Java Camunda Platform 8 SaaS
 
-zeebe:
+camunda:
   client:
-    connection-mode: CLOUD # CLOUD for SaaS OR ADDRESS for Self-Managed
-    cloud:
-      region: ${ZEEBE_REGION}
-      clusterId: ${ZEEBE_CLUSTER_ID}
+    mode: saas
+    region: ${ZEEBE_REGION}
+    cluster-id: ${ZEEBE_CLUSTER_ID}
+    auth:
       clientId: ${ZEEBE_CLIENT_ID}
       clientSecret: ${ZEEBE_CLIENT_SECRET}
+
 
 dev:
   bpm-crafters:
@@ -17,4 +18,4 @@ dev:
       adapter:
         c8:
           user-tasks:
-            tasklist-url: https://${zeebe.client.cloud.region}.tasklist.camunda.io/${zeebe.client.cloud.clusterId}
+            tasklist-url: https://${zeebe.client.region}.tasklist.camunda.io/${zeebe.client.clusterId}
