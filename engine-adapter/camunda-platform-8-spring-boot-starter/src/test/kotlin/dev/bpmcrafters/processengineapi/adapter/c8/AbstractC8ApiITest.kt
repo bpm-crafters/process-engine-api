@@ -5,16 +5,13 @@ import dev.bpmcrafters.processengineapi.test.ProcessTestHelper
 import io.camunda.tasklist.CamundaTaskListClient
 import io.camunda.zeebe.client.ZeebeClient
 import io.camunda.zeebe.client.api.response.DeploymentEvent
-import io.camunda.zeebe.process.test.assertions.BpmnAssert.assertThat
-import io.camunda.zeebe.spring.test.ZeebeSpringTest
-import io.mockk.mockk
+import io.camunda.zeebe.process.test.extension.testcontainer.ZeebeProcessTest
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
-import org.springframework.context.annotation.Bean
-import org.springframework.context.annotation.Primary
 import org.springframework.test.annotation.DirtiesContext
 import org.springframework.test.context.ActiveProfiles
 import org.testcontainers.junit.jupiter.Testcontainers
@@ -24,7 +21,7 @@ import org.testcontainers.junit.jupiter.Testcontainers
   classes = [C8TestApplication::class],
   webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT
 )
-@ZeebeSpringTest
+@ZeebeProcessTest
 @ActiveProfiles("itest")
 @DirtiesContext
 @Testcontainers
@@ -54,8 +51,7 @@ abstract class AbstractC8ApiITest(processTestHelperImpl: ProcessTestHelper) : JG
       .addResourceFromClasspath(BPMN)
       .send()
       .join()
-
-    assertThat(event)
+    assertThat(event).isNotNull
   }
 
   @AfterEach

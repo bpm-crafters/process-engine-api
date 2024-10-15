@@ -43,30 +43,15 @@
       <artifactId>spring-boot-starter-web</artifactId>
     </dependency>
     <dependency>
-      <groupId>io.camunda.spring</groupId>
-      <artifactId>spring-boot-starter-camunda</artifactId>
-      <version>8.5.3</version>
-    </dependency>
-    <dependency>
-      <groupId>io.camunda.spring</groupId>
-      <artifactId>java-common</artifactId>
-      <version>8.5.3</version>
-    </dependency>
-    <dependency>
       <groupId>io.camunda</groupId>
-      <artifactId>zeebe-client-java</artifactId>
+      <artifactId>spring-boot-starter-camunda-sdk</artifactId>
       <version>8.6.3</version>
     </dependency>
-
     <dependency>
       <groupId>io.camunda</groupId>
       <artifactId>camunda-tasklist-client-java</artifactId>
       <version>8.6.0</version>
       <exclusions>
-        <exclusion>
-          <groupId>io.camunda</groupId>
-          <artifactId>zeebe-client-java</artifactId>
-        </exclusion>
         <exclusion>
           <groupId>io.camunda.spring</groupId>
           <artifactId>java-common</artifactId>

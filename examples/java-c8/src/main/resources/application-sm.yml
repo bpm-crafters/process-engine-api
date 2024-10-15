@@ -6,8 +6,10 @@ spring:
 
 camunda:
   client:
-    mode: simple
+    mode: self-managed
     auth:
+      clientId: zeebe
+      clientSecret: zecret
       username: demo
       password: demo
     zeebe:
