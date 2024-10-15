@@ -954,7 +954,7 @@ you will also need to add some additional libraries. Here is the result:</p>
 <span class="w">  </span><span class="nt">&lt;dependency&gt;</span>
 <span class="w">    </span><span class="nt">&lt;groupId&gt;</span>org.camunda.community.rest<span class="nt">&lt;/groupId&gt;</span>
 <span class="w">    </span><span class="nt">&lt;artifactId&gt;</span>camunda-platform-7-rest-client-spring-boot-starter<span class="nt">&lt;/artifactId&gt;</span>
-<span class="w">    </span><span class="nt">&lt;version&gt;</span>7.21.0<span class="nt">&lt;/version&gt;</span>
+<span class="w">    </span><span class="nt">&lt;version&gt;</span>7.22.0<span class="nt">&lt;/version&gt;</span>
 <span class="w">  </span><span class="nt">&lt;/dependency&gt;</span>
 <span class="w">  </span><span class="cm">&lt;!-- open feign client --&gt;</span>
 <span class="w">  </span><span class="nt">&lt;dependency&gt;</span>
@@ -1001,13 +1001,22 @@ you will also need to add some additional libraries. Here is the result:</p>
 
 <span class="w">    </span><span class="cm">&lt;!-- We need the camunda client too --&gt;</span>
 <span class="w">    </span><span class="nt">&lt;dependency&gt;</span>
-<span class="w">      </span><span class="nt">&lt;groupId&gt;</span>io.camunda.spring<span class="nt">&lt;/groupId&gt;</span>
-<span class="w">      </span><span class="nt">&lt;artifactId&gt;</span>spring-boot-starter-camunda<span class="nt">&lt;/artifactId&gt;</span>
+<span class="w">      </span><span class="nt">&lt;groupId&gt;</span>io.camunda<span class="nt">&lt;/groupId&gt;</span>
+<span class="w">      </span><span class="nt">&lt;artifactId&gt;</span>spring-boot-starter-camunda-sdk<span class="nt">&lt;/artifactId&gt;</span>
+<span class="w">      </span><span class="nt">&lt;version&gt;</span>8.6.3<span class="nt">&lt;/version&gt;</span>
 <span class="w">    </span><span class="nt">&lt;/dependency&gt;</span>
 <span class="w">    </span><span class="nt">&lt;dependency&gt;</span>
-<span class="w">      </span><span class="nt">&lt;groupId&gt;</span>io.camunda.spring<span class="nt">&lt;/groupId&gt;</span>
-<span class="w">      </span><span class="nt">&lt;artifactId&gt;</span>java-common<span class="nt">&lt;/artifactId&gt;</span>
+<span class="w">      </span><span class="nt">&lt;groupId&gt;</span>io.camunda<span class="nt">&lt;/groupId&gt;</span>
+<span class="w">      </span><span class="nt">&lt;artifactId&gt;</span>camunda-tasklist-client-java<span class="nt">&lt;/artifactId&gt;</span>
+<span class="w">      </span><span class="nt">&lt;version&gt;</span>8.6.0<span class="nt">&lt;/version&gt;</span>
+<span class="w">      </span><span class="nt">&lt;exclusions&gt;</span>
+<span class="w">        </span><span class="nt">&lt;exclusion&gt;</span>
+<span class="w">          </span><span class="nt">&lt;groupId&gt;</span>io.camunda<span class="nt">&lt;/groupId&gt;</span>
+<span class="w">          </span><span class="nt">&lt;artifactId&gt;</span>zeebe-client-java<span class="nt">&lt;/artifactId&gt;</span>
+<span class="w">        </span><span class="nt">&lt;/exclusion&gt;</span>
+<span class="w">      </span><span class="nt">&lt;/exclusions&gt;</span>
 <span class="w">    </span><span class="nt">&lt;/dependency&gt;</span>
+
 <span class="nt">&lt;/dependencies&gt;</span>
 </code></pre></div>
 <p>and configure the adapter in your application properties:</p>
@@ -1026,11 +1035,12 @@ you will also need to add some additional libraries. Here is the result:</p>
 <span class="w">            </span><span class="nt">tasklist-url</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">https://${zeebe.client.cloud.region}.tasklist.camunda.io/${zeebe.client.cloud.clusterId}</span>
 <span class="w">            </span><span class="nt">fixed-rate-refresh-rate</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5000</span><span class="w"> </span><span class="c1"># every 5 seconds</span>
 
-<span class="nt">zeebe</span><span class="p">:</span>
+<span class="nt">camunda</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">client</span><span class="p">:</span>
-<span class="w">    </span><span class="nt">cloud</span><span class="p">:</span>
-<span class="w">      </span><span class="nt">region</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${ZEEBE_REGION}</span>
-<span class="w">      </span><span class="nt">clusterId</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${ZEEBE_CLUSTER_ID}</span>
+<span class="w">    </span><span class="nt">mode</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">saas</span>
+<span class="w">    </span><span class="nt">region</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${ZEEBE_REGION}</span>
+<span class="w">    </span><span class="nt">cluster-id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${ZEEBE_CLUSTER_ID}</span>
+<span class="w">    </span><span class="nt">auth</span><span class="p">:</span>
 <span class="w">      </span><span class="nt">clientId</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${ZEEBE_CLIENT_ID}</span>
 <span class="w">      </span><span class="nt">clientSecret</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">${ZEEBE_CLIENT_SECRET}</span>
 </code></pre></div>
