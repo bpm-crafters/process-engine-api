@@ -2,6 +2,12 @@ spring:
   application:
     name: ITest
 
+camunda:
+  client:
+    mode: self-managed
+    identity:
+      enabled: false
+
 dev:
   bpm-crafters:
     process-api:

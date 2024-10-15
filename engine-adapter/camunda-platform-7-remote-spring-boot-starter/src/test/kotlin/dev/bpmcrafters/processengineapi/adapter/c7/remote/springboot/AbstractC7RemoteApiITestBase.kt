@@ -2,6 +2,7 @@ package dev.bpmcrafters.processengineapi.adapter.c7.remote.springboot
 
 import dev.bpmcrafters.processengineapi.test.JGivenSpringBaseIntegrationTest
 import dev.bpmcrafters.processengineapi.test.ProcessTestHelper
+import io.toolisticon.testing.jgiven.GIVEN
 import org.camunda.bpm.engine.RepositoryService
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
@@ -19,7 +20,7 @@ import org.testcontainers.junit.jupiter.Testcontainers
 @ActiveProfiles("itest")
 @DirtiesContext
 @Testcontainers
-abstract class AbstractC7RemoteApiITestBase(processTestHelperImpl: ProcessTestHelper) : JGivenSpringBaseIntegrationTest(processTestHelperImpl) {
+abstract class AbstractC7RemoteApiITestBase : JGivenSpringBaseIntegrationTest() {
 
   companion object {
     const val KEY = "simple-process"
@@ -31,17 +32,24 @@ abstract class AbstractC7RemoteApiITestBase(processTestHelperImpl: ProcessTestHe
   }
 
   @Container
-  val camundaContainer = Camunda7RunTestContainer("run-7.21.0")
+  val camundaContainer = Camunda7RunTestContainer("run-7.22.0")
 
   @Autowired
   lateinit var repositoryService: RepositoryService
 
+  @Autowired
+  lateinit var myProcessTestHelper: C7RemoteProcessTestHelper
+
   @BeforeEach
   fun setUp() {
+    super.processTestHelper = myProcessTestHelper
     repositoryService.createDeployment()
       .name("Simple Process")
       .addClasspathResource(BPMN)
       .deploy()
+
+    GIVEN
+      .`process helper`(this.processTestHelper)
   }
 
   @AfterEach

@@ -1,0 +1,25 @@
+spring:
+  banner:
+    location: banner-sm.txt
+  application:
+    name: Java Camunda Platform 8 Run Local
+
+camunda:
+  client:
+    mode: self-managed
+    auth:
+      username: demo
+      password: demo
+    zeebe:
+      base-url: http://localhost:26500
+    tasklist:
+      base-url: http://localhost:8080/tasklist
+    identity:
+      enabled: false
+dev:
+  bpm-crafters:
+    process-api:
+      adapter:
+        c8:
+          user-tasks:
+            tasklist-url: http://localhost:8080/tasklist

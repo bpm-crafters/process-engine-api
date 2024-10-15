@@ -1,0 +1,48 @@
+services:
+
+  camunda_run:
+    image: camunda/camunda:8.6.3
+    container_name: camunda_run
+    ports:
+      - "26500:26500"
+      - "26501:26501"
+      - "26502:26502"
+      - "8080:8080"
+      - "9600:9600"
+    environment:
+      - CAMUNDA_DATABASE_URL=http://elasticsearch:9200
+      - CAMUNDA_OPERATE_ELASTICSEARCH_URL=http://elasticsearch:9200
+      - CAMUNDA_OPERATE_ZEEBEELASTICSEARCH_URL=http://elasticsearch:9200
+      - CAMUNDA_TASKLIST_ELASTICSEARCH_URL=http://elasticsearch:9200
+      - CAMUNDA_TASKLIST_ZEEBEELASTICSEARCH_URL=http://elasticsearch:9200
+    depends_on:
+      elasticsearch_run:
+        condition: service_healthy
+#    healthcheck:
+#      test: [ "CMD-SHELL", "curl -f -s http://localhost:9600/actuator/health/readiness | grep \"UP\", || exit 1" ]
+#      interval: 30s
+#      timeout: 5s
+#      retries: 3
+
+  elasticsearch_run:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.15.1
+    container_name: elasticsearch_run
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    environment:
+      - bootstrap.memory_lock=true
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      # allow running with low disk space
+      - cluster.routing.allocation.disk.threshold_enabled=false
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -f http://localhost:9200/_cat/health | grep -q green" ]
+      interval: 30s
+      timeout: 5s
+      retries: 3
