@@ -6,6 +6,8 @@ import com.tngtech.jgiven.annotation.ProvidedScenarioState
 import com.tngtech.jgiven.annotation.Quoted
 import com.tngtech.jgiven.annotation.ScenarioState
 import dev.bpmcrafters.processengineapi.CommonRestrictions
+import dev.bpmcrafters.processengineapi.adapter.c7.embedded.correlation.CorrelationApiImpl
+import dev.bpmcrafters.processengineapi.adapter.c7.embedded.correlation.SignalApiImpl
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.deploy.DeploymentApiImpl
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.process.StartProcessApiImpl
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.completion.C7ServiceTaskCompletionApiImpl
@@ -16,6 +18,8 @@ import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.pull.E
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.subscription.C7TaskSubscriptionApiImpl
 import dev.bpmcrafters.processengineapi.adapter.commons.task.InMemSubscriptionRepository
 import dev.bpmcrafters.processengineapi.adapter.commons.task.UserTaskSupport
+import dev.bpmcrafters.processengineapi.correlation.CorrelationApi
+import dev.bpmcrafters.processengineapi.correlation.SignalApi
 import dev.bpmcrafters.processengineapi.deploy.DeployBundleCommand
 import dev.bpmcrafters.processengineapi.deploy.DeploymentApi
 import dev.bpmcrafters.processengineapi.deploy.NamedResource.Companion.fromClasspath
@@ -61,6 +65,12 @@ abstract class AbstractC7EmbeddedStage<SUBTYPE : AbstractC7EmbeddedStage<SUBTYPE
 
   @ProvidedScenarioState
   protected lateinit var deploymentApi: DeploymentApi
+
+  @ProvidedScenarioState
+  protected lateinit var signalApi: SignalApi
+
+  @ProvidedScenarioState
+  protected lateinit var correlationApi: CorrelationApi
 
   @ProvidedScenarioState
   protected lateinit var processEngineServices: ProcessEngineServices
@@ -125,6 +135,9 @@ abstract class AbstractC7EmbeddedStage<SUBTYPE : AbstractC7EmbeddedStage<SUBTYPE
     userTaskSupport.subscribe(
       taskSubscriptionApi, restrictions, null, null
     )
+
+    signalApi = SignalApiImpl(processEngineServices.runtimeService)
+    correlationApi = CorrelationApiImpl(processEngineServices.runtimeService)
 
     initialize()
 

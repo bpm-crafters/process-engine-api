@@ -20,7 +20,8 @@ public class SimpleProcessTest extends DualScenarioTest<SimpleProcessStages.Acti
 
   // @Test
   public void should_start_process_and_run_happy_path() {
-
+    given()
+      .process_is_started("test", 42);
   }
 
 }
