@@ -15,6 +15,8 @@ services:
       - CAMUNDA_OPERATE_ZEEBEELASTICSEARCH_URL=http://elasticsearch-run:9200
       - CAMUNDA_TASKLIST_ELASTICSEARCH_URL=http://elasticsearch-run:9200
       - CAMUNDA_TASKLIST_ZEEBEELASTICSEARCH_URL=http://elasticsearch-run:9200
+      - ZEEBE_BROKER_EXPORTERS_ELASTICSEARCH_CLASSNAME=io.camunda.zeebe.exporter.ElasticsearchExporter
+      - ZEEBE_BROKER_EXPORTERS_ELASTICSEARCH_ARGS_URL=http://elasticsearch-run:9200
     depends_on:
       elasticsearch-run:
         condition: service_healthy
@@ -36,6 +38,7 @@ services:
       - xpack.security.enabled=false
       # allow running with low disk space
       - cluster.routing.allocation.disk.threshold_enabled=false
+      - cluster.name=elasticsearch
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
     ulimits:
       memlock:
