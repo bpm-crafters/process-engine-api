@@ -5,6 +5,7 @@ import java.util.concurrent.ConcurrentHashMap
 
 /**
  * Trivial in-memory implementation of the repository.
+ * @since 0.0.1
  */
 class InMemSubscriptionRepository : SubscriptionRepository {
 

@@ -2,7 +2,7 @@ package dev.bpmcrafters.processengineapi.adapter.commons.task
 
 /**
  * Filter the payload by the requested payload description of the subscription.
- * @param subscription with payload description (may be null).
+ * @param subscription with payload description (the value may be null).
  * @return filtered payload variables.
  */
 fun Map<String, Any>.filterBySubscription(subscription: TaskSubscriptionHandle): Map<String, Any> =
