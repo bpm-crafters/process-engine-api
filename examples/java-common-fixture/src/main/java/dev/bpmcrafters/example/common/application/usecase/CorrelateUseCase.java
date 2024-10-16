@@ -1,6 +1,7 @@
 package dev.bpmcrafters.example.common.application.usecase;
 
 import dev.bpmcrafters.example.common.application.port.in.CorrelateInPort;
+import dev.bpmcrafters.example.common.application.port.out.WorkflowOutPort;
 import dev.bpmcrafters.processengineapi.correlation.CorrelateMessageCmd;
 import dev.bpmcrafters.processengineapi.correlation.Correlation;
 import dev.bpmcrafters.processengineapi.correlation.CorrelationApi;
@@ -17,23 +18,15 @@ import java.util.concurrent.Future;
 @RequiredArgsConstructor
 public class CorrelateUseCase implements CorrelateInPort {
 
-  private final CorrelationApi correlationApi;
+  private final WorkflowOutPort workflowOutPort;
 
   @Override
   public Future<Void> correlateMessage(String correlationValue, String variableValue) {
     CompletableFuture<Void> completableFuture = new CompletableFuture<>();
     Executors.newCachedThreadPool().submit(() -> {
       try {
-        correlationApi.correlateMessage(
-          new CorrelateMessageCmd(
-            "message1",
-            () -> Map.of(
-              "message-delivered-value", variableValue
-            ),
-            () -> Correlation.withKey(correlationValue)
-          )
-        ).get();
-        completableFuture.complete(null); // FIXME -> chain instead of sync get
+        workflowOutPort.correlateMessage(correlationValue, variableValue);
+        completableFuture.complete(null);
       } catch (Exception e) {
         completableFuture.completeExceptionally(e);
       }
