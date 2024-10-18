@@ -90,6 +90,9 @@ abstract class AbstractC7EmbeddedStage<SUBTYPE : AbstractC7EmbeddedStage<SUBTYPE
   @ProvidedScenarioState(resolution = ScenarioState.Resolution.NAME)
   private lateinit var topicToElementId: MutableMap<String, String>
 
+  @ProvidedScenarioState(resolution = ScenarioState.Resolution.NAME)
+  private lateinit var activeEvents: Set<String>
+
   @ProvidedScenarioState
   protected lateinit var taskInformation: TaskInformation
 
@@ -106,6 +109,7 @@ abstract class AbstractC7EmbeddedStage<SUBTYPE : AbstractC7EmbeddedStage<SUBTYPE
   ): SUBTYPE {
     this.topicToExternalTaskId = mutableMapOf()
     this.topicToElementId = mutableMapOf()
+    this.activeEvents = mutableSetOf()
 
     this.restrictions = restrictions
     this.processEngineServices = processEngineServices
@@ -193,6 +197,16 @@ abstract class AbstractC7EmbeddedStage<SUBTYPE : AbstractC7EmbeddedStage<SUBTYPE
     serviceTaskCompletionApi.completeTask(CompleteTaskCmd(
       topicToExternalTaskId.getValue(topicName)
     ) { variables }).get()
+    return self()
+  }
+
+  @As("external task of type \$jobType is completed with error")
+  open fun external_task_is_completed_with_error(@Quoted topicName: String, errorMessage: String, variables: VariableMap): SUBTYPE {
+    Objects.requireNonNull(
+      topicToExternalTaskId[topicName], "No active external service task found, consider to assert using external_task_exists"
+    )
+    serviceTaskCompletionApi.completeTaskByError(
+      CompleteTaskByErrorCmd(topicName, errorMessage) { variables }).get()
     return self()
   }
 

@@ -73,6 +73,12 @@
       <version>8.6.3</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.camunda.community.process_test_coverage</groupId>
+      <artifactId>camunda-process-test-coverage-junit5-platform-8</artifactId>
+      <version>2.7.0</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>

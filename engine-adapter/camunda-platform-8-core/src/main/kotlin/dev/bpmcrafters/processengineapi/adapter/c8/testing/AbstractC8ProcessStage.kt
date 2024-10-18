@@ -198,6 +198,26 @@ abstract class AbstractC8ProcessStage<SUBTYPE : AbstractC8ProcessStage<SUBTYPE>>
     return self()
   }
 
+  @As("external task of type \$jobType is completed with error")
+  open fun external_task_is_completed_with_error(
+    @Quoted jobType: String,
+    errorMessage: String,
+    payload: Map<String, Any> = mapOf()
+  ): SUBTYPE {
+    Objects.requireNonNull(
+      this.activatedJob,
+      "No active external service task found, consider to assert using external_task_exists"
+    )
+    Assertions.assertThat(activatedJob.type)
+      .describedAs("Expected the active job to be a type of %s, but it was %s", jobType, activatedJob.type)
+      .isEqualTo(jobType)
+    serviceTaskCompletionApi
+      .completeTaskByError(
+        CompleteTaskByErrorCmd("" + activatedJob.key, errorMessage) { payload }
+      ).get()
+    return self()
+  }
+
   open fun process_has_passed(activityId: String?): SUBTYPE {
     Assertions.assertThat(allProcessEngineEvents.map { record -> record.value.elementId })
       .contains(activityId)
@@ -233,7 +253,6 @@ abstract class AbstractC8ProcessStage<SUBTYPE : AbstractC8ProcessStage<SUBTYPE>>
     }
     return self()
   }
-
 
   open fun task_is_assigned_to_user(assignee: String): SUBTYPE {
     val taskAssignee = Objects.requireNonNull(
