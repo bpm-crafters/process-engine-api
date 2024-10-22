@@ -6,8 +6,7 @@ import com.tngtech.jgiven.annotation.As;
 import com.tngtech.jgiven.annotation.ProvidedScenarioState;
 import com.tngtech.jgiven.annotation.Quoted;
 import dev.bpmcrafters.example.common.adapter.shared.SimpleProcessWorkflowConst.Elements;
-import dev.bpmcrafters.example.common.adapter.shared.SimpleProcessWorkflowConst.Errors;
-import dev.bpmcrafters.example.common.adapter.shared.SimpleProcessWorkflowConst.Topics;
+import dev.bpmcrafters.example.common.adapter.shared.SimpleProcessWorkflowConst.Expressions;
 import dev.bpmcrafters.example.common.application.port.out.UserTaskOutPort;
 import dev.bpmcrafters.example.common.application.port.out.WorkflowOutPort;
 import dev.bpmcrafters.processengineapi.adapter.c8.testing.AbstractC8ProcessStage;
@@ -51,16 +50,16 @@ public class SimpleProcessStages {
       HashMap<String, String> payload = new HashMap<>();
       payload.put("action1", value);
 
-      return external_task_exists(Topics.EXECUTE_ACTION_EXTERNAL, Elements.SERVICE_TASK_DO_ACTION_1)
+      return external_task_exists(Expressions.JOB_TYPE_EXECUTE_ACTION_EXTERNAL, Elements.SERVICE_TASK_DO_ACTION_1)
         .and()
-        .external_task_is_completed(Topics.EXECUTE_ACTION_EXTERNAL, payload);
+        .external_task_is_completed(Expressions.JOB_TYPE_EXECUTE_ACTION_EXTERNAL, payload);
     }
 
     @As("service task execute action completed with error")
     public ActionStage service_execute_action_is_completed_with_error() {
-      return external_task_exists(Topics.EXECUTE_ACTION_EXTERNAL, Elements.SERVICE_TASK_DO_ACTION_1)
+      return external_task_exists(Expressions.JOB_TYPE_EXECUTE_ACTION_EXTERNAL, Elements.SERVICE_TASK_DO_ACTION_1)
         .and()
-        .external_task_is_completed_with_error(Topics.EXECUTE_ACTION_EXTERNAL, Errors.MESSAGE_ACTION_ERROR, new HashMap<String, String>());
+        .external_task_is_completed_with_error(Expressions.JOB_TYPE_EXECUTE_ACTION_EXTERNAL, Expressions.ERROR_ACTION_ERROR, new HashMap<String, String>());
     }
 
     @As("user task perform task completed with $value")
@@ -86,23 +85,19 @@ public class SimpleProcessStages {
 
     @As("service task message send completed")
     public ActionStage service_send_email_is_completed() {
-      return external_task_exists(Topics.SEND_MESSAGE_EXTERNAL, Elements.SERVICE_TASK_DO_ACTION_2)
+      return external_task_exists(Expressions.JOB_TYPE_SEND_MESSAGE_EXTERNAL, Elements.SERVICE_TASK_DO_ACTION_2)
         .and()
-        .external_task_is_completed(Topics.SEND_MESSAGE_EXTERNAL, new HashMap<String, String>());
+        .external_task_is_completed(Expressions.JOB_TYPE_SEND_MESSAGE_EXTERNAL, new HashMap<String, String>());
     }
 
     @As("message received with $value")
     public ActionStage message_received(String value) {
-      // TODO rename to process_waits_in_user_task() ?
-//      process_waits_in(Elements.EVENT_RECEIVE_MESSAGE);
-//      process_has_subscription("message1")
       workflowOutPort.correlateMessage(correlationKey, value);
       return self();
     }
 
     @As("signal occurred")
     public ActionStage signal_occurred() {
-//      process_waits_in(Elements.EVENT_SIGNAL_OCCURRED);
       workflowOutPort.deliverSignal(correlationKey);
       return self();
     }

@@ -28,26 +28,16 @@ public class SimpleProcessWorkflowConst {
     public static final String END_EVENT_ABNORMALLY = "ended_abnormally";
   }
 
-  public enum Messages {
+  public enum Expressions {
     ;
     public static final String MESSAGE_1 = "message1";
-  }
 
-  public enum Errors {
-    ;
+    public static final String ERROR_ACTION_ERROR = "action_error";
 
-    public static final String MESSAGE_ACTION_ERROR = "action_error";
-  }
-
-  public enum Signals {
-    ;
     public static final String SIGNAL_1 = "signal1";
-  }
 
-  public enum Topics {
-    ;
-    public static final String EXECUTE_ACTION_EXTERNAL = "execute-action-external";
-    public static final String SEND_MESSAGE_EXTERNAL = "send-message-external";
+    public static final String JOB_TYPE_EXECUTE_ACTION_EXTERNAL = "execute-action-external";
+    public static final String JOB_TYPE_SEND_MESSAGE_EXTERNAL = "send-message-external";
   }
 
 }

@@ -1,8 +1,7 @@
 package dev.bpmcrafters.example.common.adapter.out.process;
 
 import dev.bpmcrafters.example.common.adapter.shared.SimpleProcessWorkflowConst;
-import dev.bpmcrafters.example.common.adapter.shared.SimpleProcessWorkflowConst.Messages;
-import dev.bpmcrafters.example.common.adapter.shared.SimpleProcessWorkflowConst.Signals;
+import dev.bpmcrafters.example.common.adapter.shared.SimpleProcessWorkflowConst.Expressions;
 import dev.bpmcrafters.example.common.application.port.out.WorkflowOutPort;
 import dev.bpmcrafters.processengineapi.CommonRestrictions;
 import dev.bpmcrafters.processengineapi.correlation.CorrelateMessageCmd;
@@ -69,7 +68,7 @@ public class WorkflowAdapter implements WorkflowOutPort {
   public void correlateMessage(String correlationValue, String variableValue) {
     correlationApi.correlateMessage(
       new CorrelateMessageCmd(
-        Messages.MESSAGE_1,
+        Expressions.MESSAGE_1,
         () -> Map.of(
           "message-delivered-value", variableValue
         ),
@@ -83,7 +82,7 @@ public class WorkflowAdapter implements WorkflowOutPort {
   public void deliverSignal(String variableValue) {
     signalApi.sendSignal(
       new SendSignalCmd(
-        Signals.SIGNAL_1,
+        Expressions.SIGNAL_1,
         () -> Map.of(
           "signal-delivered-value", variableValue
         ),

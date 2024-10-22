@@ -1,6 +1,6 @@
 package dev.bpmcrafters.example.common.adapter.in.process;
 
-import dev.bpmcrafters.example.common.adapter.shared.SimpleProcessWorkflowConst.Errors;
+import dev.bpmcrafters.example.common.adapter.shared.SimpleProcessWorkflowConst.Expressions;
 import dev.bpmcrafters.processengineapi.task.ServiceTaskCompletionApi;
 import dev.bpmcrafters.processengineapi.task.TaskInformation;
 import dev.bpmcrafters.processengineapi.task.TaskSubscriptionApi;
@@ -23,7 +23,7 @@ public class ExecuteActionTaskHandler extends AbstractSynchronousTaskHandler {
 
     if (intValue % 42 == 0) {
       log.info("[HANDLER EXECUTE ACTION EXTERNAL]: Detected answer to the Ultimate Question of Life, the Universe, and Everything");
-      throw new TaskHandlerException(Errors.MESSAGE_ACTION_ERROR); // will throw BPMN error
+      throw new TaskHandlerException(Expressions.ERROR_ACTION_ERROR); // will throw BPMN error
     }
 
     val map = new HashMap<String, Object>(variables);
