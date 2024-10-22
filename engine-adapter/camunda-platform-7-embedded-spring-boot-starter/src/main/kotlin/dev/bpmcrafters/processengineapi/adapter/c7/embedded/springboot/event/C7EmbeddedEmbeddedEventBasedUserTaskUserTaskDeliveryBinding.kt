@@ -4,23 +4,20 @@ import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.event.
 import org.camunda.bpm.engine.delegate.DelegateTask
 import org.springframework.context.event.EventListener
 import org.springframework.core.Ordered
+import org.springframework.scheduling.annotation.Async
+import org.springframework.stereotype.Component
 
-class C7EmbeddedEventBasedUserTaskDeliveryBinding(
+@Component // just to make the class open
+class C7EmbeddedEmbeddedEventBasedUserTaskUserTaskDeliveryBinding(
   private val embeddedEventBasedUserTaskDelivery: EmbeddedEventBasedUserTaskDelivery,
   private val eventListenerOrder: Int = Ordered.HIGHEST_PRECEDENCE + 1000
-) : Ordered {
+) : Ordered, C7EmbeddedEventBasedUserTaskDelivery {
 
-  @EventListener(
-    condition = "#delegateTask.eventName.equals('create')"
-  )
-  fun onTaskCreate(delegateTask: DelegateTask) {
+  override fun onTaskCreate(delegateTask: DelegateTask) {
     embeddedEventBasedUserTaskDelivery.userTaskCreated(delegateTask = delegateTask)
   }
 
-  @EventListener(
-    condition = "#delegateTask.eventName.equals('delete') || #delegateTask.eventName.equals('timout')"
-  )
-  fun onTaskDelete(delegateTask: DelegateTask) {
+  override fun onTaskDelete(delegateTask: DelegateTask) {
     embeddedEventBasedUserTaskDelivery.userTaskDeleted(delegateTask = delegateTask)
   }
 

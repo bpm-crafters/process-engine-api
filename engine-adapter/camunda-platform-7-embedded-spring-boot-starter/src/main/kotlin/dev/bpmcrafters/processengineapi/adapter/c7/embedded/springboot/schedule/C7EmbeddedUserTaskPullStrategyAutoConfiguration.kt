@@ -27,6 +27,7 @@ import java.time.temporal.ChronoUnit
 )
 @AutoConfigureAfter(C7EmbeddedSchedulingAutoConfiguration::class)
 class C7EmbeddedUserTaskPullStrategyAutoConfiguration(
+  @Qualifier("c7embedded-schedule-user-task-delivery")
   private val embeddedPullUserTaskDelivery: EmbeddedPullUserTaskDelivery,
   private val c7EmbeddedAdapterProperties: C7EmbeddedAdapterProperties,
   @Qualifier("c7embedded-task-scheduler")

@@ -75,8 +75,8 @@ class C7EmbeddedSchedulingAutoConfiguration {
     executorService = executorService
   )
 
-  @Bean("c7embedded-user-task-delivery")
-  @Qualifier("c7embedded-user-task-delivery")
+  @Bean("c7embedded-schedule-user-task-delivery")
+  @Qualifier("c7embedded-schedule-user-task-delivery")
   @ConditionalOnUserTaskDeliveryStrategy(
     strategies = [UserTaskDeliveryStrategy.EMBEDDED_SCHEDULED, UserTaskDeliveryStrategy.EMBEDDED_EVENT_AND_SCHEDULED]
   )
