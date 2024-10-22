@@ -18,14 +18,15 @@ public class SimpleProcessWorkflowConst {
     public static final String USER_TASK_PERFORM_TASK = "user-perform-task";
 
     // events
-    public static final String EVENT_RECEIVE_MESSAGE = "receive_message";
+    public static final String EVENT_RECEIVED_MESSAGE = "received_message";
+    public static final String TIMER_PASSED = "timer_passed";
 
     // signals
-    public static final String EVENT_SIGNAL_OCCURRED = "receive_signal";
+    public static final String EVENT_SIGNAL_OCCURRED = "received_signal";
 
     // End events
-    public static final String END_EVENT = "ended";
-    public static final String END_EVENT_ABNORMALLY = "ended_abnormally";
+    public static final String END_EVENT = "finished";
+    public static final String END_EVENT_ABNORMALLY = "finished_abnormally";
   }
 
   public enum Expressions {

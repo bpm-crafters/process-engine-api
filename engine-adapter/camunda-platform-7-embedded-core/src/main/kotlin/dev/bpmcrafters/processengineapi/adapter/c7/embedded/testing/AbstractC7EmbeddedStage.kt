@@ -258,9 +258,9 @@ abstract class AbstractC7EmbeddedStage<SUBTYPE : AbstractC7EmbeddedStage<SUBTYPE
   @As("process waits in element $")
   open fun process_waits_in_element(@Quoted taskDescriptionKey: String): SUBTYPE {
     Awaitility.await().untilAsserted {
-      val activeActivityIds = processEngineServices.runtimeService.getActiveActivityIds(processInstanceSupplier.get().processInstanceId);
+      val activeActivityIds = processEngineServices.runtimeService.getActiveActivityIds(processInstanceSupplier.get().processInstanceId)
       Assertions.assertThat(activeActivityIds)
-        .describedAs("Process is not waiting in user task $taskDescriptionKey", taskDescriptionKey)
+        .describedAs("Process is not waiting in element $taskDescriptionKey", taskDescriptionKey)
         .contains(taskDescriptionKey)
     }
     return self()

@@ -81,7 +81,7 @@ public class SimpleProcessStages {
     @As("user task perform task is timed out")
     public ActionStage user_task_perform_task_is_timed_out() {
       process_waits_in(Elements.USER_TASK_PERFORM_TASK);
-      process_continues(Elements.USER_TASK_PERFORM_TASK);
+      process_continues(Elements.TIMER_PASSED);
       return self();
     }
 
@@ -101,7 +101,7 @@ public class SimpleProcessStages {
 
     @As("message received with $value")
     public ActionStage message_received(String value) {
-      process_waits_in_element(Elements.EVENT_RECEIVE_MESSAGE);
+      process_waits_in_element(Elements.EVENT_RECEIVED_MESSAGE);
       workflowOutPort.correlateMessage(correlationKey, value);
       return self();
     }
