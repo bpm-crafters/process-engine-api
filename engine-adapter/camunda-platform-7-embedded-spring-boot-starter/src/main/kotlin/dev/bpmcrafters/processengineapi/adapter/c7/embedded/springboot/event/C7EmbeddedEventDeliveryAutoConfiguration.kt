@@ -25,7 +25,7 @@ import org.springframework.context.annotation.Configuration
 @Configuration
 @AutoConfigureAfter(C7EmbeddedAdapterAutoConfiguration::class)
 @ConditionalOnUserTaskDeliveryStrategy(
-  strategy = UserTaskDeliveryStrategy.EMBEDDED_EVENT
+  strategies = [ UserTaskDeliveryStrategy.EMBEDDED_EVENT, UserTaskDeliveryStrategy.EMBEDDED_EVENT_AND_SCHEDULED ]
 )
 class C7EmbeddedEventDeliveryAutoConfiguration {
 
@@ -52,8 +52,10 @@ class C7EmbeddedEventDeliveryAutoConfiguration {
   @Bean("c7embedded-user-task-delivery-binding")
   fun configureEventingForUserTaskDelivery(
     @Qualifier("c7embedded-user-task-delivery")
-    embeddedEventBasedUserTaskDelivery: EmbeddedEventBasedUserTaskDelivery
+    embeddedEventBasedUserTaskDelivery: EmbeddedEventBasedUserTaskDelivery,
+    c7AdapterProperties: C7EmbeddedAdapterProperties
   ) = C7EmbeddedEventBasedUserTaskDeliveryBinding(
-    embeddedEventBasedUserTaskDelivery = embeddedEventBasedUserTaskDelivery
+    embeddedEventBasedUserTaskDelivery = embeddedEventBasedUserTaskDelivery,
+    eventListenerOrder = c7AdapterProperties.userTasks.eventListenerOrder
   )
 }
