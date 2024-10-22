@@ -3,7 +3,6 @@ package dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.event;
 import org.camunda.bpm.engine.delegate.DelegateTask;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.context.event.EventListener;
-import org.springframework.scheduling.annotation.Async;
 
 public interface C7EmbeddedEventBasedUserTaskDelivery {
 
