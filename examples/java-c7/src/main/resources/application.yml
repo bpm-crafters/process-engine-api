@@ -41,3 +41,7 @@ camunda:
       user-id: admin
     auto-deployment-enabled: false
     default-serialization-format: application/json
+
+logging:
+  level:
+    dev.bpmcrafters.processengineapi: DEBUG
