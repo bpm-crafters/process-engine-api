@@ -200,7 +200,7 @@ abstract class AbstractC7EmbeddedStage<SUBTYPE : AbstractC7EmbeddedStage<SUBTYPE
     return self()
   }
 
-  @As("external task of type \$jobType is completed with error")
+  @As("external task of type \$jobType is completed with error \$errorMessage")
   open fun external_task_is_completed_with_error(@Quoted topicName: String, errorMessage: String, variables: VariableMap): SUBTYPE {
     Objects.requireNonNull(
       topicToExternalTaskId[topicName], "No active external service task found, consider to assert using external_task_exists"
@@ -256,12 +256,12 @@ abstract class AbstractC7EmbeddedStage<SUBTYPE : AbstractC7EmbeddedStage<SUBTYPE
   }
 
   @As("process waits in element $")
-  open fun process_waits_in_element(@Quoted taskDescriptionKey: String): SUBTYPE {
+  open fun process_waits_in_element(@Quoted activityId: String): SUBTYPE {
     Awaitility.await().untilAsserted {
       val activeActivityIds = processEngineServices.runtimeService.getActiveActivityIds(processInstanceSupplier.get().processInstanceId)
       Assertions.assertThat(activeActivityIds)
-        .describedAs("Process is not waiting in element $taskDescriptionKey", taskDescriptionKey)
-        .contains(taskDescriptionKey)
+        .describedAs("Process is not waiting in element $activityId", activityId)
+        .contains(activityId)
     }
     return self()
   }

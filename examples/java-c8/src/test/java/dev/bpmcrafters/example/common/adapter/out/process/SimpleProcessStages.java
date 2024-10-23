@@ -92,12 +92,14 @@ public class SimpleProcessStages {
 
     @As("message received with $value")
     public ActionStage message_received(String value) {
+      process_waits_in_element(Elements.EVENT_RECEIVED_MESSAGE);
       workflowOutPort.correlateMessage(correlationKey, value);
       return self();
     }
 
     @As("signal occurred")
     public ActionStage signal_occurred() {
+      process_waits_in_element(Elements.EVENT_SIGNAL_OCCURRED);
       workflowOutPort.deliverSignal(correlationKey);
       return self();
     }
