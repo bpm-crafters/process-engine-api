@@ -6,6 +6,8 @@ import com.tngtech.jgiven.annotation.ProvidedScenarioState
 import com.tngtech.jgiven.annotation.Quoted
 import com.tngtech.jgiven.annotation.ScenarioState
 import dev.bpmcrafters.processengineapi.CommonRestrictions
+import dev.bpmcrafters.processengineapi.adapter.c8.correlation.CorrelationApiImpl
+import dev.bpmcrafters.processengineapi.adapter.c8.correlation.SignalApiImpl
 import dev.bpmcrafters.processengineapi.adapter.c8.deploy.DeploymentApiImpl
 import dev.bpmcrafters.processengineapi.adapter.c8.process.StartProcessApiImpl
 import dev.bpmcrafters.processengineapi.adapter.c8.task.completion.C8ZeebeExternalServiceTaskCompletionApiImpl
@@ -15,6 +17,8 @@ import dev.bpmcrafters.processengineapi.adapter.c8.task.delivery.SubscribingRefr
 import dev.bpmcrafters.processengineapi.adapter.c8.task.subscription.C8TaskSubscriptionApiImpl
 import dev.bpmcrafters.processengineapi.adapter.commons.task.InMemSubscriptionRepository
 import dev.bpmcrafters.processengineapi.adapter.commons.task.UserTaskSupport
+import dev.bpmcrafters.processengineapi.correlation.CorrelationApi
+import dev.bpmcrafters.processengineapi.correlation.SignalApi
 import dev.bpmcrafters.processengineapi.deploy.DeployBundleCommand
 import dev.bpmcrafters.processengineapi.deploy.DeploymentApi
 import dev.bpmcrafters.processengineapi.deploy.NamedResource.Companion.fromClasspath
@@ -68,6 +72,12 @@ abstract class AbstractC8ProcessStage<SUBTYPE : AbstractC8ProcessStage<SUBTYPE>>
 
   @ProvidedScenarioState
   protected lateinit var deploymentApi: DeploymentApi
+
+  @ProvidedScenarioState
+  protected lateinit var signalApi: SignalApi
+
+  @ProvidedScenarioState
+  protected lateinit var correlationApi: CorrelationApi
 
   @ProvidedScenarioState
   protected lateinit var taskInformation: TaskInformation
@@ -124,6 +134,9 @@ abstract class AbstractC8ProcessStage<SUBTYPE : AbstractC8ProcessStage<SUBTYPE>>
       null,
       null
     )
+
+    signalApi = SignalApiImpl(client)
+    correlationApi = CorrelationApiImpl(client)
 
     initialize()
 

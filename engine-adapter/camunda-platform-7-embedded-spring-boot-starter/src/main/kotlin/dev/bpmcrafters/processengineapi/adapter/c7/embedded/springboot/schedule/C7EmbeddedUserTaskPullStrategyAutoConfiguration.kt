@@ -23,10 +23,11 @@ import java.time.temporal.ChronoUnit
 @EnableScheduling
 @Configuration
 @ConditionalOnUserTaskDeliveryStrategy(
-  strategy = UserTaskDeliveryStrategy.EMBEDDED_SCHEDULED
+  strategies = [ UserTaskDeliveryStrategy.EMBEDDED_SCHEDULED, UserTaskDeliveryStrategy.EMBEDDED_EVENT_AND_SCHEDULED ]
 )
 @AutoConfigureAfter(C7EmbeddedSchedulingAutoConfiguration::class)
 class C7EmbeddedUserTaskPullStrategyAutoConfiguration(
+  @Qualifier("c7embedded-schedule-user-task-delivery")
   private val embeddedPullUserTaskDelivery: EmbeddedPullUserTaskDelivery,
   private val c7EmbeddedAdapterProperties: C7EmbeddedAdapterProperties,
   @Qualifier("c7embedded-task-scheduler")

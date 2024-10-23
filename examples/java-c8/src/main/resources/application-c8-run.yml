@@ -13,13 +13,15 @@ camunda:
     zeebe:
       base-url: http://localhost:26500
     tasklist:
-      base-url: http://localhost:8080/tasklist
+      base-url: http://localhost:8088/tasklist
     identity:
       enabled: false
+    operate:
+      base-url: http://localhost:8088/operate
 dev:
   bpm-crafters:
     process-api:
       adapter:
         c8:
           user-tasks:
-            tasklist-url: http://localhost:8080/tasklist
+            tasklist-url: ${camunda.client.tasklist.base-url}

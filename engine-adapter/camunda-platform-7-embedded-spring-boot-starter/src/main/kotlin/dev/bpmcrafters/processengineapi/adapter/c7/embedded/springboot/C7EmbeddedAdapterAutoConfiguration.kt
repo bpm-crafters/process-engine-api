@@ -31,6 +31,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Conditional
 import org.springframework.context.annotation.Configuration
+import java.util.concurrent.Executor
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
@@ -128,7 +129,7 @@ class C7EmbeddedAdapterAutoConfiguration {
 
   /**
    * Creates a default fixed thread pool for 10 threads used for process engine worker executions.
-   * This one is used for pull-strategies only.
+   * This one is used for pull-strategies and async event listener execution.
    */
   @Bean("c7embedded-user-task-worker-executor")
   @ConditionalOnMissingQualifiedBean(beanClass = ExecutorService::class, qualifier = "c7embedded-user-task-worker-executor")

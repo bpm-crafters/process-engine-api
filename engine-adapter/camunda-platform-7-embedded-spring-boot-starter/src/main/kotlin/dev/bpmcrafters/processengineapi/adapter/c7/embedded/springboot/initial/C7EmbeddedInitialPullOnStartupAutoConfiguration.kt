@@ -3,7 +3,7 @@ package dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.initial
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.C7EmbeddedAdapterProperties
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.C7EmbeddedAdapterServiceTaskInitialPullEnabledCondition
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.C7EmbeddedAdapterUserTaskInitialPullEnabledCondition
-import dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.job.C7EmbeddedJobDeliveryAutoConfiguration
+import dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.event.C7EmbeddedEventDeliveryAutoConfiguration
 import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionRepository
 import jakarta.annotation.PostConstruct
 import mu.KLogging
@@ -24,7 +24,7 @@ import java.util.concurrent.ExecutorService
  * and deliver tasks to the task handlers.
  */
 @Configuration
-@AutoConfigureAfter(C7EmbeddedJobDeliveryAutoConfiguration::class)
+@AutoConfigureAfter(C7EmbeddedEventDeliveryAutoConfiguration::class)
 @EnableAsync
 class C7EmbeddedInitialPullOnStartupAutoConfiguration {
 

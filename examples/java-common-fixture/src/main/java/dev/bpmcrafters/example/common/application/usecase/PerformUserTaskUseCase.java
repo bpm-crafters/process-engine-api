@@ -18,13 +18,12 @@ import java.util.concurrent.Future;
 @Slf4j
 public class PerformUserTaskUseCase implements PerformUserTaskInPort {
 
-  private final UserTaskOutPort taskPool;
-  private final UserTaskCompletionApi taskCompletionApi;
+  private final UserTaskOutPort userTaskPort;
 
   @Override
   public Future<List<TaskInformation>> getUserTasks() {
     log.info("Retrieving tasks");
-    return CompletableFuture.completedFuture(taskPool.getAllTasks());
+    return CompletableFuture.completedFuture(userTaskPort.getAllTasks());
   }
 
   @Override
@@ -33,12 +32,7 @@ public class PerformUserTaskUseCase implements PerformUserTaskInPort {
     CompletableFuture<Void> completableFuture = new CompletableFuture<>();
     Executors.newCachedThreadPool().submit(() -> {
       try {
-        taskCompletionApi.completeTask(
-          new CompleteTaskCmd(
-            taskId,
-            () -> Map.of("some-user-value", value)
-          )
-        ).get();
+        userTaskPort.complete(taskId, value);
         completableFuture.complete(null); // FIXME -> Chain futures
       } catch (Exception e) {
         completableFuture.completeExceptionally(e);
@@ -54,14 +48,7 @@ public class PerformUserTaskUseCase implements PerformUserTaskInPort {
     CompletableFuture<Void> completableFuture = new CompletableFuture<>();
     Executors.newCachedThreadPool().submit(() -> {
       try {
-        taskCompletionApi.completeTaskByError(
-          new CompleteTaskByErrorCmd(
-            taskId,
-            "user_error",
-            "some error",
-            () -> Map.of("some-user-value", value)
-          )
-        ).get();
+        userTaskPort.completeWithError(taskId, value);
         completableFuture.complete(null); // FIXME -> Chain futures
       } catch (Exception e) {
         completableFuture.completeExceptionally(e);
