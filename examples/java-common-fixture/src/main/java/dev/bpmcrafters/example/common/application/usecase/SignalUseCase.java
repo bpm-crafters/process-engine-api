@@ -1,6 +1,7 @@
 package dev.bpmcrafters.example.common.application.usecase;
 
 import dev.bpmcrafters.example.common.application.port.in.SignalInPort;
+import dev.bpmcrafters.example.common.application.port.out.WorkflowOutPort;
 import dev.bpmcrafters.processengineapi.CommonRestrictions;
 import dev.bpmcrafters.processengineapi.correlation.Correlation;
 import dev.bpmcrafters.processengineapi.correlation.SendSignalCmd;
@@ -17,23 +18,15 @@ import java.util.concurrent.Future;
 @Component
 public class SignalUseCase implements SignalInPort {
 
-  private final SignalApi signalApi;
+  private final WorkflowOutPort workflowOutPort;
 
   @Override
   public Future<Void> deliverSignal(String variableValue) {
     CompletableFuture<Void> completableFuture = new CompletableFuture<>();
     Executors.newCachedThreadPool().submit(() -> {
       try {
-        signalApi.sendSignal(
-          new SendSignalCmd(
-            "signal1",
-            () -> Map.of(
-              "signal-delivered-value", variableValue
-            ),
-            CommonRestrictions.builder().build()
-          )
-        ).get();
-        completableFuture.complete(null); // FIXME -> chain instead of sync get
+        workflowOutPort.deliverSignal(variableValue);
+        completableFuture.complete(null);
       } catch (Exception e) {
         completableFuture.completeExceptionally(e);
       }

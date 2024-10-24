@@ -1,15 +1,11 @@
 package dev.bpmcrafters.processengineapi.adapter.c8.correlation
 
-import dev.bpmcrafters.processengineapi.CommonRestrictions
 import dev.bpmcrafters.processengineapi.Empty
 import dev.bpmcrafters.processengineapi.MetaInfo
 import dev.bpmcrafters.processengineapi.MetaInfoAware
 import dev.bpmcrafters.processengineapi.correlation.CorrelateMessageCmd
 import dev.bpmcrafters.processengineapi.correlation.CorrelationApi
-import dev.bpmcrafters.processengineapi.correlation.SendSignalCmd
 import io.camunda.zeebe.client.ZeebeClient
-import io.camunda.zeebe.client.api.command.PublishMessageCommandStep1.PublishMessageCommandStep2
-import io.camunda.zeebe.client.api.command.PublishMessageCommandStep1.PublishMessageCommandStep3
 import mu.KLogging
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.Future
@@ -18,7 +14,7 @@ class CorrelationApiImpl(
   private val zeebeClient: ZeebeClient
 ) : CorrelationApi {
 
-  companion object: KLogging()
+  companion object : KLogging()
 
   override fun correlateMessage(cmd: CorrelateMessageCmd): Future<Empty> {
     return CompletableFuture.supplyAsync {

@@ -34,33 +34,19 @@ public class JavaCamunda8ExampleApplication {
     ;
 
     switch (clientProperties.getMode()) {
-      case saas -> {
+      case saas ->
         builder = builder.saaSAuthentication(
           clientProperties.getAuth().getClientId(),
           clientProperties.getAuth().getClientSecret()
         );
-      }
-      case selfManaged -> {
+
+      case selfManaged ->
         builder = builder.selfManagedAuthentication(
           clientProperties.getAuth().getClientId(),
           clientProperties.getAuth().getClientSecret(),
           clientProperties.getAuth().getIssuer()
         );
-      }
     }
-
-
-//      else -> {
-//        builder = builder.authentication(
-//          new SimpleAuthentication(new SimpleCredential(
-//            clientProperties.getAuth().getUsername(),
-//            clientProperties.getAuth().getPassword(),
-//            clientProperties.getTasklist().getBaseUrl(),
-//            Duration.of(120, ChronoUnit.SECONDS)
-//          ))
-//        );
-//      }
-//    }
 
     return builder.build();
   }
