@@ -1,10 +1,7 @@
 package dev.bpmcrafters.processengineapi.adapter.c7.embedded.testing
 
 import com.tngtech.jgiven.Stage
-import com.tngtech.jgiven.annotation.As
-import com.tngtech.jgiven.annotation.ProvidedScenarioState
-import com.tngtech.jgiven.annotation.Quoted
-import com.tngtech.jgiven.annotation.ScenarioState
+import com.tngtech.jgiven.annotation.*
 import dev.bpmcrafters.processengineapi.CommonRestrictions
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.correlation.CorrelationApiImpl
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.correlation.SignalApiImpl
@@ -26,14 +23,15 @@ import dev.bpmcrafters.processengineapi.deploy.NamedResource.Companion.fromClass
 import dev.bpmcrafters.processengineapi.process.StartProcessApi
 import dev.bpmcrafters.processengineapi.task.*
 import org.assertj.core.api.Assertions
+import org.assertj.core.util.Lists
 import org.awaitility.Awaitility
 import org.camunda.bpm.engine.ProcessEngineServices
+import org.camunda.bpm.engine.history.HistoricActivityInstance
 import org.camunda.bpm.engine.runtime.ProcessInstance
 import org.camunda.bpm.engine.test.assertions.bpmn.BpmnAwareTests
 import org.camunda.bpm.engine.variable.VariableMap
 import java.util.*
 import java.util.concurrent.Executors
-import java.util.function.Supplier
 import kotlin.collections.set
 
 /**
@@ -81,9 +79,6 @@ abstract class AbstractC7EmbeddedStage<SUBTYPE : AbstractC7EmbeddedStage<SUBTYPE
   @ProvidedScenarioState
   private lateinit var embeddedPullServiceTaskDelivery: EmbeddedPullServiceTaskDelivery
 
-  @ProvidedScenarioState
-  protected lateinit var processInstanceSupplier: Supplier<ProcessInstance>
-
   @ProvidedScenarioState(resolution = ScenarioState.Resolution.NAME)
   private lateinit var topicToExternalTaskId: MutableMap<String, String>
 
@@ -95,6 +90,9 @@ abstract class AbstractC7EmbeddedStage<SUBTYPE : AbstractC7EmbeddedStage<SUBTYPE
 
   @ProvidedScenarioState
   protected lateinit var taskInformation: TaskInformation
+
+  @ExpectedScenarioState
+  protected lateinit var processInstanceId: String
 
 
   /**
@@ -158,6 +156,11 @@ abstract class AbstractC7EmbeddedStage<SUBTYPE : AbstractC7EmbeddedStage<SUBTYPE
   open fun initialize() {
   }
 
+  @As("process instance is stared $")
+  open fun process_is_started(processInstanceId: String) {
+    this.processInstanceId = processInstanceId
+    BpmnAwareTests.assertThat(getProcessInstance()).isStarted
+  }
 
   @As("external task of type \$topicName exists")
   open fun external_task_exists(@Quoted topicName: String, activityId: String?): SUBTYPE {
@@ -211,36 +214,9 @@ abstract class AbstractC7EmbeddedStage<SUBTYPE : AbstractC7EmbeddedStage<SUBTYPE
     return self()
   }
 
-  open fun process_continues(elementId: String): SUBTYPE {
-    Awaitility.await().untilAsserted {
-      val job = BpmnAwareTests.job(elementId, processInstanceSupplier.get())
-      Assertions.assertThat(job).isNotNull()
-      BpmnAwareTests.execute(job)
-    }
-    return self()
-  }
-
-  open fun process_is_deployed(resource: String): SUBTYPE {
-    deploymentApi.deploy(
-      DeployBundleCommand(
-        listOf(fromClasspath(resource)), null
-      )
-    ).get()
-    return self()
-  }
-
-  open fun process_is_finished(): SUBTYPE {
-    BpmnAwareTests.assertThat(processInstanceSupplier.get()).isEnded()
-    return self()
-  }
-
-  open fun process_has_passed(vararg elementIds: String): SUBTYPE {
-    BpmnAwareTests.assertThat(processInstanceSupplier.get()).hasPassed(*elementIds)
-    return self()
-  }
-
-  open fun process_is_stopped(): SUBTYPE {
-    processEngineServices.runtimeService.deleteProcessInstance(processInstanceSupplier.get().processInstanceId, "Stopped", false, true)
+  @As("user tasks is assigned to user $")
+  open fun task_is_assigned_to_user(@Quoted assignee: String): SUBTYPE {
+    Assertions.assertThat(task().meta["assignee"]).isEqualTo(assignee)
     return self()
   }
 
@@ -258,7 +234,7 @@ abstract class AbstractC7EmbeddedStage<SUBTYPE : AbstractC7EmbeddedStage<SUBTYPE
   @As("process waits in element $")
   open fun process_waits_in_element(@Quoted activityId: String): SUBTYPE {
     Awaitility.await().untilAsserted {
-      val activeActivityIds = processEngineServices.runtimeService.getActiveActivityIds(processInstanceSupplier.get().processInstanceId)
+      val activeActivityIds = processEngineServices.runtimeService.getActiveActivityIds(this.processInstanceId)
       Assertions.assertThat(activeActivityIds)
         .describedAs("Process is not waiting in element $activityId", activityId)
         .contains(activityId)
@@ -266,17 +242,107 @@ abstract class AbstractC7EmbeddedStage<SUBTYPE : AbstractC7EmbeddedStage<SUBTYPE
     return self()
   }
 
-  @As("user tasks is assigned to user $")
-  open fun task_is_assigned_to_user(@Quoted assignee: String): SUBTYPE {
-    Assertions.assertThat(task().meta["assignee"]).isEqualTo(assignee)
+  open fun process_continues(elementId: String): SUBTYPE {
+    Awaitility.await().untilAsserted {
+      val job = BpmnAwareTests.job(elementId, getProcessInstance())
+      Assertions.assertThat(job).isNotNull()
+      BpmnAwareTests.execute(job)
+    }
     return self()
   }
 
+  open fun process_is_deployed(resource: String): SUBTYPE {
+    deploymentApi.deploy(
+      DeployBundleCommand(
+        listOf(fromClasspath(resource)), null
+      )
+    ).get()
+    return self()
+  }
+
+  open fun process_is_finished(): SUBTYPE {
+    val message = "Expecting %s to be ended, but it is not!. (Please " +
+      "make sure you have set the history service of the engine to at least " +
+      "'activity' or a higher level before making use of this assertion!)"
+    Assertions.assertThat(processEngineServices.runtimeService.createProcessInstanceQuery().processInstanceId(this.processInstanceId).singleResult())
+      .overridingErrorMessage(message, this.processInstanceId)
+      .isNull()
+    Assertions.assertThat(processEngineServices.historyService.createHistoricProcessInstanceQuery().processInstanceId(this.processInstanceId).singleResult())
+      .overridingErrorMessage(message, this.processInstanceId)
+      .isNotNull()
+    return self()
+  }
+
+  open fun process_has_passed(vararg elementIds: String): SUBTYPE {
+    hasPassed(activityIds = elementIds, inOrder = false, hasPassed = true)
+    return self()
+  }
+
+  fun hasPassed(vararg activityIds: String, inOrder: Boolean, hasPassed: Boolean) {
+    require(this::processInstanceId.isInitialized) { "You must initialize with process_is_started() before accessing it." }
+    Assertions.assertThat(activityIds)
+      .overridingErrorMessage(
+        "Expecting list of activityIds not to be null, not to be empty and not to contain null values: %s.",
+        Lists.newArrayList(*activityIds)
+      )
+      .isNotNull().isNotEmpty().doesNotContainNull()
+    val finishedInstances: List<HistoricActivityInstance> = processEngineServices.historyService.createHistoricActivityInstanceQuery()
+      .processInstanceId(this.processInstanceId)
+      .finished()
+      .orderByHistoricActivityInstanceEndTime().asc()
+      .orderPartiallyByOccurrence().asc()
+      .list()
+    val finished: MutableList<String> = ArrayList(finishedInstances.size)
+    for (instance in finishedInstances) {
+      finished.add(instance.activityId)
+    }
+    val message = "Expecting %s " +
+      (if (hasPassed)
+        ("to have passed activities %s at least once"
+          + (if (inOrder) " and in order" else "") + ", ")
+      else
+        "NOT to have passed activities %s, ") +
+      "but actually we found that it passed %s. (Please make sure you have set the history " +
+      "service of the engine to at least 'activity' or a higher level before making use of this assertion!)"
+    val assertion = Assertions.assertThat(finished)
+      .overridingErrorMessage(
+        message,
+        this.processInstanceId,
+        Lists.newArrayList(*activityIds),
+        Lists.newArrayList(finished)
+      )
+    if (hasPassed) {
+      assertion.contains(*activityIds)
+      if (inOrder) {
+        var remainingFinished: List<String> = finished
+        for (activityId in activityIds) {
+          Assertions.assertThat(remainingFinished)
+            .overridingErrorMessage(
+              message,
+              this.processInstanceId,
+              Lists.newArrayList(*activityIds),
+              Lists.newArrayList(finished)
+            )
+            .contains(activityId)
+          remainingFinished = remainingFinished.subList(remainingFinished.indexOf(activityId) + 1, remainingFinished.size)
+        }
+      }
+    } else assertion.doesNotContain(*activityIds)
+  }
+
+  open fun process_is_stopped(): SUBTYPE {
+    processEngineServices.runtimeService.deleteProcessInstance(this.processInstanceId, "Stopped", false, true)
+    return self()
+  }
 
   open fun task(): TaskInformation {
     return Objects.requireNonNull(taskInformation, "No task found, consider to assert using process_waits_in")
   }
 
+  private fun getProcessInstance(): ProcessInstance {
+    require(this::processInstanceId.isInitialized) { "You must initialize with process_is_started() before accessing it." }
+    return BpmnAwareTests.processInstanceQuery().processInstanceId(processInstanceId).singleResult()
+  }
 
   private fun findTaskByActivityId(taskDescriptionKey: String): Optional<String> {
     embeddedPullUserTaskDelivery.refresh()

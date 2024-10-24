@@ -1,7 +1,5 @@
 package dev.bpmcrafters.example.common.adapter.out.process;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import com.tngtech.jgiven.annotation.As;
 import com.tngtech.jgiven.annotation.ProvidedScenarioState;
 import com.tngtech.jgiven.annotation.Quoted;
@@ -10,8 +8,6 @@ import dev.bpmcrafters.example.common.adapter.shared.SimpleProcessWorkflowConst.
 import dev.bpmcrafters.example.common.application.port.out.UserTaskOutPort;
 import dev.bpmcrafters.example.common.application.port.out.WorkflowOutPort;
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.testing.AbstractC7EmbeddedStage;
-import io.holunda.camunda.bpm.extension.jgiven.DefaultInstanceSupplier;
-import org.camunda.bpm.engine.runtime.ProcessInstance;
 import org.camunda.bpm.engine.variable.VariableMap;
 import org.camunda.bpm.engine.variable.Variables;
 
@@ -42,15 +38,8 @@ public class SimpleProcessStages {
     @As("simple process started with value $value and intValue $intValue")
     public ActionStage simple_process_started(@Quoted String value, @Quoted Integer intValue) {
       String instanceId = workflowOutPort.startSimpleProcess(value, intValue);
-      assertThat(instanceId).isNotNull();
+      process_is_started(instanceId); // sets and init the process instance id or later process instance checks
       this.correlationKey = value;
-
-      ProcessInstance pi = this.getProcessEngineServices().getRuntimeService()
-        .createProcessInstanceQuery()
-        .processInstanceId(instanceId)
-        .singleResult();
-      super.processInstanceSupplier = new DefaultInstanceSupplier(pi);
-
       return self();
     }
 
