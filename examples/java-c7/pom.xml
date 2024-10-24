@@ -67,12 +67,6 @@
     </dependency>
 
     <dependency>
-      <groupId>dev.bpm-crafters.process-engine-api</groupId>
-      <artifactId>process-engine-api-adapter-testing</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
       <groupId>org.camunda.bpm</groupId>
       <artifactId>camunda-bpm-junit5</artifactId>
       <scope>test</scope>
@@ -84,9 +78,15 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>io.holunda.testing</groupId>
-      <artifactId>camunda-bpm-jgiven</artifactId>
-      <version>1.22.0</version>
+      <groupId>com.tngtech.jgiven</groupId>
+      <artifactId>jgiven-core</artifactId>
+      <version>1.3.1</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.tngtech.jgiven</groupId>
+      <artifactId>jgiven-junit5</artifactId>
+      <version>1.3.1</version>
       <scope>test</scope>
     </dependency>
     <dependency>
