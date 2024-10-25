@@ -198,8 +198,28 @@ abstract class AbstractC8ProcessStage<SUBTYPE : AbstractC8ProcessStage<SUBTYPE>>
     return self()
   }
 
+  @As("external task of type \$jobType is completed with error \$errorMessage")
+  open fun external_task_is_completed_with_error(
+    @Quoted jobType: String,
+    @Quoted errorMessage: String,
+    payload: Map<String, Any> = mapOf()
+  ): SUBTYPE {
+    Objects.requireNonNull(
+      this.activatedJob,
+      "No active external service task found, consider to assert using external_task_exists"
+    )
+    Assertions.assertThat(activatedJob.type)
+      .describedAs("Expected the active job to be a type of %s, but it was %s", jobType, activatedJob.type)
+      .isEqualTo(jobType)
+    serviceTaskCompletionApi
+      .completeTaskByError(
+        CompleteTaskByErrorCmd("" + activatedJob.key, errorMessage) { payload }
+      ).get()
+    return self()
+  }
+
   open fun process_has_passed(activityId: String?): SUBTYPE {
-    Assertions.assertThat(allProcessEngineEvents.map { record -> record.value.elementId })
+    Assertions.assertThat(allCompletedProcessEngineEvents.map { record -> record.value.elementId })
       .contains(activityId)
     return self()
   }
@@ -217,7 +237,7 @@ abstract class AbstractC8ProcessStage<SUBTYPE : AbstractC8ProcessStage<SUBTYPE>>
 
   open fun process_is_finished(): SUBTYPE {
     Assertions.assertThat(
-      allProcessEngineEvents
+      allCompletedProcessEngineEvents
         .filter { record -> record.value.bpmnElementType == BpmnElementType.PROCESS }
         .findFirst()
     ).isNotEmpty()
@@ -234,6 +254,26 @@ abstract class AbstractC8ProcessStage<SUBTYPE : AbstractC8ProcessStage<SUBTYPE>>
     return self()
   }
 
+  @As("process waits in element $")
+  open fun process_waits_in_element(@Quoted activityId: String): SUBTYPE {
+    Awaitility.await().untilAsserted {
+      val activeActivityIds = allProcessEngineEvents
+        .toList()
+        .groupBy { record -> record.key } // group to remove completed or terminated events
+        .asSequence()
+        .filterNot { entry ->
+          entry.value.any { it.intent == ProcessInstanceIntent.ELEMENT_COMPLETED || it.intent == ProcessInstanceIntent.ELEMENT_TERMINATED }
+        }.map { it.value }
+        .flatten()
+        .filter { it.intent == ProcessInstanceIntent.ELEMENT_ACTIVATED }
+        .map { it.value.elementId }
+        .toList()
+      Assertions.assertThat(activeActivityIds)
+        .describedAs("Process is not waiting in \"$activityId\"")
+        .contains(activityId)
+    }
+    return self()
+  }
 
   open fun task_is_assigned_to_user(assignee: String): SUBTYPE {
     val taskAssignee = Objects.requireNonNull(
@@ -260,7 +300,6 @@ abstract class AbstractC8ProcessStage<SUBTYPE : AbstractC8ProcessStage<SUBTYPE>>
     )
   }
 
-
   private val allProcessEngineEvents: Stream<Record<ProcessInstanceRecordValue>>
     get() {
       val recordStream =
@@ -272,7 +311,13 @@ abstract class AbstractC8ProcessStage<SUBTYPE : AbstractC8ProcessStage<SUBTYPE>>
           recordStream.processInstanceRecords().spliterator(),
           false
         )
-        .filter { record -> record.recordType == RecordType.EVENT && record.intent == ProcessInstanceIntent.ELEMENT_COMPLETED }
+        .filter { record -> record.recordType == RecordType.EVENT }
+    }
+
+  private val allCompletedProcessEngineEvents: Stream<Record<ProcessInstanceRecordValue>>
+    get() {
+      return allProcessEngineEvents
+        .filter { record -> record.intent == ProcessInstanceIntent.ELEMENT_COMPLETED }
     }
 
   private fun findTaskByActivityId(taskDescriptionKey: String): Optional<String> {

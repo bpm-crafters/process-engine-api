@@ -46,11 +46,6 @@
         <artifactId>process-engine-api-examples-java-common-fixture</artifactId>
         <version>${project.version}</version>
       </dependency>
-      <dependency>
-        <groupId>dev.bpm-crafters.process-engine-api</groupId>
-        <artifactId>process-engine-api-adapter-testing</artifactId>
-        <version>${project.version}</version>
-      </dependency>
     </dependencies>
   </dependencyManagement>
 
