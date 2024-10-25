@@ -7,11 +7,14 @@ import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.toTask
 import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionRepository
 import dev.bpmcrafters.processengineapi.adapter.commons.task.TaskSubscriptionHandle
 import dev.bpmcrafters.processengineapi.task.TaskType
+import mu.KLogging
 import org.camunda.bpm.engine.delegate.DelegateTask
 
 class EmbeddedEventBasedUserTaskDelivery(
   private val subscriptionRepository: SubscriptionRepository
 ) : UserTaskDelivery {
+
+  companion object : KLogging()
 
   fun userTaskCreated(delegateTask: DelegateTask) {
     val subscriptions = subscriptionRepository.getTaskSubscriptions()

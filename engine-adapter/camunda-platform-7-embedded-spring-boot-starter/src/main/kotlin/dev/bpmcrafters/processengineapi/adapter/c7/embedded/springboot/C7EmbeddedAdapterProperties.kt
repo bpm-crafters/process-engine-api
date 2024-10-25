@@ -3,6 +3,7 @@ package dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.C7EmbeddedAdapterProperties.Companion.DEFAULT_PREFIX
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.boot.context.properties.NestedConfigurationProperty
+import org.springframework.core.Ordered
 
 @ConfigurationProperties(prefix = DEFAULT_PREFIX)
 class C7EmbeddedAdapterProperties(
@@ -42,8 +43,9 @@ class C7EmbeddedAdapterProperties(
     /**
      * Should an initial pull be executed on startup.
      */
-    val executeInitialPullOnStartup: Boolean = true
+    val executeInitialPullOnStartup: Boolean = true,
   )
+
 
   /**
    * Configuration for external service task handling.
@@ -98,9 +100,9 @@ class C7EmbeddedAdapterProperties(
     EMBEDDED_SCHEDULED,
 
     /**
-     * Delivery via camunda job.
+     * Delivery via event and scheduler.
      */
-    EMBEDDED_JOB,
+    EMBEDDED_EVENT_AND_SCHEDULED,
 
     /**
      * Custom delivery.

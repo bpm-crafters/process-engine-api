@@ -1,9 +1,7 @@
 package dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.event
 
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.C7EmbeddedAdapterAutoConfiguration
-import dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.C7EmbeddedAdapterEnabledCondition
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.C7EmbeddedAdapterProperties
-import dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.C7EmbeddedAdapterProperties.Companion.DEFAULT_PREFIX
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.C7EmbeddedAdapterProperties.UserTaskDeliveryStrategy
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.ConditionalOnUserTaskDeliveryStrategy
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.UserTaskDelivery
@@ -14,9 +12,7 @@ import mu.KLogging
 import org.camunda.bpm.engine.TaskService
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.boot.autoconfigure.AutoConfigureAfter
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.context.annotation.Bean
-import org.springframework.context.annotation.Conditional
 import org.springframework.context.annotation.Configuration
 
 /**
@@ -25,7 +21,7 @@ import org.springframework.context.annotation.Configuration
 @Configuration
 @AutoConfigureAfter(C7EmbeddedAdapterAutoConfiguration::class)
 @ConditionalOnUserTaskDeliveryStrategy(
-  strategy = UserTaskDeliveryStrategy.EMBEDDED_EVENT
+  strategies = [UserTaskDeliveryStrategy.EMBEDDED_EVENT, UserTaskDeliveryStrategy.EMBEDDED_EVENT_AND_SCHEDULED]
 )
 class C7EmbeddedEventDeliveryAutoConfiguration {
 
@@ -37,8 +33,8 @@ class C7EmbeddedEventDeliveryAutoConfiguration {
     logger.debug { "PROCESS-ENGINE-C7-EMBEDDED-204: Configuration applied." }
   }
 
-  @Bean("c7embedded-user-task-delivery")
-  @Qualifier("c7embedded-user-task-delivery")
+  @Bean("c7embedded-event-user-task-delivery")
+  @Qualifier("c7embedded-event-user-task-delivery")
   fun embeddedEventUserTaskDelivery(
     subscriptionRepository: SubscriptionRepository,
     taskService: TaskService,
@@ -49,11 +45,12 @@ class C7EmbeddedEventDeliveryAutoConfiguration {
     )
   }
 
-  @Bean("c7embedded-user-task-delivery-binding")
+  @Bean("c7embedded-event-user-task-delivery-binding")
   fun configureEventingForUserTaskDelivery(
-    @Qualifier("c7embedded-user-task-delivery")
-    embeddedEventBasedUserTaskDelivery: EmbeddedEventBasedUserTaskDelivery
-  ) = C7EmbeddedEventBasedUserTaskDeliveryBinding(
+    @Qualifier("c7embedded-event-user-task-delivery")
+    embeddedEventBasedUserTaskDelivery: EmbeddedEventBasedUserTaskDelivery,
+    c7AdapterProperties: C7EmbeddedAdapterProperties
+  ): C7EmbeddedEmbeddedEventBasedUserTaskUserTaskDeliveryBinding = C7EmbeddedEmbeddedEventBasedUserTaskUserTaskDeliveryBinding(
     embeddedEventBasedUserTaskDelivery = embeddedEventBasedUserTaskDelivery
   )
 }
