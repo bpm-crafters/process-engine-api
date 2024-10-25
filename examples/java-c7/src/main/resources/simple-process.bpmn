@@ -26,7 +26,7 @@
       <bpmn:messageEventDefinition id="MessageEventDefinition_1lzqmbf" messageRef="Message_3uo7jrg" />
     </bpmn:intermediateCatchEvent>
     <bpmn:sequenceFlow id="Flow_0soob8d" sourceRef="user-perform-task" targetRef="service-do-action2" />
-    <bpmn:userTask id="user-perform-task" name="Perform&#10;user task" camunda:asyncAfter="true" camunda:assignee="kermit" camunda:candidateUsers="avengers" camunda:candidateGroups="gonzo, fozzy">
+    <bpmn:userTask id="user-perform-task" name="Perform&#10;user task" camunda:assignee="kermit" camunda:candidateUsers="avengers" camunda:candidateGroups="gonzo, fozzy">
       <bpmn:incoming>Flow_11htx0a</bpmn:incoming>
       <bpmn:outgoing>Flow_0soob8d</bpmn:outgoing>
     </bpmn:userTask>
