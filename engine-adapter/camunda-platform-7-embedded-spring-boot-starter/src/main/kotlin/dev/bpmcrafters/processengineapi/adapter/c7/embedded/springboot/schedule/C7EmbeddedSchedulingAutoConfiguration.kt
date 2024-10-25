@@ -2,12 +2,11 @@ package dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.schedule
 
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.C7EmbeddedAdapterEnabledCondition
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.C7EmbeddedAdapterProperties
-import dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.C7EmbeddedAdapterProperties.Companion.DEFAULT_PREFIX
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.C7EmbeddedAdapterProperties.ExternalServiceTaskDeliveryStrategy.EMBEDDED_SCHEDULED
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.C7EmbeddedAdapterProperties.UserTaskDeliveryStrategy
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.ConditionalOnServiceTaskDeliveryStrategy
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.ConditionalOnUserTaskDeliveryStrategy
-import dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.job.C7EmbeddedJobDeliveryAutoConfiguration
+import dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.event.C7EmbeddedEventDeliveryAutoConfiguration
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.UserTaskDelivery
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.pull.EmbeddedPullServiceTaskDelivery
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.pull.EmbeddedPullUserTaskDelivery
@@ -19,9 +18,7 @@ import org.camunda.bpm.engine.RepositoryService
 import org.camunda.bpm.engine.TaskService
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.boot.autoconfigure.AutoConfigureAfter
-import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Conditional
 import org.springframework.context.annotation.Configuration
@@ -35,7 +32,7 @@ import java.util.concurrent.ExecutorService
 @Configuration
 @EnableScheduling
 @EnableAsync
-@AutoConfigureAfter(C7EmbeddedJobDeliveryAutoConfiguration::class)
+@AutoConfigureAfter(C7EmbeddedEventDeliveryAutoConfiguration::class)
 @Conditional(C7EmbeddedAdapterEnabledCondition::class)
 class C7EmbeddedSchedulingAutoConfiguration {
 
@@ -78,10 +75,10 @@ class C7EmbeddedSchedulingAutoConfiguration {
     executorService = executorService
   )
 
-  @Bean("c7embedded-user-task-delivery")
-  @Qualifier("c7embedded-user-task-delivery")
+  @Bean("c7embedded-schedule-user-task-delivery")
+  @Qualifier("c7embedded-schedule-user-task-delivery")
   @ConditionalOnUserTaskDeliveryStrategy(
-    strategy = UserTaskDeliveryStrategy.EMBEDDED_SCHEDULED
+    strategies = [UserTaskDeliveryStrategy.EMBEDDED_SCHEDULED, UserTaskDeliveryStrategy.EMBEDDED_EVENT_AND_SCHEDULED]
   )
   fun embeddedScheduledUserTaskDelivery(
     subscriptionRepository: SubscriptionRepository,
@@ -90,7 +87,7 @@ class C7EmbeddedSchedulingAutoConfiguration {
     c7AdapterProperties: C7EmbeddedAdapterProperties,
     @Qualifier("c7embedded-service-task-worker-executor")
     executorService: ExecutorService
-  ): UserTaskDelivery {
+  ): EmbeddedPullUserTaskDelivery {
     return EmbeddedPullUserTaskDelivery(
       subscriptionRepository = subscriptionRepository,
       taskService = taskService,

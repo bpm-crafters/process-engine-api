@@ -1,6 +1,7 @@
 package dev.bpmcrafters.example.common.application.usecase;
 
 import dev.bpmcrafters.example.common.application.port.in.StartProcessInstanceInPort;
+import dev.bpmcrafters.example.common.application.port.out.WorkflowOutPort;
 import dev.bpmcrafters.processengineapi.process.StartProcessApi;
 import dev.bpmcrafters.processengineapi.process.StartProcessByDefinitionCmd;
 import lombok.RequiredArgsConstructor;
@@ -18,24 +19,15 @@ import java.util.concurrent.Future;
 @RequiredArgsConstructor
 public class StartProcessInstanceUseCase implements StartProcessInstanceInPort {
 
-  private final StartProcessApi startProcessApi;
+  private final WorkflowOutPort workflowOutPort;
 
   @Override
   public Future<String> startNew(String value, Integer intValue) {
     CompletableFuture<String> completableFuture = new CompletableFuture<>();
     Executors.newCachedThreadPool().submit(() -> {
       try {
-        val result = startProcessApi.startProcess(
-          new StartProcessByDefinitionCmd(
-            "simple-process-1",
-            () -> Map.of(
-              "stringValue", value,
-              "intValue", intValue
-              // "listVariable", List.of("element1", "element2") // FIXME -> will be resolved with https://github.com/bpm-crafters/process-engine-api/issues/33
-            )
-          )
-        );
-        completableFuture.complete(result.get().getInstanceId()); // FIXME -> chain instead of sync get
+        val instanceId = workflowOutPort.startSimpleProcess(value, intValue);
+        completableFuture.complete(instanceId);
       } catch (Exception e) {
         completableFuture.completeExceptionally(e);
       }

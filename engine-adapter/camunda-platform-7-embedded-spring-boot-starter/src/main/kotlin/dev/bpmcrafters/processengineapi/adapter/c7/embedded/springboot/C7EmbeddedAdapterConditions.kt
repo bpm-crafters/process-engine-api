@@ -81,7 +81,7 @@ open class C7EmbeddedAdapterServiceTaskInitialPullEnabledCondition : C7EmbeddedA
   OnUserTaskDeliveryStrategyCondition::class
 )
 annotation class ConditionalOnUserTaskDeliveryStrategy(
-  val strategy: UserTaskDeliveryStrategy = UserTaskDeliveryStrategy.EMBEDDED_SCHEDULED,
+  val strategies: Array<UserTaskDeliveryStrategy> = [UserTaskDeliveryStrategy.EMBEDDED_SCHEDULED],
 )
 
 internal class OnUserTaskDeliveryStrategyCondition : C7EmbeddedAdapterEnabledCondition() {
@@ -97,11 +97,12 @@ internal class OnUserTaskDeliveryStrategyCondition : C7EmbeddedAdapterEnabledCon
     if (propertiesBindResult.isBound) {
       val properties: C7EmbeddedAdapterProperties = propertiesBindResult.get()
 
-      val strategy = metadata
+      @Suppress("UNCHECKED_CAST")
+      val strategies: Array<UserTaskDeliveryStrategy> = metadata
         .getAnnotationAttributes(ConditionalOnUserTaskDeliveryStrategy::class.java.name)
-        ?.get(ConditionalOnUserTaskDeliveryStrategy::strategy.name) as UserTaskDeliveryStrategy
+        ?.get(ConditionalOnUserTaskDeliveryStrategy::strategies.name) as Array<UserTaskDeliveryStrategy>
 
-      return properties.userTasks.deliveryStrategy == strategy
+      return strategies.contains(properties.userTasks.deliveryStrategy)
     }
 
     return false
