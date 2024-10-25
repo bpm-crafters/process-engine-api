@@ -1,0 +1,20 @@
+spring:
+  application:
+    name: ITest
+
+dev:
+  bpm-crafters:
+    process-api:
+      adapter:
+        c7embedded:
+          enabled: true
+          service-tasks:
+            delivery-strategy: embedded_scheduled
+            schedule-delivery-fixed-rate-in-seconds: 1
+            worker-id: execute-action-external
+            lock-time-in-seconds: 1
+            execute-initial-pull-on-startup: false
+          user-tasks:
+            schedule-delivery-fixed-rate-in-seconds: 1
+            delivery-strategy: embedded_scheduled
+            execute-initial-pull-on-startup: false

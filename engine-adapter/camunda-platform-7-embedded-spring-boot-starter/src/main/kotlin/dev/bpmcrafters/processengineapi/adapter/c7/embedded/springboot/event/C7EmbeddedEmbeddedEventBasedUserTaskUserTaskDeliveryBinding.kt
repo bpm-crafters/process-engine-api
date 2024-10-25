@@ -7,20 +7,19 @@ import org.springframework.core.Ordered
 import org.springframework.core.annotation.Order
 import org.springframework.stereotype.Component
 
-@Component // just to make the class open
-class C7EmbeddedEmbeddedEventBasedUserTaskUserTaskDeliveryBinding(
+open class C7EmbeddedEmbeddedEventBasedUserTaskUserTaskDeliveryBinding(
   private val embeddedEventBasedUserTaskDelivery: EmbeddedEventBasedUserTaskDelivery,
 ) {
 
   @EventListener(condition = "#delegateTask.eventName.equals('create')")
   @Order(Ordered.HIGHEST_PRECEDENCE + 1000)
-  fun onTaskCreate(delegateTask: DelegateTask) {
+  open fun onTaskCreate(delegateTask: DelegateTask) {
     embeddedEventBasedUserTaskDelivery.userTaskCreated(delegateTask = delegateTask)
   }
 
   @EventListener(condition = "#delegateTask.eventName.equals('delete') || #delegateTask.eventName.equals('timout')")
   @Order(Ordered.HIGHEST_PRECEDENCE + 1000)
-  fun onTaskDelete(delegateTask: DelegateTask) {
+  open fun onTaskDelete(delegateTask: DelegateTask) {
     embeddedEventBasedUserTaskDelivery.userTaskDeleted(delegateTask = delegateTask)
   }
 

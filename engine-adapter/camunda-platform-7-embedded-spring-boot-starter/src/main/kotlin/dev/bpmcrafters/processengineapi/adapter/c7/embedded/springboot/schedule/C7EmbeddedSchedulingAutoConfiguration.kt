@@ -87,7 +87,7 @@ class C7EmbeddedSchedulingAutoConfiguration {
     c7AdapterProperties: C7EmbeddedAdapterProperties,
     @Qualifier("c7embedded-service-task-worker-executor")
     executorService: ExecutorService
-  ): UserTaskDelivery {
+  ): EmbeddedPullUserTaskDelivery {
     return EmbeddedPullUserTaskDelivery(
       subscriptionRepository = subscriptionRepository,
       taskService = taskService,
