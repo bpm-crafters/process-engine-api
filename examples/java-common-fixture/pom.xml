@@ -40,6 +40,12 @@
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-web</artifactId>
     </dependency>
+    <dependency>
+        <groupId>dev.bpm-crafters.process-engine-api</groupId>
+        <artifactId>process-engine-api-adapter-commons</artifactId>
+        <version>${project.version}</version>
+        <scope>compile</scope>
+    </dependency>
   </dependencies>
 
   <build>

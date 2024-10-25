@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_0jyd698" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.20.0" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.4.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_0jyd698" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.25.0" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.4.0">
   <bpmn:process id="simple-process-1" name="Simple Process" isExecutable="true">
     <bpmn:startEvent id="started" name="Started">
       <bpmn:outgoing>Flow_14ng1om</bpmn:outgoing>
@@ -33,16 +33,16 @@
       <bpmn:incoming>Flow_08tjrzz</bpmn:incoming>
       <bpmn:outgoing>Flow_0khxhqk</bpmn:outgoing>
     </bpmn:sendTask>
-    <bpmn:sequenceFlow id="Flow_0khxhqk" sourceRef="service-do-action2" targetRef="receive_message" />
-    <bpmn:intermediateCatchEvent id="receive_message" name="Message&#10;received">
+    <bpmn:sequenceFlow id="Flow_0khxhqk" sourceRef="service-do-action2" targetRef="received_message" />
+    <bpmn:intermediateCatchEvent id="received_message" name="Message&#10;received">
       <bpmn:incoming>Flow_0khxhqk</bpmn:incoming>
       <bpmn:outgoing>Flow_1kgzn5e</bpmn:outgoing>
       <bpmn:messageEventDefinition id="MessageEventDefinition_0thsyah" messageRef="Message_1v4m9q6" />
     </bpmn:intermediateCatchEvent>
-    <bpmn:endEvent id="ended" name="Finished">
+    <bpmn:endEvent id="finished" name="Finished">
       <bpmn:incoming>Flow_1kgzn5e</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:sequenceFlow id="Flow_1kgzn5e" sourceRef="receive_message" targetRef="ended" />
+    <bpmn:sequenceFlow id="Flow_1kgzn5e" sourceRef="received_message" targetRef="finished" />
     <bpmn:boundaryEvent id="timed_out" name="Schedule&#10;passed" attachedToRef="user-perform-task">
       <bpmn:outgoing>Flow_061aq4o</bpmn:outgoing>
       <bpmn:timerEventDefinition id="TimerEventDefinition_02vvz4m">
@@ -62,12 +62,12 @@
       <bpmn:errorEventDefinition id="ErrorEventDefinition_0oxfir5" errorRef="Error_09pdhdd" />
     </bpmn:boundaryEvent>
     <bpmn:sequenceFlow id="Flow_051ssmq" sourceRef="Event_16qm3g6" targetRef="Gateway_0gy66to" />
-    <bpmn:sequenceFlow id="Flow_08koie9" sourceRef="Gateway_0gy66to" targetRef="receive_signal" />
-    <bpmn:endEvent id="ended_abnormally" name="Finished&#10;abnormally">
+    <bpmn:sequenceFlow id="Flow_08koie9" sourceRef="Gateway_0gy66to" targetRef="received_signal" />
+    <bpmn:endEvent id="finished_abnormally" name="Finished&#10;abnormally">
       <bpmn:incoming>Flow_1jvp6xj</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:sequenceFlow id="Flow_1jvp6xj" sourceRef="receive_signal" targetRef="ended_abnormally" />
-    <bpmn:intermediateCatchEvent id="receive_signal" name="Signal occured">
+    <bpmn:sequenceFlow id="Flow_1jvp6xj" sourceRef="received_signal" targetRef="finished_abnormally" />
+    <bpmn:intermediateCatchEvent id="received_signal" name="Signal occured">
       <bpmn:incoming>Flow_08koie9</bpmn:incoming>
       <bpmn:outgoing>Flow_1jvp6xj</bpmn:outgoing>
       <bpmn:signalEventDefinition id="SignalEventDefinition_1gjrm12" signalRef="Signal_2sv5u5p" />
@@ -98,13 +98,13 @@
       <bpmndi:BPMNShape id="Activity_0w82p3u_di" bpmnElement="service-do-action2">
         <dc:Bounds x="590" y="77" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_1ulgdyr_di" bpmnElement="receive_message">
+      <bpmndi:BPMNShape id="Event_1ulgdyr_di" bpmnElement="received_message">
         <dc:Bounds x="752" y="99" width="36" height="36" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="748" y="142" width="45" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_1x8zoeq_di" bpmnElement="ended">
+      <bpmndi:BPMNShape id="Event_1x8zoeq_di" bpmnElement="finished">
         <dc:Bounds x="852" y="99" width="36" height="36" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="849" y="142" width="42" height="14" />
@@ -113,13 +113,13 @@
       <bpmndi:BPMNShape id="Gateway_0gy66to_di" bpmnElement="Gateway_0gy66to" isMarkerVisible="true">
         <dc:Bounds x="625" y="255" width="50" height="50" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_0mw48rd_di" bpmnElement="ended_abnormally">
+      <bpmndi:BPMNShape id="Event_0mw48rd_di" bpmnElement="finished_abnormally">
         <dc:Bounds x="852" y="262" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="843" y="305" width="55" height="27" />
+          <dc:Bounds x="844" y="305" width="54" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_1jcnphz_di" bpmnElement="receive_signal">
+      <bpmndi:BPMNShape id="Event_1jcnphz_di" bpmnElement="received_signal">
         <dc:Bounds x="752" y="262" width="36" height="36" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="735" y="305" width="73" height="14" />
