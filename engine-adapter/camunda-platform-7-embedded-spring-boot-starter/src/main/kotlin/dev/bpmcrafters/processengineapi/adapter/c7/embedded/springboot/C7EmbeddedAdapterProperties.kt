@@ -44,10 +44,6 @@ class C7EmbeddedAdapterProperties(
      * Should an initial pull be executed on startup.
      */
     val executeInitialPullOnStartup: Boolean = true,
-    /**
-     * Order of the Spring event listener used in event delivery strategy.
-     */
-    val eventListenerOrder: Int = Ordered.HIGHEST_PRECEDENCE + 10000,
   )
 
 

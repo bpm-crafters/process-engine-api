@@ -38,6 +38,7 @@ fun Task.toTaskInformation(): TaskInformation = TaskInformation(
     "dueDate" to (this.dueDate?.toString() ?: ""),
 
     // currently only resolvable via task list
+    "creationDate" to this.creationDate,
     "processName" to this.processName,
     "taskName" to this.name,
     "formId" to this.formId,

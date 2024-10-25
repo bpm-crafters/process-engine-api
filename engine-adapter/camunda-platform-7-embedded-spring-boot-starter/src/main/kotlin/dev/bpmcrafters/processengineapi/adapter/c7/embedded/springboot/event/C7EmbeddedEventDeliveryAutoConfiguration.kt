@@ -50,8 +50,7 @@ class C7EmbeddedEventDeliveryAutoConfiguration {
     @Qualifier("c7embedded-event-user-task-delivery")
     embeddedEventBasedUserTaskDelivery: EmbeddedEventBasedUserTaskDelivery,
     c7AdapterProperties: C7EmbeddedAdapterProperties
-  ): C7EmbeddedEventBasedUserTaskDelivery = C7EmbeddedEmbeddedEventBasedUserTaskUserTaskDeliveryBinding(
-    embeddedEventBasedUserTaskDelivery = embeddedEventBasedUserTaskDelivery,
-    eventListenerOrder = c7AdapterProperties.userTasks.eventListenerOrder
+  ): C7EmbeddedEmbeddedEventBasedUserTaskUserTaskDeliveryBinding = C7EmbeddedEmbeddedEventBasedUserTaskUserTaskDeliveryBinding(
+    embeddedEventBasedUserTaskDelivery = embeddedEventBasedUserTaskDelivery
   )
 }

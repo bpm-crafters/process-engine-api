@@ -40,9 +40,9 @@ fun Task.toTaskInformation() =
       "taskName" to this.name,
       "taskDescription" to this.description,
       "assignee" to this.assignee,
-      "creationDate" to this.createTime.toString(),
-      "followUpDate" to (this.followUpDate?.toString() ?: ""),
-      "dueDate" to (this.dueDate?.toString() ?: ""),
+      "creationDate" to this.createTime.toString(), // FIXME -> to zoned iso 8601
+      "followUpDate" to (this.followUpDate?.toString() ?: ""), // FIXME -> to zoned iso 8601
+      "dueDate" to (this.dueDate?.toString() ?: ""), // FIXME -> to zoned iso 8601
       "formKey" to this.formKey
     )
   )
