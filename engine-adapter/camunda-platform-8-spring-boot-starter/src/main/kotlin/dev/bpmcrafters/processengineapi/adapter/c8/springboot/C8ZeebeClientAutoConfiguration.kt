@@ -1,12 +1,12 @@
 package dev.bpmcrafters.processengineapi.adapter.c8.springboot
 
 import dev.bpmcrafters.processengineapi.adapter.c8.springboot.C8AdapterProperties.Companion.DEFAULT_PREFIX
-import dev.bpmcrafters.processengineapi.adapter.c8.springboot.schedule.SubscribingRefreshingUserTaskDeliveryBinding
-import dev.bpmcrafters.processengineapi.adapter.c8.springboot.schedule.ScheduledUserTaskDeliveryBinding
-import dev.bpmcrafters.processengineapi.adapter.c8.springboot.schedule.SubscribingServiceTaskDeliveryBinding
+import dev.bpmcrafters.processengineapi.adapter.c8.springboot.C8AdapterProperties.ServiceTaskDeliveryStrategy.SUBSCRIPTION
+import dev.bpmcrafters.processengineapi.adapter.c8.springboot.C8AdapterProperties.UserTaskDeliveryStrategy.SUBSCRIPTION_REFRESHING
 import dev.bpmcrafters.processengineapi.adapter.c8.task.completion.C8ZeebeExternalServiceTaskCompletionApiImpl
 import dev.bpmcrafters.processengineapi.adapter.c8.task.completion.C8ZeebeUserTaskCompletionApiImpl
-import dev.bpmcrafters.processengineapi.adapter.c8.task.delivery.PullUserTaskDelivery
+import dev.bpmcrafters.processengineapi.adapter.c8.task.completion.FailureRetrySupplier
+import dev.bpmcrafters.processengineapi.adapter.c8.task.completion.LinearMemoryFailureRetrySupplier
 import dev.bpmcrafters.processengineapi.adapter.c8.task.delivery.SubscribingRefreshingUserTaskDelivery
 import dev.bpmcrafters.processengineapi.adapter.c8.task.delivery.SubscribingServiceTaskDelivery
 import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionRepository
@@ -15,8 +15,10 @@ import dev.bpmcrafters.processengineapi.task.UserTaskCompletionApi
 import io.camunda.zeebe.client.ZeebeClient
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.boot.autoconfigure.AutoConfigureAfter
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Conditional
 import org.springframework.context.annotation.Configuration
 
 /**
@@ -24,12 +26,21 @@ import org.springframework.context.annotation.Configuration
  */
 @Configuration
 @AutoConfigureAfter(C8AdapterAutoConfiguration::class)
-@ConditionalOnProperty(prefix = DEFAULT_PREFIX, name = ["enabled"], havingValue = "true", matchIfMissing = true)
+@Conditional(C8AdapterEnabledCondition::class)
 class C8ZeebeClientAutoConfiguration {
+
+  @Bean
+  @ConditionalOnMissingBean
+  fun defaultFailureRetrySupplier(c8AdapterProperties: C8AdapterProperties): FailureRetrySupplier =
+    LinearMemoryFailureRetrySupplier(
+      retry = c8AdapterProperties.serviceTasks.retries,
+      retryTimeout = c8AdapterProperties.serviceTasks.retryTimeoutInSeconds
+    )
+
 
   @Bean(name = ["c8-service-task-delivery"])
   @Qualifier("c8-service-task-delivery")
-  @ConditionalOnProperty(prefix = DEFAULT_PREFIX, name = ["service-tasks.delivery-strategy"], havingValue = "subscription")
+  @ConditionalOnServiceTaskDeliveryStrategy(strategy = SUBSCRIPTION)
   fun subscribingServiceTaskDelivery(
     subscriptionRepository: SubscriptionRepository,
     zeebeClient: ZeebeClient,
@@ -40,20 +51,9 @@ class C8ZeebeClientAutoConfiguration {
     workerId = c8AdapterProperties.serviceTasks.workerId
   )
 
-  @Bean("c8-service-task-delivery-scheduler")
-  @ConditionalOnProperty(prefix = DEFAULT_PREFIX, name = ["service-tasks.delivery-strategy"], havingValue = "subscription")
-  fun subscribingServiceTaskDeliveryBinding(
-    @Qualifier("c8-service-task-delivery")
-    subscribingServiceTaskDelivery: SubscribingServiceTaskDelivery
-  ): SubscribingServiceTaskDeliveryBinding {
-    return SubscribingServiceTaskDeliveryBinding(
-      subscribingServiceTaskDelivery = subscribingServiceTaskDelivery
-    )
-  }
-
   @Bean(name = ["c8-user-task-delivery"])
   @Qualifier("c8-user-task-delivery")
-  @ConditionalOnProperty(prefix = DEFAULT_PREFIX, name = ["user-tasks.delivery-strategy"], havingValue = "subscription_refreshing")
+  @ConditionalOnUserTaskDeliveryStrategy(strategy = SUBSCRIPTION_REFRESHING)
   fun subscribingRefreshingUserTaskDelivery(
     subscriptionRepository: SubscriptionRepository,
     zeebeClient: ZeebeClient,
@@ -63,29 +63,7 @@ class C8ZeebeClientAutoConfiguration {
       subscriptionRepository = subscriptionRepository,
       zeebeClient = zeebeClient,
       workerId = c8AdapterProperties.serviceTasks.workerId,
-      userTaskLockTimeoutMs = c8AdapterProperties.userTasks.scheduleDeliveryFixedRateInSeconds
-    )
-  }
-
-  @Bean("c8-user-task-delivery-scheduler")
-  @ConditionalOnProperty(prefix = DEFAULT_PREFIX, name = ["user-tasks.delivery-strategy"], havingValue = "scheduled")
-  fun scheduledUserTaskDeliveryBinding(
-    @Qualifier("c8-user-task-delivery")
-    pullUserTaskDelivery: PullUserTaskDelivery
-  ): ScheduledUserTaskDeliveryBinding {
-    return ScheduledUserTaskDeliveryBinding(
-      pullUserTaskDelivery = pullUserTaskDelivery
-    )
-  }
-
-  @Bean("c8-user-task-delivery-scheduler")
-  @ConditionalOnProperty(prefix = DEFAULT_PREFIX, name = ["user-tasks.delivery-strategy"], havingValue = "subscription_refreshing")
-  fun refreshingUserTaskDeliveryBinding(
-    @Qualifier("c8-user-task-delivery")
-    subscribingRefreshingUserTaskDelivery: SubscribingRefreshingUserTaskDelivery
-  ): SubscribingRefreshingUserTaskDeliveryBinding {
-    return SubscribingRefreshingUserTaskDeliveryBinding(
-      subscribingRefreshingUserTaskDelivery = subscribingRefreshingUserTaskDelivery
+      userTaskLockTimeoutMs = c8AdapterProperties.userTasks.scheduleDeliveryFixedRateInSeconds * 1000 * 2
     )
   }
 
@@ -94,10 +72,12 @@ class C8ZeebeClientAutoConfiguration {
   fun externalTaskCompletionStrategy(
     zeebeClient: ZeebeClient,
     subscriptionRepository: SubscriptionRepository,
+    failureRetrySupplier: FailureRetrySupplier
   ): ServiceTaskCompletionApi =
     C8ZeebeExternalServiceTaskCompletionApiImpl(
       zeebeClient = zeebeClient,
-      subscriptionRepository = subscriptionRepository
+      subscriptionRepository = subscriptionRepository,
+      failureRetrySupplier = failureRetrySupplier
     )
 
   @Bean("c8-user-task-completion")

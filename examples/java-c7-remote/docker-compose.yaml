@@ -1,7 +1,7 @@
-version: "3.9"
 services:
+
   camunda-bpm-platform-7:
-    image: camunda/camunda-bpm-platform:run-7.21.0
+    image: camunda/camunda-bpm-platform:run-7.22.0
     pull_policy: always
     ports:
       - '9090:8080'
@@ -11,5 +11,4 @@ services:
     command:
       - './camunda.sh'
       - '--rest'
-      - '--swaggerui'
       - '--webapps'

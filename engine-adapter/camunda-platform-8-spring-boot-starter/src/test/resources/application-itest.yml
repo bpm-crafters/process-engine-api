@@ -2,6 +2,12 @@ spring:
   application:
     name: ITest
 
+camunda:
+  client:
+    mode: self-managed
+    identity:
+      enabled: false
+
 dev:
   bpm-crafters:
     process-api:
@@ -9,12 +15,10 @@ dev:
         c8:
           enabled: true
           service-tasks:
-            delivery-strategy: subscription
+            delivery-strategy: SUBSCRIPTION
             worker-id: execute-action-external
-            subscribing-delivery-initial-delay-in-seconds: 1000
           user-tasks:
-            delivery-strategy: subscription_refreshing # or scheduled
-            schedule-delivery-fixed-rate-in-seconds: 100000
+            delivery-strategy: SUBSCRIPTION_REFRESHING # or scheduled
+            schedule-delivery-fixed-rate-in-seconds: 10
             tasklist-url: http://localhost
-            subscribing-delivery-initial-delay-in-seconds: 100000
             completion-strategy: job # or tasklist

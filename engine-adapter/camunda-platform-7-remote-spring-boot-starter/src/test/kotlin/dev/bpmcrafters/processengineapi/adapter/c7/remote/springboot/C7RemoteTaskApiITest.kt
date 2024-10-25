@@ -7,7 +7,7 @@ import io.toolisticon.testing.jgiven.WHEN
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 
-class C7RemoteTaskApiITest(@Autowired processTestHelperImpl: ProcessTestHelper) : AbstractC7RemoteApiITestBase(processTestHelperImpl) {
+class C7RemoteTaskApiITest : AbstractC7RemoteApiITestBase() {
 
   @Test
   fun `should get subscribed for user task with pull strategie`() {

@@ -5,17 +5,12 @@
   <parent>
     <groupId>dev.bpm-crafters.process-engine-api</groupId>
     <artifactId>process-engine-api-root</artifactId>
-    <version>0.0.7-SNAPSHOT</version>
+    <version>0.2.1-SNAPSHOT</version>
     <relativePath>../../pom.xml</relativePath>
   </parent>
 
   <artifactId>process-engine-api-adapter-camunda-platform-c8-spring-boot-starter</artifactId>
   <name>Adapter: C8 Spring-Boot Starter</name>
-
-  <properties>
-    <camunda-tasklist-client-java.version>8.5.3.6</camunda-tasklist-client-java.version>
-    <spring-zeebe.version>8.5.3</spring-zeebe.version>
-  </properties>
 
   <dependencyManagement>
     <dependencies>
@@ -40,25 +35,23 @@
       <version>${project.version}</version>
     </dependency>
 
-    <!-- https://mvnrepository.com/artifact/io.camunda.spring/spring-boot-starter-camunda -->
     <dependency>
-      <groupId>io.camunda.spring</groupId>
-      <artifactId>spring-boot-starter-camunda</artifactId>
-      <version>${spring-zeebe.version}</version>
+      <groupId>io.camunda</groupId>
+      <artifactId>spring-boot-starter-camunda-sdk</artifactId>
+      <version>8.6.3</version>
       <scope>provided</scope>
     </dependency>
-    <dependency>
-      <groupId>io.camunda.spring</groupId>
-      <artifactId>java-common</artifactId>
-      <version>${spring-zeebe.version}</version>
-      <scope>provided</scope>
-    </dependency>
-
     <dependency>
       <groupId>io.camunda</groupId>
       <artifactId>camunda-tasklist-client-java</artifactId>
-      <version>${camunda-tasklist-client-java.version}</version>
+      <version>8.6.3</version>
       <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>io.camunda</groupId>
+          <artifactId>zeebe-client-java</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <!-- Testing -->
@@ -69,9 +62,9 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>io.camunda.spring</groupId>
-      <artifactId>spring-boot-starter-camunda-test-testcontainer</artifactId>
-      <version>${spring-zeebe.version}</version>
+      <groupId>io.camunda</groupId>
+      <artifactId>zeebe-process-test-extension-testcontainer</artifactId>
+      <version>8.6.3</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

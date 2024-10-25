@@ -80,6 +80,11 @@ class BaseGivenWhenStage : Stage<BaseGivenWhenStage>() {
     processTestHelper.subscribeForUserTasks()
   }
 
+  fun `process helper`(processTestHelper: ProcessTestHelper) = step {
+    this.processTestHelper = processTestHelper
+  }
+
+
   fun `a active external task subscription`(taskDescriptionKey: String) = step {
     taskSubscription = subscribeTask(TaskType.EXTERNAL, taskDescriptionKey) { taskInformation, _ -> externalTaskId = taskInformation.taskId }
   }
@@ -125,5 +130,6 @@ class BaseGivenWhenStage : Stage<BaseGivenWhenStage>() {
       taskSubscription
     )
   )
+
 
 }

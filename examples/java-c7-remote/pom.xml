@@ -5,7 +5,7 @@
   <parent>
     <groupId>dev.bpm-crafters.process-engine-api</groupId>
     <artifactId>process-engine-api-examples</artifactId>
-    <version>0.0.7-SNAPSHOT</version>
+    <version>0.2.1-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -17,7 +17,7 @@
       <dependency>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-dependencies</artifactId>
-        <version>3.3.3</version>
+        <version>${spring-boot.version}</version>
         <scope>import</scope>
         <type>pom</type>
       </dependency>
@@ -54,12 +54,12 @@
     <dependency>
       <groupId>org.camunda.community.rest</groupId>
       <artifactId>camunda-platform-7-rest-client-spring-boot-starter</artifactId>
-      <version>7.21.0</version>
+      <version>7.22.0</version>
     </dependency>
     <dependency>
       <groupId>org.camunda.bpm.springboot</groupId>
       <artifactId>camunda-bpm-spring-boot-starter-external-task-client</artifactId>
-      <version>7.21.0</version>
+      <version>7.22.0</version>
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.module</groupId>

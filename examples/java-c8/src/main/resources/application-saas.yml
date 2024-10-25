@@ -2,33 +2,20 @@ spring:
   application:
     name: Java Camunda Platform 8 SaaS
 
+camunda:
+  client:
+    mode: saas
+    region: ${ZEEBE_REGION}
+    cluster-id: ${ZEEBE_CLUSTER_ID}
+    auth:
+      clientId: ${ZEEBE_CLIENT_ID}
+      clientSecret: ${ZEEBE_CLIENT_SECRET}
+
+
 dev:
   bpm-crafters:
     process-api:
       adapter:
         c8:
-          enabled: true
-          service-tasks:
-            delivery-strategy: subscription
-            worker-id: worker
-            subscribing-delivery-initial-delay-in-seconds: 1000
           user-tasks:
-            delivery-strategy: subscription_refreshing
-            completion-strategy: job
-            subscribing-delivery-initial-delay-in-seconds: 1000
-            schedule-delivery-fixed-rate-in-seconds: 2000 # every 2 seconds
-            tasklist-url: https://${zeebe.client.cloud.region}.tasklist.camunda.io/${zeebe.client.cloud.clusterId}
-            fixed-rate-refresh-rate: 2000 # every 2 seconds
-
-zeebe:
-  client:
-    connection-mode: CLOUD # CLOUD for SaaS OR ADDRESS for Self-Managed
-    cloud:
-      region: ${ZEEBE_REGION}
-      clusterId: ${ZEEBE_CLUSTER_ID}
-      clientId: ${ZEEBE_CLIENT_ID}
-      clientSecret: ${ZEEBE_CLIENT_SECRET}
-
-logging:
-  level:
-    io.camunda.zeebe.client.impl: ERROR
+            tasklist-url: https://${zeebe.client.region}.tasklist.camunda.io/${zeebe.client.clusterId}

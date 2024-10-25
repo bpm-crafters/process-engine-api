@@ -7,6 +7,7 @@ import dev.bpmcrafters.processengineapi.process.*
 import io.camunda.zeebe.client.ZeebeClient
 import io.camunda.zeebe.client.api.response.ProcessInstanceEvent
 import io.camunda.zeebe.client.api.response.PublishMessageResponse
+import mu.KLogging
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.Future
 
@@ -14,10 +15,13 @@ class StartProcessApiImpl(
   private val zeebeClient: ZeebeClient
 ) : StartProcessApi {
 
+  companion object: KLogging()
+
   override fun startProcess(cmd: StartProcessCommand): Future<ProcessInformation> {
     return when (cmd) {
       is StartProcessByDefinitionCmd ->
         CompletableFuture.supplyAsync {
+          logger.debug { "PROCESS-ENGINE-C8-004: Starting a new process instance by definition ${cmd.definitionKey}." }
           zeebeClient
             .newCreateInstanceCommand()
             .bpmnProcessId(cmd.definitionKey)
@@ -29,6 +33,7 @@ class StartProcessApiImpl(
         }
       is StartProcessByMessageCmd ->
         CompletableFuture.supplyAsync {
+          logger.debug { "PROCESS-ENGINE-C8-005: Starting a new process instance by message ${cmd.messageName}." }
           zeebeClient
             .newPublishMessageCommand()
             .messageName(cmd.messageName)

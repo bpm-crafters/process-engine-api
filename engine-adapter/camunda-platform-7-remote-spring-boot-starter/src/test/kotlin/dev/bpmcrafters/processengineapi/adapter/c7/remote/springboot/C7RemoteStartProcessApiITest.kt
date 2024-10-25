@@ -1,14 +1,10 @@
 package dev.bpmcrafters.processengineapi.adapter.c7.remote.springboot
 
-import dev.bpmcrafters.processengineapi.test.ProcessTestHelper
 import io.toolisticon.testing.jgiven.THEN
 import io.toolisticon.testing.jgiven.WHEN
 import org.junit.jupiter.api.Test
-import org.springframework.beans.factory.annotation.Autowired
 
-class C7RemoteStartProcessApiITest(
-  @Autowired processTestHelperImpl: ProcessTestHelper
-) : AbstractC7RemoteApiITestBase(processTestHelperImpl) {
+class C7RemoteStartProcessApiITest : AbstractC7RemoteApiITestBase() {
 
   @Test
   fun `should start process by definition without payload`() {

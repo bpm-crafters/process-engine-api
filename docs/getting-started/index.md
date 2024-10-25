@@ -1,6 +1,6 @@
 If you want to try out `process-engine-api` library in your project, there are two steps you need to perform.
 
-First, add the library to your project classpath. In maven it is just adding the following dependency into your 
+First, add the library to your project classpath. In Apache Maven it is just adding the following dependency into your 
 project's `pom.xml`:
 
 ```xml 
@@ -104,7 +104,7 @@ you will also need to add some additional libraries. Here is the result:
   <dependency>
     <groupId>org.camunda.community.rest</groupId>
     <artifactId>camunda-platform-7-rest-client-spring-boot-starter</artifactId>
-    <version>7.21.0</version>
+    <version>7.22.0</version>
   </dependency>
   <!-- open feign client -->
   <dependency>
@@ -161,13 +161,22 @@ First add the corresponding adapter to your project's classpath:
 
     <!-- We need the camunda client too -->
     <dependency>
-      <groupId>io.camunda.spring</groupId>
-      <artifactId>spring-boot-starter-camunda</artifactId>
+      <groupId>io.camunda</groupId>
+      <artifactId>spring-boot-starter-camunda-sdk</artifactId>
+      <version>8.6.3</version>
     </dependency>
     <dependency>
-      <groupId>io.camunda.spring</groupId>
-      <artifactId>java-common</artifactId>
+      <groupId>io.camunda</groupId>
+      <artifactId>camunda-tasklist-client-java</artifactId>
+      <version>8.6.0</version>
+      <exclusions>
+        <exclusion>
+          <groupId>io.camunda</groupId>
+          <artifactId>zeebe-client-java</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
+
 </dependencies>
 ```
 
@@ -190,11 +199,12 @@ dev:
             tasklist-url: https://${zeebe.client.cloud.region}.tasklist.camunda.io/${zeebe.client.cloud.clusterId}
             fixed-rate-refresh-rate: 5000 # every 5 seconds
 
-zeebe:
+camunda:
   client:
-    cloud:
-      region: ${ZEEBE_REGION}
-      clusterId: ${ZEEBE_CLUSTER_ID}
+    mode: saas
+    region: ${ZEEBE_REGION}
+    cluster-id: ${ZEEBE_CLUSTER_ID}
+    auth:
       clientId: ${ZEEBE_CLIENT_ID}
       clientSecret: ${ZEEBE_CLIENT_SECRET}
 

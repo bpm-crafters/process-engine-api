@@ -39,6 +39,16 @@ class C8AdapterProperties(
      * Default id of the worker used for the external task.
      */
     val workerId: String,
+
+    /**
+     * Number of job retries.
+     */
+    val retries: Int = 3,
+
+    /**
+     * Timeout in seconds before making a retry.
+     */
+    val retryTimeoutInSeconds: Long = 5L
   )
 
   data class UserTasks(
@@ -53,11 +63,7 @@ class C8AdapterProperties(
     /**
      * Fixed rate for scheduled user task delivery.
      */
-    val scheduleDeliveryFixedRateInSeconds: Long = 5_000L,
-    /**
-     * Fixed rate for refreshing user task delivery.
-     */
-    val subscribingDeliveryInitialDelayInSeconds: Long = 5_000L,
+    val scheduleDeliveryFixedRateInSeconds: Long = 5L,
     /**
      * URL of the task list.
      */
@@ -91,7 +97,12 @@ class C8AdapterProperties(
     /**
      * Subscribing using zeebe job subscriptions, extending lock times.
      */
-    SUBSCRIPTION_REFRESHING
+    SUBSCRIPTION_REFRESHING,
+
+    /**
+     * Own strategy.
+     */
+    CUSTOM
   }
 
   /**
@@ -101,6 +112,11 @@ class C8AdapterProperties(
     /**
      * Subscribing using zeebe job.
      */
-    SUBSCRIPTION
+    SUBSCRIPTION,
+
+    /**
+     * Own strategy.
+     */
+    CUSTOM
   }
 }

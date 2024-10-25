@@ -1,6 +1,7 @@
 package dev.bpmcrafters.processengineapi.adapter.c8
 
 import dev.bpmcrafters.processengineapi.test.ProcessTestHelper
+import io.toolisticon.testing.jgiven.AND
 import io.toolisticon.testing.jgiven.GIVEN
 import io.toolisticon.testing.jgiven.THEN
 import io.toolisticon.testing.jgiven.WHEN
@@ -9,12 +10,14 @@ import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 
-class C8TaskApiITest(@Autowired processTestHelperImpl: ProcessTestHelper) : AbstractC8ApiITest(processTestHelperImpl) {
+class C8TaskApiITest : AbstractC8ApiITest() {
 
   @Test
   @Disabled("FIXME")
-  fun `should get subscribed for user task with pull strategie`() {
+  fun `should get subscribed for user task with pull strategy`() {
     GIVEN
+      .`process helper`(this.processTestHelper)
+      .AND
       .`a active user task subscription`(USER_TASK)
 
     WHEN
@@ -25,8 +28,10 @@ class C8TaskApiITest(@Autowired processTestHelperImpl: ProcessTestHelper) : Abst
   }
 
   @Test
-  fun `should get subscribed for user task with subscribing strategie`() {
+  fun `should get subscribed for user task with subscribing strategy`() {
     GIVEN
+      .`process helper`(this.processTestHelper)
+      .AND
       .`a active user task subscription`(USER_TASK)
       .`subscribe for tasks`()
 
@@ -39,8 +44,10 @@ class C8TaskApiITest(@Autowired processTestHelperImpl: ProcessTestHelper) : Abst
 
   @Test
   @Disabled("FIXME")
-  fun `should not get subscribed for user task with pull strategie after unsubscribe`() {
+  fun `should not get subscribed for user task with pull strategy after unsubscribe`() {
     GIVEN
+      .`process helper`(this.processTestHelper)
+      .AND
       .`a active user task subscription`(USER_TASK)
 
     WHEN
@@ -53,8 +60,10 @@ class C8TaskApiITest(@Autowired processTestHelperImpl: ProcessTestHelper) : Abst
 
   @Test
   @Disabled("FIXME")
-  fun `should not get subscribed for user task with subscribing strategie after unsubscribe`() {
+  fun `should not get subscribed for user task with subscribing strategy after unsubscribe`() {
     GIVEN
+      .`process helper`(this.processTestHelper)
+      .AND
       .`a active user task subscription`(USER_TASK)
       .`subscribe for tasks`()
 
@@ -67,8 +76,10 @@ class C8TaskApiITest(@Autowired processTestHelperImpl: ProcessTestHelper) : Abst
   }
 
   @Test
-  fun `should get subscribed for external task with pull strategie`() {
+  fun `should get subscribed for external task with pull strategy`() {
     GIVEN
+      .`process helper`(this.processTestHelper)
+      .AND
       .`a active external task subscription`(EXTERNAL_TASK)
 
     WHEN
@@ -80,8 +91,10 @@ class C8TaskApiITest(@Autowired processTestHelperImpl: ProcessTestHelper) : Abst
 
   @Test
   @Disabled("FIXME")
-  fun `should not get subscribed for external task with pull strategie after unsubscribe`() {
+  fun `should not get subscribed for external task with pull strategy after unsubscribe`() {
     GIVEN
+      .`process helper`(this.processTestHelper)
+      .AND
       .`a active external task subscription`(USER_TASK)
 
     WHEN
@@ -96,6 +109,9 @@ class C8TaskApiITest(@Autowired processTestHelperImpl: ProcessTestHelper) : Abst
   @Disabled("FIXME")
   fun `should complete a user task`() {
     GIVEN
+      .`process helper`(this.processTestHelper)
+      .AND
+
       .`a active user task subscription`(USER_TASK)
       .`start process by definition`(KEY)
 
@@ -110,6 +126,9 @@ class C8TaskApiITest(@Autowired processTestHelperImpl: ProcessTestHelper) : Abst
   @Disabled("FIXME")
   fun `should complete a external task`() {
     GIVEN
+      .`process helper`(this.processTestHelper)
+      .AND
+
       .`a active external task subscription`(EXTERNAL_TASK)
       .`start process by definition`(KEY)
 

@@ -8,8 +8,22 @@ import dev.bpmcrafters.processengineapi.task.TaskType
  */
 interface SubscriptionRepository {
 
+  /**
+   * Retrieves the list of subscriptions.
+   * @return list of subscriptions.
+   */
   fun getTaskSubscriptions(): List<TaskSubscriptionHandle>
+
+  /**
+   * Creates a new task subscription.
+   * @param subscription subscription to create.
+   */
   fun createTaskSubscription(subscription: TaskSubscriptionHandle)
+
+  /**
+   * Deletes existing task subscription.
+   * @param subscription subscription to delete.
+   */
   fun deleteTaskSubscription(subscription: TaskSubscriptionHandle)
 
   /**

@@ -43,7 +43,7 @@ class C7EmbeddedAdapterAutoConfiguration {
 
   @PostConstruct
   fun report() {
-    logger.debug { "PROCESS-ENGINE-C7-EMBEDDED-200: Configuration applied." }
+    logger.debug { "PROCESS-ENGINE-C7-EMBEDDED-200: Configuration of services applied." }
   }
 
   @Bean("c7embedded-start-process-api")

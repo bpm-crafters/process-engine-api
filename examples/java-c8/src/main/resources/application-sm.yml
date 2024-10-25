@@ -1,39 +1,26 @@
 spring:
+  banner:
+    location: banner-sm.txt
   application:
     name: Java Camunda Platform 8 Local Self-Managed
+
+camunda:
+  client:
+    mode: self-managed
+    auth:
+      clientId: zeebe
+      clientSecret: zecret
+      username: demo
+      password: demo
+    zeebe:
+      base-url: http://127.0.0.1:26500
+    tasklist:
+      base-url: http://localhost:8082
 
 dev:
   bpm-crafters:
     process-api:
       adapter:
         c8:
-          enabled: true
-          service-tasks:
-            delivery-strategy: subscription
-            worker-id: worker
-            subscribing-delivery-initial-delay-in-seconds: 1000
           user-tasks:
-            delivery-strategy: subscription_refreshing
-            subscribing-delivery-initial-delay-in-seconds: 1000
-            schedule-delivery-fixed-rate-in-seconds: 2000 # every 2 seconds
             tasklist-url: http://localhost:8082
-            fixed-rate-refresh-rate: 2000 # every 2 seconds
-            completion-strategy: job
-
-camunda:
-  client:
-    mode: simple
-    auth:
-      username: demo
-      password: demo
-    zeebe:
-      base-url: http://127.0.0.1:26500
-    tasklist:
-      base-url: ${dev.bpm-crafters.process-api.adapter.c8.user-tasks.tasklist-url}
-
-
-logging:
-  level:
-    io.camunda.zeebe.client.impl: ERROR
-    dev.bpmcrafters.processengineapi.adapter.c8.springboot.schedule: DEBUG
-    dev.bpmcrafters.processengineapi.adapter.c8.task.delivery: DEBUG

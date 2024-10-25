@@ -6,7 +6,7 @@
   <parent>
     <groupId>dev.bpm-crafters.process-engine-api</groupId>
     <artifactId>process-engine-api-root</artifactId>
-    <version>0.0.7-SNAPSHOT</version>
+    <version>0.2.1-SNAPSHOT</version>
     <relativePath>../../pom.xml</relativePath>
   </parent>
 
@@ -15,8 +15,6 @@
 
   <properties>
     <h2.version>2.2.224</h2.version>
-    <camunda-platform-7-mockito.version>7.21.0</camunda-platform-7-mockito.version>
-    <mockk.version>1.13.12</mockk.version>
     <jgiven.version>1.3.1</jgiven.version>
   </properties>
 
@@ -44,12 +42,22 @@
 
     <dependency>
       <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot</artifactId>
+      <artifactId>spring-boot-starter</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-web</artifactId>
       <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-test</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.httpcomponents.client5</groupId>
+      <artifactId>httpclient5</artifactId>
       <scope>compile</scope>
     </dependency>
 
@@ -64,12 +72,6 @@
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-api</artifactId>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>io.mockk</groupId>
-      <artifactId>mockk-jvm</artifactId>
-      <version>${mockk.version}</version>
       <scope>compile</scope>
     </dependency>
     <dependency>

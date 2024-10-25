@@ -11,6 +11,7 @@ import java.util.concurrent.Future
 
 /**
  * Abstract task subscription api implementation, using subscription repository and a list of completion strategies.
+ * @since 0.0.2
  */
 abstract class AbstractTaskSubscriptionApiImpl(
   private val subscriptionRepository: SubscriptionRepository
@@ -28,13 +29,14 @@ abstract class AbstractTaskSubscriptionApiImpl(
       termination = cmd.termination
     ).let {
       subscriptionRepository.createTaskSubscription(it)
-      logger.info { "Registered new task subscription $it" }
+      logger.info { "PROCESS-ENGINE-API-001: Registered new task subscription $it" }
       CompletableFuture.completedFuture(it)
     }
   }
 
   override fun unsubscribe(cmd: UnsubscribeFromTaskCmd): Future<Empty> {
     subscriptionRepository.deleteTaskSubscription(ensure(cmd.subscription))
+    logger.info { "PROCESS-ENGINE-API-002: Un-registered new task subscription ${cmd.subscription}" }
     return CompletableFuture.completedFuture(Empty)
   }
 

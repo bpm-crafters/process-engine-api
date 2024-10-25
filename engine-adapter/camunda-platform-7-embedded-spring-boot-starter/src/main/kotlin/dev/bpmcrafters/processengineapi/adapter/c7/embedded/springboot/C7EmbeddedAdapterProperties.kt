@@ -124,11 +124,6 @@ class C7EmbeddedAdapterProperties(
     EMBEDDED_SCHEDULED,
 
     /**
-     * Delivery via camunda job.
-     */
-    EMBEDDED_JOB,
-
-    /**
      * Custom delivery.
      */
     CUSTOM,

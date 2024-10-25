@@ -14,19 +14,16 @@ import dev.bpmcrafters.processengineapi.deploy.DeploymentApi
 import dev.bpmcrafters.processengineapi.process.StartProcessApi
 import dev.bpmcrafters.processengineapi.task.TaskSubscriptionApi
 import io.camunda.zeebe.client.ZeebeClient
-import io.camunda.zeebe.spring.client.CamundaAutoConfiguration
+import io.camunda.zeebe.spring.client.configuration.CamundaAutoConfiguration
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.boot.autoconfigure.AutoConfigureAfter
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Conditional
 import org.springframework.context.annotation.Configuration
-import org.springframework.scheduling.annotation.EnableScheduling
 
-@EnableScheduling
 @Configuration
 @AutoConfigureAfter(
   CamundaAutoConfiguration::class
@@ -43,8 +40,9 @@ class C8AdapterAutoConfiguration {
 
   @Bean("c8-task-completion-api")
   @Qualifier("c8-task-completion-api")
-  fun taskCompletionApi(subscriptionRepository: SubscriptionRepository,
-                        @Autowired(required = false) subscribingUserTaskDelivery: SubscribingUserTaskDelivery?
+  fun taskCompletionApi(
+    subscriptionRepository: SubscriptionRepository,
+    @Autowired(required = false) subscribingUserTaskDelivery: SubscribingUserTaskDelivery?
   ): TaskSubscriptionApi = C8TaskSubscriptionApiImpl(
     subscriptionRepository = subscriptionRepository,
     subscribingUserTaskDelivery = subscribingUserTaskDelivery,
@@ -71,4 +69,5 @@ class C8AdapterAutoConfiguration {
   @Bean
   @ConditionalOnMissingBean
   fun subscriptionRepository(): SubscriptionRepository = InMemSubscriptionRepository()
+
 }
