@@ -58,7 +58,7 @@
     <dependency>
       <groupId>io.camunda</groupId>
       <artifactId>zeebe-process-test-assertions</artifactId>
-      <version>8.6.3</version>
+      <version>8.6.4</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
