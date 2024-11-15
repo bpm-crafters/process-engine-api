@@ -1,4 +1,4 @@
-The `process-engine-api` provides an API to abstract from concrete process engine implementation, with the ability
+The `process-engine-api` provides an API to abstract from a concrete process engine implementation, with the ability
 to write your application code engine-agnostic and later (re-)configure for the usage of a particular process engine.
 
 The API consists of different parts independent of each other:
@@ -10,19 +10,19 @@ The [Deployment API](deployment-api.md) allows to deploy process-related resourc
 ### Process API
 
 The [Process API](process-api.md) provides functionality, required to control the lifecycle of the processes. It allows to start new process instances.
-It is intended to be used in outbound adapters of the port/adapter architecture in order to control the process engine 
+It is intended to be used in outbound adapters of the port/adapter architecture, in order to control the process engine 
 from your application.
 
 ### Correlation API
 
 The [Correlation API](correlation-api.md) provides functionality to correlate messages with running process instances.
-It is intended to be used in outbound adapters of the port/adapter architecture in order to control 
+It is intended to be used in outbound adapters of the port/adapter architecture, in order to control 
 the process engine from your application.
 
 ### Signal API
 
 The [Signal API](signal-api.md) provides functionality to send signals to running process instances.
-It is intended to be used in outbound adapters of the port/adapter architecture in order 
+It is intended to be used in outbound adapters of the port/adapter architecture, in order 
 to control the process engine from your application.
 
 ### Task Subscription API
