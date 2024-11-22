@@ -3,7 +3,7 @@ title: Signal API
 ---
 
 The Signal API provides functionality to send signals to running process instances.
-It is intended to be used in outbound adapters of the port/adapter architecture in order
+It is intended to be used in outbound adapters of the port/adapter architecture, in order
 to control the process engine from your application.
 
 
