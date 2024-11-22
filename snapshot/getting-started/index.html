@@ -22,7 +22,7 @@
       
       
       <link rel="icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.44">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.45">
     
     
       
@@ -906,21 +906,21 @@ a process engine. Here is an example how a user task can be completed:</p>
 <span class="p">}</span>
 </code></pre></div>
 <p>As you can see, the code above doesn't contain any engine-specific code, but rather uses only code from <code>process-engine-api</code>.
-This means that the resulting code is portable and the decision about used engine doesn't influence the implementation
-of you application logic.</p>
-<p>The second step depends on your target architecture and used process engine. Please refer to the one of the following
+This means, that the resulting code is portable and the decision about the used engine doesn't influence the implementation
+of your application logic.</p>
+<p>The second step depends on your target architecture and used process engine. Please refer to one of the following
 configurations:</p>
 <h2 id="camunda-platform-7-running-as-embedded-engine">Camunda Platform 7 running as embedded engine<a class="headerlink" href="#camunda-platform-7-running-as-embedded-engine" title="Permanent link">#</a></h2>
-<p>If you start with a Camunda Platform 7 operated in an embedded engine mode, by for example using the Camunda Spring Boot Starter,
+<p>If you start with a Camunda Platform 7, operated in an embedded engine mode, by for example using the Camunda Spring Boot Starter,
 the following configuration is applicable for you. </p>
-<p>First of all add the corresponding adapter to your project's classpath:</p>
+<p>First of all, add the corresponding adapter to your project's classpath:</p>
 <div class="highlight"><pre><span></span><code><span class="w">  </span><span class="nt">&lt;dependency&gt;</span>
 <span class="w">    </span><span class="nt">&lt;groupId&gt;</span>dev.bpm-crafters.process-engine-api<span class="nt">&lt;/groupId&gt;</span>
 <span class="w">    </span><span class="nt">&lt;artifactId&gt;</span>process-engine-api-adapter-camunda-platform-c7-embedded-spring-boot-starter<span class="nt">&lt;/artifactId&gt;</span>
 <span class="w">    </span><span class="nt">&lt;version&gt;</span>${process-engine-api.version}<span class="nt">&lt;/version&gt;</span>
 <span class="w">  </span><span class="nt">&lt;/dependency&gt;</span>
 </code></pre></div>
-<p>and finally add the following configuration to your configuration properties. Here is a version for <code>application.yaml</code>:</p>
+<p>and finally, add the following configuration to your configuration properties. Here is a version for <code>application.yaml</code>:</p>
 <div class="highlight"><pre><span></span><code><span class="nt">dev</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">bpm-crafters</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">process-api</span><span class="p">:</span>
@@ -939,7 +939,7 @@ the following configuration is applicable for you. </p>
 <span class="w">            </span><span class="nt">schedule-delivery-fixed-rate-in-seconds</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5</span>
 </code></pre></div>
 <h2 id="camunda-platform-7-running-as-remote-engine">Camunda Platform 7 running as remote engine<a class="headerlink" href="#camunda-platform-7-running-as-remote-engine" title="Permanent link">#</a></h2>
-<p>If you start with a Camunda Platform 7 operated remotely, the following configuration is applicable for you.</p>
+<p>If you start with a Camunda Platform 7, operated remotely, the following configuration is applicable for you.</p>
 <p>First of all add the corresponding adapter to your project's classpath. In order to connect to remote engine,
 you will need to use some client. Assuming you are using Camunda Hub extension <a href="https://github.com/camunda-community-hub/camunda-platform-7-rest-client-spring-boot">camunda-platform-7-rest-client-spring-boot</a>,
 you will also need to add some additional libraries. Here is the result:</p>
@@ -967,7 +967,7 @@ you will also need to add some additional libraries. Here is the result:</p>
 <span class="w">  </span><span class="nt">&lt;/dependency&gt;</span>
 <span class="nt">&lt;/dependendcies&gt;</span>
 </code></pre></div>
-<p>and finally add the following configuration to your configuration properties. Here is a version for <code>application.yaml</code>:</p>
+<p>And finally, add the following configuration to your configuration properties. Here is a version for <code>application.yaml</code>:</p>
 <div class="highlight"><pre><span></span><code><span class="nt">dev</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">bpm-crafters</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">process-api</span><span class="p">:</span>
@@ -991,7 +991,7 @@ you will also need to add some additional libraries. Here is the result:</p>
 <span class="w">        </span><span class="nt">url</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;http://localhost:9090/engine-rest/&quot;</span>
 </code></pre></div>
 <h2 id="camunda-platform-8-as-saas">Camunda Platform 8 as SaaS<a class="headerlink" href="#camunda-platform-8-as-saas" title="Permanent link">#</a></h2>
-<p>If you start with a Camunda Platform 8 operated as SaaS, the following configuration is applicable for you.</p>
+<p>If you start with a Camunda Platform 8, operated as SaaS, the following configuration is applicable for you.</p>
 <p>First add the corresponding adapter to your project's classpath:</p>
 <div class="highlight"><pre><span></span><code><span class="nt">&lt;dependencies&gt;</span>
 <span class="w">    </span><span class="nt">&lt;dependency&gt;</span>
@@ -1064,7 +1064,7 @@ you will also need to add some additional libraries. Here is the result:</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">November 20, 2024</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date">November 22, 2024</span>
   </span>
 
     
