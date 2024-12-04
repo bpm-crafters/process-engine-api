@@ -38,13 +38,13 @@
     <dependency>
       <groupId>io.camunda</groupId>
       <artifactId>spring-boot-starter-camunda-sdk</artifactId>
-      <version>8.6.3</version>
+      <version>8.6.6</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>io.camunda</groupId>
       <artifactId>camunda-tasklist-client-java</artifactId>
-      <version>8.6.4</version>
+      <version>8.6.6</version>
       <scope>provided</scope>
       <exclusions>
         <exclusion>
@@ -64,7 +64,7 @@
     <dependency>
       <groupId>io.camunda</groupId>
       <artifactId>zeebe-process-test-extension-testcontainer</artifactId>
-      <version>8.6.3</version>
+      <version>8.6.6</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
