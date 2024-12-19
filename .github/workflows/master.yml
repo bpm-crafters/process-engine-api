@@ -47,6 +47,6 @@ jobs:
           OSS_CENTRAL_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
 
       - name: Upload coverage information
-        uses: codecov/codecov-action@v5.0.7
+        uses: codecov/codecov-action@v5.1.2
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
