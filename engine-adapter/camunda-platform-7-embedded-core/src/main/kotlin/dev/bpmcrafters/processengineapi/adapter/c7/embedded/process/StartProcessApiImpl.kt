@@ -21,18 +21,24 @@ class StartProcessApiImpl(
       is StartProcessByDefinitionCmd ->
         CompletableFuture.supplyAsync {
           logger.debug { "PROCESS-ENGINE-C7-EMBEDDED-004: starting a new process instance by definition ${cmd.definitionKey}." }
+          val payload = cmd.payloadSupplier.get()
           runtimeService.startProcessInstanceByKey(
             cmd.definitionKey,
-            cmd.payloadSupplier.get()
+            payload[CommonRestrictions.BUSINESS_KEY]?.toString(),
+            payload
           ).toProcessInformation()
         }
 
       is StartProcessByMessageCmd ->
         CompletableFuture.supplyAsync {
           logger.debug { "PROCESS-ENGINE-C7-EMBEDDED-005: starting a new process instance by message ${cmd.messageName}." }
-          runtimeService
+          val payload = cmd.payloadSupplier.get()
+          var correlationBuilder = runtimeService
             .createMessageCorrelation(cmd.messageName)
-            .setVariables(cmd.payloadSupplier.get())
+          if (payload[CommonRestrictions.BUSINESS_KEY] != null) {
+            correlationBuilder = correlationBuilder.processInstanceBusinessKey(payload[CommonRestrictions.BUSINESS_KEY]?.toString())
+          }
+            correlationBuilder.setVariables(payload)
             .correlateStartMessage()
             .toProcessInformation()
         }

@@ -47,3 +47,17 @@ public class ProcessStarter {
 
 
 ```
+
+For supported engines (currently only C7 Embedded and C7 Remote) it is possible to set a business key by providing it 
+in the payload supplier, for example:
+```java
+@SneakyThrows
+public void startByMessage(Order order) {
+    startProcessApi.startProcess(
+      new StartProcessByMessageCmd(
+        "Msg_OrderReceived",
+         () -> Map.of("order", order, CommonRestrictions.BUSINESS_KEY, "businessKey")
+     )
+    ).get();
+}
+```
