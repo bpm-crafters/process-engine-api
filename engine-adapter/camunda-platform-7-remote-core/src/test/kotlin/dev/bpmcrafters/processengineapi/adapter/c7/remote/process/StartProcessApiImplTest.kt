@@ -30,13 +30,13 @@ class StartProcessApiImplTest {
   // given
   val startProcessByDefinitionCmd = StartProcessByDefinitionCmd("definitionKey") { emptyMap() }
   val processInstance: ProcessInstance = ProcessInstanceFake.builder().id("someId").build()
-  `when`(runtimeService.startProcessInstanceByKey(anyString(), anyOrNull(), anyMap())).thenReturn(processInstance)
+  `when`(runtimeService.startProcessInstanceByKey(anyString(), anyMap())).thenReturn(processInstance)
 
   // when
   startProcessApi.startProcess(startProcessByDefinitionCmd).get()
 
   // then
-  verify(runtimeService).startProcessInstanceByKey("definitionKey", null, emptyMap())
+  verify(runtimeService).startProcessInstanceByKey("definitionKey", emptyMap())
  }
 
  @Test
