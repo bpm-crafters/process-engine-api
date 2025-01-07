@@ -855,6 +855,18 @@ from your application.</p>
 
 <span class="p">}</span>
 </code></pre></div>
+<p>For supported engines (currently only C7 Embedded and C7 Remote) it is possible to set a business key by providing it 
+in the payload supplier, for example:
+<div class="highlight"><pre><span></span><code><span class="nd">@SneakyThrows</span>
+<span class="kd">public</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">startByMessage</span><span class="p">(</span><span class="n">Order</span><span class="w"> </span><span class="n">order</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">startProcessApi</span><span class="p">.</span><span class="na">startProcess</span><span class="p">(</span>
+<span class="w">      </span><span class="k">new</span><span class="w"> </span><span class="n">StartProcessByMessageCmd</span><span class="p">(</span>
+<span class="w">        </span><span class="s">&quot;Msg_OrderReceived&quot;</span><span class="p">,</span>
+<span class="w">         </span><span class="p">()</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">Map</span><span class="p">.</span><span class="na">of</span><span class="p">(</span><span class="s">&quot;order&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">order</span><span class="p">,</span><span class="w"> </span><span class="n">CommonRestrictions</span><span class="p">.</span><span class="na">BUSINESS_KEY</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;businessKey&quot;</span><span class="p">)</span>
+<span class="w">     </span><span class="p">)</span>
+<span class="w">    </span><span class="p">).</span><span class="na">get</span><span class="p">();</span>
+<span class="p">}</span>
+</code></pre></div></p>
 
 
 
