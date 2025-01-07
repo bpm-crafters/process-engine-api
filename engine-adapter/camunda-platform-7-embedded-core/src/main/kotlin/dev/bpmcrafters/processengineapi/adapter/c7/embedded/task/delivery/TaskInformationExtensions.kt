@@ -6,9 +6,10 @@ import org.camunda.bpm.engine.delegate.DelegateTask
 import org.camunda.bpm.engine.externaltask.LockedExternalTask
 import org.camunda.bpm.engine.impl.persistence.entity.ExternalTaskEntity
 import org.camunda.bpm.engine.impl.persistence.entity.TaskEntity
+import org.camunda.bpm.engine.task.IdentityLink
 import org.camunda.bpm.engine.task.Task
 
-fun Task.toTaskInformation(processDefinitionKey: String? = null) =
+fun Task.toTaskInformation(candidates: List<IdentityLink>, processDefinitionKey: String? = null) =
   TaskInformation(
     taskId = this.id,
     meta = mapOf(
@@ -18,7 +19,13 @@ fun Task.toTaskInformation(processDefinitionKey: String? = null) =
       CommonRestrictions.PROCESS_INSTANCE_ID to this.processInstanceId,
       "taskName" to this.name,
       "taskDescription" to this.description,
-      "assignee" to this.assignee
+      "assignee" to this.assignee,
+      "creationDate" to this.createTime.toString(), // FIXME -> to zoned iso 8601
+      "followUpDate" to (this.followUpDate?.toString() ?: ""), // FIXME -> to zoned iso 8601
+      "dueDate" to (this.dueDate?.toString() ?: ""), // FIXME -> to zoned iso 8601
+      "formKey" to this.formKey,
+      "candidateUsers" to candidates.mapNotNull { it.userId }.joinToString(","),
+      "candidateGroups" to candidates.mapNotNull { it.groupId }.joinToString(",")
     ).let {
       if (processDefinitionKey != null) {
         it + (CommonRestrictions.PROCESS_DEFINITION_KEY to processDefinitionKey)
@@ -38,7 +45,13 @@ fun TaskEntity.toTaskInformation() =
       CommonRestrictions.PROCESS_INSTANCE_ID to this.processInstanceId,
       "taskName" to this.name,
       "taskDescription" to this.description,
-      "assignee" to this.assignee
+      "assignee" to this.assignee,
+      "creationDate" to this.createTime.toString(), // FIXME -> to zoned iso 8601
+      "followUpDate" to (this.followUpDate?.toString() ?: ""), // FIXME -> to zoned iso 8601
+      "dueDate" to (this.dueDate?.toString() ?: ""), // FIXME -> to zoned iso 8601
+      "formKey" to this.formKey,
+      "candidateUsers" to this.candidates.mapNotNull { it.userId }.joinToString(","),
+      "candidateGroups" to this.candidates.mapNotNull { it.groupId }.joinToString(",")
     )
   )
 
@@ -52,7 +65,12 @@ fun DelegateTask.toTaskInformation() =
       CommonRestrictions.PROCESS_INSTANCE_ID to this.processInstanceId,
       "taskName" to this.name,
       "taskDescription" to this.description,
-      "assignee" to this.assignee
+      "assignee" to this.assignee,
+      "creationDate" to this.createTime.toString(), // FIXME -> to zoned iso 8601
+      "followUpDate" to (this.followUpDate?.toString() ?: ""), // FIXME -> to zoned iso 8601
+      "dueDate" to (this.dueDate?.toString() ?: ""), // FIXME -> to zoned iso 8601,
+      "candidateUsers" to this.candidates.mapNotNull { it.userId }.joinToString(","),
+      "candidateGroups" to this.candidates.mapNotNull { it.groupId }.joinToString(",")
     )
   )
 

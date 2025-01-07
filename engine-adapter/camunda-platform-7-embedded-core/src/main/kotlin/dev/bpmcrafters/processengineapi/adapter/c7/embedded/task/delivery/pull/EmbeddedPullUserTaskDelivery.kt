@@ -38,6 +38,7 @@ class EmbeddedPullUserTaskDelivery(
       logger.trace { "PROCESS-ENGINE-C7-EMBEDDED-036: pulling user tasks for subscriptions: $subscriptions" }
       taskService
         .createTaskQuery()
+        .initializeFormKeys()
         .forSubscriptions(subscriptions)
         .list()
         .parallelStream()
@@ -51,7 +52,7 @@ class EmbeddedPullUserTaskDelivery(
                 try {
                   logger.debug { "PROCESS-ENGINE-C7-EMBEDDED-037: delivering user task ${task.id}." }
                   val processDefinitionKey = cachingProcessDefinitionKeyResolver.getProcessDefinitionKey(task.processDefinitionId)
-                  activeSubscription.action.accept(task.toTaskInformation(processDefinitionKey), variables)
+                  activeSubscription.action.accept(task.toTaskInformation(taskService.getIdentityLinksForTask(task.id), processDefinitionKey), variables)
                 } catch (e: Exception) {
                   logger.error { "PROCESS-ENGINE-C7-EMBEDDED-038: error delivering task ${task.id}: ${e.message}" }
                   subscriptionRepository.deactivateSubscriptionForTask(taskId = task.id)
