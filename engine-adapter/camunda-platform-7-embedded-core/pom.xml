@@ -46,17 +46,17 @@
       <scope>provided</scope>
     </dependency>
 
-    <!-- For JGiven Testing -->
+    <!-- For JGiven Testing Stage as a part of compiled code -->
     <dependency>
       <groupId>com.tngtech.jgiven</groupId>
       <artifactId>jgiven-core</artifactId>
-      <version>2.0.1</version>
+      <version>${jgiven.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.awaitility</groupId>
       <artifactId>awaitility-kotlin</artifactId>
-      <version>4.2.2</version>
+      <version>${awaitility.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -76,12 +76,6 @@
       <groupId>dev.bpm-crafters.process-engine-api</groupId>
       <artifactId>process-engine-api-adapter-testing</artifactId>
       <version>${project.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.h2database</groupId>
-      <artifactId>h2</artifactId>
-      <version>2.3.232</version>
       <scope>test</scope>
     </dependency>
     <dependency>

@@ -18,11 +18,14 @@
   <packaging>pom</packaging>
 
   <properties>
+    <!-- COMMON GLOBAL -->
+    <spring-boot.version>3.4.0</spring-boot.version>
     <!-- TEST -->
-    <spring-boot.version>3.3.5</spring-boot.version>
     <mockito.version>5.4.0</mockito.version>
     <assertj.version>3.27.2</assertj.version>
-    <junit5.version>5.10.3</junit5.version>
+    <junit5.version>5.11.3</junit5.version>
+    <jgiven.version>2.0.1</jgiven.version>
+    <awaitility.version>4.2.2</awaitility.version>
   </properties>
 
   <modules>
