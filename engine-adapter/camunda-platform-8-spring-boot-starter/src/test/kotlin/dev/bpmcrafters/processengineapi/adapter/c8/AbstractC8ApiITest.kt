@@ -19,9 +19,9 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.test.annotation.DirtiesContext
 import org.springframework.test.context.ActiveProfiles
+import org.springframework.test.context.bean.override.mockito.MockitoBean
 
 
 @SpringBootTest(
@@ -47,7 +47,7 @@ abstract class AbstractC8ApiITest : JGivenSpringBaseIntegrationTest() {
   /*
    * We have no task list in test, so there is no need for the real client either
    */
-  @MockBean
+  @MockitoBean
   lateinit var camundaTaskListClient: CamundaTaskListClient
 
   @BeforeEach

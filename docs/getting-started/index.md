@@ -40,18 +40,18 @@ public class CompleteUserTaskUseCase implements CompleteUserTaskInPort {
 ```
 
 As you can see, the code above doesn't contain any engine-specific code, but rather uses only code from `process-engine-api`.
-This means that the resulting code is portable and the decision about used engine doesn't influence the implementation
-of you application logic.
+This means, that the resulting code is portable and the decision about the used engine doesn't influence the implementation
+of your application logic.
 
-The second step depends on your target architecture and used process engine. Please refer to the one of the following
+The second step depends on your target architecture and used process engine. Please refer to one of the following
 configurations:
 
 ## Camunda Platform 7 running as embedded engine
 
-If you start with a Camunda Platform 7 operated in an embedded engine mode, by for example using the Camunda Spring Boot Starter,
+If you start with a Camunda Platform 7, operated in an embedded engine mode, by for example using the Camunda Spring Boot Starter,
 the following configuration is applicable for you. 
 
-First of all add the corresponding adapter to your project's classpath:
+First of all, add the corresponding adapter to your project's classpath:
 
 ```xml 
   <dependency>
@@ -61,7 +61,7 @@ First of all add the corresponding adapter to your project's classpath:
   </dependency>
 ```
 
-and finally add the following configuration to your configuration properties. Here is a version for `application.yaml`:
+and finally, add the following configuration to your configuration properties. Here is a version for `application.yaml`:
 
 ```yaml 
 dev:
@@ -85,7 +85,7 @@ dev:
 
 ## Camunda Platform 7 running as remote engine
 
-If you start with a Camunda Platform 7 operated remotely, the following configuration is applicable for you.
+If you start with a Camunda Platform 7, operated remotely, the following configuration is applicable for you.
 
 First of all add the corresponding adapter to your project's classpath. In order to connect to remote engine,
 you will need to use some client. Assuming you are using Camunda Hub extension [camunda-platform-7-rest-client-spring-boot](https://github.com/camunda-community-hub/camunda-platform-7-rest-client-spring-boot),
@@ -119,7 +119,7 @@ you will also need to add some additional libraries. Here is the result:
 
 ```
 
-and finally add the following configuration to your configuration properties. Here is a version for `application.yaml`:
+And finally, add the following configuration to your configuration properties. Here is a version for `application.yaml`:
 
 ```yaml 
 dev:
@@ -148,7 +148,7 @@ feign:
 
 ## Camunda Platform 8 as SaaS
 
-If you start with a Camunda Platform 8 operated as SaaS, the following configuration is applicable for you.
+If you start with a Camunda Platform 8, operated as SaaS, the following configuration is applicable for you.
 
 First add the corresponding adapter to your project's classpath:
 
