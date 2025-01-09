@@ -1,5 +1,6 @@
 package dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.event
 
+import dev.bpmcrafters.processengineapi.CommonRestrictions
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.UserTaskDelivery
 import dev.bpmcrafters.processengineapi.adapter.commons.task.filterBySubscription
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.pull.EmbeddedPullUserTaskDelivery.Companion.logger
@@ -48,5 +49,13 @@ class EmbeddedEventBasedUserTaskDelivery(
       this.taskDescriptionKey == null
         || this.taskDescriptionKey == task.taskDefinitionKey
         || this.taskDescriptionKey == task.id
-      )
+      ) && this.restrictions.all {
+      when (it.key) {
+        CommonRestrictions.EXECUTION_ID -> it.value == task.executionId
+        CommonRestrictions.TENANT_ID -> it.value == task.tenantId
+        CommonRestrictions.PROCESS_INSTANCE_ID -> it.value == task.processInstanceId
+        CommonRestrictions.PROCESS_DEFINITION_ID -> it.value == task.processDefinitionId
+        else -> false
+      }
+    }
 }

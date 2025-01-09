@@ -67,6 +67,7 @@ class RemotePullUserTaskDelivery(
     // FIXME: narrow down, for the moment take all tasks
     return this
       .active()
+    // FIXME -> consider complex tent filtering
   }
 
 

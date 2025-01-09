@@ -153,32 +153,41 @@ class SubscribingRefreshingUserTaskDelivery(
   }
 
   private fun ActivateJobsCommandStep3.forSubscription(subscription: TaskSubscriptionHandle): ActivateJobsCommandStep3 {
-    // FIXME -> tenantId
     // FIXME -> more to setup from props
-    return if (subscription.payloadDescription != null && subscription.payloadDescription!!.isNotEmpty()) {
-      this.fetchVariables(subscription.payloadDescription!!.toList())
-    } else {
-      this
+    return this.apply {
+      val payloadDescription = subscription.payloadDescription
+      if (!payloadDescription.isNullOrEmpty()) {
+        this.fetchVariables(payloadDescription.toList())
+      }
+      if (subscription.restrictions.containsKey(CommonRestrictions.TENANT_ID)) {
+        this.tenantId(subscription.restrictions[CommonRestrictions.TENANT_ID])
+      }
     }
   }
 
   private fun JobWorkerBuilderStep3.forSubscription(subscription: TaskSubscriptionHandle): JobWorkerBuilderStep3 {
-    // FIXME -> tenantId
     // FIXME -> more to setup from props
-    return if (subscription.payloadDescription != null && subscription.payloadDescription!!.isNotEmpty()) {
-      this.fetchVariables(subscription.payloadDescription!!.toList())
-    } else {
-      this
+    return this.apply {
+      val payloadDescription = subscription.payloadDescription
+      if (!payloadDescription.isNullOrEmpty()) {
+        this.fetchVariables(payloadDescription.toList())
+      }
+      if (subscription.restrictions.containsKey(CommonRestrictions.TENANT_ID)) {
+        this.tenantId(subscription.restrictions[CommonRestrictions.TENANT_ID])
+      }
     }
   }
 
   private fun StreamJobsCommandStep3.forSubscription(subscription: TaskSubscriptionHandle): StreamJobsCommandStep3 {
-    // FIXME -> tenantId
     // FIXME -> more to setup from props
-    return if (subscription.payloadDescription != null && subscription.payloadDescription!!.isNotEmpty()) {
-      this.fetchVariables(subscription.payloadDescription!!.toList())
-    } else {
-      this
+    return this.apply {
+      val payloadDescription = subscription.payloadDescription
+      if (!payloadDescription.isNullOrEmpty()) {
+        this.fetchVariables(payloadDescription.toList())
+      }
+      if (subscription.restrictions.containsKey(CommonRestrictions.TENANT_ID)) {
+        this.tenantId(subscription.restrictions[CommonRestrictions.TENANT_ID])
+      }
     }
   }
 

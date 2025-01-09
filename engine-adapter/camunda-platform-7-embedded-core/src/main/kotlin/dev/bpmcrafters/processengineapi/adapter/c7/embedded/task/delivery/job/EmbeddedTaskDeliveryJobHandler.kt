@@ -1,5 +1,6 @@
 package dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.job
 
+import dev.bpmcrafters.processengineapi.CommonRestrictions
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.job.EmbeddedTaskDeliveryJobHandler.EmbeddedTaskDeliveryJobHandlerConfiguration.Companion.OPERATION_CREATE
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.job.EmbeddedTaskDeliveryJobHandler.EmbeddedTaskDeliveryJobHandlerConfiguration.Companion.OPERATION_DELETE
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.job.EmbeddedTaskDeliveryJobHandler.EmbeddedTaskDeliveryJobHandlerConfiguration.Companion.TYPE_SERVICE
@@ -90,9 +91,27 @@ class EmbeddedTaskDeliveryJobHandler(
 
   private fun TaskSubscriptionHandle.matches(taskEntity: TaskEntity): Boolean =
     this.taskType == TaskType.USER && (this.taskDescriptionKey == null || this.taskDescriptionKey == taskEntity.taskDefinitionKey || this.taskDescriptionKey == taskEntity.id)
+      && this.restrictions.all {
+      when (it.key) {
+        CommonRestrictions.EXECUTION_ID -> it.value == taskEntity.executionId
+        CommonRestrictions.TENANT_ID -> it.value == taskEntity.tenantId
+        CommonRestrictions.PROCESS_INSTANCE_ID -> it.value == taskEntity.processInstanceId
+        CommonRestrictions.PROCESS_DEFINITION_ID -> it.value == taskEntity.processDefinitionId
+        else -> false
+      }
+    }
 
   private fun TaskSubscriptionHandle.matches(taskEntity: LockedExternalTask): Boolean =
     this.taskType == TaskType.EXTERNAL && (this.taskDescriptionKey == null || this.taskDescriptionKey == taskEntity.topicName)
+      && this.restrictions.all {
+      when (it.key) {
+        CommonRestrictions.EXECUTION_ID -> it.value == taskEntity.executionId
+        CommonRestrictions.TENANT_ID -> it.value == taskEntity.tenantId
+        CommonRestrictions.PROCESS_INSTANCE_ID -> it.value == taskEntity.processInstanceId
+        CommonRestrictions.PROCESS_DEFINITION_ID -> it.value == taskEntity.processDefinitionId
+        else -> false
+      }
+    }
 
   /**
    * Job configuration.
