@@ -39,6 +39,7 @@ class C8ZeebeExternalServiceTaskCompletionApiImpl(
     zeebeClient
       .newThrowErrorCommand(cmd.taskId.toLong())
       .errorCode(cmd.errorCode)
+      .errorMessage(cmd.errorMessage ?: "Unknown error")
       .variables(cmd.get())
       .send()
       .join()
@@ -55,6 +56,7 @@ class C8ZeebeExternalServiceTaskCompletionApiImpl(
       .newFailCommand(cmd.taskId.toLong())
       .retries(retries)
       .retryBackoff(Duration.ofSeconds(retriesTimeout))
+      .errorMessage(cmd.reason)
       .send()
       .join()
     logger.debug { "PROCESS-ENGINE-C8-010: failing service task ${cmd.taskId}." }

@@ -26,6 +26,7 @@
     <junit5.version>5.11.3</junit5.version>
     <jgiven.version>2.0.1</jgiven.version>
     <awaitility.version>4.2.2</awaitility.version>
+    <mockk.version>1.13.14</mockk.version>
   </properties>
 
   <modules>
@@ -54,6 +55,11 @@
         <groupId>org.mockito.kotlin</groupId>
         <artifactId>mockito-kotlin</artifactId>
         <version>${mockito.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.mockk</groupId>
+        <artifactId>mockk-jvm</artifactId>
+        <version>${mockk.version}</version>
       </dependency>
       <dependency>
         <groupId>com.tngtech.archunit</groupId>
