@@ -73,11 +73,13 @@ class EmbeddedPullServiceTaskDelivery(
 
   private fun ExternalTaskQueryBuilder.forSubscriptions(subscriptions: List<TaskSubscriptionHandle>): ExternalTaskQueryBuilder {
     subscriptions
-      .mapNotNull { it.taskDescriptionKey }
-      .distinct()
-      .forEach { topic ->
-        this.topic(topic, lockDuration)
+      .filter { it.taskDescriptionKey != null }
+      .distinctBy { it.taskDescriptionKey  }
+      .forEach { subscription ->
+        this
+          .topic(subscription.taskDescriptionKey, lockDuration)
           .enableCustomObjectDeserialization()
+        // FIXME -> consider complex tent filtering
       }
     return this
   }
@@ -88,7 +90,7 @@ class EmbeddedPullServiceTaskDelivery(
       && this.restrictions.all {
       when (it.key) {
         CommonRestrictions.EXECUTION_ID -> it.value == task.executionId
-        CommonRestrictions.ACTIVITY_ID -> it.value == task.activityId
+        CommonRestrictions.ACTIVITY_ID -> it.value == task.activityInstanceId // FIXME task.activityId?
         CommonRestrictions.BUSINESS_KEY -> it.value == task.businessKey
         CommonRestrictions.TENANT_ID -> it.value == task.tenantId
         CommonRestrictions.PROCESS_INSTANCE_ID -> it.value == task.processInstanceId

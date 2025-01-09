@@ -77,6 +77,7 @@ class RemotePullServiceTaskDelivery(
       .forEach { topic ->
         this.topic(topic, lockDuration)
           .enableCustomObjectDeserialization()
+          // FIXME -> consider complex tent filtering
       }
     return this
   }

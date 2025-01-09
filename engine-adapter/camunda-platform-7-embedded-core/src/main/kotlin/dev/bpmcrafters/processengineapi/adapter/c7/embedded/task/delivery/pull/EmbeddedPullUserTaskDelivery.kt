@@ -1,11 +1,12 @@
 package dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.pull
 
+import dev.bpmcrafters.processengineapi.CommonRestrictions
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.UserTaskDelivery
-import dev.bpmcrafters.processengineapi.adapter.commons.task.filterBySubscription
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.toTaskInformation
 import dev.bpmcrafters.processengineapi.adapter.commons.task.RefreshableDelivery
 import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionRepository
 import dev.bpmcrafters.processengineapi.adapter.commons.task.TaskSubscriptionHandle
+import dev.bpmcrafters.processengineapi.adapter.commons.task.filterBySubscription
 import dev.bpmcrafters.processengineapi.task.TaskType
 import mu.KLogging
 import org.camunda.bpm.engine.RepositoryService
@@ -65,11 +66,11 @@ class EmbeddedPullUserTaskDelivery(
     }
   }
 
-  @Suppress("UNUSED_PARAMETER")
-  private fun TaskQuery.forSubscriptions(subscriptions: List<TaskSubscriptionHandle>): TaskQuery {
-    // TODO: narrow down, for the moment take all tasks
+  private fun TaskQuery.forSubscriptions(@Suppress("UNUSED_PARAMETER") subscriptions: List<TaskSubscriptionHandle>): TaskQuery {
+    // TODO: narrow down, for the moment take all tasks matching tenants
     return this
       .active()
+    // FIXME -> consider complex tent filtering
   }
 
 
@@ -78,6 +79,14 @@ class EmbeddedPullUserTaskDelivery(
       this.taskDescriptionKey == null
         || this.taskDescriptionKey == task.taskDefinitionKey
         || this.taskDescriptionKey == task.id
-      )
+      ) && this.restrictions.all {
+      when (it.key) {
+        CommonRestrictions.EXECUTION_ID -> it.value == task.executionId
+        CommonRestrictions.TENANT_ID -> it.value == task.tenantId
+        CommonRestrictions.PROCESS_INSTANCE_ID -> it.value == task.processInstanceId
+        CommonRestrictions.PROCESS_DEFINITION_ID -> it.value == task.processDefinitionId
+        else -> false
+      }
+    }
 }
 

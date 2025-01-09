@@ -7,13 +7,20 @@ package dev.bpmcrafters.processengineapi
 object CommonRestrictions {
 
   /**
-   * FIXME: consider to remove restriction names to adapters.
+   * Definition attribute of a BPMN activity from XML holding the id of the element.
    */
-
   const val ACTIVITY_ID = "activityId"
   const val BUSINESS_KEY = "businessKey"
   const val CORRELATION_KEY = "correlationKey"
+
+  /**
+   * Definition attribute of a BPMN process from XML holding the id of the element.
+   */
   const val PROCESS_DEFINITION_KEY = "processDefinitionKey"
+
+  /**
+   * Id provided by the runtime identifying the process instance.
+   */
   const val PROCESS_INSTANCE_ID = "processInstanceId"
   const val PROCESS_DEFINITION_ID = "processDefinitionId"
   const val PROCESS_DEFINITION_VERSION_TAG = "processDefinitionVersionTag"
@@ -23,7 +30,7 @@ object CommonRestrictions {
   const val MESSAGE_ID = "messageId"
   const val MESSAGE_TTL = "messageTTL"
   const val EXECUTION_ID = "executionId"
-  
+
   /**
    * Creates a helper restrictions builder.
    */

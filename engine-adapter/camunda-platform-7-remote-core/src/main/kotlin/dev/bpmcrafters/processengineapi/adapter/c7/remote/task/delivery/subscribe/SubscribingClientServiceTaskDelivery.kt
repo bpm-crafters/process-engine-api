@@ -1,5 +1,6 @@
 package dev.bpmcrafters.processengineapi.adapter.c7.remote.task.delivery.subscribe
 
+import dev.bpmcrafters.processengineapi.CommonRestrictions
 import dev.bpmcrafters.processengineapi.adapter.c7.remote.task.delivery.toTaskInformation
 import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionRepository
 import dev.bpmcrafters.processengineapi.adapter.commons.task.TaskSubscriptionHandle
@@ -84,7 +85,20 @@ class SubscribingClientServiceTaskDelivery(
   private fun TaskSubscriptionHandle.matches(externalTask: ExternalTask): Boolean {
     return this.taskType == TaskType.EXTERNAL && (
       this.taskDescriptionKey == null || this.taskDescriptionKey == externalTask.topicName
-      )
+      )  && this.restrictions.all {
+      when (it.key) {
+        CommonRestrictions.EXECUTION_ID -> it.value == externalTask.executionId
+        CommonRestrictions.ACTIVITY_ID -> it.value == externalTask.activityId
+        CommonRestrictions.BUSINESS_KEY -> it.value == externalTask.businessKey
+        CommonRestrictions.TENANT_ID -> it.value == externalTask.tenantId
+        CommonRestrictions.PROCESS_INSTANCE_ID -> it.value == externalTask.processInstanceId
+        CommonRestrictions.PROCESS_DEFINITION_KEY -> it.value == externalTask.processDefinitionKey
+        CommonRestrictions.PROCESS_DEFINITION_ID -> it.value == externalTask.processDefinitionId
+        CommonRestrictions.PROCESS_DEFINITION_VERSION_TAG -> it.value == externalTask.processDefinitionVersionTag
+        else -> false
+      }
+    }
+
     // FIXME: analyze this! check restrictions, etc..
   }
 
@@ -97,5 +111,6 @@ class SubscribingClientServiceTaskDelivery(
     } else {
       this
     }
+    // FIXME -> consider complex tent filtering
   }
 }
