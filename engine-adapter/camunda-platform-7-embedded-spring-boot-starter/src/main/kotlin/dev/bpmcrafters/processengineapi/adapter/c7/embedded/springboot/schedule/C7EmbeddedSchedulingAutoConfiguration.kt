@@ -7,12 +7,11 @@ import dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.C7Embedde
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.ConditionalOnServiceTaskDeliveryStrategy
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.ConditionalOnUserTaskDeliveryStrategy
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.event.C7EmbeddedEventDeliveryAutoConfiguration
-import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.UserTaskDelivery
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.pull.EmbeddedPullServiceTaskDelivery
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.pull.EmbeddedPullUserTaskDelivery
 import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionRepository
+import io.github.oshai.kotlinlogging.KotlinLogging
 import jakarta.annotation.PostConstruct
-import mu.KLogging
 import org.camunda.bpm.engine.ExternalTaskService
 import org.camunda.bpm.engine.RepositoryService
 import org.camunda.bpm.engine.TaskService
@@ -28,6 +27,7 @@ import org.springframework.scheduling.annotation.EnableScheduling
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler
 import java.util.concurrent.ExecutorService
 
+private val logger = KotlinLogging.logger {}
 
 @Configuration
 @EnableScheduling
@@ -35,8 +35,6 @@ import java.util.concurrent.ExecutorService
 @AutoConfigureAfter(C7EmbeddedEventDeliveryAutoConfiguration::class)
 @Conditional(C7EmbeddedAdapterEnabledCondition::class)
 class C7EmbeddedSchedulingAutoConfiguration {
-
-  companion object : KLogging()
 
   @PostConstruct
   fun report() {

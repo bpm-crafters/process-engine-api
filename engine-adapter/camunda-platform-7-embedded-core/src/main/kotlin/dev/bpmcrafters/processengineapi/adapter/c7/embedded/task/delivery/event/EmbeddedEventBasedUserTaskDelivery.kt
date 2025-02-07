@@ -3,19 +3,18 @@ package dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.event
 import dev.bpmcrafters.processengineapi.CommonRestrictions
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.UserTaskDelivery
 import dev.bpmcrafters.processengineapi.adapter.commons.task.filterBySubscription
-import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.pull.EmbeddedPullUserTaskDelivery.Companion.logger
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.toTaskInformation
 import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionRepository
 import dev.bpmcrafters.processengineapi.adapter.commons.task.TaskSubscriptionHandle
 import dev.bpmcrafters.processengineapi.task.TaskType
-import mu.KLogging
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.camunda.bpm.engine.delegate.DelegateTask
+
+private val logger = KotlinLogging.logger {}
 
 class EmbeddedEventBasedUserTaskDelivery(
   private val subscriptionRepository: SubscriptionRepository
 ) : UserTaskDelivery {
-
-  companion object : KLogging()
 
   fun userTaskCreated(delegateTask: DelegateTask) {
     val subscriptions = subscriptionRepository.getTaskSubscriptions()

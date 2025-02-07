@@ -4,20 +4,19 @@ import dev.bpmcrafters.processengineapi.CommonRestrictions
 import dev.bpmcrafters.processengineapi.Empty
 import dev.bpmcrafters.processengineapi.MetaInfo
 import dev.bpmcrafters.processengineapi.MetaInfoAware
-import dev.bpmcrafters.processengineapi.correlation.CorrelationSupplier
 import dev.bpmcrafters.processengineapi.correlation.SendSignalCmd
 import dev.bpmcrafters.processengineapi.correlation.SignalApi
-import mu.KLogging
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.camunda.bpm.engine.RuntimeService
 import org.camunda.bpm.engine.runtime.SignalEventReceivedBuilder
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.Future
 
+private val logger = KotlinLogging.logger {}
+
 class SignalApiImpl(
   private val runtimeService: RuntimeService
 ) : SignalApi {
-
-  companion object: KLogging()
 
   override fun sendSignal(cmd: SendSignalCmd): Future<Empty> {
     logger.debug { "PROCESS-ENGINE-C7-REMOTE-002: Sending signal ${cmd.signalName}." }

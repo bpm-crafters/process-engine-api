@@ -9,7 +9,6 @@ import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.toTask
 import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionRepository
 import dev.bpmcrafters.processengineapi.adapter.commons.task.TaskSubscriptionHandle
 import dev.bpmcrafters.processengineapi.task.TaskType
-import mu.KLogging
 import org.camunda.bpm.engine.ExternalTaskService
 import org.camunda.bpm.engine.externaltask.LockedExternalTask
 import org.camunda.bpm.engine.impl.context.Context
@@ -19,8 +18,11 @@ import org.camunda.bpm.engine.impl.jobexecutor.JobHandler
 import org.camunda.bpm.engine.impl.jobexecutor.JobHandlerConfiguration
 import org.camunda.bpm.engine.impl.persistence.entity.*
 import dev.bpmcrafters.processengineapi.adapter.commons.task.filterBySubscription
+import io.github.oshai.kotlinlogging.KotlinLogging
 import java.time.Instant
 import java.util.*
+
+private val logger = KotlinLogging.logger {}
 
 /**
  * Job handler delivering task creating, modification and deletion.
@@ -31,7 +33,7 @@ class EmbeddedTaskDeliveryJobHandler(
   private val lockTimeInSeconds: Long
 ) : JobHandler<EmbeddedTaskDeliveryJobHandler.EmbeddedTaskDeliveryJobHandlerConfiguration> {
 
-  companion object : KLogging() {
+  companion object {
     const val TYPE = "dev.bpm-crafters.processengineapi.EmbeddedTaskDeliveryJobHandler"
   }
 

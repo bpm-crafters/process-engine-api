@@ -2,8 +2,10 @@ package dev.bpmcrafters.processengineapi.adapter.commons.task
 
 import dev.bpmcrafters.processengineapi.CommonRestrictions
 import dev.bpmcrafters.processengineapi.task.*
-import mu.KLogging
+import io.github.oshai.kotlinlogging.KotlinLogging
 import java.util.concurrent.ConcurrentHashMap
+
+private val logger = KotlinLogging.logger {}
 
 /**
  * A simple component for holding user task information and payload of tasks.
@@ -19,8 +21,6 @@ class UserTaskSupport {
   private val information: ConcurrentHashMap<String, TaskInformation> = ConcurrentHashMap()
   private val compositeTaskHandler: CompositeTaskHandler = CompositeTaskHandler().withHandler(this::onTaskDeliveryInternal)
   private val compositeTaskTerminationHandler: CompositeTaskTerminationHandler = CompositeTaskTerminationHandler().withHandler(this::onTaskRemovalInternal)
-
-  companion object : KLogging()
 
   init {
       logger.info { "PROCESS-ENGINE-API-014: Initialized user task support."   }

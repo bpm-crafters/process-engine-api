@@ -8,7 +8,9 @@ import dev.bpmcrafters.processengineapi.task.TaskType
 import io.camunda.zeebe.client.ZeebeClient
 import io.camunda.zeebe.client.api.response.ActivatedJob
 import io.camunda.zeebe.client.api.worker.JobWorkerBuilderStep1.JobWorkerBuilderStep3
-import mu.KLogging
+import io.github.oshai.kotlinlogging.KotlinLogging
+
+private val logger = KotlinLogging.logger {}
 
 /**
  * Uses task subscription available in the repository to subscribe to zeebe.
@@ -18,8 +20,6 @@ class SubscribingServiceTaskDelivery(
   private val subscriptionRepository: SubscriptionRepository,
   private val workerId: String
 ) {
-
-  companion object : KLogging()
 
   fun subscribe() {
     val subscriptions = subscriptionRepository.getTaskSubscriptions()

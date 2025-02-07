@@ -5,8 +5,8 @@ import dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.C7Embedde
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.C7EmbeddedAdapterUserTaskInitialPullEnabledCondition
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.event.C7EmbeddedEventDeliveryAutoConfiguration
 import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionRepository
+import io.github.oshai.kotlinlogging.KotlinLogging
 import jakarta.annotation.PostConstruct
-import mu.KLogging
 import org.camunda.bpm.engine.ExternalTaskService
 import org.camunda.bpm.engine.RepositoryService
 import org.camunda.bpm.engine.TaskService
@@ -18,6 +18,8 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.scheduling.annotation.EnableAsync
 import java.util.concurrent.ExecutorService
 
+private val logger = KotlinLogging.logger {}
+
 /**
  * This configuration configures the initial pull bound to the application started event.
  * It is not relying on any delivery strategies but just configures the initial pull to happen
@@ -27,9 +29,6 @@ import java.util.concurrent.ExecutorService
 @AutoConfigureAfter(C7EmbeddedEventDeliveryAutoConfiguration::class)
 @EnableAsync
 class C7EmbeddedInitialPullOnStartupAutoConfiguration {
-
-
-  companion object : KLogging()
 
   @PostConstruct
   fun report() {

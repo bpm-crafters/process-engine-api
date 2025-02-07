@@ -10,14 +10,14 @@ import io.camunda.tasklist.CamundaTaskListClient
 import io.camunda.tasklist.dto.Task
 import io.camunda.tasklist.dto.TaskSearch
 import io.camunda.tasklist.dto.TaskState
-import mu.KLogging
+import io.github.oshai.kotlinlogging.KotlinLogging
+
+private val logger = KotlinLogging.logger {}
 
 class PullUserTaskDelivery(
   private val taskListClient: CamundaTaskListClient,
   private val subscriptionRepository: SubscriptionRepository
 ) : RefreshableDelivery {
-
-  companion object : KLogging()
 
   override fun refresh() {
     val subscriptions = subscriptionRepository.getTaskSubscriptions()

@@ -6,10 +6,12 @@ import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionReposit
 import dev.bpmcrafters.processengineapi.adapter.commons.task.TaskSubscriptionHandle
 import dev.bpmcrafters.processengineapi.adapter.commons.task.filterBySubscription
 import dev.bpmcrafters.processengineapi.task.TaskType
-import mu.KLogging
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.camunda.bpm.client.ExternalTaskClient
 import org.camunda.bpm.client.task.ExternalTask
 import org.camunda.bpm.client.topic.TopicSubscriptionBuilder
+
+private val logger = KotlinLogging.logger {}
 
 /**
  *
@@ -21,8 +23,6 @@ class SubscribingClientServiceTaskDelivery(
   private val retryTimeout: Long,
   private val retries: Int,
   ) {
-
-  companion object: KLogging()
 
   fun subscribe() {
 

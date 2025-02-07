@@ -1,17 +1,16 @@
 package dev.bpmcrafters.processengineapi.adapter.c8.springboot.subscription
 
 import dev.bpmcrafters.processengineapi.adapter.c8.task.delivery.SubscribingServiceTaskDelivery
-import mu.KLogging
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.boot.context.event.ApplicationStartedEvent
-import org.springframework.context.ApplicationEvent
 import org.springframework.context.event.EventListener
 import org.springframework.scheduling.annotation.Async
+
+private val logger = KotlinLogging.logger {}
 
 open class SubscribingServiceTaskDeliveryBinding(
   private val subscribingServiceTaskDelivery: SubscribingServiceTaskDelivery
 ) {
-
-  companion object : KLogging()
 
   @EventListener
   @Async

@@ -8,15 +8,15 @@ import dev.bpmcrafters.processengineapi.correlation.SendSignalCmd
 import dev.bpmcrafters.processengineapi.correlation.SignalApi
 import io.camunda.zeebe.client.ZeebeClient
 import io.camunda.zeebe.client.api.command.BroadcastSignalCommandStep1
-import mu.KLogging
+import io.github.oshai.kotlinlogging.KotlinLogging
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.Future
+
+private val logger = KotlinLogging.logger {}
 
 class SignalApiImpl(
   private val zeebeClient: ZeebeClient
 ) : SignalApi {
-
-  companion object: KLogging()
 
   override fun sendSignal(cmd: SendSignalCmd): Future<Empty> {
     return CompletableFuture.supplyAsync {

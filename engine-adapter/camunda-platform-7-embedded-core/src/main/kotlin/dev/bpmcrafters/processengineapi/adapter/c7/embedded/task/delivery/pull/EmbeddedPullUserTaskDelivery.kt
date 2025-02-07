@@ -8,12 +8,14 @@ import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionReposit
 import dev.bpmcrafters.processengineapi.adapter.commons.task.TaskSubscriptionHandle
 import dev.bpmcrafters.processengineapi.adapter.commons.task.filterBySubscription
 import dev.bpmcrafters.processengineapi.task.TaskType
-import mu.KLogging
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.camunda.bpm.engine.RepositoryService
 import org.camunda.bpm.engine.TaskService
 import org.camunda.bpm.engine.task.Task
 import org.camunda.bpm.engine.task.TaskQuery
 import java.util.concurrent.ExecutorService
+
+private val logger = KotlinLogging.logger {}
 
 /**
  * Delivers user tasks to subscriptions.
@@ -25,8 +27,6 @@ class EmbeddedPullUserTaskDelivery(
   private val subscriptionRepository: SubscriptionRepository,
   private val executorService: ExecutorService
 ) : UserTaskDelivery, RefreshableDelivery {
-
-  companion object : KLogging()
 
   private val cachingProcessDefinitionKeyResolver = CachingProcessDefinitionKeyResolver(repositoryService)
 
