@@ -1,10 +1,12 @@
 package dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.job
 
-import mu.KLogging
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.camunda.bpm.engine.delegate.ExecutionListener
 import org.camunda.bpm.engine.delegate.TaskListener
 import org.camunda.bpm.engine.impl.cfg.AbstractProcessEnginePlugin
 import org.camunda.bpm.engine.impl.cfg.ProcessEngineConfigurationImpl
+
+private val logger = KotlinLogging.logger {}
 
 /**
  * Engine plugin registering a job handler and parse listeners to deliver new tasks via Camunda Job.
@@ -14,8 +16,6 @@ open class EmbeddedTaskDeliveryEnginePlugin(
   private val deliverServiceTasks: Boolean,
   private val deliverUserTasks: Boolean,
 ) : AbstractProcessEnginePlugin() {
-
-  companion object : KLogging()
 
   override fun preInit(processEngineConfiguration: ProcessEngineConfigurationImpl): Unit = with(processEngineConfiguration) {
     if (customJobHandlers == null) {

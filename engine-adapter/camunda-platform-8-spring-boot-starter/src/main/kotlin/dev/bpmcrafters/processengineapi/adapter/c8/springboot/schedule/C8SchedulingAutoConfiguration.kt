@@ -8,8 +8,8 @@ import dev.bpmcrafters.processengineapi.adapter.c8.springboot.C8AdapterPropertie
 import dev.bpmcrafters.processengineapi.adapter.c8.springboot.ConditionalOnUserTaskDeliveryStrategy
 import dev.bpmcrafters.processengineapi.adapter.c8.task.delivery.PullUserTaskDelivery
 import dev.bpmcrafters.processengineapi.adapter.c8.task.delivery.SubscribingRefreshingUserTaskDelivery
+import io.github.oshai.kotlinlogging.KotlinLogging
 import jakarta.annotation.PostConstruct
-import mu.KLogging
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.boot.autoconfigure.AutoConfigureAfter
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
@@ -21,6 +21,8 @@ import org.springframework.scheduling.annotation.EnableAsync
 import org.springframework.scheduling.annotation.EnableScheduling
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler
 
+private val logger = KotlinLogging.logger {}
+
 /**
  * Auto-configuration for scheduled delivery.
  */
@@ -30,8 +32,6 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler
 @AutoConfigureAfter(C8AdapterAutoConfiguration::class)
 @Conditional(C8AdapterEnabledCondition::class)
 class C8SchedulingAutoConfiguration {
-
-  companion object : KLogging()
 
   @PostConstruct
   fun report() {

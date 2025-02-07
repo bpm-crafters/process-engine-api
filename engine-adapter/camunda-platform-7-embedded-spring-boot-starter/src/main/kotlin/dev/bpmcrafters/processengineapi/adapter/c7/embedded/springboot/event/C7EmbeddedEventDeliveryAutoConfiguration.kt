@@ -7,13 +7,15 @@ import dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.Condition
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.UserTaskDelivery
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.event.EmbeddedEventBasedUserTaskDelivery
 import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionRepository
+import io.github.oshai.kotlinlogging.KotlinLogging
 import jakarta.annotation.PostConstruct
-import mu.KLogging
 import org.camunda.bpm.engine.TaskService
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.boot.autoconfigure.AutoConfigureAfter
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+
+private val logger = KotlinLogging.logger {}
 
 /**
  * Auto-configuration for delivery.
@@ -24,9 +26,6 @@ import org.springframework.context.annotation.Configuration
   strategies = [UserTaskDeliveryStrategy.EMBEDDED_EVENT, UserTaskDeliveryStrategy.EMBEDDED_EVENT_AND_SCHEDULED]
 )
 class C7EmbeddedEventDeliveryAutoConfiguration {
-
-
-  companion object : KLogging()
 
   @PostConstruct
   fun report() {

@@ -6,10 +6,12 @@ import dev.bpmcrafters.processengineapi.task.CompleteTaskByErrorCmd
 import dev.bpmcrafters.processengineapi.task.CompleteTaskCmd
 import dev.bpmcrafters.processengineapi.task.FailTaskCmd
 import dev.bpmcrafters.processengineapi.task.ServiceTaskCompletionApi
-import mu.KLogging
+import io.github.oshai.kotlinlogging.KotlinLogging
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.Future
 import org.camunda.bpm.client.task.ExternalTaskService as ClientExternalTaskService
+
+private val logger = KotlinLogging.logger {}
 
 /**
  * External task completion API implementation using official client-based external task service.
@@ -21,8 +23,6 @@ class C7RemoteClientServiceTaskCompletionApiImpl(
   private val subscriptionRepository: SubscriptionRepository,
   private val failureRetrySupplier: FailureRetrySupplier
 ) : ServiceTaskCompletionApi {
-
-  companion object : KLogging()
 
   override fun completeTask(cmd: CompleteTaskCmd): Future<Empty> {
     logger.debug { "PROCESS-ENGINE-C7-REMOTE-006: completing service task ${cmd.taskId}." }

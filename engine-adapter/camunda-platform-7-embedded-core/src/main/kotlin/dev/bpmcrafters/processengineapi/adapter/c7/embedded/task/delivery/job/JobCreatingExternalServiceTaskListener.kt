@@ -3,16 +3,16 @@ package dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.job
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.job.EmbeddedTaskDeliveryJobHandler.EmbeddedTaskDeliveryJobHandlerConfiguration.Companion.OPERATION_CREATE
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.job.EmbeddedTaskDeliveryJobHandler.EmbeddedTaskDeliveryJobHandlerConfiguration.Companion.OPERATION_DELETE
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.job.EmbeddedTaskDeliveryJobHandler.EmbeddedTaskDeliveryJobHandlerConfiguration.Companion.TYPE_SERVICE
-import mu.KLogging
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.camunda.bpm.engine.delegate.DelegateExecution
 import org.camunda.bpm.engine.delegate.ExecutionListener
+
+private val logger = KotlinLogging.logger {}
 
 /**
  * Task listener writing a job to notify delivery.
  */
 open class JobCreatingExternalServiceTaskListener : ExecutionListener {
-
-  companion object : KLogging()
 
   override fun notify(delegateExecution: DelegateExecution) {
     when (delegateExecution.eventName) {

@@ -8,11 +8,13 @@ import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionReposit
 import dev.bpmcrafters.processengineapi.adapter.commons.task.TaskSubscriptionHandle
 import dev.bpmcrafters.processengineapi.adapter.commons.task.filterBySubscription
 import dev.bpmcrafters.processengineapi.task.TaskType
-import mu.KLogging
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.camunda.bpm.engine.ExternalTaskService
 import org.camunda.bpm.engine.externaltask.ExternalTaskQueryBuilder
 import org.camunda.bpm.engine.externaltask.LockedExternalTask
 import java.util.concurrent.ExecutorService
+
+private val logger = KotlinLogging.logger {}
 
 /**
  * Delivers external tasks to subscriptions.
@@ -28,8 +30,6 @@ class RemotePullServiceTaskDelivery(
   private val retries: Int,
   private val executorService: ExecutorService
 ) : ServiceTaskDelivery, RefreshableDelivery {
-
-  companion object : KLogging()
 
   /**
    * Delivers all tasks found in the external service to corresponding subscriptions.

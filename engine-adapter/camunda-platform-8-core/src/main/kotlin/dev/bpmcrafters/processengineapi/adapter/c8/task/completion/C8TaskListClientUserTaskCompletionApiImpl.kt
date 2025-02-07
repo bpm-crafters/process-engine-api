@@ -6,16 +6,16 @@ import dev.bpmcrafters.processengineapi.task.CompleteTaskByErrorCmd
 import dev.bpmcrafters.processengineapi.task.CompleteTaskCmd
 import dev.bpmcrafters.processengineapi.task.UserTaskCompletionApi
 import io.camunda.tasklist.CamundaTaskListClient
-import mu.KLogging
+import io.github.oshai.kotlinlogging.KotlinLogging
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.Future
+
+private val logger = KotlinLogging.logger {}
 
 class C8TaskListClientUserTaskCompletionApiImpl(
   private val taskListClient: CamundaTaskListClient,
   private val subscriptionRepository: SubscriptionRepository
 ) : UserTaskCompletionApi {
-
-  companion object : KLogging()
 
   override fun completeTask(cmd: CompleteTaskCmd): Future<Empty> {
     logger.debug { "PROCESS-ENGINE-C8-006: completing service task ${cmd.taskId}." }

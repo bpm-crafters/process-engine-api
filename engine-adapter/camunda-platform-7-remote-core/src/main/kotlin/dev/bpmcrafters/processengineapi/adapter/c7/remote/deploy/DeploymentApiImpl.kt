@@ -5,17 +5,17 @@ import dev.bpmcrafters.processengineapi.MetaInfoAware
 import dev.bpmcrafters.processengineapi.deploy.DeployBundleCommand
 import dev.bpmcrafters.processengineapi.deploy.DeploymentApi
 import dev.bpmcrafters.processengineapi.deploy.DeploymentInformation
-import mu.KLogging
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.camunda.bpm.engine.RepositoryService
 import org.camunda.bpm.engine.repository.Deployment
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.Future
 
+private val logger = KotlinLogging.logger {}
+
 class DeploymentApiImpl(
   private val repositoryService: RepositoryService
 ) : DeploymentApi {
-
-  companion object: KLogging()
 
   override fun deploy(cmd: DeployBundleCommand): Future<DeploymentInformation> {
     require(cmd.resources.isNotEmpty()) { "Resources must not be empty, at least one resource must be provided." }

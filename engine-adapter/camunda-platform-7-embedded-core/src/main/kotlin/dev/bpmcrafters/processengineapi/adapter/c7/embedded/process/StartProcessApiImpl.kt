@@ -4,17 +4,17 @@ import dev.bpmcrafters.processengineapi.CommonRestrictions
 import dev.bpmcrafters.processengineapi.MetaInfo
 import dev.bpmcrafters.processengineapi.MetaInfoAware
 import dev.bpmcrafters.processengineapi.process.*
-import mu.KLogging
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.camunda.bpm.engine.RuntimeService
 import org.camunda.bpm.engine.runtime.ProcessInstance
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.Future
 
+private val logger = KotlinLogging.logger {}
+
 class StartProcessApiImpl(
   private val runtimeService: RuntimeService
 ) : StartProcessApi {
-
-  companion object: KLogging()
 
   override fun startProcess(cmd: StartProcessCommand): Future<ProcessInformation> {
     return when (cmd) {
