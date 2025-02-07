@@ -22,7 +22,7 @@
     <spring-boot.version>3.4.2</spring-boot.version>
     <!-- TEST -->
     <mockito.version>5.4.0</mockito.version>
-    <assertj.version>3.27.2</assertj.version>
+    <assertj.version>3.27.3</assertj.version>
     <junit5.version>5.11.3</junit5.version>
     <jgiven.version>2.0.1</jgiven.version>
     <awaitility.version>4.2.2</awaitility.version>
