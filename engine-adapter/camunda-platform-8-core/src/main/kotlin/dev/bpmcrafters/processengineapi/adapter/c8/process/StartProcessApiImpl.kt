@@ -7,15 +7,15 @@ import dev.bpmcrafters.processengineapi.process.*
 import io.camunda.zeebe.client.ZeebeClient
 import io.camunda.zeebe.client.api.response.ProcessInstanceEvent
 import io.camunda.zeebe.client.api.response.PublishMessageResponse
-import mu.KLogging
+import io.github.oshai.kotlinlogging.KotlinLogging
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.Future
+
+private val logger = KotlinLogging.logger {}
 
 class StartProcessApiImpl(
   private val zeebeClient: ZeebeClient
 ) : StartProcessApi {
-
-  companion object: KLogging()
 
   override fun startProcess(cmd: StartProcessCommand): Future<ProcessInformation> {
     return when (cmd) {

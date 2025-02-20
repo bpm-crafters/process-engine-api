@@ -1,21 +1,19 @@
 package dev.bpmcrafters.processengineapi.adapter.c7.embedded.correlation
 
-import dev.bpmcrafters.processengineapi.CommonRestrictions
 import dev.bpmcrafters.processengineapi.Empty
 import dev.bpmcrafters.processengineapi.MetaInfo
 import dev.bpmcrafters.processengineapi.MetaInfoAware
 import dev.bpmcrafters.processengineapi.correlation.*
-import mu.KLogging
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.camunda.bpm.engine.RuntimeService
-import org.camunda.bpm.engine.runtime.MessageCorrelationBuilder
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.Future
+
+private val logger = KotlinLogging.logger {}
 
 class CorrelationApiImpl(
   private val runtimeService: RuntimeService,
 ) : CorrelationApi {
-
-  companion object: KLogging()
 
   override fun correlateMessage(cmd: CorrelateMessageCmd): Future<Empty> {
     return CompletableFuture.supplyAsync {

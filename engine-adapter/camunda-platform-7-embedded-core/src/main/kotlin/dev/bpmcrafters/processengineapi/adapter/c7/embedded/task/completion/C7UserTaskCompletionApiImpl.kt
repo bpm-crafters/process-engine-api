@@ -5,10 +5,12 @@ import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionReposit
 import dev.bpmcrafters.processengineapi.task.CompleteTaskByErrorCmd
 import dev.bpmcrafters.processengineapi.task.CompleteTaskCmd
 import dev.bpmcrafters.processengineapi.task.UserTaskCompletionApi
-import mu.KLogging
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.camunda.bpm.engine.TaskService
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.Future
+
+private val logger = KotlinLogging.logger {}
 
 /**
  * Implementation using Camunda taskService Java API for completion of user tasks.
@@ -18,8 +20,6 @@ class C7UserTaskCompletionApiImpl(
   private val taskService: TaskService,
   private val subscriptionRepository: SubscriptionRepository
 ) : UserTaskCompletionApi {
-
-  companion object : KLogging()
 
   override fun completeTask(cmd: CompleteTaskCmd): Future<Empty> {
     logger.debug { "PROCESS-ENGINE-C7-EMBEDDED-011: completing user task ${cmd.taskId}." }

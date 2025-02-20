@@ -8,11 +8,13 @@ import dev.bpmcrafters.processengineapi.adapter.commons.task.RefreshableDelivery
 import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionRepository
 import dev.bpmcrafters.processengineapi.adapter.commons.task.TaskSubscriptionHandle
 import dev.bpmcrafters.processengineapi.task.TaskType
-import mu.KLogging
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.camunda.bpm.engine.ExternalTaskService
 import org.camunda.bpm.engine.externaltask.ExternalTaskQueryBuilder
 import org.camunda.bpm.engine.externaltask.LockedExternalTask
 import java.util.concurrent.ExecutorService
+
+private val logger = KotlinLogging.logger {}
 
 /**
  * Delivers external tasks to subscriptions.
@@ -28,8 +30,6 @@ class EmbeddedPullServiceTaskDelivery(
   private val retries: Int,
   private val executorService: ExecutorService
 ) : ExternalServiceTaskDelivery, RefreshableDelivery {
-
-  companion object : KLogging()
 
   /**
    * Delivers all tasks found in the external service to corresponding subscriptions.
@@ -73,11 +73,13 @@ class EmbeddedPullServiceTaskDelivery(
 
   private fun ExternalTaskQueryBuilder.forSubscriptions(subscriptions: List<TaskSubscriptionHandle>): ExternalTaskQueryBuilder {
     subscriptions
-      .mapNotNull { it.taskDescriptionKey }
-      .distinct()
-      .forEach { topic ->
-        this.topic(topic, lockDuration)
+      .filter { it.taskDescriptionKey != null }
+      .distinctBy { it.taskDescriptionKey  }
+      .forEach { subscription ->
+        this
+          .topic(subscription.taskDescriptionKey, lockDuration)
           .enableCustomObjectDeserialization()
+        // FIXME -> consider complex tent filtering
       }
     return this
   }
@@ -88,7 +90,7 @@ class EmbeddedPullServiceTaskDelivery(
       && this.restrictions.all {
       when (it.key) {
         CommonRestrictions.EXECUTION_ID -> it.value == task.executionId
-        CommonRestrictions.ACTIVITY_ID -> it.value == task.activityId
+        CommonRestrictions.ACTIVITY_ID -> it.value == task.activityInstanceId // FIXME task.activityId?
         CommonRestrictions.BUSINESS_KEY -> it.value == task.businessKey
         CommonRestrictions.TENANT_ID -> it.value == task.tenantId
         CommonRestrictions.PROCESS_INSTANCE_ID -> it.value == task.processInstanceId

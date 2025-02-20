@@ -2,18 +2,14 @@ package dev.bpmcrafters.processengineapi.test
 
 import com.tngtech.jgiven.Stage
 import com.tngtech.jgiven.annotation.ExpectedScenarioState
+import io.github.oshai.kotlinlogging.KotlinLogging
 import io.toolisticon.testing.jgiven.JGivenKotlinStage
 import io.toolisticon.testing.jgiven.step
-import mu.KLogging
 import org.assertj.core.api.Assertions.assertThat
 import org.awaitility.Awaitility.await
-import java.time.Duration
-import java.util.concurrent.TimeUnit
 
 @JGivenKotlinStage
 class BaseThenStage : Stage<BaseThenStage>() {
-
-  companion object : KLogging()
 
   @ExpectedScenarioState
   lateinit var instanceId: String

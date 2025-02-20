@@ -19,8 +19,8 @@ import dev.bpmcrafters.processengineapi.process.StartProcessApi
 import dev.bpmcrafters.processengineapi.task.ServiceTaskCompletionApi
 import dev.bpmcrafters.processengineapi.task.TaskSubscriptionApi
 import dev.bpmcrafters.processengineapi.task.UserTaskCompletionApi
+import io.github.oshai.kotlinlogging.KotlinLogging
 import jakarta.annotation.PostConstruct
-import mu.KLogging
 import org.camunda.bpm.engine.ExternalTaskService
 import org.camunda.bpm.engine.RepositoryService
 import org.camunda.bpm.engine.RuntimeService
@@ -31,16 +31,15 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Conditional
 import org.springframework.context.annotation.Configuration
-import java.util.concurrent.Executor
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
+
+private val logger = KotlinLogging.logger {}
 
 @Configuration
 @EnableConfigurationProperties(value = [C7EmbeddedAdapterProperties::class])
 @Conditional(C7EmbeddedAdapterEnabledCondition::class)
 class C7EmbeddedAdapterAutoConfiguration {
-
-  companion object : KLogging()
 
   @PostConstruct
   fun report() {

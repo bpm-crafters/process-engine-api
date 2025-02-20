@@ -6,15 +6,15 @@ import com.tngtech.jgiven.annotation.ProvidedScenarioState
 import dev.bpmcrafters.processengineapi.process.StartProcessByDefinitionCmd
 import dev.bpmcrafters.processengineapi.process.StartProcessByMessageCmd
 import dev.bpmcrafters.processengineapi.task.*
+import io.github.oshai.kotlinlogging.KotlinLogging
 import io.toolisticon.testing.jgiven.JGivenKotlinStage
 import io.toolisticon.testing.jgiven.step
-import mu.KLogging
 import org.assertj.core.api.Assertions.assertThat
+
+private val logger = KotlinLogging.logger {}
 
 @JGivenKotlinStage
 class BaseGivenWhenStage : Stage<BaseGivenWhenStage>() {
-
-  companion object : KLogging()
 
   @ExpectedScenarioState
   lateinit var processTestHelper: ProcessTestHelper

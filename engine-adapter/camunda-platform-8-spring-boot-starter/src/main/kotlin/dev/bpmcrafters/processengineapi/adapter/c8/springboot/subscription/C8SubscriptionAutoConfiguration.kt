@@ -8,18 +8,18 @@ import dev.bpmcrafters.processengineapi.adapter.c8.springboot.ConditionalOnServi
 import dev.bpmcrafters.processengineapi.adapter.c8.springboot.ConditionalOnUserTaskDeliveryStrategy
 import dev.bpmcrafters.processengineapi.adapter.c8.task.delivery.SubscribingRefreshingUserTaskDelivery
 import dev.bpmcrafters.processengineapi.adapter.c8.task.delivery.SubscribingServiceTaskDelivery
+import io.github.oshai.kotlinlogging.KotlinLogging
 import jakarta.annotation.PostConstruct
-import mu.KLogging
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.boot.autoconfigure.AutoConfigureAfter
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Conditional
 
+private val logger = KotlinLogging.logger {}
+
 @AutoConfigureAfter(C8AdapterAutoConfiguration::class)
 @Conditional(C8AdapterEnabledCondition::class)
 class C8SubscriptionAutoConfiguration {
-
-  companion object: KLogging()
 
   @PostConstruct
   fun report() {

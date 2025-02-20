@@ -7,18 +7,18 @@ import dev.bpmcrafters.processengineapi.task.CompleteTaskCmd
 import dev.bpmcrafters.processengineapi.task.ServiceTaskCompletionApi
 import dev.bpmcrafters.processengineapi.task.FailTaskCmd
 import io.camunda.zeebe.client.ZeebeClient
-import mu.KLogging
+import io.github.oshai.kotlinlogging.KotlinLogging
 import java.time.Duration
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.Future
+
+private val logger = KotlinLogging.logger {}
 
 class C8ZeebeExternalServiceTaskCompletionApiImpl(
   private val zeebeClient: ZeebeClient,
   private val subscriptionRepository: SubscriptionRepository,
   private val failureRetrySupplier: FailureRetrySupplier
 ) : ServiceTaskCompletionApi {
-
-  companion object : KLogging()
 
   override fun completeTask(cmd: CompleteTaskCmd): Future<Empty> {
     logger.debug { "PROCESS-ENGINE-C8-008: completing service task ${cmd.taskId}." }
@@ -39,6 +39,7 @@ class C8ZeebeExternalServiceTaskCompletionApiImpl(
     zeebeClient
       .newThrowErrorCommand(cmd.taskId.toLong())
       .errorCode(cmd.errorCode)
+      .errorMessage(cmd.errorMessage ?: "Unknown error")
       .variables(cmd.get())
       .send()
       .join()
@@ -55,6 +56,7 @@ class C8ZeebeExternalServiceTaskCompletionApiImpl(
       .newFailCommand(cmd.taskId.toLong())
       .retries(retries)
       .retryBackoff(Duration.ofSeconds(retriesTimeout))
+      .errorMessage(cmd.reason)
       .send()
       .join()
     logger.debug { "PROCESS-ENGINE-C8-010: failing service task ${cmd.taskId}." }

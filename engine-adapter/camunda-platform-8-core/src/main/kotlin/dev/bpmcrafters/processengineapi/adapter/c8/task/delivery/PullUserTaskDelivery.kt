@@ -1,5 +1,6 @@
 package dev.bpmcrafters.processengineapi.adapter.c8.task.delivery
 
+import dev.bpmcrafters.processengineapi.CommonRestrictions
 import dev.bpmcrafters.processengineapi.adapter.commons.task.RefreshableDelivery
 import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionRepository
 import dev.bpmcrafters.processengineapi.adapter.commons.task.TaskSubscriptionHandle
@@ -9,14 +10,14 @@ import io.camunda.tasklist.CamundaTaskListClient
 import io.camunda.tasklist.dto.Task
 import io.camunda.tasklist.dto.TaskSearch
 import io.camunda.tasklist.dto.TaskState
-import mu.KLogging
+import io.github.oshai.kotlinlogging.KotlinLogging
+
+private val logger = KotlinLogging.logger {}
 
 class PullUserTaskDelivery(
   private val taskListClient: CamundaTaskListClient,
   private val subscriptionRepository: SubscriptionRepository
 ) : RefreshableDelivery {
-
-  companion object : KLogging()
 
   override fun refresh() {
     val subscriptions = subscriptionRepository.getTaskSubscriptions()
@@ -58,14 +59,23 @@ class PullUserTaskDelivery(
   }
 
   private fun TaskSearch.forSubscriptions(subscriptions: List<TaskSubscriptionHandle>): TaskSearch {
+    // FIXME -> support tenant on subscription
     subscriptions
       .filter { it.taskType == TaskType.USER } // only user task subscriptions
       .map { it.taskDescriptionKey to it.restrictions }
-
+    // FIXME -> consider complex tent filtering
     return this
   }
 
   private fun TaskSubscriptionHandle.matches(task: Task): Boolean =
     this.taskType == TaskType.USER
       && (this.taskDescriptionKey == null || this.taskDescriptionKey == task.taskDefinitionId)
+      && this.restrictions.all {
+      when (it.key) {
+        CommonRestrictions.TENANT_ID -> it.value == task.tenantId
+        CommonRestrictions.PROCESS_INSTANCE_ID -> it.value == task.processInstanceKey
+        CommonRestrictions.PROCESS_DEFINITION_ID -> it.value == task.processDefinitionKey
+        else -> false
+      }
+    }
 }

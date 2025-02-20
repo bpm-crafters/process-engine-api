@@ -1,5 +1,6 @@
 package dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.job
 
+import dev.bpmcrafters.processengineapi.CommonRestrictions
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.job.EmbeddedTaskDeliveryJobHandler.EmbeddedTaskDeliveryJobHandlerConfiguration.Companion.OPERATION_CREATE
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.job.EmbeddedTaskDeliveryJobHandler.EmbeddedTaskDeliveryJobHandlerConfiguration.Companion.OPERATION_DELETE
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.job.EmbeddedTaskDeliveryJobHandler.EmbeddedTaskDeliveryJobHandlerConfiguration.Companion.TYPE_SERVICE
@@ -8,7 +9,6 @@ import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.toTask
 import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionRepository
 import dev.bpmcrafters.processengineapi.adapter.commons.task.TaskSubscriptionHandle
 import dev.bpmcrafters.processengineapi.task.TaskType
-import mu.KLogging
 import org.camunda.bpm.engine.ExternalTaskService
 import org.camunda.bpm.engine.externaltask.LockedExternalTask
 import org.camunda.bpm.engine.impl.context.Context
@@ -18,8 +18,11 @@ import org.camunda.bpm.engine.impl.jobexecutor.JobHandler
 import org.camunda.bpm.engine.impl.jobexecutor.JobHandlerConfiguration
 import org.camunda.bpm.engine.impl.persistence.entity.*
 import dev.bpmcrafters.processengineapi.adapter.commons.task.filterBySubscription
+import io.github.oshai.kotlinlogging.KotlinLogging
 import java.time.Instant
 import java.util.*
+
+private val logger = KotlinLogging.logger {}
 
 /**
  * Job handler delivering task creating, modification and deletion.
@@ -30,7 +33,7 @@ class EmbeddedTaskDeliveryJobHandler(
   private val lockTimeInSeconds: Long
 ) : JobHandler<EmbeddedTaskDeliveryJobHandler.EmbeddedTaskDeliveryJobHandlerConfiguration> {
 
-  companion object : KLogging() {
+  companion object {
     const val TYPE = "dev.bpm-crafters.processengineapi.EmbeddedTaskDeliveryJobHandler"
   }
 
@@ -90,9 +93,27 @@ class EmbeddedTaskDeliveryJobHandler(
 
   private fun TaskSubscriptionHandle.matches(taskEntity: TaskEntity): Boolean =
     this.taskType == TaskType.USER && (this.taskDescriptionKey == null || this.taskDescriptionKey == taskEntity.taskDefinitionKey || this.taskDescriptionKey == taskEntity.id)
+      && this.restrictions.all {
+      when (it.key) {
+        CommonRestrictions.EXECUTION_ID -> it.value == taskEntity.executionId
+        CommonRestrictions.TENANT_ID -> it.value == taskEntity.tenantId
+        CommonRestrictions.PROCESS_INSTANCE_ID -> it.value == taskEntity.processInstanceId
+        CommonRestrictions.PROCESS_DEFINITION_ID -> it.value == taskEntity.processDefinitionId
+        else -> false
+      }
+    }
 
   private fun TaskSubscriptionHandle.matches(taskEntity: LockedExternalTask): Boolean =
     this.taskType == TaskType.EXTERNAL && (this.taskDescriptionKey == null || this.taskDescriptionKey == taskEntity.topicName)
+      && this.restrictions.all {
+      when (it.key) {
+        CommonRestrictions.EXECUTION_ID -> it.value == taskEntity.executionId
+        CommonRestrictions.TENANT_ID -> it.value == taskEntity.tenantId
+        CommonRestrictions.PROCESS_INSTANCE_ID -> it.value == taskEntity.processInstanceId
+        CommonRestrictions.PROCESS_DEFINITION_ID -> it.value == taskEntity.processDefinitionId
+        else -> false
+      }
+    }
 
   /**
    * Job configuration.
