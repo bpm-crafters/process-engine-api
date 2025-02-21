@@ -1,9 +1,11 @@
 package dev.bpmcrafters.processengineapi.adapter.c7.remote.springboot
 
 import dev.bpmcrafters.processengineapi.adapter.c7.remote.process.toProcessInformation
+import dev.bpmcrafters.processengineapi.adapter.c7.remote.task.delivery.ServiceTaskDelivery
 import dev.bpmcrafters.processengineapi.adapter.c7.remote.task.delivery.UserTaskDelivery
-import dev.bpmcrafters.processengineapi.adapter.c7.remote.task.delivery.pull.RemotePullServiceTaskDelivery
+import dev.bpmcrafters.processengineapi.adapter.c7.remote.task.delivery.subscribe.SubscribingClientServiceTaskDelivery
 import dev.bpmcrafters.processengineapi.adapter.commons.task.InMemSubscriptionRepository
+import dev.bpmcrafters.processengineapi.adapter.commons.task.RefreshableDelivery
 import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionRepository
 import dev.bpmcrafters.processengineapi.process.ProcessInformation
 import dev.bpmcrafters.processengineapi.process.StartProcessApi
@@ -11,13 +13,14 @@ import dev.bpmcrafters.processengineapi.task.ServiceTaskCompletionApi
 import dev.bpmcrafters.processengineapi.task.TaskSubscriptionApi
 import dev.bpmcrafters.processengineapi.task.UserTaskCompletionApi
 import dev.bpmcrafters.processengineapi.test.ProcessTestHelper
+import org.awaitility.Awaitility.await
 import org.camunda.bpm.engine.RuntimeService
 
 class C7RemoteProcessTestHelper(
   private val runtimeService: RuntimeService,
   private val startProcessApi: StartProcessApi,
   private val userTaskDelivery: UserTaskDelivery,
-  private val externalTaskDelivery: RemotePullServiceTaskDelivery,
+  private val serviceTaskDelivery: ServiceTaskDelivery,
   private val taskSubscriptionApi: TaskSubscriptionApi,
   private val userTaskCompletionApi: UserTaskCompletionApi,
   private val serviceTaskCompletionApi: ServiceTaskCompletionApi,
@@ -30,11 +33,18 @@ class C7RemoteProcessTestHelper(
   override fun getServiceTaskCompletionApi(): ServiceTaskCompletionApi = serviceTaskCompletionApi
 
   override fun triggerPullingUserTaskDeliveryManually() = userTaskDelivery.refresh()
+
   override fun subscribeForUserTasks() {
     TODO("Not yet implemented")
   }
 
-  override fun triggerExternalTaskDeliveryManually() = externalTaskDelivery.refresh()
+  override fun triggerExternalTaskDeliveryManually() {
+    if (serviceTaskDelivery is SubscribingClientServiceTaskDelivery) {
+      serviceTaskDelivery.subscribe()
+    } else if (serviceTaskDelivery is RefreshableDelivery) {
+      serviceTaskDelivery.refresh()
+    }
+  }
 
   override fun getProcessInformation(instanceId: String): ProcessInformation =
     runtimeService
@@ -43,6 +53,12 @@ class C7RemoteProcessTestHelper(
       .singleResult()
       .toProcessInformation()
 
-  override fun clearAllSubscriptions() = (subscriptionRepository as InMemSubscriptionRepository).deleteAllTaskSubscriptions()
+  override fun clearAllSubscriptions() {
+    (subscriptionRepository as InMemSubscriptionRepository).deleteAllTaskSubscriptions()
+    if (serviceTaskDelivery is SubscribingClientServiceTaskDelivery) {
+
+      serviceTaskDelivery.unsubscribe()
+    }
+  }
 
 }

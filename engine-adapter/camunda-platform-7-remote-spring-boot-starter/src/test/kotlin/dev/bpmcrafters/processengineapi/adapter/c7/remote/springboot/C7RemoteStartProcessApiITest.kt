@@ -3,7 +3,9 @@ package dev.bpmcrafters.processengineapi.adapter.c7.remote.springboot
 import io.toolisticon.testing.jgiven.THEN
 import io.toolisticon.testing.jgiven.WHEN
 import org.junit.jupiter.api.Test
+import org.springframework.test.context.ActiveProfiles
 
+@ActiveProfiles("itest")
 class C7RemoteStartProcessApiITest : AbstractC7RemoteApiITestBase() {
 
   @Test

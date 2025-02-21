@@ -1,0 +1,36 @@
+spring:
+  application:
+    name: ITest Subscribed
+
+dev:
+  bpm-crafters:
+    process-api:
+      adapter:
+        c7remote:
+          enabled: true
+          service-tasks:
+            delivery-strategy: remote_subscribed
+            worker-id: execute-action-external
+            lock-time-in-seconds: 5
+          user-tasks:
+            schedule-delivery-fixed-rate-in-seconds: 100 # don't pull too fast
+            delivery-strategy: remote_scheduled
+            execute-initial-pull-on-startup: false
+
+
+feign:
+  client:
+    config:
+      default:
+        url: "http://localhost:38080/engine-rest/"
+        logger-level: BASIC
+
+camunda:
+  bpm:
+    client:
+      base-url: "http://localhost:38080/engine-rest/"
+
+
+logging:
+  level:
+    dev.bpmcrafters.processengineapi: INFO

@@ -97,7 +97,7 @@ class BaseGivenWhenStage : Stage<BaseGivenWhenStage>() {
         taskId = userTaskId!!,
         payloadSupplier = { emptyMap() }
       )
-    )
+    ).get()
   }
 
   fun `complete the external task`() = step {
@@ -108,7 +108,7 @@ class BaseGivenWhenStage : Stage<BaseGivenWhenStage>() {
         taskId = externalTaskId!!,
         payloadSupplier = { emptyMap() }
       )
-    )
+    ).get()
   }
 
   fun `unsubscribe user task subscription`() = step { unsubscribeTask() }
@@ -121,7 +121,7 @@ class BaseGivenWhenStage : Stage<BaseGivenWhenStage>() {
         taskType = taskType,
         taskDescriptionKey = taskDescriptionKey,
         action = taskHandler,
-        termination = {} // nothing to do
+        termination = { this.externalTaskId = null } // wait until the termination delivers success
       )
     ).get()
 
@@ -129,7 +129,7 @@ class BaseGivenWhenStage : Stage<BaseGivenWhenStage>() {
     UnsubscribeFromTaskCmd(
       taskSubscription
     )
-  )
+  ).get()
 
 
 }
