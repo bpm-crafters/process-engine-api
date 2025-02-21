@@ -26,7 +26,7 @@ class SubscribingClientServiceTaskDelivery(
 
   fun subscribe() {
 
-    val subscriptions = subscriptionRepository.getTaskSubscriptions()
+    val subscriptions = subscriptionRepository.getTaskSubscriptions().filter { s -> s.taskType == TaskType.EXTERNAL }
     if (subscriptions.isNotEmpty()) {
       logger.trace { "PROCESS-ENGINE-C7-REMOTE-030: subscribing to external tasks for: $subscriptions" }
 
