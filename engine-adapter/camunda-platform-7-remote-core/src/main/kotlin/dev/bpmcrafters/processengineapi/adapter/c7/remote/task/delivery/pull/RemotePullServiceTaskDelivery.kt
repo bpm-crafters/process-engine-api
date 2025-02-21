@@ -36,7 +36,7 @@ class RemotePullServiceTaskDelivery(
    */
   override fun refresh() {
 
-    val subscriptions = subscriptionRepository.getTaskSubscriptions()
+    val subscriptions = subscriptionRepository.getTaskSubscriptions().filter { s -> s.taskType == TaskType.EXTERNAL }
     if (subscriptions.isNotEmpty()) {
       logger.trace { "PROCESS-ENGINE-C7-REMOTE-030: pulling service tasks for subscriptions: $subscriptions" }
       // TODO -> how many queries do we want? 1:1 subscriptions, or 1 query for all?
