@@ -41,7 +41,7 @@
     <dependency>
       <groupId>org.camunda.bpm</groupId>
       <artifactId>camunda-external-task-client</artifactId>
-      <scope>provided</scope>
+      <optional>true</optional>
     </dependency>
     <!-- Use embedded-like integration if the appropriate client is in place -->
     <dependency>

@@ -22,7 +22,7 @@ class SubscribingClientServiceTaskDelivery(
   private val lockDuration: Long,
   private val retryTimeout: Long,
   private val retries: Int,
-  ) {
+) {
 
   fun subscribe() {
 
@@ -85,7 +85,7 @@ class SubscribingClientServiceTaskDelivery(
   private fun TaskSubscriptionHandle.matches(externalTask: ExternalTask): Boolean {
     return this.taskType == TaskType.EXTERNAL && (
       this.taskDescriptionKey == null || this.taskDescriptionKey == externalTask.topicName
-      )  && this.restrictions.all {
+      ) && this.restrictions.all {
       when (it.key) {
         CommonRestrictions.EXECUTION_ID -> it.value == externalTask.executionId
         CommonRestrictions.ACTIVITY_ID -> it.value == externalTask.activityId
