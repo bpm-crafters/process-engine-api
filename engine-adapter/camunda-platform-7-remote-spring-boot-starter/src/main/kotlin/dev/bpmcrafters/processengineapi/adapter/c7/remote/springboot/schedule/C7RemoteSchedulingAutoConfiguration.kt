@@ -9,8 +9,8 @@ import dev.bpmcrafters.processengineapi.adapter.c7.remote.task.delivery.pull.Rem
 import dev.bpmcrafters.processengineapi.adapter.c7.remote.task.delivery.pull.RemotePullUserTaskDelivery
 import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionRepository
 import dev.bpmcrafters.processengineapi.task.ServiceTaskCompletionApi
+import io.github.oshai.kotlinlogging.KotlinLogging
 import jakarta.annotation.PostConstruct
-import mu.KLogging
 import org.camunda.bpm.engine.ExternalTaskService
 import org.camunda.bpm.engine.RepositoryService
 import org.camunda.bpm.engine.TaskService
@@ -26,6 +26,8 @@ import org.springframework.scheduling.annotation.EnableScheduling
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler
 import java.util.concurrent.ExecutorService
 
+private val logger = KotlinLogging.logger {}
+
 /**
  * Auto-configuration for scheduled delivery.
  */
@@ -35,8 +37,6 @@ import java.util.concurrent.ExecutorService
 @AutoConfigureAfter(C7RemoteAdapterAutoConfiguration::class)
 @Conditional(C7RemoteAdapterEnabledCondition::class)
 class C7RemoteSchedulingAutoConfiguration {
-
-  companion object : KLogging()
 
   @PostConstruct
   fun report() {

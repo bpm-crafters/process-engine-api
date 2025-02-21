@@ -18,8 +18,8 @@ import dev.bpmcrafters.processengineapi.deploy.DeploymentApi
 import dev.bpmcrafters.processengineapi.process.StartProcessApi
 import dev.bpmcrafters.processengineapi.task.TaskSubscriptionApi
 import dev.bpmcrafters.processengineapi.task.UserTaskCompletionApi
+import io.github.oshai.kotlinlogging.KotlinLogging
 import jakarta.annotation.PostConstruct
-import mu.KLogging
 import org.camunda.bpm.engine.RepositoryService
 import org.camunda.bpm.engine.RuntimeService
 import org.camunda.bpm.engine.TaskService
@@ -34,14 +34,13 @@ import org.springframework.context.annotation.Configuration
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
+private val logger = KotlinLogging.logger {}
 
 @Configuration
 @EnableConfigurationProperties(value = [C7RemoteAdapterProperties::class])
 @Conditional(C7RemoteAdapterEnabledCondition::class)
 @EnableCamundaRestClient
 class C7RemoteAdapterAutoConfiguration {
-
-  companion object : KLogging()
 
   @PostConstruct
   fun report() {
