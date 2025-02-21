@@ -1,16 +1,16 @@
 package dev.bpmcrafters.processengineapi.adapter.c7.remote.springboot
 
-import dev.bpmcrafters.processengineapi.test.ProcessTestHelper
 import io.toolisticon.testing.jgiven.GIVEN
 import io.toolisticon.testing.jgiven.THEN
 import io.toolisticon.testing.jgiven.WHEN
 import org.junit.jupiter.api.Test
-import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.test.context.ActiveProfiles
 
+@ActiveProfiles("itest")
 class C7RemoteTaskApiITest : AbstractC7RemoteApiITestBase() {
 
   @Test
-  fun `should get subscribed for user task with pull strategie`() {
+  fun `should get subscribed for user task with pull strategy`() {
     GIVEN
       .`a active user task subscription`(USER_TASK)
 
@@ -22,7 +22,7 @@ class C7RemoteTaskApiITest : AbstractC7RemoteApiITestBase() {
   }
 
   @Test
-  fun `should get subscribed for external task with pull strategie`() {
+  fun `should get subscribed for external task with pull strategy`() {
     GIVEN
       .`a active external task subscription`(EXTERNAL_TASK)
 
@@ -34,7 +34,7 @@ class C7RemoteTaskApiITest : AbstractC7RemoteApiITestBase() {
   }
 
   @Test
-  fun `should not get subscribed for user task with pull strategie after unsubscribe`() {
+  fun `should not get subscribed for user task with pull strategy after unsubscribe`() {
     GIVEN
       .`a active user task subscription`(USER_TASK)
 
@@ -47,7 +47,7 @@ class C7RemoteTaskApiITest : AbstractC7RemoteApiITestBase() {
   }
 
   @Test
-  fun `should not get subscribed for external task with pull strategie after unsubscribe`() {
+  fun `should not get subscribed for external task with pull strategy after unsubscribe`() {
     GIVEN
       .`a active external task subscription`(USER_TASK)
 

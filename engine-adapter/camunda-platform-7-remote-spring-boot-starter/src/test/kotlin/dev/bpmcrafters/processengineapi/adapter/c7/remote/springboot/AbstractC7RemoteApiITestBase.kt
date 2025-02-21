@@ -17,7 +17,6 @@ import org.testcontainers.junit.jupiter.Testcontainers
   classes = [C7RemoteTestApplication::class],
   webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT
 )
-@ActiveProfiles("itest")
 @DirtiesContext
 @Testcontainers
 abstract class AbstractC7RemoteApiITestBase : JGivenSpringBaseIntegrationTest() {

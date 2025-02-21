@@ -1,6 +1,7 @@
 package dev.bpmcrafters.processengineapi.adapter.c7.remote.task.delivery.subscribe
 
 import dev.bpmcrafters.processengineapi.CommonRestrictions
+import dev.bpmcrafters.processengineapi.adapter.c7.remote.task.delivery.ServiceTaskDelivery
 import dev.bpmcrafters.processengineapi.adapter.c7.remote.task.delivery.toTaskInformation
 import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionRepository
 import dev.bpmcrafters.processengineapi.adapter.commons.task.TaskSubscriptionHandle
@@ -9,12 +10,13 @@ import dev.bpmcrafters.processengineapi.task.TaskType
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.camunda.bpm.client.ExternalTaskClient
 import org.camunda.bpm.client.task.ExternalTask
+import org.camunda.bpm.client.topic.TopicSubscription
 import org.camunda.bpm.client.topic.TopicSubscriptionBuilder
 
 private val logger = KotlinLogging.logger {}
 
 /**
- *
+ * Implementation of task delivery based on Camunda External Task Client.
  */
 class SubscribingClientServiceTaskDelivery(
   private val externalTaskClient: ExternalTaskClient,
@@ -22,18 +24,20 @@ class SubscribingClientServiceTaskDelivery(
   private val lockDuration: Long,
   private val retryTimeout: Long,
   private val retries: Int,
-  ) {
+) : ServiceTaskDelivery {
+
+  private val camundaTaskListTopicSubscriptions = mutableListOf<TopicSubscription>()
 
   fun subscribe() {
 
-    val subscriptions = subscriptionRepository.getTaskSubscriptions()
+    val subscriptions = subscriptionRepository.getTaskSubscriptions().filter { s -> s.taskType == TaskType.EXTERNAL }
     if (subscriptions.isNotEmpty()) {
       logger.trace { "PROCESS-ENGINE-C7-REMOTE-030: subscribing to external tasks for: $subscriptions" }
 
       subscriptions
         .forEach { subscription ->
           // this is a job to subscribe to.
-          externalTaskClient
+          camundaTaskListTopicSubscriptions.add(externalTaskClient
             .subscribe(subscription.taskDescriptionKey)
             .lockDuration(lockDuration)
             .handler { externalTask, externalTaskService ->
@@ -72,10 +76,18 @@ class SubscribingClientServiceTaskDelivery(
             }
             .forSubscription(subscription)
             .open()
+          )
         }
     } else {
       logger.trace { "PROCESS-ENGINE-C7-REMOTE-035: external tasks subscribing is disabled because of no active subscriptions" }
     }
+  }
+
+  /**
+   * Camunda client disallows duplicate subscriptions, allow to unsubscribe.
+   */
+  fun unsubscribe() {
+    camundaTaskListTopicSubscriptions.forEach { topicSubscription -> topicSubscription.close() }
   }
 
   /*
@@ -85,7 +97,7 @@ class SubscribingClientServiceTaskDelivery(
   private fun TaskSubscriptionHandle.matches(externalTask: ExternalTask): Boolean {
     return this.taskType == TaskType.EXTERNAL && (
       this.taskDescriptionKey == null || this.taskDescriptionKey == externalTask.topicName
-      )  && this.restrictions.all {
+      ) && this.restrictions.all {
       when (it.key) {
         CommonRestrictions.EXECUTION_ID -> it.value == externalTask.executionId
         CommonRestrictions.ACTIVITY_ID -> it.value == externalTask.activityId

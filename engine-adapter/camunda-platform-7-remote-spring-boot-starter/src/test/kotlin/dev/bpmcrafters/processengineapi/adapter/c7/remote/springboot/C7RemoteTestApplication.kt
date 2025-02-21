@@ -6,14 +6,17 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import com.tngtech.jgiven.integration.spring.EnableJGiven
 import dev.bpmcrafters.processengineapi.adapter.c7.remote.springboot.C7RemoteAdapterProperties.ExternalServiceTaskDeliveryStrategy.REMOTE_SCHEDULED
+import dev.bpmcrafters.processengineapi.adapter.c7.remote.springboot.C7RemoteAdapterProperties.ExternalServiceTaskDeliveryStrategy.REMOTE_SUBSCRIBED
 import dev.bpmcrafters.processengineapi.adapter.c7.remote.task.delivery.UserTaskDelivery
 import dev.bpmcrafters.processengineapi.adapter.c7.remote.task.delivery.pull.RemotePullServiceTaskDelivery
+import dev.bpmcrafters.processengineapi.adapter.c7.remote.task.delivery.subscribe.SubscribingClientServiceTaskDelivery
 import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionRepository
 import dev.bpmcrafters.processengineapi.process.StartProcessApi
 import dev.bpmcrafters.processengineapi.task.ServiceTaskCompletionApi
 import dev.bpmcrafters.processengineapi.task.TaskSubscriptionApi
 import dev.bpmcrafters.processengineapi.task.UserTaskCompletionApi
 import dev.bpmcrafters.processengineapi.test.ProcessTestHelper
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.camunda.bpm.client.spi.DataFormatConfigurator
 import org.camunda.bpm.client.variable.impl.format.json.JacksonJsonDataFormat
 import org.camunda.bpm.engine.RuntimeService
@@ -22,6 +25,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.context.annotation.Bean
 import java.text.SimpleDateFormat
 
+private val logger = KotlinLogging.logger {}
 
 @EnableJGiven
 @EnableCamundaRestClient
@@ -35,12 +39,12 @@ class C7RemoteTestApplication {
     strategy = REMOTE_SCHEDULED
   )
   @Bean
-  fun processTestHelper(
+  fun remoteScheduledProcessTestHelper(
     runtimeService: RuntimeService,
     startProcessApi: StartProcessApi,
     taskSubscriptionApi: TaskSubscriptionApi,
     userTaskDelivery: UserTaskDelivery,
-    externalTaskDelivery: RemotePullServiceTaskDelivery,
+    serviceTaskDelivery: RemotePullServiceTaskDelivery,
     userTaskCompletionApi: UserTaskCompletionApi,
     serviceTaskCompletionApi: ServiceTaskCompletionApi,
     subscriptionRepository: SubscriptionRepository,
@@ -49,7 +53,31 @@ class C7RemoteTestApplication {
     startProcessApi = startProcessApi,
     taskSubscriptionApi = taskSubscriptionApi,
     userTaskDelivery = userTaskDelivery,
-    externalTaskDelivery = externalTaskDelivery,
+    serviceTaskDelivery = serviceTaskDelivery,
+    userTaskCompletionApi = userTaskCompletionApi,
+    serviceTaskCompletionApi = serviceTaskCompletionApi,
+    subscriptionRepository = subscriptionRepository
+  )
+
+  @ConditionalOnServiceTaskDeliveryStrategy(
+    strategy = REMOTE_SUBSCRIBED
+  )
+  @Bean
+  fun remoteSubscribedProcessTestHelper(
+    runtimeService: RuntimeService,
+    startProcessApi: StartProcessApi,
+    taskSubscriptionApi: TaskSubscriptionApi,
+    userTaskDelivery: UserTaskDelivery,
+    serviceTaskDelivery: SubscribingClientServiceTaskDelivery,
+    userTaskCompletionApi: UserTaskCompletionApi,
+    serviceTaskCompletionApi: ServiceTaskCompletionApi,
+    subscriptionRepository: SubscriptionRepository,
+  ): ProcessTestHelper = C7RemoteProcessTestHelper(
+    runtimeService = runtimeService,
+    startProcessApi = startProcessApi,
+    taskSubscriptionApi = taskSubscriptionApi,
+    userTaskDelivery = userTaskDelivery,
+    serviceTaskDelivery = serviceTaskDelivery,
     userTaskCompletionApi = userTaskCompletionApi,
     serviceTaskCompletionApi = serviceTaskCompletionApi,
     subscriptionRepository = subscriptionRepository

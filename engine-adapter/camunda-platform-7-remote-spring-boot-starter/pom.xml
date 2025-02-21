@@ -48,7 +48,7 @@
     <dependency>
       <groupId>org.camunda.bpm.springboot</groupId>
       <artifactId>camunda-bpm-spring-boot-starter-external-task-client</artifactId>
-      <scope>provided</scope>
+      <optional>true</optional>
     </dependency>
 
     <!-- Use for abstraction of the remote Camunda REST API by implementing the Camunda Java API -->

@@ -13,7 +13,6 @@ import io.github.oshai.kotlinlogging.KotlinLogging
 import jakarta.annotation.PostConstruct
 import org.camunda.bpm.client.ExternalTaskClient
 import org.camunda.bpm.client.impl.ExternalTaskClientImpl
-import org.camunda.bpm.client.spring.annotation.EnableExternalTaskClient
 import org.camunda.bpm.client.task.ExternalTaskService
 import org.camunda.bpm.client.task.impl.ExternalTaskServiceImpl
 import org.springframework.beans.factory.annotation.Qualifier
@@ -24,14 +23,13 @@ import org.springframework.context.annotation.Configuration
 private val logger = KotlinLogging.logger {}
 
 /**
- * Auto-configuration for subscribed delivery.
+ * Auto-configuration for subscribed delivery using Camunda External Client.
  */
 @Configuration
 @AutoConfigureAfter(C7RemoteAdapterAutoConfiguration::class)
 @ConditionalOnServiceTaskDeliveryStrategy(
   strategy = REMOTE_SUBSCRIBED
 )
-@EnableExternalTaskClient(baseUrl = "#{camunda.bpm.client.base-url}")
 class C7RemoteClientServiceTaskAutoConfiguration {
 
   @PostConstruct
@@ -45,7 +43,7 @@ class C7RemoteClientServiceTaskAutoConfiguration {
     return ExternalTaskServiceImpl(externalTaskClient.topicSubscriptionManager.engineClient)
   }
 
-  @Bean("c7remote-service-task-delivery")
+  @Bean(name = ["c7remote-service-task-delivery"], initMethod = "subscribe", destroyMethod = "unsubscribe")
   fun subscribingClientExternalTaskDelivery(
     subscriptionRepository: SubscriptionRepository,
     externalTaskClient: ExternalTaskClient,
