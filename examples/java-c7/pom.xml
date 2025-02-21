@@ -5,7 +5,7 @@
   <parent>
     <groupId>dev.bpm-crafters.process-engine-api</groupId>
     <artifactId>process-engine-api-examples</artifactId>
-    <version>0.4.1</version>
+    <version>0.4.2</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -59,7 +59,7 @@
     <dependency>
       <groupId>io.holunda</groupId>
       <artifactId>camunda-platform-7-autologin</artifactId>
-      <version>0.1.0</version>
+      <version>0.1.1</version>
     </dependency>
     <dependency>
       <groupId>com.h2database</groupId>

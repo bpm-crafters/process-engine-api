@@ -4,7 +4,7 @@ import dev.bpmcrafters.processengineapi.adapter.c7.remote.springboot.C7RemoteAda
 import dev.bpmcrafters.processengineapi.adapter.c7.remote.springboot.initial.C7RemoteInitialPullServiceTasksDeliveryBinding.Companion.ORDER
 import dev.bpmcrafters.processengineapi.adapter.c7.remote.task.delivery.pull.RemotePullServiceTaskDelivery
 import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionRepository
-import mu.KLogging
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.camunda.bpm.engine.ExternalTaskService
 import org.springframework.boot.context.event.ApplicationStartedEvent
 import org.springframework.context.event.EventListener
@@ -12,6 +12,8 @@ import org.springframework.core.Ordered
 import org.springframework.core.annotation.Order
 import org.springframework.scheduling.annotation.Async
 import java.util.concurrent.ExecutorService
+
+private val logger = KotlinLogging.logger {}
 
 /**
  * This class is responsible for the initial pull of user tasks.
@@ -25,7 +27,7 @@ open class C7RemoteInitialPullServiceTasksDeliveryBinding(
   c7AdapterProperties: C7RemoteAdapterProperties,
   executorService: ExecutorService
 ) {
-  companion object : KLogging() {
+  companion object {
     const val ORDER = Ordered.HIGHEST_PRECEDENCE + 1000
   }
 

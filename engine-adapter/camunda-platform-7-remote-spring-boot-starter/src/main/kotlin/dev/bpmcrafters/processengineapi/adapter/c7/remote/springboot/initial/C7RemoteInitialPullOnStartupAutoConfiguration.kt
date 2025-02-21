@@ -5,8 +5,8 @@ import dev.bpmcrafters.processengineapi.adapter.c7.remote.springboot.C7RemoteAda
 import dev.bpmcrafters.processengineapi.adapter.c7.remote.springboot.C7RemoteAdapterProperties.Companion.DEFAULT_PREFIX
 import dev.bpmcrafters.processengineapi.adapter.c7.remote.springboot.client.C7RemoteClientServiceTaskAutoConfiguration
 import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionRepository
+import io.github.oshai.kotlinlogging.KotlinLogging
 import jakarta.annotation.PostConstruct
-import mu.KLogging
 import org.camunda.bpm.engine.ExternalTaskService
 import org.camunda.bpm.engine.RepositoryService
 import org.camunda.bpm.engine.TaskService
@@ -19,6 +19,8 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.scheduling.annotation.EnableAsync
 import java.util.concurrent.ExecutorService
 
+private val logger = KotlinLogging.logger {}
+
 /**
  * This configuration configures the initial pull bound to the application started event.
  * It is not relying on any delivery strategies but just configures the initial pull to happen
@@ -29,9 +31,6 @@ import java.util.concurrent.ExecutorService
 @EnableAsync
 @Conditional(C7RemoteAdapterEnabledCondition::class)
 class C7RemoteInitialPullOnStartupAutoConfiguration {
-
-
-  companion object : KLogging()
 
   @PostConstruct
   fun report() {
