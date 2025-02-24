@@ -31,7 +31,7 @@ class RemotePullUserTaskDelivery(
    * Delivers all tasks found in user task service to corresponding subscriptions.
    */
   override fun refresh() {
-    val subscriptions = subscriptionRepository.getTaskSubscriptions()
+    val subscriptions = subscriptionRepository.getTaskSubscriptions().filter { s -> s.taskType == TaskType.USER }
     if(subscriptions.isNotEmpty()) {
       logger.trace { "PROCESS-ENGINE-C7-REMOTE-036: pulling user tasks for subscriptions: $subscriptions" }
       taskService
@@ -66,15 +66,15 @@ class RemotePullUserTaskDelivery(
     // FIXME: narrow down, for the moment take all tasks
     return this
       .active()
-    // FIXME -> consider complex tent filtering
+    // FIXME -> consider complex tenant filtering
   }
 
 
   private fun TaskSubscriptionHandle.matches(task: Task): Boolean =
-    this.taskType == TaskType.USER && (
-      this.taskDescriptionKey == null
-        || this.taskDescriptionKey == task.taskDefinitionKey
-        || this.taskDescriptionKey == task.id
-      )
+    this.taskDescriptionKey == null
+      || this.taskDescriptionKey == task.taskDefinitionKey
+      || this.taskDescriptionKey == task.id
+    // FIXME -> support tenant
+
 }
 

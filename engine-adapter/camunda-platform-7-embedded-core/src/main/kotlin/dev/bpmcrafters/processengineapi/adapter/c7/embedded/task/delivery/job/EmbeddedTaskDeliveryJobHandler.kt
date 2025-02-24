@@ -60,7 +60,7 @@ class EmbeddedTaskDeliveryJobHandler(
         }
 
         TYPE_SERVICE -> {
-          val serviceTask = commandContext.fetchAndLockExternalTask(configuration.executionId, workerId, lockTimeInSeconds)
+          val serviceTask = commandContext.fetchAndLockExternalTask(configuration.executionId, workerId, lockTimeInSeconds * 1000)
           logger.debug { "PROCESS-ENGINE-C7-EMBEDDED-023: Delivering external service task for execution ${configuration.executionId}, with task ${serviceTask.id}" }
           subscriptions.firstOrNull { subscription -> subscription.matches(serviceTask) }?.let { activeSubscription ->
             try {

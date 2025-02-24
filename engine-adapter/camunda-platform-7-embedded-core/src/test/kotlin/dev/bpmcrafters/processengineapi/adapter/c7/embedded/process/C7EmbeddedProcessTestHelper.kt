@@ -34,8 +34,8 @@ class C7EmbeddedProcessTestHelper(private val processEngine: ProcessEngine) : Pr
     workerId = WORKER_ID,
     subscriptionRepository = subscriptionRepository,
     maxTasks = 100,
-    lockDuration = 10L,
-    retryTimeout = 10L,
+    lockDurationInSeconds = 10L,
+    retryTimeoutInSeconds = 10L,
     retries = 3,
     executorService = Executors.newFixedThreadPool(3)
   )
