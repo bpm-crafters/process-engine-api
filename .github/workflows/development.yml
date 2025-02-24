@@ -13,6 +13,16 @@ on:
       - '*/*'       # matches every branch containing a single '/'
       - '**'        # matches every branch
       - '!master'
+  workflow_dispatch:
+    inputs:
+      skip_tests:
+        description: "Skip tests?"
+        required: true
+        default: "false"
+        type: choice
+        options:
+          - "true"
+          - "false"
 
 jobs:
   build:
@@ -34,13 +44,31 @@ jobs:
           distribution: 'zulu'
           cache: maven
 
+      - name: Determine if Tests Should Be Skipped
+        id: check_skip_tests
+        run: |
+          if [[ "${{ github.ref }}" == "refs/heads/skip-tests" ]]; then
+            echo "SKIP_TESTS=true" >> $GITHUB_ENV
+          elif [[ "${{ github.event.head_commit.message }}" == *"[skip-tests]"* ]]; then
+            echo "SKIP_TESTS=true" >> $GITHUB_ENV
+          elif [[ "${{ github.event.inputs.skip_tests }}" == "true" ]]; then
+            echo "SKIP_TESTS=true" >> $GITHUB_ENV
+          else
+            echo "SKIP_TESTS=false" >> $GITHUB_ENV
+          fi
+
       # Prepare
       - name: Prepare Maven Wrapper
         run: chmod +x ./mvnw
 
       # Build
       - name: Build with Maven
-        run: ./mvnw clean verify -U -B -ntp -T4
+        run: |
+          if [[ "$SKIP_TESTS" == "true" ]]; then
+            ./mvnw clean verify -U -B -ntp -T4 -DskipTests
+          else
+            ./mvnw clean verify -U -B -ntp -T4
+          fi
 
       - name: Upload coverage to Codecov
         if: github.event_name == 'push' && github.actor != 'dependabot[bot]'
