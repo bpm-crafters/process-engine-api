@@ -16,7 +16,7 @@ dev:
         c7remote:
           enabled: true
           service-tasks:
-            delivery-strategy: remote_scheduled
+            delivery-strategy: remote_subscribed
             schedule-delivery-fixed-rate-in-seconds: 1
             worker-id: embedded-worker
             lock-time-in-seconds: 10
