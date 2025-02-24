@@ -21,8 +21,8 @@ private val logger = KotlinLogging.logger {}
 class SubscribingClientServiceTaskDelivery(
   private val externalTaskClient: ExternalTaskClient,
   private val subscriptionRepository: SubscriptionRepository,
-  private val lockDuration: Long,
-  private val retryTimeout: Long,
+  private val lockDurationInSeconds: Long,
+  private val retryTimeoutInSeconds: Long,
   private val retries: Int,
 ) : ServiceTaskDelivery {
 
@@ -39,7 +39,7 @@ class SubscribingClientServiceTaskDelivery(
           // this is a job to subscribe to.
           camundaTaskListTopicSubscriptions.add(externalTaskClient
             .subscribe(subscription.taskDescriptionKey)
-            .lockDuration(lockDuration)
+            .lockDuration(lockDurationInSeconds * 1000)
             .handler { externalTask, externalTaskService ->
               if (subscription.matches(externalTask)) {
                 subscriptionRepository.activateSubscriptionForTask(externalTask.id, subscription)
@@ -58,7 +58,7 @@ class SubscribingClientServiceTaskDelivery(
                     "Error delivering external task",
                     e.message,
                     jobRetries - 1,
-                    retryTimeout
+                    retryTimeoutInSeconds * 1000
                   )
                   subscriptionRepository.deactivateSubscriptionForTask(taskId = externalTask.id)
                   logger.error { "PROCESS-ENGINE-C7-REMOTE-034: successfully failed delivering task ${externalTask.id}: ${e.message}" }
@@ -70,7 +70,7 @@ class SubscribingClientServiceTaskDelivery(
                   "PROCESS-ENGINE-C7-REMOTE-031: No matching handler",
                   "",
                   externalTask.retries, // no changes on retries
-                  retryTimeout
+                  retryTimeoutInSeconds * 1000
                 )
               }
             }

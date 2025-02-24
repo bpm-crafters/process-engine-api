@@ -25,8 +25,8 @@ class RemotePullServiceTaskDelivery(
   private val workerId: String,
   private val subscriptionRepository: SubscriptionRepository,
   private val maxTasks: Int,
-  private val lockDuration: Long,
-  private val retryTimeout: Long,
+  private val lockDurationInSeconds: Long,
+  private val retryTimeoutInSeconds: Long,
   private val retries: Int,
   private val executorService: ExecutorService
 ) : ServiceTaskDelivery, RefreshableDelivery {
@@ -59,7 +59,7 @@ class RemotePullServiceTaskDelivery(
                 } catch (e: Exception) {
                   val jobRetries: Int = lockedTask.retries ?: retries
                   logger.error { "PROCESS-ENGINE-C7-REMOTE-033: failing delivering task ${lockedTask.id}: ${e.message}" }
-                  externalTaskService.handleFailure(lockedTask.id, workerId, e.message, jobRetries - 1, retryTimeout)
+                  externalTaskService.handleFailure(lockedTask.id, workerId, e.message, jobRetries - 1, retryTimeoutInSeconds * 1000)
                   logger.error { "PROCESS-ENGINE-C7-REMOTE-034: successfully failed delivering task ${lockedTask.id}: ${e.message}" }
                 }
               }.get()
@@ -75,9 +75,9 @@ class RemotePullServiceTaskDelivery(
       .mapNotNull { it.taskDescriptionKey }
       .distinct()
       .forEach { topic ->
-        this.topic(topic, lockDuration)
+        this.topic(topic, lockDurationInSeconds * 1000) // lock
           .enableCustomObjectDeserialization()
-          // FIXME -> consider complex tent filtering
+          // FIXME -> consider complex tenant filtering
       }
     return this
   }

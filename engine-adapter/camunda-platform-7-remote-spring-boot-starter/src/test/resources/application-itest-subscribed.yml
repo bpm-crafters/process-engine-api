@@ -11,7 +11,7 @@ dev:
           service-tasks:
             delivery-strategy: remote_subscribed
             worker-id: execute-action-external
-            lock-time-in-seconds: 30
+            lock-time-in-seconds: 5
           user-tasks:
             schedule-delivery-fixed-rate-in-seconds: 100 # don't pull too fast
             delivery-strategy: remote_scheduled
