@@ -68,8 +68,8 @@ class C7RemoteSchedulingAutoConfiguration {
     externalTaskService = externalTaskService,
     workerId = c7AdapterProperties.serviceTasks.workerId,
     maxTasks = c7AdapterProperties.serviceTasks.maxTaskCount,
-    lockDuration = c7AdapterProperties.serviceTasks.lockTimeInSeconds,
-    retryTimeout = c7AdapterProperties.serviceTasks.retryTimeoutInSeconds,
+    lockDurationInSeconds = c7AdapterProperties.serviceTasks.lockTimeInSeconds,
+    retryTimeoutInSeconds = c7AdapterProperties.serviceTasks.retryTimeoutInSeconds,
     retries = c7AdapterProperties.serviceTasks.retries,
     executorService = executorService
   )

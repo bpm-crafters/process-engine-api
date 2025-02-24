@@ -50,9 +50,9 @@ class C7RemoteClientServiceTaskAutoConfiguration {
     c7AdapterProperties: C7RemoteAdapterProperties
   ) = SubscribingClientServiceTaskDelivery(
     subscriptionRepository = subscriptionRepository,
-    lockDuration = c7AdapterProperties.serviceTasks.lockTimeInSeconds,
+    lockDurationInSeconds = c7AdapterProperties.serviceTasks.lockTimeInSeconds,
     externalTaskClient = externalTaskClient,
-    retryTimeout = c7AdapterProperties.serviceTasks.retryTimeoutInSeconds,
+    retryTimeoutInSeconds = c7AdapterProperties.serviceTasks.retryTimeoutInSeconds,
     retries = c7AdapterProperties.serviceTasks.retries
   )
 

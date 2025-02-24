@@ -25,8 +25,8 @@ class EmbeddedPullServiceTaskDelivery(
   private val workerId: String,
   private val subscriptionRepository: SubscriptionRepository,
   private val maxTasks: Int,
-  private val lockDuration: Long,
-  private val retryTimeout: Long,
+  private val lockDurationInSeconds: Long,
+  private val retryTimeoutInSeconds: Long,
   private val retries: Int,
   private val executorService: ExecutorService
 ) : ExternalServiceTaskDelivery, RefreshableDelivery {
@@ -59,7 +59,7 @@ class EmbeddedPullServiceTaskDelivery(
                 } catch (e: Exception) {
                   val jobRetries: Int = lockedTask.retries ?: retries
                   logger.error { "PROCESS-ENGINE-C7-EMBEDDED-033: failing delivering task ${lockedTask.id}: ${e.message}" }
-                  externalTaskService.handleFailure(lockedTask.id, workerId, e.message, jobRetries - 1, retryTimeout)
+                  externalTaskService.handleFailure(lockedTask.id, workerId, e.message, jobRetries - 1, retryTimeoutInSeconds * 1000)
                   subscriptionRepository.deactivateSubscriptionForTask(taskId = lockedTask.id)
                   logger.error { "PROCESS-ENGINE-C7-EMBEDDED-034: successfully failed delivering task ${lockedTask.id}: ${e.message}" }
                 }
@@ -77,9 +77,9 @@ class EmbeddedPullServiceTaskDelivery(
       .distinctBy { it.taskDescriptionKey  }
       .forEach { subscription ->
         this
-          .topic(subscription.taskDescriptionKey, lockDuration)
+          .topic(subscription.taskDescriptionKey, lockDurationInSeconds * 1000)
           .enableCustomObjectDeserialization()
-        // FIXME -> consider complex tent filtering
+        // FIXME -> consider complex tenant filtering
       }
     return this
   }
