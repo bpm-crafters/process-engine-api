@@ -33,7 +33,6 @@
     <module>api</module>
     <module>bom</module>
     <module>engine-adapter/adapter-commons</module>
-    <module>engine-adapter/adapter-commons-spring-boot-starter</module>
     <module>engine-adapter/adapter-testing</module>
     <module>engine-adapter/camunda-platform-7-embedded-core</module>
     <module>engine-adapter/camunda-platform-7-embedded-spring-boot-starter</module>
@@ -46,6 +45,11 @@
 
   <dependencyManagement>
     <dependencies>
+      <dependency>
+        <groupId>io.toolisticon.spring</groupId>
+        <artifactId>spring-conditions</artifactId>
+        <version>1.0.0</version>
+      </dependency>
       <dependency>
         <groupId>org.assertj</groupId>
         <artifactId>assertj-core</artifactId>
