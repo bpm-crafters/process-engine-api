@@ -31,9 +31,8 @@
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>dev.bpm-crafters.process-engine-api</groupId>
-      <artifactId>process-engine-api-adapter-commons-spring-boot-starter</artifactId>
-      <version>${project.version}</version>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-validation</artifactId>
     </dependency>
 
     <dependency>
