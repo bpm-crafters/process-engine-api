@@ -1,4 +1,4 @@
-package dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.pull
+package dev.bpmcrafters.processengineapi.adapter.c7.remote.task.delivery.pull
 
 import org.camunda.bpm.engine.RepositoryService
 
@@ -48,5 +48,4 @@ data class CachingProcessDefinitionKeyResolver(
       }
     }
   }
-
 }

@@ -14,6 +14,7 @@ import io.github.oshai.kotlinlogging.KotlinLogging
 
 private val logger = KotlinLogging.logger {}
 
+@Deprecated("Will be removed as soon as tasklist becomes part of the engine.")
 class PullUserTaskDelivery(
   private val taskListClient: CamundaTaskListClient,
   private val subscriptionRepository: SubscriptionRepository
