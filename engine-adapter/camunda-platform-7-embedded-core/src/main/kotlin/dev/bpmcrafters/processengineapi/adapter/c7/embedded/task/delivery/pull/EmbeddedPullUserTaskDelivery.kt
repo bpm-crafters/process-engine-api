@@ -34,7 +34,7 @@ class EmbeddedPullUserTaskDelivery(
    * Delivers all tasks found in user task service to corresponding subscriptions.
    */
   override fun refresh() {
-    val subscriptions = subscriptionRepository.getTaskSubscriptions()
+    val subscriptions = subscriptionRepository.getTaskSubscriptions().filter { s -> s.taskType == TaskType.USER }
     if (subscriptions.isNotEmpty()) {
       logger.trace { "PROCESS-ENGINE-C7-EMBEDDED-036: pulling user tasks for subscriptions: $subscriptions" }
       taskService
@@ -85,6 +85,8 @@ class EmbeddedPullUserTaskDelivery(
         CommonRestrictions.TENANT_ID -> it.value == task.tenantId
         CommonRestrictions.PROCESS_INSTANCE_ID -> it.value == task.processInstanceId
         CommonRestrictions.PROCESS_DEFINITION_ID -> it.value == task.processDefinitionId
+        CommonRestrictions.PROCESS_DEFINITION_KEY -> it.value == cachingProcessDefinitionKeyResolver.getProcessDefinitionKey(task.processDefinitionId)
+        CommonRestrictions.PROCESS_DEFINITION_VERSION_TAG -> it.value == cachingProcessDefinitionKeyResolver.getProcessDefinitionVersionTag(task.processDefinitionId)
         else -> false
       }
     }

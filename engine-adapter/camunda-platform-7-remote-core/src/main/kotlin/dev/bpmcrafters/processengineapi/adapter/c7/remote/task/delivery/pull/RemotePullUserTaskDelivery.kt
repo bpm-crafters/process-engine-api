@@ -1,5 +1,6 @@
 package dev.bpmcrafters.processengineapi.adapter.c7.remote.task.delivery.pull
 
+import dev.bpmcrafters.processengineapi.CommonRestrictions
 import dev.bpmcrafters.processengineapi.adapter.c7.remote.task.delivery.UserTaskDelivery
 import dev.bpmcrafters.processengineapi.adapter.c7.remote.task.delivery.toTaskInformation
 import dev.bpmcrafters.processengineapi.adapter.commons.task.RefreshableDelivery
@@ -26,6 +27,8 @@ class RemotePullUserTaskDelivery(
   private val subscriptionRepository: SubscriptionRepository,
   private val executorService: ExecutorService
 ) : UserTaskDelivery, RefreshableDelivery {
+
+  private val cachingProcessDefinitionKeyResolver = CachingProcessDefinitionKeyResolver(repositoryService)
 
   /**
    * Delivers all tasks found in user task service to corresponding subscriptions.
@@ -71,10 +74,19 @@ class RemotePullUserTaskDelivery(
 
 
   private fun TaskSubscriptionHandle.matches(task: Task): Boolean =
-    this.taskDescriptionKey == null
+    (this.taskDescriptionKey == null
       || this.taskDescriptionKey == task.taskDefinitionKey
-      || this.taskDescriptionKey == task.id
-    // FIXME -> support tenant
-
+      || this.taskDescriptionKey == task.id)
+      && this.restrictions.all {
+      when (it.key) {
+        CommonRestrictions.EXECUTION_ID -> it.value == task.executionId
+        CommonRestrictions.TENANT_ID -> it.value == task.tenantId
+        CommonRestrictions.PROCESS_INSTANCE_ID -> it.value == task.processInstanceId
+        CommonRestrictions.PROCESS_DEFINITION_ID -> it.value == task.processDefinitionId
+        CommonRestrictions.PROCESS_DEFINITION_KEY -> it.value == cachingProcessDefinitionKeyResolver.getProcessDefinitionKey(task.processDefinitionId)
+        CommonRestrictions.PROCESS_DEFINITION_VERSION_TAG -> it.value == cachingProcessDefinitionKeyResolver.getProcessDefinitionVersionTag(task.processDefinitionId)
+        else -> false
+      }
+    }
 }
 
