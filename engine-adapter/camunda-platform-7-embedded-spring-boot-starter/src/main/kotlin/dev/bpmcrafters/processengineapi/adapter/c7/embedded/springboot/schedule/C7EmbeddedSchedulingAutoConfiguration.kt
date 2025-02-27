@@ -9,7 +9,7 @@ import dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.Condition
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.event.C7EmbeddedEventDeliveryAutoConfiguration
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.pull.EmbeddedPullServiceTaskDelivery
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.pull.EmbeddedPullUserTaskDelivery
-import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionRepository
+import dev.bpmcrafters.processengineapi.impl.task.SubscriptionRepository
 import io.github.oshai.kotlinlogging.KotlinLogging
 import jakarta.annotation.PostConstruct
 import org.camunda.bpm.engine.ExternalTaskService
@@ -57,10 +57,10 @@ class C7EmbeddedSchedulingAutoConfiguration {
     strategy = EMBEDDED_SCHEDULED
   )
   fun serviceTaskDelivery(
-    subscriptionRepository: SubscriptionRepository,
-    externalTaskService: ExternalTaskService,
-    c7AdapterProperties: C7EmbeddedAdapterProperties,
-    @Qualifier("c7embedded-service-task-worker-executor")
+      subscriptionRepository: SubscriptionRepository,
+      externalTaskService: ExternalTaskService,
+      c7AdapterProperties: C7EmbeddedAdapterProperties,
+      @Qualifier("c7embedded-service-task-worker-executor")
     executorService: ExecutorService
   ) = EmbeddedPullServiceTaskDelivery(
     subscriptionRepository = subscriptionRepository,
@@ -79,11 +79,11 @@ class C7EmbeddedSchedulingAutoConfiguration {
     strategies = [UserTaskDeliveryStrategy.EMBEDDED_SCHEDULED, UserTaskDeliveryStrategy.EMBEDDED_EVENT_AND_SCHEDULED]
   )
   fun embeddedScheduledUserTaskDelivery(
-    subscriptionRepository: SubscriptionRepository,
-    taskService: TaskService,
-    repositoryService: RepositoryService,
-    c7AdapterProperties: C7EmbeddedAdapterProperties,
-    @Qualifier("c7embedded-service-task-worker-executor")
+      subscriptionRepository: SubscriptionRepository,
+      taskService: TaskService,
+      repositoryService: RepositoryService,
+      c7AdapterProperties: C7EmbeddedAdapterProperties,
+      @Qualifier("c7embedded-service-task-worker-executor")
     executorService: ExecutorService
   ): EmbeddedPullUserTaskDelivery {
     return EmbeddedPullUserTaskDelivery(

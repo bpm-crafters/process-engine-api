@@ -31,8 +31,8 @@
 
   <modules>
     <module>api</module>
+    <module>api-impl</module>
     <module>bom</module>
-    <module>engine-adapter/adapter-commons</module>
     <module>engine-adapter/adapter-testing</module>
     <module>engine-adapter/camunda-platform-7-embedded-core</module>
     <module>engine-adapter/camunda-platform-7-embedded-spring-boot-starter</module>

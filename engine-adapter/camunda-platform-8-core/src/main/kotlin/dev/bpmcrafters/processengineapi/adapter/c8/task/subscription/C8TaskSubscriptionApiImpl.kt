@@ -4,15 +4,15 @@ import dev.bpmcrafters.processengineapi.Empty
 import dev.bpmcrafters.processengineapi.MetaInfo
 import dev.bpmcrafters.processengineapi.MetaInfoAware
 import dev.bpmcrafters.processengineapi.adapter.c8.task.SubscribingUserTaskDelivery
-import dev.bpmcrafters.processengineapi.adapter.commons.task.AbstractTaskSubscriptionApiImpl
-import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionRepository
+import dev.bpmcrafters.processengineapi.impl.task.AbstractTaskSubscriptionApiImpl
+import dev.bpmcrafters.processengineapi.impl.task.SubscriptionRepository
 import dev.bpmcrafters.processengineapi.task.UnsubscribeFromTaskCmd
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.Future
 
 class C8TaskSubscriptionApiImpl(
-  subscriptionRepository: SubscriptionRepository,
-  private val subscribingUserTaskDelivery: SubscribingUserTaskDelivery?
+    subscriptionRepository: SubscriptionRepository,
+    private val subscribingUserTaskDelivery: SubscribingUserTaskDelivery?
 ) : AbstractTaskSubscriptionApiImpl(
   subscriptionRepository = subscriptionRepository
 ) {

@@ -10,7 +10,7 @@ import dev.bpmcrafters.processengineapi.adapter.c7.remote.springboot.C7RemoteAda
 import dev.bpmcrafters.processengineapi.adapter.c7.remote.task.delivery.UserTaskDelivery
 import dev.bpmcrafters.processengineapi.adapter.c7.remote.task.delivery.pull.RemotePullServiceTaskDelivery
 import dev.bpmcrafters.processengineapi.adapter.c7.remote.task.delivery.subscribe.SubscribingClientServiceTaskDelivery
-import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionRepository
+import dev.bpmcrafters.processengineapi.impl.task.SubscriptionRepository
 import dev.bpmcrafters.processengineapi.process.StartProcessApi
 import dev.bpmcrafters.processengineapi.task.ServiceTaskCompletionApi
 import dev.bpmcrafters.processengineapi.task.TaskSubscriptionApi
@@ -40,14 +40,14 @@ class C7RemoteTestApplication {
   )
   @Bean
   fun remoteScheduledProcessTestHelper(
-    runtimeService: RuntimeService,
-    startProcessApi: StartProcessApi,
-    taskSubscriptionApi: TaskSubscriptionApi,
-    userTaskDelivery: UserTaskDelivery,
-    serviceTaskDelivery: RemotePullServiceTaskDelivery,
-    userTaskCompletionApi: UserTaskCompletionApi,
-    serviceTaskCompletionApi: ServiceTaskCompletionApi,
-    subscriptionRepository: SubscriptionRepository,
+      runtimeService: RuntimeService,
+      startProcessApi: StartProcessApi,
+      taskSubscriptionApi: TaskSubscriptionApi,
+      userTaskDelivery: UserTaskDelivery,
+      serviceTaskDelivery: RemotePullServiceTaskDelivery,
+      userTaskCompletionApi: UserTaskCompletionApi,
+      serviceTaskCompletionApi: ServiceTaskCompletionApi,
+      subscriptionRepository: SubscriptionRepository,
   ): ProcessTestHelper = C7RemoteProcessTestHelper(
     runtimeService = runtimeService,
     startProcessApi = startProcessApi,
@@ -64,14 +64,14 @@ class C7RemoteTestApplication {
   )
   @Bean
   fun remoteSubscribedProcessTestHelper(
-    runtimeService: RuntimeService,
-    startProcessApi: StartProcessApi,
-    taskSubscriptionApi: TaskSubscriptionApi,
-    userTaskDelivery: UserTaskDelivery,
-    serviceTaskDelivery: SubscribingClientServiceTaskDelivery,
-    userTaskCompletionApi: UserTaskCompletionApi,
-    serviceTaskCompletionApi: ServiceTaskCompletionApi,
-    subscriptionRepository: SubscriptionRepository,
+      runtimeService: RuntimeService,
+      startProcessApi: StartProcessApi,
+      taskSubscriptionApi: TaskSubscriptionApi,
+      userTaskDelivery: UserTaskDelivery,
+      serviceTaskDelivery: SubscribingClientServiceTaskDelivery,
+      userTaskCompletionApi: UserTaskCompletionApi,
+      serviceTaskCompletionApi: ServiceTaskCompletionApi,
+      subscriptionRepository: SubscriptionRepository,
   ): ProcessTestHelper = C7RemoteProcessTestHelper(
     runtimeService = runtimeService,
     startProcessApi = startProcessApi,

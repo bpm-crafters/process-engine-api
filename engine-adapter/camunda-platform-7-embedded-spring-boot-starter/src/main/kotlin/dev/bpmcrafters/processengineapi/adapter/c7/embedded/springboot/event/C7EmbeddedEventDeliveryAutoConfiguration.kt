@@ -6,7 +6,7 @@ import dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.C7Embedde
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.ConditionalOnUserTaskDeliveryStrategy
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.UserTaskDelivery
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.event.EmbeddedEventBasedUserTaskDelivery
-import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionRepository
+import dev.bpmcrafters.processengineapi.impl.task.SubscriptionRepository
 import io.github.oshai.kotlinlogging.KotlinLogging
 import jakarta.annotation.PostConstruct
 import org.camunda.bpm.engine.TaskService
@@ -35,9 +35,9 @@ class C7EmbeddedEventDeliveryAutoConfiguration {
   @Bean("c7embedded-event-user-task-delivery")
   @Qualifier("c7embedded-event-user-task-delivery")
   fun embeddedEventUserTaskDelivery(
-    subscriptionRepository: SubscriptionRepository,
-    taskService: TaskService,
-    c7AdapterProperties: C7EmbeddedAdapterProperties
+      subscriptionRepository: SubscriptionRepository,
+      taskService: TaskService,
+      c7AdapterProperties: C7EmbeddedAdapterProperties
   ): UserTaskDelivery {
     return EmbeddedEventBasedUserTaskDelivery(
       subscriptionRepository = subscriptionRepository

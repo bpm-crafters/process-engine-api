@@ -2,10 +2,9 @@ package dev.bpmcrafters.processengineapi.adapter.c8.task.delivery
 
 import dev.bpmcrafters.processengineapi.CommonRestrictions
 import dev.bpmcrafters.processengineapi.adapter.c8.task.SubscribingUserTaskDelivery
-import dev.bpmcrafters.processengineapi.adapter.commons.task.RefreshableDelivery
-import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionRepository
-import dev.bpmcrafters.processengineapi.adapter.commons.task.TaskSubscriptionHandle
-import dev.bpmcrafters.processengineapi.adapter.commons.task.filterBySubscription
+import dev.bpmcrafters.processengineapi.impl.task.SubscriptionRepository
+import dev.bpmcrafters.processengineapi.impl.task.TaskSubscriptionHandle
+import dev.bpmcrafters.processengineapi.impl.task.filterBySubscription
 import dev.bpmcrafters.processengineapi.task.TaskSubscription
 import dev.bpmcrafters.processengineapi.task.TaskType
 import io.camunda.zeebe.client.ZeebeClient
@@ -22,10 +21,10 @@ import io.grpc.Status
 private val logger = KotlinLogging.logger {}
 
 class SubscribingRefreshingUserTaskDelivery(
-  private val zeebeClient: ZeebeClient,
-  private val subscriptionRepository: SubscriptionRepository,
-  private val workerId: String,
-  private val userTaskLockTimeoutMs: Long,
+    private val zeebeClient: ZeebeClient,
+    private val subscriptionRepository: SubscriptionRepository,
+    private val workerId: String,
+    private val userTaskLockTimeoutMs: Long,
 ) : SubscribingUserTaskDelivery, RefreshableDelivery {
 
   private var jobWorkerRegistry: Map<String, JobWorker> = emptyMap()

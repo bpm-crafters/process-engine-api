@@ -1,7 +1,7 @@
 package dev.bpmcrafters.example.common.adapter.out.process;
 
 import dev.bpmcrafters.example.common.application.port.out.UserTaskOutPort;
-import dev.bpmcrafters.processengineapi.adapter.commons.task.UserTaskSupport;
+import dev.bpmcrafters.processengineapi.task.support.UserTaskSupport;
 import dev.bpmcrafters.processengineapi.task.CompleteTaskByErrorCmd;
 import dev.bpmcrafters.processengineapi.task.CompleteTaskCmd;
 import dev.bpmcrafters.processengineapi.task.TaskInformation;

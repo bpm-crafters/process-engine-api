@@ -1,12 +1,12 @@
 package dev.bpmcrafters.processengineapi.adapter.c7.remote.task.delivery.pull
 
 import dev.bpmcrafters.processengineapi.CommonRestrictions
+import dev.bpmcrafters.processengineapi.adapter.c7.remote.task.delivery.RefreshableDelivery
 import dev.bpmcrafters.processengineapi.adapter.c7.remote.task.delivery.UserTaskDelivery
 import dev.bpmcrafters.processengineapi.adapter.c7.remote.task.delivery.toTaskInformation
-import dev.bpmcrafters.processengineapi.adapter.commons.task.RefreshableDelivery
-import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionRepository
-import dev.bpmcrafters.processengineapi.adapter.commons.task.TaskSubscriptionHandle
-import dev.bpmcrafters.processengineapi.adapter.commons.task.filterBySubscription
+import dev.bpmcrafters.processengineapi.impl.task.SubscriptionRepository
+import dev.bpmcrafters.processengineapi.impl.task.TaskSubscriptionHandle
+import dev.bpmcrafters.processengineapi.impl.task.filterBySubscription
 import dev.bpmcrafters.processengineapi.task.TaskType
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.camunda.bpm.engine.RepositoryService
@@ -22,10 +22,10 @@ private val logger = KotlinLogging.logger {}
  * Uses internal Java API for pulling tasks.
  */
 class RemotePullUserTaskDelivery(
-  private val taskService: TaskService,
-  private val repositoryService: RepositoryService,
-  private val subscriptionRepository: SubscriptionRepository,
-  private val executorService: ExecutorService
+    private val taskService: TaskService,
+    private val repositoryService: RepositoryService,
+    private val subscriptionRepository: SubscriptionRepository,
+    private val executorService: ExecutorService
 ) : UserTaskDelivery, RefreshableDelivery {
 
   private val cachingProcessDefinitionKeyResolver = CachingProcessDefinitionKeyResolver(repositoryService)

@@ -9,7 +9,7 @@ import dev.bpmcrafters.processengineapi.adapter.c8.task.completion.FailureRetryS
 import dev.bpmcrafters.processengineapi.adapter.c8.task.completion.LinearMemoryFailureRetrySupplier
 import dev.bpmcrafters.processengineapi.adapter.c8.task.delivery.SubscribingRefreshingUserTaskDelivery
 import dev.bpmcrafters.processengineapi.adapter.c8.task.delivery.SubscribingServiceTaskDelivery
-import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionRepository
+import dev.bpmcrafters.processengineapi.impl.task.SubscriptionRepository
 import dev.bpmcrafters.processengineapi.task.ServiceTaskCompletionApi
 import dev.bpmcrafters.processengineapi.task.UserTaskCompletionApi
 import io.camunda.zeebe.client.ZeebeClient
@@ -42,9 +42,9 @@ class C8ZeebeClientAutoConfiguration {
   @Qualifier("c8-service-task-delivery")
   @ConditionalOnServiceTaskDeliveryStrategy(strategy = SUBSCRIPTION)
   fun subscribingServiceTaskDelivery(
-    subscriptionRepository: SubscriptionRepository,
-    zeebeClient: ZeebeClient,
-    c8AdapterProperties: C8AdapterProperties
+      subscriptionRepository: SubscriptionRepository,
+      zeebeClient: ZeebeClient,
+      c8AdapterProperties: C8AdapterProperties
   ) = SubscribingServiceTaskDelivery(
     subscriptionRepository = subscriptionRepository,
     zeebeClient = zeebeClient,
@@ -55,9 +55,9 @@ class C8ZeebeClientAutoConfiguration {
   @Qualifier("c8-user-task-delivery")
   @ConditionalOnUserTaskDeliveryStrategy(strategy = SUBSCRIPTION_REFRESHING)
   fun subscribingRefreshingUserTaskDelivery(
-    subscriptionRepository: SubscriptionRepository,
-    zeebeClient: ZeebeClient,
-    c8AdapterProperties: C8AdapterProperties
+      subscriptionRepository: SubscriptionRepository,
+      zeebeClient: ZeebeClient,
+      c8AdapterProperties: C8AdapterProperties
   ): SubscribingRefreshingUserTaskDelivery {
     return SubscribingRefreshingUserTaskDelivery(
       subscriptionRepository = subscriptionRepository,
@@ -70,9 +70,9 @@ class C8ZeebeClientAutoConfiguration {
   @Bean("c8-service-task-completion")
   @Qualifier("c8-service-task-completion")
   fun externalTaskCompletionStrategy(
-    zeebeClient: ZeebeClient,
-    subscriptionRepository: SubscriptionRepository,
-    failureRetrySupplier: FailureRetrySupplier
+      zeebeClient: ZeebeClient,
+      subscriptionRepository: SubscriptionRepository,
+      failureRetrySupplier: FailureRetrySupplier
   ): ServiceTaskCompletionApi =
     C8ZeebeExternalServiceTaskCompletionApiImpl(
       zeebeClient = zeebeClient,

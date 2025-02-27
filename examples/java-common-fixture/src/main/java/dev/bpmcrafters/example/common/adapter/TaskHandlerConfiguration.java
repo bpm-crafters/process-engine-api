@@ -4,7 +4,7 @@ import dev.bpmcrafters.example.common.adapter.in.process.ExecuteActionTaskHandle
 import dev.bpmcrafters.example.common.adapter.in.process.SendingTaskHandler;
 import dev.bpmcrafters.example.common.adapter.out.process.UserTaskAdapter;
 import dev.bpmcrafters.processengineapi.CommonRestrictions;
-import dev.bpmcrafters.processengineapi.adapter.commons.task.UserTaskSupport;
+import dev.bpmcrafters.processengineapi.task.support.UserTaskSupport;
 import dev.bpmcrafters.processengineapi.task.ServiceTaskCompletionApi;
 import dev.bpmcrafters.processengineapi.task.TaskSubscriptionApi;
 import dev.bpmcrafters.processengineapi.task.UserTaskCompletionApi;

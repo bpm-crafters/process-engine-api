@@ -10,7 +10,15 @@ object CommonRestrictions {
    * Definition attribute of a BPMN activity from XML holding the id of the element.
    */
   const val ACTIVITY_ID = "activityId"
+
+  /**
+   * Logical business key.
+   */
   const val BUSINESS_KEY = "businessKey"
+
+  /**
+   * Special key for correlation with processes.
+   */
   const val CORRELATION_KEY = "correlationKey"
 
   /**
@@ -22,13 +30,42 @@ object CommonRestrictions {
    * Id provided by the runtime identifying the process instance.
    */
   const val PROCESS_INSTANCE_ID = "processInstanceId"
+
+  /**
+   * Id provided by the runtime to identify a deployed process definition.
+   */
   const val PROCESS_DEFINITION_ID = "processDefinitionId"
+
+  /**
+   * Process definition version tag provided by the user.
+   */
   const val PROCESS_DEFINITION_VERSION_TAG = "processDefinitionVersionTag"
+
+  /**
+   * Definition key of a task.
+   */
+  @Deprecated(
+    message = "Replaced by ACTIVITY_ID, since it a more generic term.",
+    replaceWith = ReplaceWith("ACTIVITY_ID"),
+    level = DeprecationLevel.WARNING
+  )
   const val TASK_DEFINITION_KEY = "taskDefinitionKey"
+
+  /**
+   * Tenant id.
+   */
   const val TENANT_ID = "tenantId"
+
+  /**
+   * Indicating the absence of tenant.
+   */
   const val WITHOUT_TENANT_ID = "withoutTenantId"
   const val MESSAGE_ID = "messageId"
   const val MESSAGE_TTL = "messageTTL"
+
+  /**
+   * Id of execution in runtime.
+   */
   const val EXECUTION_ID = "executionId"
 
   /**
@@ -45,6 +82,10 @@ object CommonRestrictions {
       restrictions[PROCESS_DEFINITION_KEY] = processDefinitionKey
     }
 
+    @Deprecated(
+      message = "Replaced by withActivityId, since it a more generic term.",
+      replaceWith = ReplaceWith("withActivityId")
+    )
     fun withTaskDefinitionKey(taskDefinitionKey: String) = this.apply {
       restrictions[TASK_DEFINITION_KEY] = taskDefinitionKey
     }

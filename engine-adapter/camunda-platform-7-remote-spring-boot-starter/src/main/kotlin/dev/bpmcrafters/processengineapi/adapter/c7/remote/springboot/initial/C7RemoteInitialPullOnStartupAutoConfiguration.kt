@@ -4,7 +4,7 @@ import dev.bpmcrafters.processengineapi.adapter.c7.remote.springboot.C7RemoteAda
 import dev.bpmcrafters.processengineapi.adapter.c7.remote.springboot.C7RemoteAdapterProperties
 import dev.bpmcrafters.processengineapi.adapter.c7.remote.springboot.C7RemoteAdapterProperties.Companion.DEFAULT_PREFIX
 import dev.bpmcrafters.processengineapi.adapter.c7.remote.springboot.client.C7RemoteClientServiceTaskAutoConfiguration
-import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionRepository
+import dev.bpmcrafters.processengineapi.impl.task.SubscriptionRepository
 import io.github.oshai.kotlinlogging.KotlinLogging
 import jakarta.annotation.PostConstruct
 import org.camunda.bpm.engine.ExternalTaskService
@@ -41,10 +41,10 @@ class C7RemoteInitialPullOnStartupAutoConfiguration {
   @Qualifier("c7remote-user-task-initial-pull")
   @ConditionalOnProperty(prefix = DEFAULT_PREFIX, name = ["user-tasks.execute-initial-pull-on-startup"])
   fun configureInitialPullForUserTaskDelivery(
-    taskService: TaskService,
-    repositoryService: RepositoryService,
-    subscriptionRepository: SubscriptionRepository,
-    @Qualifier("c7remote-user-task-worker-executor")
+      taskService: TaskService,
+      repositoryService: RepositoryService,
+      subscriptionRepository: SubscriptionRepository,
+      @Qualifier("c7remote-user-task-worker-executor")
     executorService: ExecutorService
   ) = C7RemoteInitialPullUserTasksDeliveryBinding(
     taskService = taskService,
@@ -57,10 +57,10 @@ class C7RemoteInitialPullOnStartupAutoConfiguration {
   @Qualifier("c7remote-service-task-initial-pull")
   @ConditionalOnProperty(prefix = DEFAULT_PREFIX, name = ["service-tasks.execute-initial-pull-on-startup"])
   fun configureInitialPullForExternalServiceTaskDelivery(
-    externalTaskService: ExternalTaskService,
-    subscriptionRepository: SubscriptionRepository,
-    c7AdapterProperties: C7RemoteAdapterProperties,
-    @Qualifier("c7remote-service-task-worker-executor")
+      externalTaskService: ExternalTaskService,
+      subscriptionRepository: SubscriptionRepository,
+      c7AdapterProperties: C7RemoteAdapterProperties,
+      @Qualifier("c7remote-service-task-worker-executor")
     executorService: ExecutorService
   ) = C7RemoteInitialPullServiceTasksDeliveryBinding(
     externalTaskService = externalTaskService,

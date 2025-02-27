@@ -33,7 +33,7 @@
     </dependency>
     <dependency>
       <groupId>dev.bpm-crafters.process-engine-api</groupId>
-      <artifactId>process-engine-api-adapter-commons</artifactId>
+      <artifactId>process-engine-api-impl</artifactId>
       <version>${project.version}</version>
     </dependency>
 

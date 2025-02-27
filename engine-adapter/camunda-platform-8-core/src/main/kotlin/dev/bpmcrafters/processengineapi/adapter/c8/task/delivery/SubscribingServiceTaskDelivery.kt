@@ -1,9 +1,9 @@
 package dev.bpmcrafters.processengineapi.adapter.c8.task.delivery
 
 import dev.bpmcrafters.processengineapi.CommonRestrictions
-import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionRepository
-import dev.bpmcrafters.processengineapi.adapter.commons.task.TaskSubscriptionHandle
-import dev.bpmcrafters.processengineapi.adapter.commons.task.filterBySubscription
+import dev.bpmcrafters.processengineapi.impl.task.SubscriptionRepository
+import dev.bpmcrafters.processengineapi.impl.task.TaskSubscriptionHandle
+import dev.bpmcrafters.processengineapi.impl.task.filterBySubscription
 import dev.bpmcrafters.processengineapi.task.TaskType
 import io.camunda.zeebe.client.ZeebeClient
 import io.camunda.zeebe.client.api.response.ActivatedJob
@@ -16,9 +16,9 @@ private val logger = KotlinLogging.logger {}
  * Uses task subscription available in the repository to subscribe to zeebe.
  */
 class SubscribingServiceTaskDelivery(
-  private val zeebeClient: ZeebeClient,
-  private val subscriptionRepository: SubscriptionRepository,
-  private val workerId: String
+    private val zeebeClient: ZeebeClient,
+    private val subscriptionRepository: SubscriptionRepository,
+    private val workerId: String
 ) {
 
   fun subscribe() {
