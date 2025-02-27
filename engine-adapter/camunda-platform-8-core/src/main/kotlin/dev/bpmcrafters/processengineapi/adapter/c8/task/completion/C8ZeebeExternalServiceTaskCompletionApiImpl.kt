@@ -1,7 +1,7 @@
 package dev.bpmcrafters.processengineapi.adapter.c8.task.completion
 
 import dev.bpmcrafters.processengineapi.Empty
-import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionRepository
+import dev.bpmcrafters.processengineapi.impl.task.SubscriptionRepository
 import dev.bpmcrafters.processengineapi.task.CompleteTaskByErrorCmd
 import dev.bpmcrafters.processengineapi.task.CompleteTaskCmd
 import dev.bpmcrafters.processengineapi.task.ServiceTaskCompletionApi
@@ -15,9 +15,9 @@ import java.util.concurrent.Future
 private val logger = KotlinLogging.logger {}
 
 class C8ZeebeExternalServiceTaskCompletionApiImpl(
-  private val zeebeClient: ZeebeClient,
-  private val subscriptionRepository: SubscriptionRepository,
-  private val failureRetrySupplier: FailureRetrySupplier
+    private val zeebeClient: ZeebeClient,
+    private val subscriptionRepository: SubscriptionRepository,
+    private val failureRetrySupplier: FailureRetrySupplier
 ) : ServiceTaskCompletionApi {
 
   override fun completeTask(cmd: CompleteTaskCmd): Future<Empty> {

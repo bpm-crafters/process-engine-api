@@ -2,11 +2,10 @@ package dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.pull
 
 import dev.bpmcrafters.processengineapi.CommonRestrictions
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.ExternalServiceTaskDelivery
-import dev.bpmcrafters.processengineapi.adapter.commons.task.filterBySubscription
+import dev.bpmcrafters.processengineapi.impl.task.filterBySubscription
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.toTaskInformation
-import dev.bpmcrafters.processengineapi.adapter.commons.task.RefreshableDelivery
-import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionRepository
-import dev.bpmcrafters.processengineapi.adapter.commons.task.TaskSubscriptionHandle
+import dev.bpmcrafters.processengineapi.impl.task.SubscriptionRepository
+import dev.bpmcrafters.processengineapi.impl.task.TaskSubscriptionHandle
 import dev.bpmcrafters.processengineapi.task.TaskType
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.camunda.bpm.engine.ExternalTaskService
@@ -21,14 +20,14 @@ private val logger = KotlinLogging.logger {}
  * This implementation uses internal Java API and pulls tasks for delivery.
  */
 class EmbeddedPullServiceTaskDelivery(
-  private val externalTaskService: ExternalTaskService,
-  private val workerId: String,
-  private val subscriptionRepository: SubscriptionRepository,
-  private val maxTasks: Int,
-  private val lockDurationInSeconds: Long,
-  private val retryTimeoutInSeconds: Long,
-  private val retries: Int,
-  private val executorService: ExecutorService
+    private val externalTaskService: ExternalTaskService,
+    private val workerId: String,
+    private val subscriptionRepository: SubscriptionRepository,
+    private val maxTasks: Int,
+    private val lockDurationInSeconds: Long,
+    private val retryTimeoutInSeconds: Long,
+    private val retries: Int,
+    private val executorService: ExecutorService
 ) : ExternalServiceTaskDelivery, RefreshableDelivery {
 
   /**
