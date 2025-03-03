@@ -20,7 +20,7 @@ internal class UserTaskSupportTest {
     support.addTerminationHandler { id -> removed = id }
 
     val taskId = UUID.randomUUID().toString()
-    val task = TaskInformation(taskId, mapOf(CommonRestrictions.TASK_DEFINITION_KEY to "some"))
+    val task = TaskInformation(taskId, mapOf(CommonRestrictions.ACTIVITY_ID to "some"))
     val payload = mapOf("key" to "value")
 
     // given

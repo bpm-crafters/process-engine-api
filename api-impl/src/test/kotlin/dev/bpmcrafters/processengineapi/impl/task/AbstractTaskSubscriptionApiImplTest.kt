@@ -29,8 +29,8 @@ internal class AbstractTaskSubscriptionApiImplTest {
             TaskType.EXTERNAL,
             null,
             setOf("var1"),
-            { ti, pl -> },
-            { ti -> }
+            { _, _ -> },
+            { _ -> }
         )
     ).get()
 

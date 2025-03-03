@@ -52,8 +52,10 @@ class EmbeddedEventBasedUserTaskDelivery(
       when (it.key) {
         CommonRestrictions.EXECUTION_ID -> it.value == task.executionId
         CommonRestrictions.TENANT_ID -> it.value == task.tenantId
+        CommonRestrictions.ACTIVITY_ID -> it.value == task.taskDefinitionKey
         CommonRestrictions.PROCESS_INSTANCE_ID -> it.value == task.processInstanceId
         CommonRestrictions.PROCESS_DEFINITION_ID -> it.value == task.processDefinitionId
+        // FIXME -> process definition key
         else -> false
       }
     }

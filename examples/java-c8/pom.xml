@@ -12,18 +12,6 @@
   <artifactId>process-engine-api-examples-java-c8</artifactId>
   <name>Example: Java C8</name>
 
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-dependencies</artifactId>
-        <version>${spring-boot.version}</version>
-        <scope>import</scope>
-        <type>pom</type>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
-
   <dependencies>
     <dependency>
       <groupId>dev.bpm-crafters.process-engine-api</groupId>
@@ -35,10 +23,6 @@
       <artifactId>process-engine-api-adapter-camunda-platform-c8-spring-boot-starter</artifactId>
     </dependency>
 
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-web</artifactId>
-    </dependency>
     <dependency>
       <groupId>io.camunda</groupId>
       <artifactId>spring-boot-starter-camunda-sdk</artifactId>
@@ -54,12 +38,6 @@
           <artifactId>zeebe-client-java</artifactId>
         </exclusion>
       </exclusions>
-    </dependency>
-
-    <dependency>
-      <groupId>org.springdoc</groupId>
-      <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-      <version>2.8.5</version>
     </dependency>
 
     <dependency>
@@ -90,24 +68,9 @@
     <dependency>
       <groupId>org.camunda.community.process_test_coverage</groupId>
       <artifactId>camunda-process-test-coverage-junit5-platform-8</artifactId>
-      <version>2.7.0</version>
+      <version>2.8.0</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
 
-  <build>
-    <!-- configure to be an ordinary Java Project -->
-    <sourceDirectory>src/main/java</sourceDirectory>
-    <testSourceDirectory>src/test/java</testSourceDirectory>
-
-    <plugins>
-      <plugin>
-        <groupId>org.jetbrains.kotlin</groupId>
-        <artifactId>kotlin-maven-plugin</artifactId>
-        <configuration>
-          <skip>true</skip>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
 </project>

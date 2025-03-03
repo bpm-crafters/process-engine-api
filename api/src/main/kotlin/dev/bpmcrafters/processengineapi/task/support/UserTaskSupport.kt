@@ -60,22 +60,26 @@ class UserTaskSupport {
   fun getAllTasks(): List<TaskInformation> = information.values.toList()
 
   /**
-   * Checks if the task with given id exists matching the task definition key.
+   * Checks if the task with given id exists matching the task description key (activity id from XML) .
    * @param taskId id of the task.
+   * @param activityId activity id from XML.
    * @return true if task exists.
    */
-  fun exists(taskId: String, taskDescriptionKey: String?) =
-    information.containsKey(taskId) && information[taskId]?.meta?.get(CommonRestrictions.TASK_DEFINITION_KEY) == taskDescriptionKey
+  fun exists(taskId: String, activityId: String?) =
+    information.containsKey(taskId) && (
+          information[taskId]?.meta?.get(CommonRestrictions.TASK_DEFINITION_KEY) == activityId
+            || information[taskId]?.meta?.get(CommonRestrictions.ACTIVITY_ID) == activityId
+        )
 
   /**
    * Requires task to exist having the given id and task description key.
    * @param taskId id of the task.
-   * @param taskDescriptionKey task description key.
+   * @param activityId task description key (activity id from XML).
    * @throws IllegalArgumentException if no task can be found.
    */
   @Throws(IllegalArgumentException::class)
-  fun requireTask(taskId: String, taskDescriptionKey: String) {
-    require(exists(taskId, taskDescriptionKey)) { "Could not find task $taskId of type $taskDescriptionKey" }
+  fun requireTask(taskId: String, activityId: String) {
+    require(exists(taskId, activityId)) { "Could not find task $taskId of type $activityId" }
   }
 
 

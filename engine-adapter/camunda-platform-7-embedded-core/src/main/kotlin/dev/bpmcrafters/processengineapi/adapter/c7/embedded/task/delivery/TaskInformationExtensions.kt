@@ -15,6 +15,7 @@ fun Task.toTaskInformation(candidates: List<IdentityLink>, processDefinitionKey:
     meta = mapOf(
       CommonRestrictions.PROCESS_DEFINITION_ID to this.processDefinitionId,
       CommonRestrictions.TASK_DEFINITION_KEY to this.taskDefinitionKey,
+      CommonRestrictions.ACTIVITY_ID to this.taskDefinitionKey,
       CommonRestrictions.TENANT_ID to this.tenantId,
       CommonRestrictions.PROCESS_INSTANCE_ID to this.processInstanceId,
       "taskName" to this.name,

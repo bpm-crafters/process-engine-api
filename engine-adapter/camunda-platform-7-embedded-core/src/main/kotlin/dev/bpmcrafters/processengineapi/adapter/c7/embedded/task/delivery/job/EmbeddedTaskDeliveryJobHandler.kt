@@ -97,8 +97,10 @@ class EmbeddedTaskDeliveryJobHandler(
       when (it.key) {
         CommonRestrictions.EXECUTION_ID -> it.value == taskEntity.executionId
         CommonRestrictions.TENANT_ID -> it.value == taskEntity.tenantId
+        CommonRestrictions.ACTIVITY_ID -> it.value == taskEntity.taskDefinitionKey
         CommonRestrictions.PROCESS_INSTANCE_ID -> it.value == taskEntity.processInstanceId
         CommonRestrictions.PROCESS_DEFINITION_ID -> it.value == taskEntity.processDefinitionId
+        // FIXME -> process_defintion_key
         else -> false
       }
     }
@@ -109,8 +111,10 @@ class EmbeddedTaskDeliveryJobHandler(
       when (it.key) {
         CommonRestrictions.EXECUTION_ID -> it.value == taskEntity.executionId
         CommonRestrictions.TENANT_ID -> it.value == taskEntity.tenantId
+        CommonRestrictions.ACTIVITY_ID -> it.value == taskEntity.activityId
         CommonRestrictions.PROCESS_INSTANCE_ID -> it.value == taskEntity.processInstanceId
         CommonRestrictions.PROCESS_DEFINITION_ID -> it.value == taskEntity.processDefinitionId
+        // FIXME -> process_defintion_key
         else -> false
       }
     }
