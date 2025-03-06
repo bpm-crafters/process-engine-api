@@ -27,7 +27,7 @@ Sounds interesting for you? Try it out, and provide us some feedback...
 ## How to start?
 
 We provide documentation for different people and different tasks. A good starting point is the
-[Introduction](./introduction). You might want to look at [Reference Guide](./reference-guide).
+[Introduction](./introduction/index.md). You might want to look at [Reference Guide](./reference-guide/index.md).
 
 ## Get in touch
 
