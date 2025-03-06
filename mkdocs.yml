@@ -102,6 +102,7 @@ nav:
     - Task Subscription API: reference-guide/task-subscription-api.md
     - Service Task Completion API: reference-guide/service-task-completion-api.md
     - User Task Completion API: reference-guide/user-task-completion-api.md
+    - User Task Support: reference-guide/user-task-support.md
   - Developers:
     - Contribution: developer-guide/contribution.md
     - Project Setup: developer-guide/project-setup.md

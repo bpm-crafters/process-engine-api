@@ -17,7 +17,7 @@ class EmbeddedEventBasedUserTaskDelivery(
 ) : UserTaskDelivery {
 
   fun userTaskCreated(delegateTask: DelegateTask) {
-    val subscriptions = subscriptionRepository.getTaskSubscriptions()
+    val subscriptions = subscriptionRepository.getTaskSubscriptions().filter { s -> s.taskType == TaskType.USER }
 
     subscriptions
       .firstOrNull { subscription -> subscription.matches(delegateTask) }

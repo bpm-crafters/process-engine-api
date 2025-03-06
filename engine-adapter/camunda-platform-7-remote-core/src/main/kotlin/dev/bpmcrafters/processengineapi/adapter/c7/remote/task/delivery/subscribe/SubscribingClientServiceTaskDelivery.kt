@@ -123,6 +123,6 @@ class SubscribingClientServiceTaskDelivery(
     } else {
       this
     }
-    // FIXME -> consider complex tent filtering
+    // FIXME -> consider complex tenant filtering
   }
 }

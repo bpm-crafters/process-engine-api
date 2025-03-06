@@ -11,12 +11,12 @@ fun RemoteExternalTask.toTaskInformation(): TaskInformation = TaskInformation(
   taskId = this.id,
   meta = mapOf(
     CommonRestrictions.TENANT_ID to this.tenantId,
-    CommonRestrictions.TASK_DEFINITION_KEY to this.topicName,
     CommonRestrictions.ACTIVITY_ID to this.activityId,
     CommonRestrictions.PROCESS_DEFINITION_KEY to this.processDefinitionKey,
     CommonRestrictions.PROCESS_INSTANCE_ID to this.processInstanceId,
     CommonRestrictions.PROCESS_DEFINITION_ID to this.processDefinitionId,
     CommonRestrictions.PROCESS_DEFINITION_VERSION_TAG to this.processDefinitionVersionTag,
+    "topicName" to this.topicName,
     // FIXME more
   )
 )
@@ -25,13 +25,12 @@ fun LockedExternalTask.toTaskInformation(): TaskInformation = TaskInformation(
   taskId = this.id,
   meta = mapOf(
     CommonRestrictions.TENANT_ID to this.tenantId,
-    CommonRestrictions.TASK_DEFINITION_KEY to this.topicName,
     CommonRestrictions.ACTIVITY_ID to this.activityId,
     CommonRestrictions.PROCESS_DEFINITION_KEY to this.processDefinitionKey,
     CommonRestrictions.PROCESS_INSTANCE_ID to this.processInstanceId,
     CommonRestrictions.PROCESS_DEFINITION_ID to this.processDefinitionId,
     CommonRestrictions.PROCESS_DEFINITION_VERSION_TAG to this.processDefinitionVersionTag,
-    // FIXME more
+    "topicName" to this.topicName,
   )
 )
 
@@ -39,7 +38,6 @@ fun Task.toTaskInformation() =
   TaskInformation(
     taskId = this.id,
     meta = mapOf(
-      CommonRestrictions.TASK_DEFINITION_KEY to this.taskDefinitionKey,
       CommonRestrictions.ACTIVITY_ID to this.taskDefinitionKey,
       CommonRestrictions.TENANT_ID to this.tenantId,
       CommonRestrictions.PROCESS_INSTANCE_ID to this.processInstanceId,

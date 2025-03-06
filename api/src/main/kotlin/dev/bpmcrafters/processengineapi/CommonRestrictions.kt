@@ -42,16 +42,6 @@ object CommonRestrictions {
   const val PROCESS_DEFINITION_VERSION_TAG = "processDefinitionVersionTag"
 
   /**
-   * Definition key of a task.
-   */
-  @Deprecated(
-    message = "Replaced by ACTIVITY_ID, since it a more generic term.",
-    replaceWith = ReplaceWith("ACTIVITY_ID"),
-    level = DeprecationLevel.WARNING
-  )
-  const val TASK_DEFINITION_KEY = "taskDefinitionKey"
-
-  /**
    * Tenant id.
    */
   const val TENANT_ID = "tenantId"
@@ -80,14 +70,6 @@ object CommonRestrictions {
 
     fun withProcessDefinitionKey(processDefinitionKey: String) = this.apply {
       restrictions[PROCESS_DEFINITION_KEY] = processDefinitionKey
-    }
-
-    @Deprecated(
-      message = "Replaced by withActivityId, since it a more generic term.",
-      replaceWith = ReplaceWith("withActivityId")
-    )
-    fun withTaskDefinitionKey(taskDefinitionKey: String) = this.apply {
-      restrictions[TASK_DEFINITION_KEY] = taskDefinitionKey
     }
 
     fun withTenantId(tenantId: String) = this.apply {

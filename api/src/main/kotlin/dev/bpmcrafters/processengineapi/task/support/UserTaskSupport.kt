@@ -65,11 +65,8 @@ class UserTaskSupport {
    * @param activityId activity id from XML.
    * @return true if task exists.
    */
-  fun exists(taskId: String, activityId: String?) =
-    information.containsKey(taskId) && (
-          information[taskId]?.meta?.get(CommonRestrictions.TASK_DEFINITION_KEY) == activityId
-            || information[taskId]?.meta?.get(CommonRestrictions.ACTIVITY_ID) == activityId
-        )
+  fun exists(taskId: String, activityId: String?): Boolean =
+    information.containsKey(taskId) && information[taskId]?.meta?.get(CommonRestrictions.ACTIVITY_ID) == activityId
 
   /**
    * Requires task to exist having the given id and task description key.
@@ -78,8 +75,8 @@ class UserTaskSupport {
    * @throws IllegalArgumentException if no task can be found.
    */
   @Throws(IllegalArgumentException::class)
-  fun requireTask(taskId: String, activityId: String) {
-    require(exists(taskId, activityId)) { "Could not find task $taskId of type $activityId" }
+  fun requireTask(taskId: String, activityId: String?) {
+    require(exists(taskId, activityId)) { "Could not find task '$taskId' of type '$activityId'" }
   }
 
 

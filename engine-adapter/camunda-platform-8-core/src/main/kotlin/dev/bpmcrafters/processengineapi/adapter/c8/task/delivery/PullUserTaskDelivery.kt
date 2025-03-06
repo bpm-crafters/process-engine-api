@@ -20,7 +20,7 @@ class PullUserTaskDelivery(
 ) : RefreshableDelivery {
 
   override fun refresh() {
-    val subscriptions = subscriptionRepository.getTaskSubscriptions()
+    val subscriptions = subscriptionRepository.getTaskSubscriptions().filter { s -> s.taskType == TaskType.USER }
 
     // FIXME -> reverse lookup for all active subscriptions
     // if the task is not retrieved but active subscription has a task, call modification#terminated hook
@@ -60,9 +60,6 @@ class PullUserTaskDelivery(
 
   private fun TaskSearch.forSubscriptions(subscriptions: List<TaskSubscriptionHandle>): TaskSearch {
     // FIXME -> support tenant on subscription
-    subscriptions
-      .filter { it.taskType == TaskType.USER } // only user task subscriptions
-      .map { it.taskDescriptionKey to it.restrictions }
     // FIXME -> consider complex tent filtering
     return this
   }
@@ -75,6 +72,7 @@ class PullUserTaskDelivery(
         CommonRestrictions.TENANT_ID -> it.value == task.tenantId
         CommonRestrictions.PROCESS_INSTANCE_ID -> it.value == task.processInstanceKey
         CommonRestrictions.PROCESS_DEFINITION_ID -> it.value == task.processDefinitionKey
+        // FIXME -> more restrictions
         else -> false
       }
     }

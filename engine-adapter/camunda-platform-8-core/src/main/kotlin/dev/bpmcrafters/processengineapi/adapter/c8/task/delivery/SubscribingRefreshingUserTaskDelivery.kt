@@ -30,7 +30,7 @@ class SubscribingRefreshingUserTaskDelivery(
   private var jobWorkerRegistry: Map<String, JobWorker> = emptyMap()
 
   fun subscribe() {
-    val subscriptions = subscriptionRepository.getTaskSubscriptions()
+    val subscriptions = subscriptionRepository.getTaskSubscriptions().filter { s -> s.taskType == TaskType.USER }
     if (subscriptions.isNotEmpty()) {
       logger.trace { "PROCESS-ENGINE-C8-040: subscribing user tasks for subscriptions: $subscriptions" }
       subscriptions

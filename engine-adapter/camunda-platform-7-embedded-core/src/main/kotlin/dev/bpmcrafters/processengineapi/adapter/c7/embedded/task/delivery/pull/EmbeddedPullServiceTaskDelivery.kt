@@ -35,7 +35,7 @@ class EmbeddedPullServiceTaskDelivery(
    */
   override fun refresh() {
 
-    val subscriptions = subscriptionRepository.getTaskSubscriptions()
+    val subscriptions = subscriptionRepository.getTaskSubscriptions().filter { s -> s.taskType == TaskType.EXTERNAL }
     if (subscriptions.isNotEmpty()) {
       logger.trace { "PROCESS-ENGINE-C7-EMBEDDED-030: pulling service tasks for subscriptions: $subscriptions" }
       // TODO -> how many queries do we want? 1:1 subscriptions, or 1 query for all?
@@ -89,7 +89,7 @@ class EmbeddedPullServiceTaskDelivery(
       && this.restrictions.all {
       when (it.key) {
         CommonRestrictions.EXECUTION_ID -> it.value == task.executionId
-        CommonRestrictions.ACTIVITY_ID -> it.value == task.activityInstanceId // FIXME task.activityId?
+        CommonRestrictions.ACTIVITY_ID -> it.value == task.activityId
         CommonRestrictions.BUSINESS_KEY -> it.value == task.businessKey
         CommonRestrictions.TENANT_ID -> it.value == task.tenantId
         CommonRestrictions.PROCESS_INSTANCE_ID -> it.value == task.processInstanceId
