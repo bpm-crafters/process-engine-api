@@ -22,7 +22,7 @@ class SubscribingServiceTaskDelivery(
 ) {
 
   fun subscribe() {
-    val subscriptions = subscriptionRepository.getTaskSubscriptions()
+    val subscriptions = subscriptionRepository.getTaskSubscriptions().filter { s -> s.taskType == TaskType.EXTERNAL }
     if (subscriptions.isNotEmpty()) {
       logger.trace { "PROCESS-ENGINE-C8-050: subscribing service tasks for subscriptions: $subscriptions" }
       subscriptions

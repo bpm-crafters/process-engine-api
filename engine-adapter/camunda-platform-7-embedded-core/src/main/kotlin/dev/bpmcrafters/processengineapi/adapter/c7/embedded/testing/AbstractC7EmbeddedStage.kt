@@ -344,12 +344,12 @@ abstract class AbstractC7EmbeddedStage<SUBTYPE : AbstractC7EmbeddedStage<SUBTYPE
     return BpmnAwareTests.processInstanceQuery().processInstanceId(processInstanceId).singleResult()
   }
 
-  private fun findTaskByActivityId(taskDescriptionKey: String): Optional<String> {
+  private fun findTaskByActivityId(activityId: String): Optional<String> {
     embeddedPullUserTaskDelivery.refresh()
     return Optional.ofNullable(
       userTaskSupport
         .getAllTasks()
-        .find { ti: TaskInformation -> ti.meta[CommonRestrictions.TASK_DEFINITION_KEY] == taskDescriptionKey }?.taskId
+        .find { ti: TaskInformation -> ti.meta[CommonRestrictions.ACTIVITY_ID] == activityId }?.taskId
     )
   }
 }

@@ -38,7 +38,6 @@ class TaskInformationExtensionsKtTest {
         assertThat(taskInformation.taskId).isEqualTo("taskId")
         assertThat(taskInformation.meta[CommonRestrictions.PROCESS_DEFINITION_ID]).isEqualTo("processDefinitionId")
         assertThat(taskInformation.meta[CommonRestrictions.PROCESS_DEFINITION_KEY]).isEqualTo("processDefinitionKey")
-        assertThat(taskInformation.meta[CommonRestrictions.TASK_DEFINITION_KEY]).isEqualTo("taskDefinitionKey")
         assertThat(taskInformation.meta[CommonRestrictions.TENANT_ID]).isEqualTo("tenantId")
         assertThat(taskInformation.meta["taskName"]).isEqualTo("name")
         assertThat(taskInformation.meta["taskDescription"]).isEqualTo("description")
@@ -75,7 +74,7 @@ class TaskInformationExtensionsKtTest {
 
         assertThat(taskInformation.taskId).isEqualTo("taskId")
         assertThat(taskInformation.meta[CommonRestrictions.PROCESS_DEFINITION_ID]).isEqualTo("processDefinitionId")
-        assertThat(taskInformation.meta[CommonRestrictions.TASK_DEFINITION_KEY]).isEqualTo("taskDefinitionKey")
+        assertThat(taskInformation.meta[CommonRestrictions.ACTIVITY_ID]).isEqualTo("taskDefinitionKey")
         assertThat(taskInformation.meta[CommonRestrictions.TENANT_ID]).isEqualTo("tenantId")
         assertThat(taskInformation.meta["taskName"]).isEqualTo("name")
         assertThat(taskInformation.meta["taskDescription"]).isEqualTo("description")

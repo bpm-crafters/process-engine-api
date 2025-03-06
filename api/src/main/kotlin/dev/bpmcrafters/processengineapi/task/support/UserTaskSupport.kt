@@ -66,10 +66,7 @@ class UserTaskSupport {
    * @return true if task exists.
    */
   fun exists(taskId: String, activityId: String?) =
-    information.containsKey(taskId) && (
-          information[taskId]?.meta?.get(CommonRestrictions.TASK_DEFINITION_KEY) == activityId
-            || information[taskId]?.meta?.get(CommonRestrictions.ACTIVITY_ID) == activityId
-        )
+    information.containsKey(taskId) && information[taskId]?.meta?.get(CommonRestrictions.ACTIVITY_ID) == activityId
 
   /**
    * Requires task to exist having the given id and task description key.
