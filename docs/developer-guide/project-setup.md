@@ -35,6 +35,11 @@ command from your command line:
 python3 -m pip install --upgrade pip
 python3 -m pip install -r ./docs/requirements.txt
 ```
+Alternatively, you might want to install `pipx` on your machine and use that instead of Python 3 and virtual environments. Then run:
+
+```bash
+pipx -r ./docs/requirements.txt
+```
 
 For creation of documentation, please run:
 

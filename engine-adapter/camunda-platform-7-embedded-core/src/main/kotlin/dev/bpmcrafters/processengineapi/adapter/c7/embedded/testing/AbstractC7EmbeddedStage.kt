@@ -13,8 +13,8 @@ import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.completion.Line
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.pull.EmbeddedPullServiceTaskDelivery
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.pull.EmbeddedPullUserTaskDelivery
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.subscription.C7TaskSubscriptionApiImpl
-import dev.bpmcrafters.processengineapi.adapter.commons.task.InMemSubscriptionRepository
-import dev.bpmcrafters.processengineapi.adapter.commons.task.UserTaskSupport
+import dev.bpmcrafters.processengineapi.impl.task.InMemSubscriptionRepository
+import dev.bpmcrafters.processengineapi.task.support.UserTaskSupport
 import dev.bpmcrafters.processengineapi.correlation.CorrelationApi
 import dev.bpmcrafters.processengineapi.correlation.SignalApi
 import dev.bpmcrafters.processengineapi.deploy.DeployBundleCommand
@@ -344,12 +344,12 @@ abstract class AbstractC7EmbeddedStage<SUBTYPE : AbstractC7EmbeddedStage<SUBTYPE
     return BpmnAwareTests.processInstanceQuery().processInstanceId(processInstanceId).singleResult()
   }
 
-  private fun findTaskByActivityId(taskDescriptionKey: String): Optional<String> {
+  private fun findTaskByActivityId(activityId: String): Optional<String> {
     embeddedPullUserTaskDelivery.refresh()
     return Optional.ofNullable(
       userTaskSupport
         .getAllTasks()
-        .find { ti: TaskInformation -> ti.meta[CommonRestrictions.TASK_DEFINITION_KEY] == taskDescriptionKey }?.taskId
+        .find { ti: TaskInformation -> ti.meta[CommonRestrictions.ACTIVITY_ID] == activityId }?.taskId
     )
   }
 }

@@ -11,7 +11,7 @@
 
   <groupId>dev.bpm-crafters.process-engine-api</groupId>
   <artifactId>process-engine-api-root</artifactId>
-  <version>0.4.4</version>
+  <version>0.5.0</version>
   <name>POM: Project root</name>
   <description>Process Engine API</description>
   <url>https://github.com/bpm-crafters/process-engine-api/</url>
@@ -26,14 +26,13 @@
     <junit5.version>5.11.3</junit5.version>
     <jgiven.version>2.0.1</jgiven.version>
     <awaitility.version>4.3.0</awaitility.version>
-    <mockk.version>1.13.16</mockk.version>
+    <mockk.version>1.13.17</mockk.version>
   </properties>
 
   <modules>
     <module>api</module>
+    <module>api-impl</module>
     <module>bom</module>
-    <module>engine-adapter/adapter-commons</module>
-    <module>engine-adapter/adapter-commons-spring-boot-starter</module>
     <module>engine-adapter/adapter-testing</module>
     <module>engine-adapter/camunda-platform-7-embedded-core</module>
     <module>engine-adapter/camunda-platform-7-embedded-spring-boot-starter</module>
@@ -46,6 +45,13 @@
 
   <dependencyManagement>
     <dependencies>
+      <dependency>
+        <groupId>io.toolisticon.spring</groupId>
+        <artifactId>spring-boot-support-bom</artifactId>
+        <version>1.0.0</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
       <dependency>
         <groupId>org.assertj</groupId>
         <artifactId>assertj-core</artifactId>
@@ -69,12 +75,12 @@
       <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-api</artifactId>
-        <version>2.0.16</version>
+        <version>2.0.17</version>
       </dependency>
       <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-simple</artifactId>
-        <version>2.0.16</version>
+        <version>2.0.17</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

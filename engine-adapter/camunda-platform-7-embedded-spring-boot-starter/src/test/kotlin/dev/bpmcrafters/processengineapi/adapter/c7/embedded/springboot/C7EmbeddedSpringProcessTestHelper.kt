@@ -3,8 +3,8 @@ package dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.process.toProcessInformation
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.pull.EmbeddedPullServiceTaskDelivery
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.pull.EmbeddedPullUserTaskDelivery
-import dev.bpmcrafters.processengineapi.adapter.commons.task.InMemSubscriptionRepository
-import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionRepository
+import dev.bpmcrafters.processengineapi.impl.task.InMemSubscriptionRepository
+import dev.bpmcrafters.processengineapi.impl.task.SubscriptionRepository
 import dev.bpmcrafters.processengineapi.process.ProcessInformation
 import dev.bpmcrafters.processengineapi.process.StartProcessApi
 import dev.bpmcrafters.processengineapi.task.ServiceTaskCompletionApi

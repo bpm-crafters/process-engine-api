@@ -14,7 +14,7 @@ fun Task.toTaskInformation(candidates: List<IdentityLink>, processDefinitionKey:
     taskId = this.id,
     meta = mapOf(
       CommonRestrictions.PROCESS_DEFINITION_ID to this.processDefinitionId,
-      CommonRestrictions.TASK_DEFINITION_KEY to this.taskDefinitionKey,
+      CommonRestrictions.ACTIVITY_ID to this.taskDefinitionKey,
       CommonRestrictions.TENANT_ID to this.tenantId,
       CommonRestrictions.PROCESS_INSTANCE_ID to this.processInstanceId,
       "taskName" to this.name,
@@ -40,7 +40,7 @@ fun TaskEntity.toTaskInformation() =
     taskId = this.id,
     meta = mapOf(
       CommonRestrictions.PROCESS_DEFINITION_ID to this.processDefinitionId,
-      CommonRestrictions.TASK_DEFINITION_KEY to this.taskDefinitionKey,
+      CommonRestrictions.ACTIVITY_ID to this.taskDefinitionKey,
       CommonRestrictions.TENANT_ID to this.tenantId,
       CommonRestrictions.PROCESS_INSTANCE_ID to this.processInstanceId,
       "taskName" to this.name,
@@ -60,7 +60,7 @@ fun DelegateTask.toTaskInformation() =
     taskId = this.id,
     meta = mapOf(
       CommonRestrictions.PROCESS_DEFINITION_ID to this.processDefinitionId,
-      CommonRestrictions.TASK_DEFINITION_KEY to this.taskDefinitionKey,
+      CommonRestrictions.ACTIVITY_ID to this.taskDefinitionKey,
       CommonRestrictions.TENANT_ID to this.tenantId,
       CommonRestrictions.PROCESS_INSTANCE_ID to this.processInstanceId,
       "taskName" to this.name,
@@ -76,26 +76,28 @@ fun DelegateTask.toTaskInformation() =
 
 fun LockedExternalTask.toTaskInformation(): TaskInformation {
   return TaskInformation(
-    this.id,
-    mapOf(
+    taskId = this.id,
+    meta = mapOf(
       CommonRestrictions.PROCESS_DEFINITION_ID to this.processDefinitionId,
       CommonRestrictions.PROCESS_DEFINITION_KEY to this.processDefinitionKey,
       CommonRestrictions.PROCESS_INSTANCE_ID to this.processInstanceId,
       CommonRestrictions.TENANT_ID to this.tenantId,
-      CommonRestrictions.ACTIVITY_ID to this.activityId
+      CommonRestrictions.ACTIVITY_ID to this.activityId,
+      "topicName" to this.topicName,
     )
   )
 }
 
 fun ExternalTaskEntity.toTaskInformation(): TaskInformation {
   return TaskInformation(
-    this.id,
-    mapOf(
+    taskId = this.id,
+    meta = mapOf(
       CommonRestrictions.PROCESS_DEFINITION_ID to this.processDefinitionId,
       CommonRestrictions.PROCESS_DEFINITION_KEY to this.processDefinitionKey,
       CommonRestrictions.PROCESS_INSTANCE_ID to this.processInstanceId,
       CommonRestrictions.TENANT_ID to this.tenantId,
-      CommonRestrictions.ACTIVITY_ID to this.activityId
+      CommonRestrictions.ACTIVITY_ID to this.activityId,
+      "topicName" to this.topicName,
     )
   )
 }

@@ -10,7 +10,7 @@ fun ActivatedJob.toTaskInformation(): TaskInformation = TaskInformation(
   taskId = "${this.key}",
   meta = mapOf(
     CommonRestrictions.TENANT_ID to this.tenantId,
-    CommonRestrictions.TASK_DEFINITION_KEY to this.elementId,
+    CommonRestrictions.ACTIVITY_ID to this.elementId,
     CommonRestrictions.PROCESS_DEFINITION_KEY to this.bpmnProcessId,
     CommonRestrictions.PROCESS_DEFINITION_ID to "${this.processDefinitionKey}",
     CommonRestrictions.PROCESS_INSTANCE_ID to "${this.processInstanceKey}",
@@ -20,13 +20,14 @@ fun ActivatedJob.toTaskInformation(): TaskInformation = TaskInformation(
     "candidateUsers" to this.customHeaders.getOrDefault(Protocol.USER_TASK_CANDIDATE_USERS_HEADER_NAME, null),
     "candidateGroups" to this.customHeaders.getOrDefault(Protocol.USER_TASK_CANDIDATE_GROUPS_HEADER_NAME, null),
     "followUpDate" to this.customHeaders.getOrDefault(Protocol.USER_TASK_FOLLOW_UP_DATE_HEADER_NAME, null),
+    "topicName" to this.type,
   )
 )
 
 fun Task.toTaskInformation(): TaskInformation = TaskInformation(
   taskId = this.id,
   meta = mapOf(
-    CommonRestrictions.TASK_DEFINITION_KEY to this.taskDefinitionId,
+    CommonRestrictions.ACTIVITY_ID to this.taskDefinitionId,
     CommonRestrictions.PROCESS_DEFINITION_KEY to this.processDefinitionKey,
     CommonRestrictions.PROCESS_INSTANCE_ID to this.processInstanceKey,
     CommonRestrictions.TENANT_ID to this.tenantId,

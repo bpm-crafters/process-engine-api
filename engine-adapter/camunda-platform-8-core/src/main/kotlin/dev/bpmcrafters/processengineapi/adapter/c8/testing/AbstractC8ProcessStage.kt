@@ -15,8 +15,8 @@ import dev.bpmcrafters.processengineapi.adapter.c8.task.completion.C8ZeebeUserTa
 import dev.bpmcrafters.processengineapi.adapter.c8.task.completion.LinearMemoryFailureRetrySupplier
 import dev.bpmcrafters.processengineapi.adapter.c8.task.delivery.SubscribingRefreshingUserTaskDelivery
 import dev.bpmcrafters.processengineapi.adapter.c8.task.subscription.C8TaskSubscriptionApiImpl
-import dev.bpmcrafters.processengineapi.adapter.commons.task.InMemSubscriptionRepository
-import dev.bpmcrafters.processengineapi.adapter.commons.task.UserTaskSupport
+import dev.bpmcrafters.processengineapi.impl.task.InMemSubscriptionRepository
+import dev.bpmcrafters.processengineapi.task.support.UserTaskSupport
 import dev.bpmcrafters.processengineapi.correlation.CorrelationApi
 import dev.bpmcrafters.processengineapi.correlation.SignalApi
 import dev.bpmcrafters.processengineapi.deploy.DeployBundleCommand
@@ -320,10 +320,10 @@ abstract class AbstractC8ProcessStage<SUBTYPE : AbstractC8ProcessStage<SUBTYPE>>
         .filter { record -> record.intent == ProcessInstanceIntent.ELEMENT_COMPLETED }
     }
 
-  private fun findTaskByActivityId(taskDescriptionKey: String): Optional<String> {
+  private fun findTaskByActivityId(activityId: String): Optional<String> {
     return Optional.ofNullable(
       userTaskSupport.getAllTasks()
-        .find { taskInformation -> taskInformation.meta[CommonRestrictions.TASK_DEFINITION_KEY] == taskDescriptionKey }?.taskId
+        .find { taskInformation -> taskInformation.meta[CommonRestrictions.ACTIVITY_ID] == activityId }?.taskId
     )
   }
 

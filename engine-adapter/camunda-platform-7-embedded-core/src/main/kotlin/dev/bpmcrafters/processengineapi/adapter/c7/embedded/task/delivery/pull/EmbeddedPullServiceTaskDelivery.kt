@@ -2,11 +2,10 @@ package dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.pull
 
 import dev.bpmcrafters.processengineapi.CommonRestrictions
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.ExternalServiceTaskDelivery
-import dev.bpmcrafters.processengineapi.adapter.commons.task.filterBySubscription
+import dev.bpmcrafters.processengineapi.impl.task.filterBySubscription
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.toTaskInformation
-import dev.bpmcrafters.processengineapi.adapter.commons.task.RefreshableDelivery
-import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionRepository
-import dev.bpmcrafters.processengineapi.adapter.commons.task.TaskSubscriptionHandle
+import dev.bpmcrafters.processengineapi.impl.task.SubscriptionRepository
+import dev.bpmcrafters.processengineapi.impl.task.TaskSubscriptionHandle
 import dev.bpmcrafters.processengineapi.task.TaskType
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.camunda.bpm.engine.ExternalTaskService
@@ -21,14 +20,14 @@ private val logger = KotlinLogging.logger {}
  * This implementation uses internal Java API and pulls tasks for delivery.
  */
 class EmbeddedPullServiceTaskDelivery(
-  private val externalTaskService: ExternalTaskService,
-  private val workerId: String,
-  private val subscriptionRepository: SubscriptionRepository,
-  private val maxTasks: Int,
-  private val lockDurationInSeconds: Long,
-  private val retryTimeoutInSeconds: Long,
-  private val retries: Int,
-  private val executorService: ExecutorService
+    private val externalTaskService: ExternalTaskService,
+    private val workerId: String,
+    private val subscriptionRepository: SubscriptionRepository,
+    private val maxTasks: Int,
+    private val lockDurationInSeconds: Long,
+    private val retryTimeoutInSeconds: Long,
+    private val retries: Int,
+    private val executorService: ExecutorService
 ) : ExternalServiceTaskDelivery, RefreshableDelivery {
 
   /**
@@ -36,7 +35,7 @@ class EmbeddedPullServiceTaskDelivery(
    */
   override fun refresh() {
 
-    val subscriptions = subscriptionRepository.getTaskSubscriptions()
+    val subscriptions = subscriptionRepository.getTaskSubscriptions().filter { s -> s.taskType == TaskType.EXTERNAL }
     if (subscriptions.isNotEmpty()) {
       logger.trace { "PROCESS-ENGINE-C7-EMBEDDED-030: pulling service tasks for subscriptions: $subscriptions" }
       // TODO -> how many queries do we want? 1:1 subscriptions, or 1 query for all?
@@ -90,7 +89,7 @@ class EmbeddedPullServiceTaskDelivery(
       && this.restrictions.all {
       when (it.key) {
         CommonRestrictions.EXECUTION_ID -> it.value == task.executionId
-        CommonRestrictions.ACTIVITY_ID -> it.value == task.activityInstanceId // FIXME task.activityId?
+        CommonRestrictions.ACTIVITY_ID -> it.value == task.activityId
         CommonRestrictions.BUSINESS_KEY -> it.value == task.businessKey
         CommonRestrictions.TENANT_ID -> it.value == task.tenantId
         CommonRestrictions.PROCESS_INSTANCE_ID -> it.value == task.processInstanceId

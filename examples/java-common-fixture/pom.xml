@@ -5,30 +5,17 @@
   <parent>
     <groupId>dev.bpm-crafters.process-engine-api</groupId>
     <artifactId>process-engine-api-examples</artifactId>
-    <version>0.4.4</version>
+    <version>0.5.0</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
   <artifactId>process-engine-api-examples-java-common-fixture</artifactId>
   <name>Example: Java Common Fixture</name>
 
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-dependencies</artifactId>
-        <version>3.4.3</version>
-        <scope>import</scope>
-        <type>pom</type>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
-
   <dependencies>
     <dependency>
       <groupId>dev.bpm-crafters.process-engine-api</groupId>
       <artifactId>process-engine-api</artifactId>
-      <version>${project.version}</version>
     </dependency>
 
     <dependency>
@@ -41,32 +28,9 @@
       <artifactId>spring-boot-starter-web</artifactId>
     </dependency>
     <dependency>
-        <groupId>dev.bpm-crafters.process-engine-api</groupId>
-        <artifactId>process-engine-api-adapter-commons</artifactId>
-        <version>${project.version}</version>
-        <scope>compile</scope>
+      <groupId>org.springdoc</groupId>
+      <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
     </dependency>
 
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-simple</artifactId>
-      <scope>test</scope>
-    </dependency>
   </dependencies>
-
-  <build>
-    <!-- configure to be an ordinary Java Project -->
-    <sourceDirectory>src/main/java</sourceDirectory>
-    <testSourceDirectory>src/test/java</testSourceDirectory>
-
-    <plugins>
-      <plugin>
-        <groupId>org.jetbrains.kotlin</groupId>
-        <artifactId>kotlin-maven-plugin</artifactId>
-        <configuration>
-          <skip>true</skip>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
 </project>

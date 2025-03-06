@@ -9,9 +9,9 @@ import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.completion.C7Us
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.completion.FailureRetrySupplier
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.completion.LinearMemoryFailureRetrySupplier
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.subscription.C7TaskSubscriptionApiImpl
-import dev.bpmcrafters.processengineapi.adapter.commons.spring.ConditionalOnMissingQualifiedBean
-import dev.bpmcrafters.processengineapi.adapter.commons.task.InMemSubscriptionRepository
-import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionRepository
+import io.toolisticon.spring.condition.ConditionalOnMissingQualifiedBean
+import dev.bpmcrafters.processengineapi.impl.task.InMemSubscriptionRepository
+import dev.bpmcrafters.processengineapi.impl.task.SubscriptionRepository
 import dev.bpmcrafters.processengineapi.correlation.CorrelationApi
 import dev.bpmcrafters.processengineapi.correlation.SignalApi
 import dev.bpmcrafters.processengineapi.deploy.DeploymentApi

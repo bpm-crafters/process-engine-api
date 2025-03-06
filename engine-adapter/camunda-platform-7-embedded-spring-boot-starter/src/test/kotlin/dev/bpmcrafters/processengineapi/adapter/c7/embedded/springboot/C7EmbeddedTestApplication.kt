@@ -4,7 +4,7 @@ import com.tngtech.jgiven.integration.spring.EnableJGiven
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.C7EmbeddedAdapterProperties.ExternalServiceTaskDeliveryStrategy.EMBEDDED_SCHEDULED
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.pull.EmbeddedPullServiceTaskDelivery
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.pull.EmbeddedPullUserTaskDelivery
-import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionRepository
+import dev.bpmcrafters.processengineapi.impl.task.SubscriptionRepository
 import dev.bpmcrafters.processengineapi.process.StartProcessApi
 import dev.bpmcrafters.processengineapi.task.ServiceTaskCompletionApi
 import dev.bpmcrafters.processengineapi.task.TaskSubscriptionApi
@@ -25,15 +25,15 @@ class C7EmbeddedTestApplication {
   )
   @Bean
   fun processTestHelper(
-    processEngine: ProcessEngine,
-    runtimeService: RuntimeService,
-    startProcessApi: StartProcessApi,
-    taskSubscriptionApi: TaskSubscriptionApi,
-    userTaskDelivery: EmbeddedPullUserTaskDelivery,
-    externalTaskDelivery: EmbeddedPullServiceTaskDelivery,
-    userTaskCompletionApi: UserTaskCompletionApi,
-    serviceTaskCompletionApi: ServiceTaskCompletionApi,
-    subscriptionRepository: SubscriptionRepository,
+      processEngine: ProcessEngine,
+      runtimeService: RuntimeService,
+      startProcessApi: StartProcessApi,
+      taskSubscriptionApi: TaskSubscriptionApi,
+      userTaskDelivery: EmbeddedPullUserTaskDelivery,
+      externalTaskDelivery: EmbeddedPullServiceTaskDelivery,
+      userTaskCompletionApi: UserTaskCompletionApi,
+      serviceTaskCompletionApi: ServiceTaskCompletionApi,
+      subscriptionRepository: SubscriptionRepository,
   ): ProcessTestHelper = C7EmbeddedSpringProcessTestHelper(
     runtimeService = runtimeService,
     startProcessApi = startProcessApi,

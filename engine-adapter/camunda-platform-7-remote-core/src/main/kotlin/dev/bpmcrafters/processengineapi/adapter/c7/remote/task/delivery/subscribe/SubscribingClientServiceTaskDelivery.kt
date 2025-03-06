@@ -3,9 +3,9 @@ package dev.bpmcrafters.processengineapi.adapter.c7.remote.task.delivery.subscri
 import dev.bpmcrafters.processengineapi.CommonRestrictions
 import dev.bpmcrafters.processengineapi.adapter.c7.remote.task.delivery.ServiceTaskDelivery
 import dev.bpmcrafters.processengineapi.adapter.c7.remote.task.delivery.toTaskInformation
-import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionRepository
-import dev.bpmcrafters.processengineapi.adapter.commons.task.TaskSubscriptionHandle
-import dev.bpmcrafters.processengineapi.adapter.commons.task.filterBySubscription
+import dev.bpmcrafters.processengineapi.impl.task.SubscriptionRepository
+import dev.bpmcrafters.processengineapi.impl.task.TaskSubscriptionHandle
+import dev.bpmcrafters.processengineapi.impl.task.filterBySubscription
 import dev.bpmcrafters.processengineapi.task.TaskType
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.camunda.bpm.client.ExternalTaskClient
@@ -19,11 +19,11 @@ private val logger = KotlinLogging.logger {}
  * Implementation of task delivery based on Camunda External Task Client.
  */
 class SubscribingClientServiceTaskDelivery(
-  private val externalTaskClient: ExternalTaskClient,
-  private val subscriptionRepository: SubscriptionRepository,
-  private val lockDurationInSeconds: Long,
-  private val retryTimeoutInSeconds: Long,
-  private val retries: Int,
+    private val externalTaskClient: ExternalTaskClient,
+    private val subscriptionRepository: SubscriptionRepository,
+    private val lockDurationInSeconds: Long,
+    private val retryTimeoutInSeconds: Long,
+    private val retries: Int,
 ) : ServiceTaskDelivery {
 
   private val camundaTaskListTopicSubscriptions = mutableListOf<TopicSubscription>()
@@ -123,6 +123,6 @@ class SubscribingClientServiceTaskDelivery(
     } else {
       this
     }
-    // FIXME -> consider complex tent filtering
+    // FIXME -> consider complex tenant filtering
   }
 }

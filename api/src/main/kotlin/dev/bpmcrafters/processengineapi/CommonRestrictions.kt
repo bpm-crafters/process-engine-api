@@ -10,7 +10,15 @@ object CommonRestrictions {
    * Definition attribute of a BPMN activity from XML holding the id of the element.
    */
   const val ACTIVITY_ID = "activityId"
+
+  /**
+   * Logical business key.
+   */
   const val BUSINESS_KEY = "businessKey"
+
+  /**
+   * Special key for correlation with processes.
+   */
   const val CORRELATION_KEY = "correlationKey"
 
   /**
@@ -22,13 +30,32 @@ object CommonRestrictions {
    * Id provided by the runtime identifying the process instance.
    */
   const val PROCESS_INSTANCE_ID = "processInstanceId"
+
+  /**
+   * Id provided by the runtime to identify a deployed process definition.
+   */
   const val PROCESS_DEFINITION_ID = "processDefinitionId"
+
+  /**
+   * Process definition version tag provided by the user.
+   */
   const val PROCESS_DEFINITION_VERSION_TAG = "processDefinitionVersionTag"
-  const val TASK_DEFINITION_KEY = "taskDefinitionKey"
+
+  /**
+   * Tenant id.
+   */
   const val TENANT_ID = "tenantId"
+
+  /**
+   * Indicating the absence of tenant.
+   */
   const val WITHOUT_TENANT_ID = "withoutTenantId"
   const val MESSAGE_ID = "messageId"
   const val MESSAGE_TTL = "messageTTL"
+
+  /**
+   * Id of execution in runtime.
+   */
   const val EXECUTION_ID = "executionId"
 
   /**
@@ -43,10 +70,6 @@ object CommonRestrictions {
 
     fun withProcessDefinitionKey(processDefinitionKey: String) = this.apply {
       restrictions[PROCESS_DEFINITION_KEY] = processDefinitionKey
-    }
-
-    fun withTaskDefinitionKey(taskDefinitionKey: String) = this.apply {
-      restrictions[TASK_DEFINITION_KEY] = taskDefinitionKey
     }
 
     fun withTenantId(tenantId: String) = this.apply {

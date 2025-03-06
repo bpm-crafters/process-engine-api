@@ -4,14 +4,13 @@ import dev.bpmcrafters.processengineapi.adapter.c7.remote.correlation.Correlatio
 import dev.bpmcrafters.processengineapi.adapter.c7.remote.correlation.SignalApiImpl
 import dev.bpmcrafters.processengineapi.adapter.c7.remote.deploy.DeploymentApiImpl
 import dev.bpmcrafters.processengineapi.adapter.c7.remote.process.StartProcessApiImpl
-import dev.bpmcrafters.processengineapi.adapter.c7.remote.springboot.C7RemoteAdapterProperties.Companion.DEFAULT_PREFIX
 import dev.bpmcrafters.processengineapi.adapter.c7.remote.task.C7RemoteTaskSubscriptionApiImpl
 import dev.bpmcrafters.processengineapi.adapter.c7.remote.task.completion.C7RemoteServiceUserTaskCompletionApiImpl
 import dev.bpmcrafters.processengineapi.adapter.c7.remote.task.completion.FailureRetrySupplier
 import dev.bpmcrafters.processengineapi.adapter.c7.remote.task.completion.LinearMemoryFailureRetrySupplier
-import dev.bpmcrafters.processengineapi.adapter.commons.spring.ConditionalOnMissingQualifiedBean
-import dev.bpmcrafters.processengineapi.adapter.commons.task.InMemSubscriptionRepository
-import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionRepository
+import io.toolisticon.spring.condition.ConditionalOnMissingQualifiedBean
+import dev.bpmcrafters.processengineapi.impl.task.InMemSubscriptionRepository
+import dev.bpmcrafters.processengineapi.impl.task.SubscriptionRepository
 import dev.bpmcrafters.processengineapi.correlation.CorrelationApi
 import dev.bpmcrafters.processengineapi.correlation.SignalApi
 import dev.bpmcrafters.processengineapi.deploy.DeploymentApi
@@ -26,7 +25,6 @@ import org.camunda.bpm.engine.TaskService
 import org.camunda.community.rest.EnableCamundaRestClient
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Conditional
