@@ -3,10 +3,9 @@ package dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.pull
 import dev.bpmcrafters.processengineapi.CommonRestrictions
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.UserTaskDelivery
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.toTaskInformation
-import dev.bpmcrafters.processengineapi.adapter.commons.task.RefreshableDelivery
-import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionRepository
-import dev.bpmcrafters.processengineapi.adapter.commons.task.TaskSubscriptionHandle
-import dev.bpmcrafters.processengineapi.adapter.commons.task.filterBySubscription
+import dev.bpmcrafters.processengineapi.impl.task.SubscriptionRepository
+import dev.bpmcrafters.processengineapi.impl.task.TaskSubscriptionHandle
+import dev.bpmcrafters.processengineapi.impl.task.filterBySubscription
 import dev.bpmcrafters.processengineapi.task.TaskType
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.camunda.bpm.engine.RepositoryService
@@ -22,10 +21,10 @@ private val logger = KotlinLogging.logger {}
  * Uses internal Java API for pulling tasks.
  */
 class EmbeddedPullUserTaskDelivery(
-  private val taskService: TaskService,
-  private val repositoryService: RepositoryService,
-  private val subscriptionRepository: SubscriptionRepository,
-  private val executorService: ExecutorService
+    private val taskService: TaskService,
+    private val repositoryService: RepositoryService,
+    private val subscriptionRepository: SubscriptionRepository,
+    private val executorService: ExecutorService
 ) : UserTaskDelivery, RefreshableDelivery {
 
   private val cachingProcessDefinitionKeyResolver = CachingProcessDefinitionKeyResolver(repositoryService)
@@ -83,6 +82,7 @@ class EmbeddedPullUserTaskDelivery(
       when (it.key) {
         CommonRestrictions.EXECUTION_ID -> it.value == task.executionId
         CommonRestrictions.TENANT_ID -> it.value == task.tenantId
+        CommonRestrictions.ACTIVITY_ID -> it.value == task.taskDefinitionKey
         CommonRestrictions.PROCESS_INSTANCE_ID -> it.value == task.processInstanceId
         CommonRestrictions.PROCESS_DEFINITION_ID -> it.value == task.processDefinitionId
         CommonRestrictions.PROCESS_DEFINITION_KEY -> it.value == cachingProcessDefinitionKeyResolver.getProcessDefinitionKey(task.processDefinitionId)

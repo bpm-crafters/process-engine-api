@@ -7,7 +7,7 @@ import dev.bpmcrafters.processengineapi.adapter.c7.remote.springboot.Conditional
 import dev.bpmcrafters.processengineapi.adapter.c7.remote.task.completion.C7RemoteClientServiceTaskCompletionApiImpl
 import dev.bpmcrafters.processengineapi.adapter.c7.remote.task.completion.FailureRetrySupplier
 import dev.bpmcrafters.processengineapi.adapter.c7.remote.task.delivery.subscribe.SubscribingClientServiceTaskDelivery
-import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionRepository
+import dev.bpmcrafters.processengineapi.impl.task.SubscriptionRepository
 import dev.bpmcrafters.processengineapi.task.ServiceTaskCompletionApi
 import io.github.oshai.kotlinlogging.KotlinLogging
 import jakarta.annotation.PostConstruct
@@ -45,9 +45,9 @@ class C7RemoteClientServiceTaskAutoConfiguration {
 
   @Bean(name = ["c7remote-service-task-delivery"], initMethod = "subscribe", destroyMethod = "unsubscribe")
   fun subscribingClientExternalTaskDelivery(
-    subscriptionRepository: SubscriptionRepository,
-    externalTaskClient: ExternalTaskClient,
-    c7AdapterProperties: C7RemoteAdapterProperties
+      subscriptionRepository: SubscriptionRepository,
+      externalTaskClient: ExternalTaskClient,
+      c7AdapterProperties: C7RemoteAdapterProperties
   ) = SubscribingClientServiceTaskDelivery(
     subscriptionRepository = subscriptionRepository,
     lockDurationInSeconds = c7AdapterProperties.serviceTasks.lockTimeInSeconds,
@@ -59,9 +59,9 @@ class C7RemoteClientServiceTaskAutoConfiguration {
   @Bean("c7remote-service-task-completion-api")
   @Qualifier("c7remote-service-task-completion-api")
   fun externalTaskClientCompletionApi(
-    externalTaskService: ExternalTaskService,
-    subscriptionRepository: SubscriptionRepository,
-    @Qualifier("c7remote-failure-retry-supplier")
+      externalTaskService: ExternalTaskService,
+      subscriptionRepository: SubscriptionRepository,
+      @Qualifier("c7remote-failure-retry-supplier")
     failureRetrySupplier: FailureRetrySupplier
   ): ServiceTaskCompletionApi =
     C7RemoteClientServiceTaskCompletionApiImpl(

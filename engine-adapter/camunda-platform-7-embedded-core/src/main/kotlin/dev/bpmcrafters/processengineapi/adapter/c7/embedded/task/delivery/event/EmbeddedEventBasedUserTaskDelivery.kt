@@ -2,10 +2,10 @@ package dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.event
 
 import dev.bpmcrafters.processengineapi.CommonRestrictions
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.UserTaskDelivery
-import dev.bpmcrafters.processengineapi.adapter.commons.task.filterBySubscription
+import dev.bpmcrafters.processengineapi.impl.task.filterBySubscription
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.task.delivery.toTaskInformation
-import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionRepository
-import dev.bpmcrafters.processengineapi.adapter.commons.task.TaskSubscriptionHandle
+import dev.bpmcrafters.processengineapi.impl.task.SubscriptionRepository
+import dev.bpmcrafters.processengineapi.impl.task.TaskSubscriptionHandle
 import dev.bpmcrafters.processengineapi.task.TaskType
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.camunda.bpm.engine.delegate.DelegateTask
@@ -52,8 +52,10 @@ class EmbeddedEventBasedUserTaskDelivery(
       when (it.key) {
         CommonRestrictions.EXECUTION_ID -> it.value == task.executionId
         CommonRestrictions.TENANT_ID -> it.value == task.tenantId
+        CommonRestrictions.ACTIVITY_ID -> it.value == task.taskDefinitionKey
         CommonRestrictions.PROCESS_INSTANCE_ID -> it.value == task.processInstanceId
         CommonRestrictions.PROCESS_DEFINITION_ID -> it.value == task.processDefinitionId
+        // FIXME -> process definition key
         else -> false
       }
     }

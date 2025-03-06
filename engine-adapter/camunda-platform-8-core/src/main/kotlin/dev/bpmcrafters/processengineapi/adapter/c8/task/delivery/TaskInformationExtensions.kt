@@ -11,6 +11,7 @@ fun ActivatedJob.toTaskInformation(): TaskInformation = TaskInformation(
   meta = mapOf(
     CommonRestrictions.TENANT_ID to this.tenantId,
     CommonRestrictions.TASK_DEFINITION_KEY to this.elementId,
+    CommonRestrictions.ACTIVITY_ID to this.elementId,
     CommonRestrictions.PROCESS_DEFINITION_KEY to this.bpmnProcessId,
     CommonRestrictions.PROCESS_DEFINITION_ID to "${this.processDefinitionKey}",
     CommonRestrictions.PROCESS_INSTANCE_ID to "${this.processInstanceKey}",
@@ -27,6 +28,7 @@ fun Task.toTaskInformation(): TaskInformation = TaskInformation(
   taskId = this.id,
   meta = mapOf(
     CommonRestrictions.TASK_DEFINITION_KEY to this.taskDefinitionId,
+    CommonRestrictions.ACTIVITY_ID to this.taskDefinitionId,
     CommonRestrictions.PROCESS_DEFINITION_KEY to this.processDefinitionKey,
     CommonRestrictions.PROCESS_INSTANCE_ID to this.processInstanceKey,
     CommonRestrictions.TENANT_ID to this.tenantId,

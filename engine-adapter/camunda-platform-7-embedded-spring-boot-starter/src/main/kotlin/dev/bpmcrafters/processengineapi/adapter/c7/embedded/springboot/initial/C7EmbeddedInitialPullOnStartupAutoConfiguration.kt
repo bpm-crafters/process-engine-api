@@ -4,7 +4,7 @@ import dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.C7Embedde
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.C7EmbeddedAdapterServiceTaskInitialPullEnabledCondition
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.C7EmbeddedAdapterUserTaskInitialPullEnabledCondition
 import dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.event.C7EmbeddedEventDeliveryAutoConfiguration
-import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionRepository
+import dev.bpmcrafters.processengineapi.impl.task.SubscriptionRepository
 import io.github.oshai.kotlinlogging.KotlinLogging
 import jakarta.annotation.PostConstruct
 import org.camunda.bpm.engine.ExternalTaskService
@@ -39,10 +39,10 @@ class C7EmbeddedInitialPullOnStartupAutoConfiguration {
   @Qualifier("c7embedded-user-task-initial-pull")
   @Conditional(C7EmbeddedAdapterUserTaskInitialPullEnabledCondition::class)
   fun configureInitialPullForUserTaskDelivery(
-    taskService: TaskService,
-    repositoryService: RepositoryService,
-    subscriptionRepository: SubscriptionRepository,
-    @Qualifier("c7embedded-user-task-worker-executor")
+      taskService: TaskService,
+      repositoryService: RepositoryService,
+      subscriptionRepository: SubscriptionRepository,
+      @Qualifier("c7embedded-user-task-worker-executor")
     executorService: ExecutorService
   ) = C7EmbeddedInitialPullUserTasksDeliveryBinding(
     taskService = taskService,
@@ -55,10 +55,10 @@ class C7EmbeddedInitialPullOnStartupAutoConfiguration {
   @Qualifier("c7embedded-service-task-initial-pull")
   @Conditional(C7EmbeddedAdapterServiceTaskInitialPullEnabledCondition::class)
   fun configureInitialPullForExternalServiceTaskDelivery(
-    externalTaskService: ExternalTaskService,
-    subscriptionRepository: SubscriptionRepository,
-    c7AdapterProperties: C7EmbeddedAdapterProperties,
-    @Qualifier("c7embedded-service-task-worker-executor")
+      externalTaskService: ExternalTaskService,
+      subscriptionRepository: SubscriptionRepository,
+      c7AdapterProperties: C7EmbeddedAdapterProperties,
+      @Qualifier("c7embedded-service-task-worker-executor")
     executorService: ExecutorService
   ) = C7EmbeddedInitialPullServiceTasksDeliveryBinding(
     externalTaskService = externalTaskService,

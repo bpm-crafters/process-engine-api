@@ -3,7 +3,7 @@ package dev.bpmcrafters.processengineapi.adapter.c7.remote.springboot.initial
 import dev.bpmcrafters.processengineapi.adapter.c7.remote.springboot.C7RemoteAdapterProperties
 import dev.bpmcrafters.processengineapi.adapter.c7.remote.springboot.initial.C7RemoteInitialPullServiceTasksDeliveryBinding.Companion.ORDER
 import dev.bpmcrafters.processengineapi.adapter.c7.remote.task.delivery.pull.RemotePullServiceTaskDelivery
-import dev.bpmcrafters.processengineapi.adapter.commons.task.SubscriptionRepository
+import dev.bpmcrafters.processengineapi.impl.task.SubscriptionRepository
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.camunda.bpm.engine.ExternalTaskService
 import org.springframework.boot.context.event.ApplicationStartedEvent
@@ -22,10 +22,10 @@ private val logger = KotlinLogging.logger {}
  */
 @Order(ORDER)
 open class C7RemoteInitialPullServiceTasksDeliveryBinding(
-  externalTaskService: ExternalTaskService,
-  subscriptionRepository: SubscriptionRepository,
-  c7AdapterProperties: C7RemoteAdapterProperties,
-  executorService: ExecutorService
+    externalTaskService: ExternalTaskService,
+    subscriptionRepository: SubscriptionRepository,
+    c7AdapterProperties: C7RemoteAdapterProperties,
+    executorService: ExecutorService
 ) {
   companion object {
     const val ORDER = Ordered.HIGHEST_PRECEDENCE + 1000
