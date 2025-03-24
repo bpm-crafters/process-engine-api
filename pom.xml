@@ -19,7 +19,7 @@
 
   <properties>
     <!-- COMMON GLOBAL -->
-    <spring-boot.version>3.4.3</spring-boot.version>
+    <spring-boot.version>3.4.4</spring-boot.version>
     <!-- TEST -->
     <mockito.version>5.4.0</mockito.version>
     <assertj.version>3.27.3</assertj.version>
