@@ -11,7 +11,7 @@
 
   <groupId>dev.bpm-crafters.process-engine-api</groupId>
   <artifactId>process-engine-api-root</artifactId>
-  <version>0.5.0</version>
+  <version>0.9.0</version>
   <name>POM: Project root</name>
   <description>Process Engine API</description>
   <url>https://github.com/bpm-crafters/process-engine-api/</url>
@@ -19,39 +19,21 @@
 
   <properties>
     <!-- COMMON GLOBAL -->
-    <spring-boot.version>3.4.3</spring-boot.version>
+    <spring-boot.version>3.4.4</spring-boot.version>
     <!-- TEST -->
     <mockito.version>5.4.0</mockito.version>
     <assertj.version>3.27.3</assertj.version>
     <junit5.version>5.11.3</junit5.version>
-    <jgiven.version>2.0.1</jgiven.version>
     <awaitility.version>4.3.0</awaitility.version>
-    <mockk.version>1.13.17</mockk.version>
   </properties>
 
   <modules>
     <module>api</module>
     <module>api-impl</module>
-    <module>bom</module>
-    <module>engine-adapter/adapter-testing</module>
-    <module>engine-adapter/camunda-platform-7-embedded-core</module>
-    <module>engine-adapter/camunda-platform-7-embedded-spring-boot-starter</module>
-    <module>engine-adapter/camunda-platform-7-remote-core</module>
-    <module>engine-adapter/camunda-platform-7-remote-spring-boot-starter</module>
-    <module>engine-adapter/camunda-platform-8-core</module>
-    <module>engine-adapter/camunda-platform-8-spring-boot-starter</module>
-    <!-- more modules see profiles -->
   </modules>
 
   <dependencyManagement>
     <dependencies>
-      <dependency>
-        <groupId>io.toolisticon.spring</groupId>
-        <artifactId>spring-boot-support-bom</artifactId>
-        <version>1.0.0</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
       <dependency>
         <groupId>org.assertj</groupId>
         <artifactId>assertj-core</artifactId>
@@ -61,16 +43,6 @@
         <groupId>org.mockito.kotlin</groupId>
         <artifactId>mockito-kotlin</artifactId>
         <version>${mockito.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.mockk</groupId>
-        <artifactId>mockk-jvm</artifactId>
-        <version>${mockk.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.tngtech.archunit</groupId>
-        <artifactId>archunit-junit5</artifactId>
-        <version>${archunit.version}</version>
       </dependency>
       <dependency>
         <groupId>org.slf4j</groupId>
@@ -130,7 +102,11 @@
       <artifactId>mockito-kotlin</artifactId>
       <scope>test</scope>
     </dependency>
-
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-simple</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>
@@ -162,20 +138,6 @@
       </plugin>
     </plugins>
   </build>
-
-  <profiles>
-    <profile>
-      <id>examples</id>
-      <activation>
-        <property>
-          <name>!skipExamples</name>
-        </property>
-      </activation>
-      <modules>
-        <module>examples</module>
-      </modules>
-    </profile>
-  </profiles>
 
   <licenses>
     <license>
