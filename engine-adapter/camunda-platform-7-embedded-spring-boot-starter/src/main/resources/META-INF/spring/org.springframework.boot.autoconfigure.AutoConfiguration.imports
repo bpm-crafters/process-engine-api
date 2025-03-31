@@ -1,7 +1,0 @@
-dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.C7EmbeddedAdapterAutoConfiguration
-dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.schedule.C7EmbeddedSchedulingAutoConfiguration
-dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.schedule.C7EmbeddedServiceTaskPullStrategyAutoConfiguration
-dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.schedule.C7EmbeddedUserTaskPullStrategyAutoConfiguration
-dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.event.C7EmbeddedEventDeliveryAutoConfiguration
-dev.bpmcrafters.processengineapi.adapter.c7.embedded.springboot.initial.C7EmbeddedInitialPullOnStartupAutoConfiguration
-

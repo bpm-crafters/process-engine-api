@@ -18,16 +18,6 @@ The library contains of the following Maven modules:
 
 - `process-engine-api`: pure API written in Kotlin (100% Java-compatible)
 - `process-engine-api-impl`: commons implementation, which are independent of the selected engine
-- `process-engine-api-adapter-camunda-platform-7-embedded-core`: core implementation classes for Camunda 7 Platform embedded without additional dependencies
-- `process-engine-api-adapter-camunda-platform-7-embedded-spring-boot-starter`: SpringBoot starter for usage of Camunda 7 embedded Platform adapter
-- `process-engine-api-adapter-camunda-platform-7-remote-core`: core implementation classes for Camunda 7 Platform remote without additional dependencies
-- `process-engine-api-adapter-camunda-platform-7-remote-spring-boot-starter`: SpringBoot starter for usage of Camunda 7 Platform remote adapter 
-- `process-engine-api-adapter-camunda-platform-8-core`: core implementation classes for Camunda 8 Platform without additional dependencies
-- `process-engine-api-adapter-camunda-platform-8-spring-boot-starter`: SpringBoot starter for usage of Camunda 8 Platform adapter
-- `examples/java-common-fixture`: A project that is used independent of selected process engine adapter 
-- `examples/java-c7`: Project with embedded C7 engine and a simple process scenario 
-- `examples/java-c7-remote`: Project with C7 as remote engine engine and a simple process scenario 
-- `examples/java-c8`: Project with configuration of SaaS C8 engine and a simple process scenario 
 
 ## API
 
@@ -44,29 +34,9 @@ The API consists of different parts independent of each other.
 The Task API provides functionality to deal with service tasks. The task handlers can be registered and get invoked when tasks 
 appear in the process engine. Since the Task API allows asynchronous processing, we provide a special API to complete tasks.
  
-## Usage
+If you want to try the API, please refer to one of the adapter implementations matching your infrastructure. For example:
 
-If you want to try the library with Camunda 7, please add the following dependency to your Maven `pom.xml`.
+- https://github.com/bpm-crafters/process-engine-adapters-camunda-7
+- https://github.com/bpm-crafters/process-engine-adapters-camunda-8
 
-```xml
-<dependency>
-  <groupId>dev.bpm-crafters.process-engine-api</groupId>
-  <artifactId>process-engine-api-adapter-camunda-platform-c7-embedded-spring-boot-starter</artifactId>
-</dependency>
-```
-or
-```xml
-<dependency>
-  <groupId>dev.bpm-crafters.process-engine-api</groupId>
-  <artifactId>process-engine-api-adapter-camunda-platform-c7-remote-spring-boot-starter</artifactId>
-</dependency>
-```
 
-If you want to try the library with Camunda 8, please add the following dependency to your Maven `pom.xml`.
-
-```xml
-<dependency>
-  <groupId>dev.bpm-crafters.process-engine-api</groupId>
-  <artifactId>process-engine-api-adapter-camunda-platform-c8-spring-boot-starter</artifactId>
-</dependency>
-```
