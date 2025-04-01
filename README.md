@@ -47,7 +47,7 @@ If you want to try the API, please refer to one of the adapter implementations m
 
 If you are using the Process Engine API to provide workers using Spring Boot, there is a library with improved support for it:
 
-- [Process Engine Worker](https://github.com/bpm-crafters/process-engine-worker)
+- [Process Engine Worker](https://github.com/bpm-crafters/process-engine-worker) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/dev.bpm-crafters.process-engine-worker/process-engine-worker-spring-boot-starter/badge.svg)](https://maven-badges.herokuapp.com/maven-central/dev.bpm-crafters.process-engine-worker/process-engine-worker-spring-boot-starter)
 
 ## Contribution and Development
 
