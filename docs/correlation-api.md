@@ -16,12 +16,12 @@ or supporting scoped variable mapping. In both cases, it is useful to use a valu
 
 In case the engine supports correlation value, you just need to define it in your BPMN. Here is an example of doing it in Camunda 8:
 
-![Correlation with Correlation Key in C8](../assets/img/correlation-correlation-key.png){ width="300" }
+![Correlation with Correlation Key in C8](assets/img/correlation-correlation-key.png){ width="300" }
 
 In case the correlation value is not supported directly, but scoped variable mappings are supported, you need to define a (local) variable
 in the scope of the message catch event and provide the correlation value to point to a process variable. Here is an example of doing it in Camunda Platform 7:
 
-![Correlation Variable Mapping in C7](../assets/img/correlation-variable-mapping.png){ width="300" }
+![Correlation Variable Mapping in C7](assets/img/correlation-variable-mapping.png){ width="300" }
 
 For this reason, the Message Correlation API supports the targeting based on a `Supplier<Correlation>`.
 
