@@ -38,8 +38,10 @@ appear in the process engine. Since the Task API allows asynchronous processing,
  
 If you want to try the API, please refer to one of the adapter implementations matching your infrastructure. For example:
 
-- [Camunda Platform 7 Adapter](https://github.com/bpm-crafters/process-engine-adapters-camunda-7)
-- [Camunda Platform 8 Adapter](https://github.com/bpm-crafters/process-engine-adapters-camunda-8)
+- [Camunda Platform 7 Adapter](https://github.com/bpm-crafters/process-engine-adapters-camunda-7) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/dev.bpm-crafters.process-engine-adapters/process-engine-adapter-camunda-platform-c7-bom/badge.svg)](https://maven-badges.herokuapp.com/maven-central/dev.bpm-crafters.process-engine-adapters-camunda-7/process-engine-adapter-camunda-platform-c7-bom)
+
+- [Camunda Platform 8 Adapter](https://github.com/bpm-crafters/process-engine-adapters-camunda-8) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/dev.bpm-crafters.process-engine-adapters/process-engine-adapter-camunda-platform-c8-bom/badge.svg)](https://maven-badges.herokuapp.com/maven-central/dev.bpm-crafters.process-engine-adapters-camunda-8/process-engine-adapter-camunda-platform-c7-bom)
+
 
 ## Worker
 
