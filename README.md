@@ -38,16 +38,19 @@ appear in the process engine. Since the Task API allows asynchronous processing,
  
 If you want to try the API, please refer to one of the adapter implementations matching your infrastructure. For example:
 
-- [Camunda Platform 7 Adapter](https://github.com/bpm-crafters/process-engine-adapters-camunda-7) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/dev.bpm-crafters.process-engine-adapters/process-engine-adapter-camunda-platform-c7-bom/badge.svg)](https://maven-badges.herokuapp.com/maven-central/dev.bpm-crafters.process-engine-adapters/process-engine-adapter-camunda-platform-c7-bom)
+- [Camunda Platform 7 Adapter](https://github.com/bpm-crafters/process-engine-adapters-camunda-7) [![Maven Central Version](https://img.shields.io/maven-central/v/dev.bpm-crafters.process-engine-adapters/process-engine-adapter-camunda-platform-c7-bom)](https://maven-badges.herokuapp.com/maven-central/dev.bpm-crafters.process-engine-adapters/process-engine-adapter-camunda-platform-c7-bom)
 
-- [Camunda Platform 8 Adapter](https://github.com/bpm-crafters/process-engine-adapters-camunda-8) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/dev.bpm-crafters.process-engine-adapters/process-engine-adapter-camunda-platform-c8-bom/badge.svg)](https://maven-badges.herokuapp.com/maven-central/dev.bpm-crafters.process-engine-adapters/process-engine-adapter-camunda-platform-c7-bom)
+
+- [Camunda Platform 8 Adapter](https://github.com/bpm-crafters/process-engine-adapters-camunda-8) [![Maven Central Version](https://img.shields.io/maven-central/v/dev.bpm-crafters.process-engine-adapters/process-engine-adapter-camunda-platform-c8-bom)](https://maven-badges.herokuapp.com/maven-central/dev.bpm-crafters.process-engine-adapters/process-engine-adapter-camunda-platform-c8-bom)
+
 
 
 ## Worker
 
 If you are using the Process Engine API to provide workers using Spring Boot, there is a library with improved support for it:
 
-- [Process Engine Worker](https://github.com/bpm-crafters/process-engine-worker) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/dev.bpm-crafters.process-engine-worker/process-engine-worker-spring-boot-starter/badge.svg)](https://maven-badges.herokuapp.com/maven-central/dev.bpm-crafters.process-engine-worker/process-engine-worker-spring-boot-starter)
+- [Process Engine Worker](https://github.com/bpm-crafters/process-engine-worker) [![Maven Central Version](https://img.shields.io/maven-central/v/dev.bpm-crafters.process-engine-worker/process-engine-worker-spring-boot-starter)](https://maven-badges.herokuapp.com/maven-central/dev.bpm-crafters.process-engine-worker/process-engine-worker-spring-boot-starter)
+
 
 ## Contribution and Development
 
