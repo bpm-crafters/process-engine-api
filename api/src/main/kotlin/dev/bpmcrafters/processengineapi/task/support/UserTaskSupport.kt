@@ -14,13 +14,15 @@ private val logger = KotlinLogging.logger {}
  *
  * @since 0.1.2
  */
-class UserTaskSupport {
+class UserTaskSupport(
+  private val assignmentDetector: AssignmentDetector = object: AssignmentDetector {}
+) : TaskHandler, TaskTerminationHandler {
 
   private lateinit var subscription: TaskSubscription
   private val payload: ConcurrentHashMap<String, Map<String, Any>> = ConcurrentHashMap()
   private val information: ConcurrentHashMap<String, TaskInformation> = ConcurrentHashMap()
-  private val compositeTaskHandler: CompositeTaskHandler = CompositeTaskHandler().withHandler(this::onTaskDeliveryInternal)
-  private val compositeTaskTerminationHandler: CompositeTaskTerminationHandler = CompositeTaskTerminationHandler().withHandler(this::onTaskRemovalInternal)
+  private val compositeTaskHandler: CompositeTaskHandler = CompositeTaskHandler().withHandler(this)
+  private val compositeTaskTerminationHandler: CompositeTaskTerminationHandler = CompositeTaskTerminationHandler().withHandler(this)
 
   init {
       logger.info { "PROCESS-ENGINE-API-014: Initialized user task support."   }
@@ -144,40 +146,59 @@ class UserTaskSupport {
    * @param taskInformation task information.
    * @param taskPayload payload of the task.
    */
-  fun onTaskDelivery(taskInformation: TaskInformation, taskPayload: Map<String, Any>) = compositeTaskHandler.accept(taskInformation, taskPayload)
+  fun onTaskDelivery(taskInformation: TaskInformation, taskPayload: Map<String, Any>) = compositeTaskHandler.process(taskInformation to taskPayload)
 
 
   /**
    * React on task deletion.
-   * @param taskId id of the task.
+   * @param taskInformation task information.
    */
-  fun onTaskRemoval(taskId: String) = compositeTaskTerminationHandler.accept(taskId)
+  fun onTaskRemoval(taskInformation: TaskInformation) = compositeTaskTerminationHandler.process(taskInformation)
 
+
+  /**
+   * Implement assignment detection.
+   */
+  override fun process(parameters: Pair<TaskInformation, Map<String, Any>>): Pair<TaskInformation, Map<String, Any>> {
+    val taskInformation = parameters.first
+    val taskPayload = parameters.second
+    // first modify the reason based on the assignment detector decision
+    return if (information.containsKey(taskInformation.taskId)) {
+        if (assignmentDetector.hasChangedAssignment(information[taskInformation.taskId]!! to (payload[taskInformation.taskId]?: mapOf()), parameters)) {
+          logger.debug { "PROCESS-ENGINE-API-012: Received assignment for known task ${taskInformation.taskId}." }
+          parameters.copy(first = parameters.first.withReason(TaskInformation.ASSIGN))
+        } else {
+          logger.debug { "PROCESS-ENGINE-API-012: Received update for known task ${taskInformation.taskId}." }
+          parameters
+        }
+    } else {
+      logger.debug { "PROCESS-ENGINE-API-013: Received new task $taskInformation" }
+      parameters
+    }.also {
+      // handle internally and store new values
+      accept(taskInformation.cleanupReason(), taskPayload)
+      logger.trace { "PROCESS-ENGINE-API-015: Payload for task ${taskInformation.taskId} is $payload" }
+    }
+  }
 
   /**
    * Store task information and payload on task arrival internally.
    * @param taskInformation task information.
    * @param taskPayload payload of the task.
    */
-  private fun onTaskDeliveryInternal(taskInformation: TaskInformation, taskPayload: Map<String, Any>) {
-    if (information.containsKey(taskInformation.taskId)) {
-      logger.debug { "PROCESS-ENGINE-API-012: Received update for known task ${taskInformation.taskId}." }
-      logger.trace { "PROCESS-ENGINE-API-013: Payload for task ${taskInformation.taskId} is $payload" }
-    } else {
-      logger.debug { "PROCESS-ENGINE-API-013: Received new task $taskInformation" }
-    }
+  override fun accept(taskInformation: TaskInformation, taskPayload: Map<String, Any>) {
     information[taskInformation.taskId] = taskInformation
     payload[taskInformation.taskId] = taskPayload
   }
 
   /**
    * Cleanup task information and payload internally.
-   * @param taskId id of the task.
+   * @param taskInformation task information.
    */
-  private fun onTaskRemovalInternal(taskId: String) {
-    information.remove(taskId)
-    payload.remove(taskId)
-    logger.trace { "PROCESS-ENGINE-API-014: Removed task $taskId" }
+  override fun accept(taskInformation: TaskInformation) {
+    information.remove(taskInformation.taskId)
+    payload.remove(taskInformation.taskId)
+    logger.debug { "PROCESS-ENGINE-API-014: Removed task ${taskInformation.taskId}" }
   }
 
 }
