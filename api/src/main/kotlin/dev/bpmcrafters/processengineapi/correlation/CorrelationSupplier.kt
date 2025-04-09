@@ -6,4 +6,4 @@ import java.util.function.Supplier
  * Correlation supplier.
  * @since 0.0.1
  */
-interface CorrelationSupplier : Supplier<Correlation>
+fun interface CorrelationSupplier : Supplier<Correlation>
