@@ -29,7 +29,7 @@ class CompositeTaskHandler(
   }
 
   override fun accept(taskInformation: TaskInformation, payload: Map<String, Any>) {
-    handlers.forEach { it.accept(taskInformation, payload) }
+    handlers.fold( Pair(taskInformation, payload)) { params, handler -> handler.process(params) }
   }
 
 }
