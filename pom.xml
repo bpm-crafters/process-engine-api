@@ -123,6 +123,7 @@
         <groupId>org.jetbrains.kotlin</groupId>
         <configuration>
           <jvmTarget>17</jvmTarget>
+          <args>-Xjvm-default=all-compatibility</args>
           <compilerPlugins>
             <plugin>spring</plugin>
             <plugin>no-arg</plugin>

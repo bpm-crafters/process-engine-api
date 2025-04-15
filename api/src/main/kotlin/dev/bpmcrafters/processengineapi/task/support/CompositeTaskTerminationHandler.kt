@@ -1,5 +1,6 @@
 package dev.bpmcrafters.processengineapi.task.support
 
+import dev.bpmcrafters.processengineapi.task.TaskInformation
 import dev.bpmcrafters.processengineapi.task.TaskTerminationHandler
 
 /**
@@ -28,7 +29,7 @@ class CompositeTaskTerminationHandler(
     this.handlers.add(handler)
   }
 
-  override fun accept(taskId: String) {
-    handlers.forEach { it.accept(taskId) }
+  override fun accept(taskInformation: TaskInformation) {
+    handlers.fold(taskInformation) { ti, handler -> handler.process(ti) }
   }
 }

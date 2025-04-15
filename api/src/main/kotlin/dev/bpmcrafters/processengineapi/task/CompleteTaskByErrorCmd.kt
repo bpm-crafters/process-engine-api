@@ -23,4 +23,27 @@ open class CompleteTaskByErrorCmd(
    * Payload supplier.
    */
   private val payloadSupplier: PayloadSupplier
-) : PayloadSupplier by payloadSupplier
+) : PayloadSupplier by payloadSupplier {
+  /**
+   * Creates the complete command for a given task id and payload.
+   * @param taskId id of the task to complete.
+   * @param errorCode error.
+   * @param errorMessage Optional details.
+   * @param payload payload to use.
+   */
+  constructor(taskId: String, errorCode: String, errorMessage: String?, payload: Map<String, Any>) : this(
+    taskId = taskId,
+    errorCode = errorCode,
+    errorMessage = errorMessage,
+    payloadSupplier = PayloadSupplier { payload }
+  )
+
+  /**
+   * Creates the complete command for a given task id without payload.
+   * @param taskId id of the task to complete.
+   * @param errorCode error.
+   * @param errorMessage Optional details.
+   */
+  constructor(taskId: String, errorCode: String, errorMessage: String?) : this(taskId, errorCode, errorMessage, mapOf() )
+
+}
