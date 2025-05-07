@@ -1,5 +1,8 @@
 name: Development branches
 
+permissions:
+  contents: read
+
 on:
   push:
     branches:
@@ -44,7 +47,7 @@ jobs:
           distribution: 'zulu'
           cache: maven
 
-      - name: Determine if Tests Should Be Skipped
+      - name: Determine if tests should be skipped
         id: check_skip_tests
         run: |
           if [[ "${{ github.ref }}" == "refs/heads/skip-tests" ]]; then

@@ -1,5 +1,8 @@
 name: Produces and releases artifacts
 
+permissions:
+  contents: read
+  
 on:
   push:
     branches:
@@ -41,10 +44,11 @@ jobs:
 
       # Publish release
       - name: Deploy a new release version to Maven Central
-        run: ./mvnw clean deploy -B -ntp -DskipTests -DskipExamples -Prelease -Dgpg.keyname="${{ secrets.GPG_KEYNAME }}" -Dgpg.passphrase="${{ secrets.GPG_PASSPHRASE }}"
+        run: ./mvnw clean deploy -B -ntp -DskipTests -DskipExamples -Prelease -Dgpg.keyname="${{ secrets.GPG_KEYNAME }}"
         env:
           OSS_CENTRAL_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
           OSS_CENTRAL_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
 
       - name: Upload coverage information
         uses: codecov/codecov-action@v5.4.2
