@@ -5,7 +5,7 @@
   <parent>
     <groupId>dev.bpm-crafters.maven.parent</groupId>
     <artifactId>maven-parent</artifactId>
-    <version>2025.04.3</version>
+    <version>2025.05.1</version>
     <relativePath/>
   </parent>
 
