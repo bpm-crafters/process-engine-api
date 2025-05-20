@@ -1,5 +1,8 @@
 package dev.bpmcrafters.processengineapi.task
 
+import java.time.OffsetDateTime
+import kotlin.reflect.KClass
+
 /**
  * Represents task information.
  * @since 0.0.1
@@ -39,5 +42,33 @@ data class TaskInformation(
    */
   fun cleanupReason(): TaskInformation {
     return this.copy(meta = meta.filterNot { it.key == REASON })
+  }
+
+  /**
+   * Returns a value of the meta referenced by the key as OffsetDateTime.
+   * @param key key of the meta value.
+   * @return value as `OffsetDateTime` or `null`.
+   */
+  fun getMetaValueAsOffsetDate(key: String): OffsetDateTime? {
+    val value = meta[key]
+    return if (value.isNullOrBlank()) {
+      null
+    } else {
+      OffsetDateTime.parse(value)
+    }
+  }
+
+  /**
+   * Returns a value of meta referenced by the key as Set<String>.
+   * @param key key of the meta value.
+   * @return value as `Set<String>` or `null`.
+   */
+  fun getMetaValueAsStringSet(key: String): Set<String>? {
+    val value = meta[key]
+    return if (value.isNullOrBlank()) {
+      null
+    } else {
+      value.split(",").toSet()
+    }
   }
 }
