@@ -14,14 +14,34 @@ data class StartProcessByDefinitionCmd(
   /**
    * Payload supplier to pass to the new process instance.
    */
-  val payloadSupplier: PayloadSupplier
+  val payloadSupplier: PayloadSupplier,
+  /**
+   * Restrictions applied for this message.
+   */
+  val restrictions: Map<String, String> = emptyMap()
 ) : StartProcessCommand, PayloadSupplier by payloadSupplier {
   /**
    * Constructs a start command with definition key and payload.
    * @param definitionKey process definition key.
    * @param payload payload to use.
+   * @param restrictions restrictions for the message.
    */
-  constructor(definitionKey: String, payload: Map<String, Any>) : this(definitionKey, PayloadSupplier { payload } )
+  constructor(definitionKey: String, payload: Map<String, Any>, restrictions: Map<String, String>) : this(
+    definitionKey = definitionKey,
+    payloadSupplier = PayloadSupplier { payload },
+    restrictions = restrictions
+  )
+  /**
+   * Constructs a start command with definition key and payload.
+   * @param definitionKey process definition key.
+   * @param payload payload to use.
+   */
+  constructor(definitionKey: String, payload: Map<String, Any>) : this(
+    definitionKey = definitionKey,
+    payloadSupplier = PayloadSupplier { payload } ,
+    restrictions = mapOf()
+  )
+
   /**
    * Constructs a start command with definition key and no payload.
    * @param definitionKey process definition key.
