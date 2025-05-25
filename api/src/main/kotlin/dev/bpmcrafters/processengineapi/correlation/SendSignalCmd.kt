@@ -7,9 +7,18 @@ import dev.bpmcrafters.processengineapi.PayloadSupplier
  * @since 0.0.1
  */
 data class SendSignalCmd(
+  /**
+   * Signal name.
+   */
   val signalName: String,
+  /**
+   * Payload supplier.
+   */
   val payloadSupplier: PayloadSupplier,
-  val restrictions: Map<String, String>
+  /**
+   * Restrictions of the signaling.
+   */
+  val restrictions: Map<String, String> = emptyMap()
 ) : PayloadSupplier by payloadSupplier {
   /**
    * Constructs a signal command by signal name, restrictions and given payload.
