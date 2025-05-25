@@ -46,7 +46,8 @@ class CorrelationUseCase {
         () -> Map.of(
           "message-delivered-value", payloadValue
         ),
-        () -> Correlation.withKey(correlationValue)
+        () -> Correlation.withKey(correlationValue),
+        Map.of(CommonRestrictions.TENANT_ID, "myTenant")
       )
     ).get();
   }

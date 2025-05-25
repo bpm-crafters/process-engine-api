@@ -19,7 +19,7 @@ public class Deployer {
     var info = deploymentApi.deploy(
       new DeployBundleCommand(
         resources.stream.map(resourceName -> NamedResource.fromClasspath(resourceName)).toList(),
-        null
+        null // tenant id
       )
     ).get();
     return info;

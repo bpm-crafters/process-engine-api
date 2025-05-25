@@ -23,7 +23,7 @@ class SignalUseCase {
         () -> Map.of(
           "signal-delivered-value", payloadValue
         ),
-        Map.of()
+        Map.of() // restrictions, for example tenant
       )
     ).get();
   }

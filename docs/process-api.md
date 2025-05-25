@@ -27,7 +27,8 @@ public class ProcessStarter {
     startProcessApi.startProcess(
       new StartProcessByDefinitionCmd(
         "MyExampleProcessKey",
-        () -> Map.of("order", order)
+        () -> Map.of("order", order),
+        Map.of()
       )
     ).get();
   }
@@ -38,7 +39,8 @@ public class ProcessStarter {
     startProcessApi.startProcess(
       new StartProcessByMessageCmd(
         "Msg_OrderReceived",
-        () -> Map.of("order", order)
+        () -> Map.of("order", order),
+        Map.of(CommonRestrictions.TENANT_ID, "myTenant")
       )
     ).get();
   }
@@ -56,7 +58,10 @@ public void startByMessage(Order order) {
     startProcessApi.startProcess(
       new StartProcessByMessageCmd(
         "Msg_OrderReceived",
-         () -> Map.of("order", order, CommonRestrictions.BUSINESS_KEY, "businessKey")
+         () -> Map.of(
+           "order", order, 
+           CommonRestrictions.BUSINESS_KEY, "businessKey"
+         )
      )
     ).get();
 }
