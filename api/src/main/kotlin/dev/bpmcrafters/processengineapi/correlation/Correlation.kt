@@ -6,11 +6,11 @@ package dev.bpmcrafters.processengineapi.correlation
  */
 data class Correlation private constructor(
   /**
-   * Correlation key.
+   * Correlation key. The value provided during correlation needs to match the value hold by the instance.
    */
   val correlationKey: String,
   /**
-   * If the engine is not supporting the correlation by key, defines the name of the local variable used to access correlation.
+   * If the engine is not supporting the correlation by key, defines the name of the local (to the receive task or event) variable holding the value of the key.
    */
   val correlationVariable: String = "correlationKey"
 ) {
