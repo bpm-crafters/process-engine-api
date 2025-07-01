@@ -2,7 +2,7 @@ name: Produces and releases artifacts
 
 permissions:
   contents: read
-  
+
 on:
   push:
     branches:
@@ -23,7 +23,7 @@ jobs:
           java-version: 17
           distribution: 'zulu'
           cache: maven
-          server-id: ossrh
+          server-id: central
           server-username: OSS_CENTRAL_USERNAME # env variable for Maven Central
           server-password: OSS_CENTRAL_PASSWORD # env variable for Maven Central
 
