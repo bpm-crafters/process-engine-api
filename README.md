@@ -3,7 +3,7 @@
 
 [![stable](https://img.shields.io/badge/lifecycle-STABLE-green.svg)](https://github.com/holisticon#open-source-lifecycle)
 [![Development branches](https://github.com/bpm-crafters/process-engine-api/actions/workflows/development.yml/badge.svg)](https://github.com/bpm-crafters/process-engine-api/actions/workflows/development.yml)
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/dev.bpm-crafters.process-engine-api/process-engine-api/badge.svg)](https://maven-badges.herokuapp.com/maven-central/dev.bpm-crafters.process-engine-api/process-engine-api)
+[![Maven Central Version](https://img.shields.io/maven-central/v/dev.bpm-crafters.process-engine-api/process-engine-api)](https://central.sonatype.com/namespace/dev.bpm-crafters.process-engine-api)
 
 ## Purpose of the library
 
@@ -22,6 +22,7 @@ The API consists of different parts independent of each other.
 - Signal API
 - Task Subscription API
 - User Task Completion API
+- User Task Modification API
 - Service Task Completion API
 
 ## Helpful Components
@@ -33,11 +34,7 @@ The API consists of different parts independent of each other.
 If you want to try the API, please refer to one of the adapter implementations matching your infrastructure. For example:
 
 - [Camunda Platform 7 Adapter](https://github.com/bpm-crafters/process-engine-adapters-camunda-7) [![Maven Central Version](https://img.shields.io/maven-central/v/dev.bpm-crafters.process-engine-adapters/process-engine-adapter-camunda-platform-c7-bom?color=#2cc657)](https://maven-badges.herokuapp.com/maven-central/dev.bpm-crafters.process-engine-adapters/process-engine-adapter-camunda-platform-c7-bom)
-
-
 - [Camunda Platform 8 Adapter](https://github.com/bpm-crafters/process-engine-adapters-camunda-8) [![Maven Central Version](https://img.shields.io/maven-central/v/dev.bpm-crafters.process-engine-adapters/process-engine-adapter-camunda-platform-c8-bom?color=#2cc657)](https://maven-badges.herokuapp.com/maven-central/dev.bpm-crafters.process-engine-adapters/process-engine-adapter-camunda-platform-c8-bom)
-
-
 
 ## Process Engine Worker
 
@@ -57,5 +54,4 @@ The library contains of the following Maven modules:
 
 If you are missing a feature or found a bug, please [open an issue](https://github.com/bpm-crafters/process-engine-api/issues) 
 on this project and provide a pull request. If you have general questions, make sure to stop by our [discussions](https://github.com/orgs/bpm-crafters/discussions).
-
 
