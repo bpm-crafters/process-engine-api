@@ -4,7 +4,7 @@ import dev.bpmcrafters.processengineapi.Empty
 import java.util.concurrent.Future
 
 /**
- * API for completion of service tasks.
+ * API for completion of user tasks.
  * @since 0.0.1
  */
 interface UserTaskCompletionApi {
