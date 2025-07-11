@@ -20,7 +20,7 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v4
         with:
-          java-version: 17
+          java-version-file: .java-version
           distribution: 'zulu'
           cache: maven
           server-id: central
