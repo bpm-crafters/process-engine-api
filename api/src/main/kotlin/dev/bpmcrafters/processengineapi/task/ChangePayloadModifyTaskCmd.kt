@@ -50,7 +50,7 @@ abstract class ChangePayloadModifyTaskCmd(
         val payloadKeysSupplier: Supplier<List<String>>
     ) : ChangePayloadModifyTaskCmd(
         taskId = taskId
-    ) {
+    ), Supplier<List<String>> by payloadKeysSupplier {
         /**
          * Constructs a delete payload command by task id and payload keys.
          * @param taskId id of the task to modify.

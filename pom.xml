@@ -5,7 +5,7 @@
   <parent>
     <groupId>dev.bpm-crafters.maven.parent</groupId>
     <artifactId>maven-parent</artifactId>
-    <version>2025.07.2</version>
+    <version>2025.07.3</version>
     <relativePath/>
   </parent>
 
@@ -23,7 +23,7 @@
     <!-- TEST -->
     <mockito.version>5.4.0</mockito.version>
     <assertj.version>3.27.3</assertj.version>
-    <junit5.version>5.11.3</junit5.version>
+    <junit5.version>5.13.3</junit5.version>
     <awaitility.version>4.3.0</awaitility.version>
   </properties>
 
