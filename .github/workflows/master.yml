@@ -2,7 +2,7 @@ name: Produces and releases artifacts
 
 permissions:
   contents: read
-  
+
 on:
   push:
     branches:
@@ -20,10 +20,10 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v4
         with:
-          java-version: 17
+          java-version-file: .java-version
           distribution: 'zulu'
           cache: maven
-          server-id: ossrh
+          server-id: central
           server-username: OSS_CENTRAL_USERNAME # env variable for Maven Central
           server-password: OSS_CENTRAL_PASSWORD # env variable for Maven Central
 
