@@ -36,7 +36,7 @@ If you want to try the API, please refer to one of the adapter implementations m
 - [Camunda Platform 7 Adapter](https://github.com/bpm-crafters/process-engine-adapters-camunda-7) [![Maven Central Version](https://img.shields.io/maven-central/v/dev.bpm-crafters.process-engine-adapters/process-engine-adapter-camunda-platform-c7-root)](https://central.sonatype.com/artifact/dev.bpm-crafters.process-engine-adapters/process-engine-adapter-camunda-platform-c7-root)
 
 - [Camunda Platform 8 Adapter](https://github.com/bpm-crafters/process-engine-adapters-camunda-8) [![Maven Central Version](https://img.shields.io/maven-central/v/dev.bpm-crafters.process-engine-adapters/process-engine-adapter-camunda-platform-c8-root)](https://central.sonatype.com/artifact/dev.bpm-crafters.process-engine-adapters/process-engine-adapter-camunda-platform-c8-root)
-- 
+
 ## Process Engine Worker
 
 If you are using the Process Engine API to provide workers using Spring Boot, there is a library with improved support for it:
