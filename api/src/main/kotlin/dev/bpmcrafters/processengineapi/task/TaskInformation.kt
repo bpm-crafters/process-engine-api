@@ -19,6 +19,7 @@ data class TaskInformation(
 ) {
   companion object {
     const val REASON = "reason"
+    const val RETRIES = "retries"
 
     const val CREATE = "create"
     const val ASSIGN = "assign"
@@ -71,4 +72,14 @@ data class TaskInformation(
       value.split(",").toSet()
     }
   }
+
+  /**
+   * Returns a value of the meta referenced by the key as Int.
+   * @param key key of the meta value.
+   * @return value as `Int` or `null`.
+   */
+  fun getMetaValueAsInt(key: String): Int? {
+    return meta[key]?.toInt()
+  }
+
 }
