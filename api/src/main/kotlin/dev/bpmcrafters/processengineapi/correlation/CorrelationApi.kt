@@ -3,7 +3,7 @@ package dev.bpmcrafters.processengineapi.correlation
 import dev.bpmcrafters.processengineapi.Empty
 import dev.bpmcrafters.processengineapi.MetaInfoAware
 import dev.bpmcrafters.processengineapi.RestrictionAware
-import java.util.concurrent.Future
+import java.util.concurrent.CompletableFuture
 
 /**
  * API to correlate messages with running process instances.
@@ -15,5 +15,5 @@ interface CorrelationApi : MetaInfoAware, RestrictionAware {
    * @param cmd command to correlate.
    * @return future to indicate completion.
    */
-  fun correlateMessage(cmd: CorrelateMessageCmd): Future<Empty>
+  fun correlateMessage(cmd: CorrelateMessageCmd): CompletableFuture<Empty>
 }

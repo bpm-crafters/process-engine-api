@@ -6,6 +6,7 @@ The Service Task API provides functionality to deal with service tasks. The task
 and get invoked when tasks appear in the process engine. Since the Task Subscription API allows asynchronous processing,
 we provide a special API to complete tasks.
 
+The FailTaskCmd also allows to pass the number of remaining retries and the backoff timeout for the next retry.
 
 ```java
 
@@ -43,6 +44,18 @@ public class PerformServiceTaskUseCase {
       )
     ).get();
   }
+
+  public void failWithRetry(String taskId, int retries, Duration retryBackoff, Exception e) {
+    taskCompletionApi.failTask(new FailTaskCmd(
+        taskId,
+        e.getMessage(),
+        null,
+        retryCount,
+        retryBackoff
+      )
+    ).get();
+  }
+  
 }
 
 ```

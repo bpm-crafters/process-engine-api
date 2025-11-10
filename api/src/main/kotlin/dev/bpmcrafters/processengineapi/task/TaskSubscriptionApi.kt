@@ -3,7 +3,7 @@ package dev.bpmcrafters.processengineapi.task
 import dev.bpmcrafters.processengineapi.Empty
 import dev.bpmcrafters.processengineapi.MetaInfoAware
 import dev.bpmcrafters.processengineapi.RestrictionAware
-import java.util.concurrent.Future
+import java.util.concurrent.CompletableFuture
 
 /**
  * Task API providing operations for subscription of the task handlers.
@@ -19,7 +19,7 @@ interface TaskSubscriptionApi : MetaInfoAware, RestrictionAware {
    * @param cmd command to subscribe.
    * @return future indicating the completion, containing the task subscription.
    */
-  fun subscribeForTask(cmd: SubscribeForTaskCmd): Future<TaskSubscription>
+  fun subscribeForTask(cmd: SubscribeForTaskCmd): CompletableFuture<TaskSubscription>
 
   /**
    * Cancels the subscription.
@@ -27,5 +27,5 @@ interface TaskSubscriptionApi : MetaInfoAware, RestrictionAware {
    * @param cmd command to unsubscribe.
    * @return future indicating the completion.
    */
-  fun unsubscribe(cmd: UnsubscribeFromTaskCmd): Future<Empty>
+  fun unsubscribe(cmd: UnsubscribeFromTaskCmd): CompletableFuture<Empty>
 }
