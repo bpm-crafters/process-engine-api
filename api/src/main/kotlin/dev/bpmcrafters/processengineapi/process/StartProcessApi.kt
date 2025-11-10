@@ -2,7 +2,7 @@ package dev.bpmcrafters.processengineapi.process
 
 import dev.bpmcrafters.processengineapi.MetaInfoAware
 import dev.bpmcrafters.processengineapi.RestrictionAware
-import java.util.concurrent.Future
+import java.util.concurrent.CompletableFuture
 
 /**
  * API to start new process instances.
@@ -14,5 +14,5 @@ interface StartProcessApi : MetaInfoAware, RestrictionAware {
    * @param cmd command describing the start.
    * @return future indicating completion and containing the reference to started instance.
    */
-  fun startProcess(cmd: StartProcessCommand): Future<ProcessInformation>
+  fun startProcess(cmd: StartProcessCommand): CompletableFuture<ProcessInformation>
 }

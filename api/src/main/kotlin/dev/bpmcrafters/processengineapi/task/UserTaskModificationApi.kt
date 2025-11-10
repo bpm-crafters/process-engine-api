@@ -1,7 +1,7 @@
 package dev.bpmcrafters.processengineapi.task
 
 import dev.bpmcrafters.processengineapi.Empty
-import java.util.concurrent.Future
+import java.util.concurrent.CompletableFuture
 
 /**
  * API for modification of user tasks.
@@ -14,5 +14,5 @@ interface UserTaskModificationApi {
    * @param cmd command describing the modification.
    * @return future indicating the completion.
    */
-  fun update(cmd: ModifyTaskCmd): Future<Empty>
+  fun update(cmd: ModifyTaskCmd): CompletableFuture<Empty>
 }
