@@ -7,7 +7,6 @@ import dev.bpmcrafters.processengineapi.task.TaskSubscriptionApi
 import dev.bpmcrafters.processengineapi.task.UnsubscribeFromTaskCmd
 import io.github.oshai.kotlinlogging.KotlinLogging
 import java.util.concurrent.CompletableFuture
-import java.util.concurrent.Future
 
 private val logger = KotlinLogging.logger {}
 
@@ -19,7 +18,7 @@ abstract class AbstractTaskSubscriptionApiImpl(
   private val subscriptionRepository: SubscriptionRepository
 ) : TaskSubscriptionApi {
 
-  override fun subscribeForTask(cmd: SubscribeForTaskCmd): Future<TaskSubscription> {
+  override fun subscribeForTask(cmd: SubscribeForTaskCmd): CompletableFuture<TaskSubscription> {
     return TaskSubscriptionHandle(
       taskDescriptionKey = cmd.taskDescriptionKey,
       payloadDescription = cmd.payloadDescription,
@@ -34,7 +33,7 @@ abstract class AbstractTaskSubscriptionApiImpl(
     }
   }
 
-  override fun unsubscribe(cmd: UnsubscribeFromTaskCmd): Future<Empty> {
+  override fun unsubscribe(cmd: UnsubscribeFromTaskCmd): CompletableFuture<Empty> {
     subscriptionRepository.deleteTaskSubscription(ensure(cmd.subscription))
     logger.info { "PROCESS-ENGINE-API-002: Un-registered new task subscription ${cmd.subscription}" }
     return CompletableFuture.completedFuture(Empty)

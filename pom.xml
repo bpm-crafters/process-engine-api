@@ -35,16 +35,6 @@
   <dependencyManagement>
     <dependencies>
       <dependency>
-        <groupId>org.assertj</groupId>
-        <artifactId>assertj-core</artifactId>
-        <version>${assertj.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.mockito.kotlin</groupId>
-        <artifactId>mockito-kotlin</artifactId>
-        <version>${mockito.version}</version>
-      </dependency>
-      <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-api</artifactId>
         <version>${slf4j.version}</version>
@@ -53,6 +43,16 @@
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-simple</artifactId>
         <version>${slf4j.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.assertj</groupId>
+        <artifactId>assertj-core</artifactId>
+        <version>${assertj.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.mockito.kotlin</groupId>
+        <artifactId>mockito-kotlin</artifactId>
+        <version>${mockito.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -122,7 +122,10 @@
         <groupId>org.jetbrains.kotlin</groupId>
         <configuration>
           <jvmTarget>17</jvmTarget>
-          <args>-Xjvm-default=all-compatibility</args>
+          <args>
+            <arg>-Xjvm-default=all-compatibility</arg>
+            <arg>-Xconsistent-data-class-copy-visibility</arg>
+          </args>
           <compilerPlugins>
             <plugin>spring</plugin>
             <plugin>no-arg</plugin>
