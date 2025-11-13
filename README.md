@@ -17,7 +17,8 @@ and tries to achieve to support migrations with minimal (or even no) code modifi
 The API consists of different parts independent of each other.
 
 - Deployment API
-- Process API
+- Decision Evaluation API
+- Start Process API
 - Correlation API
 - Signal API
 - Task Subscription API
