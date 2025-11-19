@@ -6,7 +6,7 @@ import java.util.concurrent.CompletableFuture
 
 /**
  * Evaluate Decision API.
- * @since 2.0
+ * @since 1.4
  */
 interface EvaluateDecisionApi : RestrictionAware, MetaInfoAware {
 
