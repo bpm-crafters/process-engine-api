@@ -2,6 +2,7 @@ package dev.bpmcrafters.processengineapi.decision
 
 /**
  * Represents result of decision evaluation.
+ *
  */
 sealed interface DecisionEvaluationResult {
   /**
@@ -19,4 +20,9 @@ sealed interface DecisionEvaluationResult {
     require(this is CollectDecisionEvaluationResult) { "Decision evaluation result must be a collect but it was ${this::class.simpleName}" }
     return this
   }
+
+  /**
+  *  Additional metadata on evaluation result.
+  */
+  val meta: Map<String, String>
 }

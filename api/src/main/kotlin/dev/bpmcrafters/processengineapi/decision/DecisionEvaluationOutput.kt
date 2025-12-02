@@ -2,15 +2,23 @@ package dev.bpmcrafters.processengineapi.decision
 
 /**
  * Decision output.
- * @since 2.0
+ * @since 1.4
  */
-data class DecisionEvaluationOutput(
+
+sealed interface DecisionEvaluationOutput {
   /**
-   * Keys are output names pointing to values.
+   * Returns as a single output value
    */
-  val values: Map<String, Any>,
+  fun single(): DecisionEvaluationSingleOutput {
+    require(this is DecisionEvaluationSingleOutput) { "Decision evaluation single output expected but it was ${this::class.simpleName}" }
+    return this
+  }
+
   /**
-   * Additional metadata about the task.
+   * Returns as multi-outputs with names
    */
-  val meta: Map<String, String> = emptyMap()
-)
+  fun many(): DecisionEvaluationMultiOutput {
+    require(this is DecisionEvaluationMultiOutput) { "Decision evaluation multi output expected but it was ${this::class.simpleName}" }
+    return this
+  }
+}

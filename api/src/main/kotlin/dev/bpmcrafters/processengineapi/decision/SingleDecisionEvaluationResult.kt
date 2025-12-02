@@ -5,5 +5,6 @@ package dev.bpmcrafters.processengineapi.decision
  * @since 2.0
  */
 data class SingleDecisionEvaluationResult(
-  val result: DecisionEvaluationOutput
+  val result: DecisionEvaluationOutput,
+  override val meta: Map<String, String> = emptyMap()
 ) : DecisionEvaluationResult

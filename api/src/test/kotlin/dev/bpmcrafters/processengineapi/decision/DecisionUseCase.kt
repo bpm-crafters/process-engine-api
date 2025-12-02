@@ -25,12 +25,64 @@ internal class DecisionUseCase(
     ).get()
       .single()
       .result
-      .values["discount"] as Double
+      .single().output as Double
   }
+
+  fun calculateCustomerOffer(customerStatus: CustomerStatus, year: Int): Offer {
+    return decisionApi.evaluateDecision(
+      DecisionByRefEvaluationCommand(
+        decisionRef = "customerOffer",
+        payloadSupplier = PayloadSupplier {
+          mapOf<String, Any>(
+            "customerStatus" to customerStatus,
+            "year" to year
+          )
+        },
+        restrictionSupplier = Supplier {
+          mapOf<String, String>(CommonRestrictions.TENANT_ID to "tenant-1")
+        }
+      )
+    ).get()
+      .single()
+      .result
+      .many()
+      .outputs
+      .let { Offer (it["id"] as Integer, it["name"] as String) }
+  }
+
+  fun calculateCustomerOffers(customerStatus: CustomerStatus, year: Int): List<Offer> {
+    return decisionApi.evaluateDecision(
+      DecisionByRefEvaluationCommand(
+        decisionRef = "customerOffers",
+        payloadSupplier = PayloadSupplier {
+          mapOf<String, Any>(
+            "customerStatus" to customerStatus,
+            "year" to year
+          )
+        },
+        restrictionSupplier = Supplier {
+          mapOf<String, String>(CommonRestrictions.TENANT_ID to "tenant-1")
+        }
+      )
+    ).get()
+      .collect()
+      .result
+      .map {
+        it.many()
+          .outputs
+          .let { Offer (it["id"] as Integer, it["name"] as String) }
+      }
+  }
+
 
   enum class CustomerStatus {
     SILVER,
     GOLD,
     PLATINUM
   }
+
+  data class Offer (
+      val id: Integer,
+      val name: String
+    )
 }
