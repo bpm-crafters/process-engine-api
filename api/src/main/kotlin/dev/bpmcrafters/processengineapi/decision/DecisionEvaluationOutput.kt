@@ -5,20 +5,13 @@ package dev.bpmcrafters.processengineapi.decision
  * @since 1.4
  */
 
-sealed interface DecisionEvaluationOutput {
+interface DecisionEvaluationOutput {
   /**
    * Returns as a single output value
    */
-  fun single(): DecisionEvaluationSingleOutput {
-    require(this is DecisionEvaluationSingleOutput) { "Decision evaluation single output expected but it was ${this::class.simpleName}" }
-    return this
-  }
-
+  fun <T> withSingleOutput(): T?
   /**
    * Returns as multi-outputs with names
    */
-  fun many(): DecisionEvaluationMultiOutput {
-    require(this is DecisionEvaluationMultiOutput) { "Decision evaluation multi output expected but it was ${this::class.simpleName}" }
-    return this
-  }
+  fun withMultipleOutputs(): Map<String, Any?>?
 }

@@ -1,28 +1,22 @@
 package dev.bpmcrafters.processengineapi.decision
 
 /**
- * Represents result of decision evaluation.
+ * Represents the result of decision evaluation.
  *
  */
-sealed interface DecisionEvaluationResult {
+interface DecisionEvaluationResult{
   /**
-   * Returns the result as single.
+   * Returns the result excepted to be a single value
    */
-  fun single(): SingleDecisionEvaluationResult {
-    require(this is SingleDecisionEvaluationResult) { "Decision evaluation result must be a single but it was ${this::class.simpleName}" }
-    return this
-  }
+  fun asSingleValue(): DecisionEvaluationOutput
 
   /**
-   * Returns the result as collect.
+   * Returns the result expected to be s collection of values
    */
-  fun collect(): CollectDecisionEvaluationResult {
-    require(this is CollectDecisionEvaluationResult) { "Decision evaluation result must be a collect but it was ${this::class.simpleName}" }
-    return this
-  }
+  fun asCollectValues(): List<DecisionEvaluationOutput>
 
   /**
   *  Additional metadata on evaluation result.
   */
-  val meta: Map<String, String>
+  fun meta(): Map<String, String>
 }

@@ -23,9 +23,9 @@ internal class DecisionUseCase(
         }
       )
     ).get()
-      .single()
-      .result
-      .single().output as Double
+      .asSingleValue()
+      .withSingleOutput<Double>()
+      ?: NO_DISCOUNT
   }
 
   fun calculateCustomerOffer(customerStatus: CustomerStatus, year: Int): Offer {
@@ -43,11 +43,10 @@ internal class DecisionUseCase(
         }
       )
     ).get()
-      .single()
-      .result
-      .many()
-      .outputs
-      .let { Offer (it["id"] as Integer, it["name"] as String) }
+      .asSingleValue()
+      .withMultipleOutputs()
+      ?.let { Offer (it["id"] as Integer, it["name"] as String) }
+      ?: throw IllegalStateException("No offer found")
   }
 
   fun calculateCustomerOffers(customerStatus: CustomerStatus, year: Int): List<Offer> {
@@ -65,12 +64,10 @@ internal class DecisionUseCase(
         }
       )
     ).get()
-      .collect()
-      .result
-      .map {
-        it.many()
-          .outputs
-          .let { Offer (it["id"] as Integer, it["name"] as String) }
+      .asCollectValues()
+      .mapNotNull { value ->
+        value.withMultipleOutputs()
+          ?.let { Offer (it["id"] as Integer, it["name"] as String) }
       }
   }
 
@@ -85,4 +82,8 @@ internal class DecisionUseCase(
       val id: Integer,
       val name: String
     )
+
+  companion object {
+    const val NO_DISCOUNT = 0.0
+  }
 }
