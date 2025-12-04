@@ -23,7 +23,8 @@ internal class DecisionUseCase(
         )
       )
     ).get()
-      .asSingle()?.asType<Double>()
+      .asSingle()
+      ?.asType<Double>()
       ?: NO_DISCOUNT
   }
 
@@ -40,7 +41,9 @@ internal class DecisionUseCase(
         )
       )
     ).get()
-      .asSingle()?.asMap()?.let { Offer(it["id"] as Integer, it["name"] as String) }
+      .asSingle()
+      ?.asMap()
+      ?.let { Offer(it["id"] as Integer, it["name"] as String) }
       ?: throw IllegalStateException("No offer found")
   }
 
@@ -58,7 +61,10 @@ internal class DecisionUseCase(
           )
       )
     ).get()
-      .asList().map { result -> result.asMap().let { Offer(it["id"] as Integer, it["name"] as String) } }
+      .asList()
+      .map { result -> result
+        .asMap()
+        .let { Offer(it["id"] as Integer, it["name"] as String) } }
   }
 
   enum class CustomerStatus {

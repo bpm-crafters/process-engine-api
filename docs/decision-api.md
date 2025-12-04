@@ -3,15 +3,10 @@ title: Decision Evaluation API
 ---
 
 The Decision Evaluation API provides functionality to evaluate a DMN decision. The API returns a generic
-`DecisionEvaluationResult` which can be cast to a single or collect result using the corresponding method:
+`DecisionEvaluationResult` which can be cast to a single or list result using the corresponding method:
 
-- `single()` → returns `SingleDecisionEvaluationResult`
-- `collect()` → returns `CollectDecisionEvaluationResult`
-
-Each of those wraps a `DecisionEvaluationOutput` value which can be either:
-
-- `DecisionEvaluationSingleOutput` for context-less single values (access via `single().getOutput()`), or
-- `DecisionEvaluationMultiOutput` for named/context values (access via `many().getOutputs()`).
+- `asSingle()` → returns `DecisionEvaluationOutput`
+- `asList()` → returns `List<DecisionEvaluationOutput>`
 
 Below are example snippets in Java showing the new API usage.
 
@@ -37,10 +32,8 @@ class DecisionUseCase {
         Map.of(CommonRestrictions.TENANT_ID, "myTenant")
       )
     ).get()                 // DecisionEvaluationResult
-     .single()              // SingleDecisionEvaluationResult
-     .getResult()           // DecisionEvaluationOutput
-     .single()              // DecisionEvaluationSingleOutput
-     .getOutput();          // actual value, e.g. Double
+     .asSingle()            // DecisionEvaluationOutput
+     .asType(Double.class); // convert to double
   }
 
   /**
@@ -58,11 +51,9 @@ class DecisionUseCase {
         Map.of(CommonRestrictions.TENANT_ID, "myTenant")
       )
     ).get()                 // DecisionEvaluationResult
-     .single()              // SingleDecisionEvaluationResult
-     .getResult()           // DecisionEvaluationOutput
-     .many()                // DecisionEvaluationMultiOutput
-     .getOutputs();         // Map<String, Object>
-
+     .asSingle()            // DecisionEvaluationOutput
+     .asMap();              // Map<String, Object>
+     
     return new Offer((Integer) outputs.get("id"), (String) outputs.get("name"));
   }
 
@@ -73,18 +64,17 @@ class DecisionUseCase {
     return evaluateDecisionApi.evaluateDecision(
       new DecisionByRefEvaluationCommand(
         "customerOffers",
-        () -> Map.of(
+        Map.of(
           "customerStatus", customerStatus,
           "registrationYear", year
         ),
         Map.of(CommonRestrictions.TENANT_ID, "myTenant")
       )
     ).get()                 // DecisionEvaluationResult
-     .collect()             // CollectDecisionEvaluationResult
-     .getResult()           // List<DecisionEvaluationOutput>
+     .asList()              // List<DecisionEvaluationOutput>
      .stream()
      .map(o -> {
-       Map<String, Object> outputs = o.many().getOutputs();
+       Map<String, Object> outputs = o.asMap();
        return new Offer((Integer) outputs.get("id"), (String) outputs.get("name"));
      })
      .toList();
