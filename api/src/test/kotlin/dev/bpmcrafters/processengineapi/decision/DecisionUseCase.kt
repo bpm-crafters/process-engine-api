@@ -4,6 +4,7 @@ import dev.bpmcrafters.processengineapi.CommonRestrictions
 
 /**
  * Example use cae to demonstrate the usage of the API.
+ * @since 1.4
  */
 internal class DecisionUseCase(
   private val decisionApi: EvaluateDecisionApi
