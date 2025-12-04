@@ -1,9 +1,10 @@
 package dev.bpmcrafters.processengineapi.decision
 
 import dev.bpmcrafters.processengineapi.CommonRestrictions
-import dev.bpmcrafters.processengineapi.PayloadSupplier
-import java.util.function.Supplier
 
+/**
+ * Example use cae to demonstrate the usage of the API.
+ */
 internal class DecisionUseCase(
   private val decisionApi: EvaluateDecisionApi
 ) {
@@ -12,19 +13,16 @@ internal class DecisionUseCase(
     return decisionApi.evaluateDecision(
       DecisionByRefEvaluationCommand(
         decisionRef = "customerDiscount",
-        payloadSupplier = PayloadSupplier {
-          mapOf<String, Any>(
-            "customerStatus" to customerStatus,
-            "year" to year
-          )
-        },
-        restrictionSupplier = Supplier {
-          mapOf<String, String>(CommonRestrictions.TENANT_ID to "tenant-1")
-        }
+        payload = mapOf(
+          "customerStatus" to customerStatus,
+          "year" to year
+        ),
+        restrictions = mapOf(
+          CommonRestrictions.TENANT_ID to "tenant-1"
+        )
       )
     ).get()
-      .asSingleValue()
-      .withSingleOutput<Double>()
+      .asSingle()?.asType<Double>()
       ?: NO_DISCOUNT
   }
 
@@ -32,20 +30,16 @@ internal class DecisionUseCase(
     return decisionApi.evaluateDecision(
       DecisionByRefEvaluationCommand(
         decisionRef = "customerOffer",
-        payloadSupplier = PayloadSupplier {
-          mapOf<String, Any>(
-            "customerStatus" to customerStatus,
-            "year" to year
-          )
-        },
-        restrictionSupplier = Supplier {
-          mapOf<String, String>(CommonRestrictions.TENANT_ID to "tenant-1")
-        }
+        payload = mapOf(
+          "customerStatus" to customerStatus,
+          "year" to year
+        ),
+        restrictions = mapOf(
+          CommonRestrictions.TENANT_ID to "tenant-1"
+        )
       )
     ).get()
-      .asSingleValue()
-      .withMultipleOutputs()
-      ?.let { Offer (it["id"] as Integer, it["name"] as String) }
+      .asSingle()?.asMap()?.let { Offer(it["id"] as Integer, it["name"] as String) }
       ?: throw IllegalStateException("No offer found")
   }
 
@@ -53,24 +47,18 @@ internal class DecisionUseCase(
     return decisionApi.evaluateDecision(
       DecisionByRefEvaluationCommand(
         decisionRef = "customerOffers",
-        payloadSupplier = PayloadSupplier {
-          mapOf<String, Any>(
-            "customerStatus" to customerStatus,
-            "year" to year
+        payload = mapOf(
+          "customerStatus" to customerStatus,
+          "year" to year
+        ),
+        restrictions =
+          mapOf(
+            CommonRestrictions.TENANT_ID to "tenant-1"
           )
-        },
-        restrictionSupplier = Supplier {
-          mapOf<String, String>(CommonRestrictions.TENANT_ID to "tenant-1")
-        }
       )
     ).get()
-      .asCollectValues()
-      .mapNotNull { value ->
-        value.withMultipleOutputs()
-          ?.let { Offer (it["id"] as Integer, it["name"] as String) }
-      }
+      .asList().map { result -> result.asMap().let { Offer(it["id"] as Integer, it["name"] as String) } }
   }
-
 
   enum class CustomerStatus {
     SILVER,
@@ -78,10 +66,10 @@ internal class DecisionUseCase(
     PLATINUM
   }
 
-  data class Offer (
-      val id: Integer,
-      val name: String
-    )
+  data class Offer(
+    val id: Integer,
+    val name: String
+  )
 
   companion object {
     const val NO_DISCOUNT = 0.0

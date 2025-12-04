@@ -13,8 +13,7 @@ interface EvaluateDecisionApi : RestrictionAware, MetaInfoAware {
   /**
    * Evaluate decision.
    * @param command a command containing parameter for decision evaluation.
-   * @return decision evaluation result. Depending on the hit policy might either [SingleDecisionEvaluationResult]
-   * or [CollectDecisionEvaluationResult].
+   * @return decision evaluation result.
    */
   fun evaluateDecision(command: DecisionEvaluationCommand): CompletableFuture<DecisionEvaluationResult>
 }
