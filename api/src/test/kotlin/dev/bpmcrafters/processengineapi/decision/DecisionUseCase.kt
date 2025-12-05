@@ -24,7 +24,7 @@ internal class DecisionUseCase(
       )
     ).get()
       .asSingle()
-      ?.asType<Double>()
+      ?.asType(Double::class.java)
       ?: NO_DISCOUNT
   }
 
@@ -62,9 +62,9 @@ internal class DecisionUseCase(
       )
     ).get()
       .asList()
-      .map { result -> result
+      .mapNotNull { result -> result
         .asMap()
-        .let { Offer(it["id"] as Integer, it["name"] as String) } }
+        ?.let { Offer(it["id"] as Integer, it["name"] as String) } }
   }
 
   enum class CustomerStatus {
