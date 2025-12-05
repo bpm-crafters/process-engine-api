@@ -5,7 +5,7 @@ import java.util.function.Supplier
 
 /**
  * Command to evaluate decision by provided reference.
- * @since 2.0
+ * @since 1.4
  */
 data class DecisionByRefEvaluationCommand(
   /**
@@ -20,4 +20,18 @@ data class DecisionByRefEvaluationCommand(
    * Restrictions supplier to pass to this evaluation.
    */
   val restrictionSupplier: Supplier<Map<String, String>>
-) : DecisionEvaluationCommand, PayloadSupplier by payloadSupplier
+) : DecisionEvaluationCommand, PayloadSupplier by payloadSupplier {
+
+  /**
+   * Constructs an evaluate command.
+   * @param decisionRef decision reference.
+   * @param payload payload to use.
+   * @param restrictions restrictions for the message.
+   */
+  constructor(decisionRef: String, payload: Map<String, Any>, restrictions: Map<String, String>) : this(
+    decisionRef = decisionRef,
+    payloadSupplier = PayloadSupplier { payload },
+    restrictionSupplier = { restrictions }
+  )
+
+}
