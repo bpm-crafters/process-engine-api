@@ -10,7 +10,7 @@ interface DecisionEvaluationResult {
    *
    * This is because the hit policy defined it to be single (single result or result of aggregation).
    */
-  fun asSingle(): DecisionEvaluationOutput?
+  fun asSingle(): DecisionEvaluationOutput
 
   /**
    * Returns the result expected to be a collection of values.

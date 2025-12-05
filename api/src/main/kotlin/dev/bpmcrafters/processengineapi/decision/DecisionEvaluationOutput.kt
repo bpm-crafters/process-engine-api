@@ -11,14 +11,14 @@ interface DecisionEvaluationOutput {
   /**
    * Returns as a single output value converted to a type.
    * This conversion is an attempt to convert the output to the given type and might fail, if the type is incompatible.
-   * @param T type of the output.
+   * @param type class which the output will be cast to
    */
-  fun <T> asType(): T?
+  fun <T: Any> asType(type: Class<T>): T?
 
   /**
-   * Returns as multi-output map, keyed by output name. If names are not available, use digits as fallbacks.
+   * Returns as multi-output map, keyed by output name. Attempt on converting single output value into Map would result in a runtime exception
    */
-  fun asMap(): Map<String, Any?>
+  fun asMap(): Map<String, Any?>?
 
   /**
    *  Additional metadata on evaluation output, if supported by the engine.
