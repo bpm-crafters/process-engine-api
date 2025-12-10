@@ -4,6 +4,6 @@ import dev.bpmcrafters.processengineapi.PayloadSupplier
 
 /**
  * Interface for decision evaluation commands.
- * @since 2.0
+ * @since 1.4
  */
 interface DecisionEvaluationCommand : PayloadSupplier
