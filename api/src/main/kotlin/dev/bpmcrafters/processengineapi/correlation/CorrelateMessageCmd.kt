@@ -1,10 +1,9 @@
 package dev.bpmcrafters.processengineapi.correlation
 
-import dev.bpmcrafters.processengineapi.CommonRestrictions
 import dev.bpmcrafters.processengineapi.PayloadSupplier
 
 /**
- * Command to correlate a message with running process instance.
+ * Command to correlate a message with a running process instance.
  * @since 0.0.1
  */
 data class CorrelateMessageCmd(
