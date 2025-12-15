@@ -1,6 +1,5 @@
 # Process Engine API
 
-
 [![stable](https://img.shields.io/badge/lifecycle-STABLE-green.svg)](https://github.com/holisticon#open-source-lifecycle)
 [![Development branches](https://github.com/bpm-crafters/process-engine-api/actions/workflows/development.yml/badge.svg)](https://github.com/bpm-crafters/process-engine-api/actions/workflows/development.yml)
 [![Maven Central Version](https://img.shields.io/maven-central/v/dev.bpm-crafters.process-engine-api/process-engine-api)](https://central.sonatype.com/artifact/dev.bpm-crafters.process-engine-api/process-engine-api)
@@ -38,6 +37,8 @@ If you want to try the API, please refer to one of the adapter implementations m
 
 - [Camunda Platform 8 Adapter](https://github.com/bpm-crafters/process-engine-adapters-camunda-8) [![Maven Central Version](https://img.shields.io/maven-central/v/dev.bpm-crafters.process-engine-adapters/process-engine-adapter-camunda-platform-c8-root)](https://central.sonatype.com/artifact/dev.bpm-crafters.process-engine-adapters/process-engine-adapter-camunda-platform-c8-root)
 
+- [CIB-Seven Adapter](https://github.com/bpm-crafters/process-engine-adapters-cib-seven) [![Maven Central Version](https://img.shields.io/maven-central/v/dev.bpm-crafters.process-engine-adapters/process-engine-adapter-cib-seven-root)](https://central.sonatype.org/artifact/dev.bpm-crafters.process-engine-adapters/process-engine-adapter-cib-seven-root)
+
 ## Process Engine Worker
 
 If you are using the Process Engine API to provide workers using Spring Boot, there is a library with improved support for it:
@@ -45,6 +46,9 @@ If you are using the Process Engine API to provide workers using Spring Boot, th
 - [Process Engine Worker](https://github.com/bpm-crafters/process-engine-worker) [![Maven Central Version](https://img.shields.io/maven-central/v/dev.bpm-crafters.process-engine-worker/process-engine-worker-root)
 ](https://central.sonatype.com/artifact/dev.bpm-crafters.process-engine-worker/process-engine-worker-root)
 
+## Documentation
+
+The API documentation can be found [here](https://bpm-crafters.github.io/process-engine-api/) or in its respective [repository](https://github.com/bpm-crafters/process-engine-api-docs).
 
 ## Anatomy
 
@@ -57,4 +61,3 @@ The library contains of the following Maven modules:
 
 If you are missing a feature or found a bug, please [open an issue](https://github.com/bpm-crafters/process-engine-api/issues) 
 on this project and provide a pull request. If you have general questions, make sure to stop by our [discussions](https://github.com/orgs/bpm-crafters/discussions).
-

@@ -1,7 +1,6 @@
 package dev.bpmcrafters.processengineapi.task
 
 import java.time.OffsetDateTime
-import kotlin.reflect.KClass
 
 /**
  * Represents task information.
