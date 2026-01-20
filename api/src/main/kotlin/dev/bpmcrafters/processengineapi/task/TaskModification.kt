@@ -40,7 +40,7 @@ class TaskModification(private val taskId: String) {
    * @param payload new payload.
    * @return builder instance.
    */
-  fun updatePayload(payload: Map<String, Any>) = this.apply {
+  fun updatePayload(payload: Map<String, Any?>) = this.apply {
     commands += UpdatePayloadTaskCmd(taskId, payload)
   }
 

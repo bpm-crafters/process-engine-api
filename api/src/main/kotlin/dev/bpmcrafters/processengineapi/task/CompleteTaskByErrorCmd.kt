@@ -31,7 +31,7 @@ open class CompleteTaskByErrorCmd(
    * @param errorMessage Optional details.
    * @param payload payload to use.
    */
-  constructor(taskId: String, errorCode: String, errorMessage: String?, payload: Map<String, Any>) : this(
+  constructor(taskId: String, errorCode: String, errorMessage: String?, payload: Map<String, Any?>) : this(
     taskId = taskId,
     errorCode = errorCode,
     errorMessage = errorMessage,

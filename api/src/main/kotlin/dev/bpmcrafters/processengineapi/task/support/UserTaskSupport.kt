@@ -19,7 +19,7 @@ class UserTaskSupport(
 ) : TaskHandler, TaskTerminationHandler {
 
   private lateinit var subscription: TaskSubscription
-  private val payload: ConcurrentHashMap<String, Map<String, Any>> = ConcurrentHashMap()
+  private val payload: ConcurrentHashMap<String, Map<String, Any?>> = ConcurrentHashMap()
   private val information: ConcurrentHashMap<String, TaskInformation> = ConcurrentHashMap()
   private val compositeTaskHandler: CompositeTaskHandler = CompositeTaskHandler().withHandler(this)
   private val compositeTaskTerminationHandler: CompositeTaskTerminationHandler = CompositeTaskTerminationHandler().withHandler(this)
@@ -35,7 +35,7 @@ class UserTaskSupport(
    * @throws IllegalArgumentException if no task with given id is found.
    */
   @Throws(IllegalArgumentException::class)
-  fun getPayload(taskId: String): Map<String, Any> {
+  fun getPayload(taskId: String): Map<String, Any?> {
     return requireNotNull(payload[taskId]) { "Could not find any variables for task $taskId." }
   }
 
@@ -146,7 +146,7 @@ class UserTaskSupport(
    * @param taskInformation task information.
    * @param taskPayload payload of the task.
    */
-  fun onTaskDelivery(taskInformation: TaskInformation, taskPayload: Map<String, Any>) = compositeTaskHandler.process(taskInformation to taskPayload)
+  fun onTaskDelivery(taskInformation: TaskInformation, taskPayload: Map<String, Any?>) = compositeTaskHandler.process(taskInformation to taskPayload)
 
 
   /**
@@ -159,7 +159,7 @@ class UserTaskSupport(
   /**
    * Implement assignment detection.
    */
-  override fun process(parameters: Pair<TaskInformation, Map<String, Any>>): Pair<TaskInformation, Map<String, Any>> {
+  override fun process(parameters: Pair<TaskInformation, Map<String, Any?>>): Pair<TaskInformation, Map<String, Any?>> {
     val taskInformation = parameters.first
     val taskPayload = parameters.second
     // first modify the reason based on the assignment detector decision
@@ -186,7 +186,7 @@ class UserTaskSupport(
    * @param taskInformation task information.
    * @param taskPayload payload of the task.
    */
-  override fun accept(taskInformation: TaskInformation, taskPayload: Map<String, Any>) {
+  override fun accept(taskInformation: TaskInformation, taskPayload: Map<String, Any?>) {
     information[taskInformation.taskId] = taskInformation
     payload[taskInformation.taskId] = taskPayload
   }
