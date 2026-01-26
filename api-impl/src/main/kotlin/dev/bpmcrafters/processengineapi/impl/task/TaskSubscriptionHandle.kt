@@ -31,7 +31,7 @@ data class TaskSubscriptionHandle(
    */
   val taskDescriptionKey: String?,
   /**
-   * Action handler to execute, if the task is delivered.
+   * Action handler to execute if the task is delivered.
    */
   val action: TaskHandler,
   /**
