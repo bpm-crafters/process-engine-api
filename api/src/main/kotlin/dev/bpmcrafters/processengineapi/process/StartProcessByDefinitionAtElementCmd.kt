@@ -31,7 +31,7 @@ data class StartProcessByDefinitionAtElementCmd(
    * @param payload payload to use.
    * @param restrictions restrictions for the start command.
    */
-  constructor(definitionKey: String, elementId: String, payload: Map<String, Any>, restrictions: Map<String, String>) : this(
+  constructor(definitionKey: String, elementId: String, payload: Map<String, Any?>, restrictions: Map<String, String>) : this(
     definitionKey = definitionKey,
     elementId = elementId,
     payloadSupplier = PayloadSupplier { payload },
@@ -43,7 +43,7 @@ data class StartProcessByDefinitionAtElementCmd(
    * @param elementId element ID to start the process at.
    * @param payload payload to use.
    */
-  constructor(definitionKey: String, elementId: String, payload: Map<String, Any>) : this(
+  constructor(definitionKey: String, elementId: String, payload: Map<String, Any?>) : this(
     definitionKey = definitionKey,
     elementId = elementId,
     payloadSupplier = PayloadSupplier { payload } ,

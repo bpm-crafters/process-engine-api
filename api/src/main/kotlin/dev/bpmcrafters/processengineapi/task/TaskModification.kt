@@ -5,7 +5,7 @@ import dev.bpmcrafters.processengineapi.task.ChangePayloadModifyTaskCmd.*
 import java.util.function.Supplier
 
 /**
- * Fluent builder to create composite task modifications..
+ * Fluent builder to create composite task modifications.
  * @since 1.3
  */
 class TaskModification(private val taskId: String) {
