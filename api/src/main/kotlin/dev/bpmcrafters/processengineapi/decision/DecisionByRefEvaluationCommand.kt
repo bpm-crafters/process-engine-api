@@ -28,7 +28,7 @@ data class DecisionByRefEvaluationCommand(
    * @param payload payload to use.
    * @param restrictions restrictions for the message.
    */
-  constructor(decisionRef: String, payload: Map<String, Any>, restrictions: Map<String, String>) : this(
+  constructor(decisionRef: String, payload: Map<String, Any?>, restrictions: Map<String, String>) : this(
     decisionRef = decisionRef,
     payloadSupplier = PayloadSupplier { payload },
     restrictionSupplier = { restrictions }

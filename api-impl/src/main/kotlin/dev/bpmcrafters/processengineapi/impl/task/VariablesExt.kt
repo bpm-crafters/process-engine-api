@@ -7,7 +7,7 @@ package dev.bpmcrafters.processengineapi.impl.task
  *
  * @since 0.0.1
  */
-fun Map<String, Any>.filterBySubscription(subscription: TaskSubscriptionHandle): Map<String, Any> =
+fun Map<String, Any?>.filterBySubscription(subscription: TaskSubscriptionHandle): Map<String, Any?> =
   if (subscription.payloadDescription != null) {
     if (subscription.payloadDescription.isEmpty()) {
       mapOf()

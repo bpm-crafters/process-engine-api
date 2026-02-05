@@ -26,7 +26,7 @@ data class StartProcessByMessageCmd(
    * @param payload payload to use.
    * @param restrictions restrictions for the message.
    */
-  constructor(messageName: String, payload: Map<String, Any>, restrictions: Map<String, String>) : this(
+  constructor(messageName: String, payload: Map<String, Any?>, restrictions: Map<String, String>) : this(
     messageName = messageName,
     payloadSupplier = PayloadSupplier { payload },
     restrictions = restrictions
@@ -36,7 +36,7 @@ data class StartProcessByMessageCmd(
    * @param messageName message name.
    * @param payload payload to use.
    */
-  constructor(messageName: String, payload: Map<String, Any>) : this(
+  constructor(messageName: String, payload: Map<String, Any?>) : this(
     messageName = messageName,
     payloadSupplier = PayloadSupplier { payload },
     restrictions = mapOf()

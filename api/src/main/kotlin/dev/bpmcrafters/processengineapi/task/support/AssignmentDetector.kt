@@ -13,5 +13,5 @@ interface AssignmentDetector {
    * @param newTaskInformation new task information and payload.
    * @return true, if assignment change is detected. Defaults to `false`.
    */
-  fun hasChangedAssignment(oldTaskInformation: Pair<TaskInformation, Map<String, Any>>, newTaskInformation: Pair<TaskInformation, Map<String, Any>>): Boolean = false
+  fun hasChangedAssignment(oldTaskInformation: Pair<TaskInformation, Map<String, Any?>>, newTaskInformation: Pair<TaskInformation, Map<String, Any?>>): Boolean = false
 }

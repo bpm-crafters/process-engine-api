@@ -30,7 +30,7 @@ data class CorrelateMessageCmd(
    * @param payload payload to use.
    * @param correlation correlation to use.
    */
-  constructor(messageName: String, payload: Map<String, Any>, correlation: Correlation, restrictions: Map<String, String>) :
+  constructor(messageName: String, payload: Map<String, Any?>, correlation: Correlation, restrictions: Map<String, String>) :
     this(
       messageName = messageName,
       payloadSupplier = PayloadSupplier { payload },
@@ -44,7 +44,7 @@ data class CorrelateMessageCmd(
    * @param payload payload to use.
    * @param correlation correlation to use.
    */
-  constructor(messageName: String, payload: Map<String, Any>, correlation: Correlation) :
+  constructor(messageName: String, payload: Map<String, Any?>, correlation: Correlation) :
     this(
       messageName = messageName,
       payloadSupplier = PayloadSupplier { payload },
