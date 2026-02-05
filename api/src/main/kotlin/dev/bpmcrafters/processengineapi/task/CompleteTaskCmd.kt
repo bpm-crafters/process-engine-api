@@ -22,7 +22,7 @@ open class CompleteTaskCmd(
    * @param taskId id of the task to complete.
    * @param payload payload to use.
    */
-  constructor(taskId: String, payload: Map<String, Any>) : this(taskId, PayloadSupplier { payload } )
+  constructor(taskId: String, payload: Map<String, Any?>) : this(taskId, PayloadSupplier { payload } )
 
   /**
    * Creates the complete command for a given task id without payload.
