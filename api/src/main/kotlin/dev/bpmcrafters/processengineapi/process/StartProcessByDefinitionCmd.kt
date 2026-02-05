@@ -26,7 +26,7 @@ data class StartProcessByDefinitionCmd(
    * @param payload payload to use.
    * @param restrictions restrictions for the message.
    */
-  constructor(definitionKey: String, payload: Map<String, Any>, restrictions: Map<String, String>) : this(
+  constructor(definitionKey: String, payload: Map<String, Any?>, restrictions: Map<String, String>) : this(
     definitionKey = definitionKey,
     payloadSupplier = PayloadSupplier { payload },
     restrictions = restrictions
@@ -36,7 +36,7 @@ data class StartProcessByDefinitionCmd(
    * @param definitionKey process definition key.
    * @param payload payload to use.
    */
-  constructor(definitionKey: String, payload: Map<String, Any>) : this(
+  constructor(definitionKey: String, payload: Map<String, Any?>) : this(
     definitionKey = definitionKey,
     payloadSupplier = PayloadSupplier { payload } ,
     restrictions = mapOf()

@@ -11,7 +11,7 @@
 
   <groupId>dev.bpm-crafters.process-engine-api</groupId>
   <artifactId>process-engine-api-root</artifactId>
-  <version>1.4</version>
+  <version>1.5</version>
   <name>POM: Project root</name>
   <description>Process Engine API</description>
   <url>https://github.com/bpm-crafters/process-engine-api/</url>
@@ -21,8 +21,8 @@
     <!-- COMMON GLOBAL -->
     <slf4j.version>2.0.17</slf4j.version>
     <!-- TEST -->
-    <mockito.version>6.1.0</mockito.version>
-    <assertj.version>3.27.6</assertj.version>
+    <mockito.version>6.2.3</mockito.version>
+    <assertj.version>3.27.7</assertj.version>
     <junit5.version>5.13.3</junit5.version>
     <awaitility.version>4.3.0</awaitility.version>
   </properties>

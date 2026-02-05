@@ -1,9 +1,11 @@
 package dev.bpmcrafters.processengineapi.decision
 
 import dev.bpmcrafters.processengineapi.CommonRestrictions
-import dev.bpmcrafters.processengineapi.PayloadSupplier
-import java.util.function.Supplier
 
+/**
+ * Example use cae to demonstrate the usage of the API.
+ * @since 1.4
+ */
 internal class DecisionUseCase(
   private val decisionApi: EvaluateDecisionApi
 ) {
@@ -12,25 +14,71 @@ internal class DecisionUseCase(
     return decisionApi.evaluateDecision(
       DecisionByRefEvaluationCommand(
         decisionRef = "customerDiscount",
-        payloadSupplier = PayloadSupplier {
-          mapOf<String, Any>(
-            "customerStatus" to customerStatus,
-            "year" to year
-          )
-        },
-        restrictionSupplier = Supplier {
-          mapOf<String, String>(CommonRestrictions.TENANT_ID to "tenant-1")
-        }
+        payload = mapOf(
+          "customerStatus" to customerStatus,
+          "year" to year
+        ),
+        restrictions = mapOf(
+          CommonRestrictions.TENANT_ID to "tenant-1"
+        )
       )
     ).get()
-      .single()
-      .result
-      .values["discount"] as Double
+      .asSingle()
+      .asType(Double::class.java)
+      ?: NO_DISCOUNT
+  }
+
+  fun calculateCustomerOffer(customerStatus: CustomerStatus, year: Int): Offer {
+    return decisionApi.evaluateDecision(
+      DecisionByRefEvaluationCommand(
+        decisionRef = "customerOffer",
+        payload = mapOf(
+          "customerStatus" to customerStatus,
+          "year" to year
+        ),
+        restrictions = mapOf(
+          CommonRestrictions.TENANT_ID to "tenant-1"
+        )
+      )
+    ).get()
+      .asSingle()
+      .asMap()
+      ?.let { Offer(it["id"] as Integer, it["name"] as String) }
+      ?: throw IllegalStateException("No offer found")
+  }
+
+  fun calculateCustomerOffers(customerStatus: CustomerStatus, year: Int): List<Offer> {
+    return decisionApi.evaluateDecision(
+      DecisionByRefEvaluationCommand(
+        decisionRef = "customerOffers",
+        payload = mapOf(
+          "customerStatus" to customerStatus,
+          "year" to year
+        ),
+        restrictions =
+          mapOf(
+            CommonRestrictions.TENANT_ID to "tenant-1"
+          )
+      )
+    ).get()
+      .asList()
+      .mapNotNull { result -> result
+        .asMap()
+        ?.let { Offer(it["id"] as Integer, it["name"] as String) } }
   }
 
   enum class CustomerStatus {
     SILVER,
     GOLD,
     PLATINUM
+  }
+
+  data class Offer(
+    val id: Integer,
+    val name: String
+  )
+
+  companion object {
+    const val NO_DISCOUNT = 0.0
   }
 }

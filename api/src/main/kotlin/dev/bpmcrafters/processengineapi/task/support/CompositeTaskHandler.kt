@@ -28,7 +28,7 @@ class CompositeTaskHandler(
     return CompositeTaskHandler(handlers.plus(handler).toMutableList())
   }
 
-  override fun accept(taskInformation: TaskInformation, payload: Map<String, Any>) {
+  override fun accept(taskInformation: TaskInformation, payload: Map<String, Any?>) {
     handlers.fold( Pair(taskInformation, payload)) { params, handler -> handler.process(params) }
   }
 

@@ -32,7 +32,7 @@ abstract class ChangePayloadModifyTaskCmd(
          * @param taskId id of the task to modify.
          * @param payload payload to use.
          */
-        constructor(taskId: String, payload: Map<String, Any>) : this(
+        constructor(taskId: String, payload: Map<String, Any?>) : this(
             taskId = taskId,
             payloadSupplier = PayloadSupplier { payload },
         )

@@ -1,10 +1,9 @@
 package dev.bpmcrafters.processengineapi.correlation
 
-import dev.bpmcrafters.processengineapi.CommonRestrictions
 import dev.bpmcrafters.processengineapi.PayloadSupplier
 
 /**
- * Command to correlate a message with running process instance.
+ * Command to correlate a message with a running process instance.
  * @since 0.0.1
  */
 data class CorrelateMessageCmd(
@@ -31,7 +30,7 @@ data class CorrelateMessageCmd(
    * @param payload payload to use.
    * @param correlation correlation to use.
    */
-  constructor(messageName: String, payload: Map<String, Any>, correlation: Correlation, restrictions: Map<String, String>) :
+  constructor(messageName: String, payload: Map<String, Any?>, correlation: Correlation, restrictions: Map<String, String>) :
     this(
       messageName = messageName,
       payloadSupplier = PayloadSupplier { payload },
@@ -45,7 +44,7 @@ data class CorrelateMessageCmd(
    * @param payload payload to use.
    * @param correlation correlation to use.
    */
-  constructor(messageName: String, payload: Map<String, Any>, correlation: Correlation) :
+  constructor(messageName: String, payload: Map<String, Any?>, correlation: Correlation) :
     this(
       messageName = messageName,
       payloadSupplier = PayloadSupplier { payload },

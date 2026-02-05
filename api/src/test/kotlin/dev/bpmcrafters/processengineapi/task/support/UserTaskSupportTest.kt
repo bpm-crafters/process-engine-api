@@ -10,7 +10,7 @@ import java.util.*
 internal class UserTaskSupportTest {
 
   private val support = UserTaskSupport(assignmentDetector = object: AssignmentDetector {
-    override fun hasChangedAssignment(oldTaskInformation: Pair<TaskInformation, Map<String, Any>>, newTaskInformation: Pair<TaskInformation, Map<String, Any>>): Boolean {
+    override fun hasChangedAssignment(oldTaskInformation: Pair<TaskInformation, Map<String, Any?>>, newTaskInformation: Pair<TaskInformation, Map<String, Any?>>): Boolean {
       return oldTaskInformation.first.meta["custom-assignment-field"] != newTaskInformation.first.meta["custom-assignment-field"]
     }
   })
