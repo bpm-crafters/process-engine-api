@@ -38,7 +38,7 @@ The API consists of different parts independent of each other:
 | Subscribe to task              | ✅           | ✅         | ✅    | ✅  |
 | Complete user task             | ✅           | ✅         | ✅    | ✅  |
 | Complete user task by error    | ✅           | ✅         | ✅    | ✅  |
-| Modify user task               | ✅           | ✅         | ✅    | ✅  |
+| Modify user task               | ✅           | ✅         | ✅    | ❌  |
 | Complete service task          | ✅           | ✅         | ✅    | ✅  |
 | Complete service task by error | ✅           | ✅         | ✅    | ✅  |
 | Fail service task              | ✅           | ✅         | ✅    | ✅  |
