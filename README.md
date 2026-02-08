@@ -66,7 +66,7 @@ If you are using the Process Engine API to provide workers using Spring Boot, th
 
 ## Documentation
 
-The API documentation can be found [here](https://bpm-crafters.github.io/process-engine-api/) or in its
+The API documentation can be found [here](https://bpm-crafters.github.io/process-engine-api-docs/stable/) or in its
 respective [repository](https://github.com/bpm-crafters/process-engine-api-docs).
 
 ## Anatomy
