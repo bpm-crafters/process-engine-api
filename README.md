@@ -21,9 +21,23 @@ The API consists of different parts independent of each other:
 - Correlate Message API
 - Send Signal API
 - Task Subscription API
+- Service Task Completion API - see Process Engine Worker below
 - User Task Completion API
 - User Task Modification API
-- Service Task Completion API
+- User Task Support - a helpful component for simple user task management
+
+
+## Available Engine Adapters
+
+If you want to try the API, please refer to one of the adapter implementations matching your infrastructure. For example:
+
+- [Camunda Platform 7 Adapter](https://github.com/bpm-crafters/process-engine-adapters-camunda-7) [![Maven Central Version](https://img.shields.io/maven-central/v/dev.bpm-crafters.process-engine-adapters/process-engine-adapter-camunda-platform-c7-root)](https://central.sonatype.com/artifact/dev.bpm-crafters.process-engine-adapters/process-engine-adapter-camunda-platform-c7-root)
+
+- [Camunda Platform 8 Adapter](https://github.com/bpm-crafters/process-engine-adapters-camunda-8) [![Maven Central Version](https://img.shields.io/maven-central/v/dev.bpm-crafters.process-engine-adapters/process-engine-adapter-camunda-platform-c8-root)](https://central.sonatype.com/artifact/dev.bpm-crafters.process-engine-adapters/process-engine-adapter-camunda-platform-c8-root)
+
+- [CIB-Seven Adapter](https://github.com/bpm-crafters/process-engine-adapters-cib-seven) [![Maven Central Version](https://img.shields.io/maven-central/v/dev.bpm-crafters.process-engine-adapters/process-engine-adapter-cib-seven-root)](https://central.sonatype.org/artifact/dev.bpm-crafters.process-engine-adapters/process-engine-adapter-cib-seven-root)
+
+## Feature supported by adapters
 
 
 |                                | C7 embedded | C7 remote | CIB7 | C8 |
@@ -43,23 +57,9 @@ The API consists of different parts independent of each other:
 | Complete service task by error | ✅           | ✅         | ✅    | ✅  |
 | Fail service task              | ✅           | ✅         | ✅    | ✅  |
 
-## Helpful Components
-
-- User Task Support
-
-## Available Engine Adapters
-
-If you want to try the API, please refer to one of the adapter implementations matching your infrastructure. For example:
-
-- [Camunda Platform 7 Adapter](https://github.com/bpm-crafters/process-engine-adapters-camunda-7) [![Maven Central Version](https://img.shields.io/maven-central/v/dev.bpm-crafters.process-engine-adapters/process-engine-adapter-camunda-platform-c7-root)](https://central.sonatype.com/artifact/dev.bpm-crafters.process-engine-adapters/process-engine-adapter-camunda-platform-c7-root)
-
-- [Camunda Platform 8 Adapter](https://github.com/bpm-crafters/process-engine-adapters-camunda-8) [![Maven Central Version](https://img.shields.io/maven-central/v/dev.bpm-crafters.process-engine-adapters/process-engine-adapter-camunda-platform-c8-root)](https://central.sonatype.com/artifact/dev.bpm-crafters.process-engine-adapters/process-engine-adapter-camunda-platform-c8-root)
-
-- [CIB-Seven Adapter](https://github.com/bpm-crafters/process-engine-adapters-cib-seven) [![Maven Central Version](https://img.shields.io/maven-central/v/dev.bpm-crafters.process-engine-adapters/process-engine-adapter-cib-seven-root)](https://central.sonatype.org/artifact/dev.bpm-crafters.process-engine-adapters/process-engine-adapter-cib-seven-root)
-
 ## Process Engine Worker
 
-If you are using the Process Engine API to provide workers using Spring Boot, there is a library with improved support for it:
+If you are using the Process Engine API to provide external task workers using Spring Boot, there is a library with improved support for it:
 
 - [Process Engine Worker](https://github.com/bpm-crafters/process-engine-worker) [![Maven Central Version](https://img.shields.io/maven-central/v/dev.bpm-crafters.process-engine-worker/process-engine-worker-root)
   ](https://central.sonatype.com/artifact/dev.bpm-crafters.process-engine-worker/process-engine-worker-root)
