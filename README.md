@@ -11,7 +11,12 @@ of adapters to relevant process engines (Camunda Platform 7, Camunda Platform 8,
 the integration of process engine from the selection of the used engine. This approach fosters an easy migration between engines
 and tries to achieve to support migrations with minimal (or even no) code modifications.
 
-## API
+## 📚 Documentation
+
+The documentation can be found [here](https://bpm-crafters.github.io/process-engine-api-docs/stable/) or in its
+respective [repository](https://github.com/bpm-crafters/process-engine-api-docs).
+
+## Provided API
 
 The API consists of different parts independent of each other:
 
