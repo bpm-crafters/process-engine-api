@@ -29,7 +29,7 @@ The API consists of different parts independent of each other:
 |                                | C7 embedded | C7 remote | CIB7 | C8 |
 |--------------------------------|-------------|-----------|------|----|
 | Deployment                     | ✅           | ✅         | ✅    | ✅  |
-| Decision Evaluation            | ❌           | ❌         | ❌    | ✅  |
+| Decision Evaluation            | ✅           | ✅         | ❌    | ✅  |
 | Start Process by definition    | ✅           | ✅         | ✅    | ✅  |
 | Start Process by definition at | ✅           | ✅         | ✅    | ✅  |
 | Start Process by message       | ✅           | ✅         | ✅    | ✅  |
