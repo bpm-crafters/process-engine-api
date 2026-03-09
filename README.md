@@ -64,7 +64,7 @@ If you are using the Process Engine API to provide external task workers using S
 - [Process Engine Worker](https://github.com/bpm-crafters/process-engine-worker) [![Maven Central Version](https://img.shields.io/maven-central/v/dev.bpm-crafters.process-engine-worker/process-engine-worker-root)
   ](https://central.sonatype.com/artifact/dev.bpm-crafters.process-engine-worker/process-engine-worker-root)
 
-## Documentation
+## 📚 Documentation
 
 The API documentation can be found [here](https://bpm-crafters.github.io/process-engine-api-docs/stable/) or in its
 respective [repository](https://github.com/bpm-crafters/process-engine-api-docs).
