@@ -1,5 +1,6 @@
 package dev.bpmcrafters.processengineapi.correlation
 
+import dev.bpmcrafters.processengineapi.ExecutionModeAware
 import dev.bpmcrafters.processengineapi.PayloadSupplier
 
 /**
@@ -19,7 +20,7 @@ data class SendSignalCmd(
    * Restrictions of the signaling.
    */
   val restrictions: Map<String, String> = emptyMap()
-) : PayloadSupplier by payloadSupplier {
+) : PayloadSupplier by payloadSupplier, ExecutionModeAware {
   /**
    * Constructs a signal command by signal name, restrictions and given payload.
    * @param signalName signal name.
