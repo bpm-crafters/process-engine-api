@@ -4,6 +4,7 @@ import dev.bpmcrafters.processengineapi.PayloadSupplier
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
+import java.time.OffsetDateTime
 import java.util.function.Supplier
 
 internal class TaskModificationTest {
@@ -38,6 +39,8 @@ internal class TaskModificationTest {
 
   @Test
   fun `creates composition using receiver function`() {
+    val dueDate = OffsetDateTime.parse("2026-04-02T12:00:00+02:00")
+    val followUpDate = OffsetDateTime.parse("2026-04-01T12:00:00+02:00")
     val composite = TaskModification.taskModification("taskId") {
       unassign()
       assign("kermit")
@@ -60,12 +63,18 @@ internal class TaskModificationTest {
       deletePayload {
         listOf("some-var-other")
       }
+      setDueDate(dueDate)
+      clearDueDate()
+      setFollowUpDate(followUpDate)
+      clearFollowUpDate()
     }
 
     assertThat(composite).isNotNull
-    assertThat(composite.commands).hasSize(15)
+    assertThat(composite.commands).hasSize(19)
     assertThat(composite.taskId).isEqualTo("taskId")
     assertThat(composite.commands.map { it.taskId }.distinct()).containsExactly("taskId")
+    assertThat(composite.commands).anyMatch { it is ChangeDatesModifyTaskCmd.SetDueDateTaskCmd && it.dueDate == dueDate }
+    assertThat(composite.commands).anyMatch { it is ChangeDatesModifyTaskCmd.SetFollowUpDateTaskCmd && it.followUpDate == followUpDate }
 
   }
 
@@ -73,6 +82,8 @@ internal class TaskModificationTest {
   fun `create composition using builder`() {
     val supplier = PayloadSupplier { mapOf("task-modified" to true) }
     val keySupplier = Supplier { listOf("task-modified") }
+    val dueDate = OffsetDateTime.parse("2026-04-02T12:00:00+02:00")
+    val followUpDate = OffsetDateTime.parse("2026-04-01T12:00:00+02:00")
     val composite = TaskModification("taskId")
       .assign("kermit")
       .unassign()
@@ -89,8 +100,14 @@ internal class TaskModificationTest {
       .deletePayload(listOf("task-modified"))
       .deletePayload(keySupplier)
       .clearPayload()
+      .setDueDate(dueDate)
+      .clearDueDate()
+      .setFollowUpDate(followUpDate)
+      .clearFollowUpDate()
       .build()
     assertThat(composite).isNotNull
-    assertThat(composite.commands).hasSize(15)
+    assertThat(composite.commands).hasSize(19)
+    assertThat(composite.commands).anyMatch { it is ChangeDatesModifyTaskCmd.SetDueDateTaskCmd && it.dueDate == dueDate }
+    assertThat(composite.commands).anyMatch { it is ChangeDatesModifyTaskCmd.SetFollowUpDateTaskCmd && it.followUpDate == followUpDate }
   }
 }

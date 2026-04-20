@@ -2,6 +2,7 @@ package dev.bpmcrafters.processengineapi.task
 
 import dev.bpmcrafters.processengineapi.PayloadSupplier
 import dev.bpmcrafters.processengineapi.task.ChangePayloadModifyTaskCmd.*
+import java.time.OffsetDateTime
 import java.util.function.Supplier
 
 /**
@@ -156,6 +157,40 @@ class TaskModification(private val taskId: String) {
    */
   fun clearCandidateGroups() = this.apply {
     commands += ChangeAssignmentModifyTaskCmd.ClearCandidateGroupsTaskCmd(taskId)
+  }
+
+  /**
+   * Sets due date.
+   * @param dueDate due date to set.
+   * @return builder instance.
+   */
+  fun setDueDate(dueDate: OffsetDateTime) = this.apply {
+    commands += ChangeDatesModifyTaskCmd.SetDueDateTaskCmd(taskId, dueDate)
+  }
+
+  /**
+   * Clears due date.
+   * @return builder instance.
+   */
+  fun clearDueDate() = this.apply {
+    commands += ChangeDatesModifyTaskCmd.ClearDueDateTaskCmd(taskId)
+  }
+
+  /**
+   * Sets follow-up date.
+   * @param followUpDate follow-up date to set.
+   * @return builder instance.
+   */
+  fun setFollowUpDate(followUpDate: OffsetDateTime) = this.apply {
+    commands += ChangeDatesModifyTaskCmd.SetFollowUpDateTaskCmd(taskId, followUpDate)
+  }
+
+  /**
+   * Clears follow-up date.
+   * @return builder instance.
+   */
+  fun clearFollowUpDate() = this.apply {
+    commands += ChangeDatesModifyTaskCmd.ClearFollowUpDateTaskCmd(taskId)
   }
 
   /**
