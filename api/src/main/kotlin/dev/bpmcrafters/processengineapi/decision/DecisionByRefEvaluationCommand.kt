@@ -1,5 +1,6 @@
 package dev.bpmcrafters.processengineapi.decision
 
+import dev.bpmcrafters.processengineapi.ExecutionModeAware
 import dev.bpmcrafters.processengineapi.PayloadSupplier
 import java.util.function.Supplier
 

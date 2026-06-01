@@ -1,5 +1,6 @@
 package dev.bpmcrafters.processengineapi.task
 
+import dev.bpmcrafters.processengineapi.ExecutionModeAware
 import java.time.Duration
 
 /**
@@ -27,7 +28,7 @@ open class FailTaskCmd(
    * Optional retry backoff duration.
    */
   val retryBackoff: Duration?
-) {
+) : ExecutionModeAware {
   constructor(taskId: String, reason: String, errorDetails: String?)
     : this(taskId = taskId, reason = reason, errorDetails = errorDetails, null, null)
 }
