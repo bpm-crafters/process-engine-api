@@ -1,5 +1,7 @@
 package dev.bpmcrafters.processengineapi.deploy
 
+import dev.bpmcrafters.processengineapi.ExecutionModeAware
+
 /**
  * Command to deploy a bundle of resources.
  * @since 0.0.1
@@ -13,4 +15,4 @@ data class DeployBundleCommand(
    * Optional tenant id.
    */
   val tenantId: String? = null
-)
+) : ExecutionModeAware

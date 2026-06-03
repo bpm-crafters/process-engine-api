@@ -59,6 +59,11 @@ object CommonRestrictions {
   const val EXECUTION_ID = "executionId"
 
   /**
+   * Timeout for the worker
+   */
+  const val WORKER_LOCK_DURATION_IN_MILLISECONDS = "workerLockDurationInMilliseconds"
+
+  /**
    * Creates a helper restrictions builder.
    */
   @JvmStatic

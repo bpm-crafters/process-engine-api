@@ -51,6 +51,15 @@ The following modifications are available:
 | Set candidate user     | `SetCandidateUserTaskCmd`     |
 | Clear candidate user   | `ClearCandidateUserTaskCmd`   |
 
+## Changing dates
+
+| Intent               | Command                    |
+|----------------------|----------------------------|
+| Set due date         | `SetDueDateTaskCmd`        |
+| Clear due date       | `ClearDueDateTaskCmd`      |
+| Set follow-up date   | `SetFollowUpDateTaskCmd`   |
+| Clear follow-up date | `ClearFollowUpDateTaskCmd` |
+
 ## Composing multiple changes on one request
 
 If you want to create multiple modifications of the task at the same time, you can use `CompositeModifyTaskCmd`. Please note
@@ -78,6 +87,10 @@ public class ModifyUserTaskUseCase {
         .removeCandidateUser("piggy")
         .setCandidateUsers(listOf("fozzy"))
         .setCandidateGroups(listOf("avengers"))
+        .setDueDate(OffsetDateTime.now().plusDays(3))
+        .setFollowUpDate(OffsetDateTime.now().plusDays(1))
+        .clearDueDate()
+        .clearFollowUpDate()
         .updatePayload(Maps.of("task-modified", true))
         .deletePayload(List.of("task-modified"))
         .clearPayload()
@@ -101,6 +114,10 @@ TaskModification.taskModification("taskId") {
   removeCandidateGroup("avengers")
   clearCandidateGroups()
   clearCandidateUsers()
+  setDueDate(OffsetDateTime.now().plusDays(3))
+  setFollowUpDate(OffsetDateTime.now().plusDays(1))
+  clearDueDate()
+  clearFollowUpDate()
   updatePayload {
     mapOf("task-modified" to true)
   }

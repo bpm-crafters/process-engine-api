@@ -1,5 +1,6 @@
 package dev.bpmcrafters.processengineapi.correlation
 
+import dev.bpmcrafters.processengineapi.ExecutionModeAware
 import dev.bpmcrafters.processengineapi.PayloadSupplier
 
 /**
@@ -23,7 +24,7 @@ data class CorrelateMessageCmd(
    * Restrictions applied for this message.
    */
   val restrictions: Map<String, String> = emptyMap()
-) : PayloadSupplier by payloadSupplier {
+) : PayloadSupplier by payloadSupplier, ExecutionModeAware {
   /**
    * Constructs a correlation command by message name, payload and correlation.
    * @param messageName message name.

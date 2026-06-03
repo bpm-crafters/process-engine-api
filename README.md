@@ -7,30 +7,33 @@
 ## Purpose of the library
 
 This library provides a modern engine-agnostic API which can be used to implement process applications. By providing a set
-of adapters to relevant process engines (Camunda Platform 7, Camunda Platform 8, etc...) the library enforces separation of 
-the integration of process engine from the selection of the used engine. This approach fosters an easy migration between engines 
-and tries to achieve to support migrations with minimal (or even no) code modifications. 
+of adapters to relevant process engines (Camunda Platform 7, Camunda Platform 8, etc...) the library enforces separation of
+the integration of process engine from the selection of the used engine. This approach fosters an easy migration between engines
+and tries to achieve to support migrations with minimal (or even no) code modifications.
 
-## API
+## 📚 Documentation
 
-The API consists of different parts independent of each other.
+The documentation can be found [here](https://bpm-crafters.github.io/process-engine-api-docs/stable/) or in its
+respective [repository](https://github.com/bpm-crafters/process-engine-api-docs).
+
+## Provided API
+
+The API consists of different parts independent of each other:
 
 - Deployment API
-- Decision Evaluation API
+- Evaluate Decision API
 - Start Process API
-- Correlation API
-- Signal API
+- Correlate Message API
+- Send Signal API
 - Task Subscription API
+- Service Task Completion API - see Process Engine Worker below
 - User Task Completion API
 - User Task Modification API
-- Service Task Completion API
+- User Task Support - a helpful component for simple user task management
 
-## Helpful Components
-
-- User Task Support
 
 ## Available Engine Adapters
- 
+
 If you want to try the API, please refer to one of the adapter implementations matching your infrastructure. For example:
 
 - [Camunda Platform 7 Adapter](https://github.com/bpm-crafters/process-engine-adapters-camunda-7) [![Maven Central Version](https://img.shields.io/maven-central/v/dev.bpm-crafters.process-engine-adapters/process-engine-adapter-camunda-platform-c7-root)](https://central.sonatype.com/artifact/dev.bpm-crafters.process-engine-adapters/process-engine-adapter-camunda-platform-c7-root)
@@ -39,16 +42,37 @@ If you want to try the API, please refer to one of the adapter implementations m
 
 - [CIB-Seven Adapter](https://github.com/bpm-crafters/process-engine-adapters-cib-seven) [![Maven Central Version](https://img.shields.io/maven-central/v/dev.bpm-crafters.process-engine-adapters/process-engine-adapter-cib-seven-root)](https://central.sonatype.org/artifact/dev.bpm-crafters.process-engine-adapters/process-engine-adapter-cib-seven-root)
 
+## Feature supported by adapters
+
+
+|                                | C7 embedded | C7 remote | CIB7 | C8 |
+|--------------------------------|-------------|-----------|------|----|
+| Deployment                     | ✅           | ✅         | ✅    | ✅  |
+| Decision Evaluation            | ✅           | ✅         | ❌    | ✅  |
+| Start Process by definition    | ✅           | ✅         | ✅    | ✅  |
+| Start Process by definition at | ✅           | ✅         | ✅    | ✅  |
+| Start Process by message       | ✅           | ✅         | ✅    | ✅  |
+| Correlate message              | ✅           | ✅         | ✅    | ✅  |
+| Send signal                    | ✅           | ✅         | ✅    | ✅  |
+| Subscribe to task              | ✅           | ✅         | ✅    | ✅  |
+| Complete user task             | ✅           | ✅         | ✅    | ✅  |
+| Complete user task by error    | ✅           | ✅         | ✅    | ✅  |
+| Modify user task               | ✅           | ✅         | ✅    | ❌  |
+| Complete service task          | ✅           | ✅         | ✅    | ✅  |
+| Complete service task by error | ✅           | ✅         | ✅    | ✅  |
+| Fail service task              | ✅           | ✅         | ✅    | ✅  |
+
 ## Process Engine Worker
 
-If you are using the Process Engine API to provide workers using Spring Boot, there is a library with improved support for it:
+If you are using the Process Engine API to provide external task workers using Spring Boot, there is a library with improved support for it:
 
 - [Process Engine Worker](https://github.com/bpm-crafters/process-engine-worker) [![Maven Central Version](https://img.shields.io/maven-central/v/dev.bpm-crafters.process-engine-worker/process-engine-worker-root)
-](https://central.sonatype.com/artifact/dev.bpm-crafters.process-engine-worker/process-engine-worker-root)
+  ](https://central.sonatype.com/artifact/dev.bpm-crafters.process-engine-worker/process-engine-worker-root)
 
-## Documentation
+## 📚 Documentation
 
-The API documentation can be found [here](https://bpm-crafters.github.io/process-engine-api/) or in its respective [repository](https://github.com/bpm-crafters/process-engine-api-docs).
+The API documentation can be found [here](https://bpm-crafters.github.io/process-engine-api-docs/stable/) or in its
+respective [repository](https://github.com/bpm-crafters/process-engine-api-docs).
 
 ## Anatomy
 
@@ -59,5 +83,6 @@ The library contains of the following Maven modules:
 
 ## Contribution and Development
 
-If you are missing a feature or found a bug, please [open an issue](https://github.com/bpm-crafters/process-engine-api/issues) 
-on this project and provide a pull request. If you have general questions, make sure to stop by our [discussions](https://github.com/orgs/bpm-crafters/discussions).
+If you are missing a feature or found a bug, please [open an issue](https://github.com/bpm-crafters/process-engine-api/issues)
+on this project and provide a pull request. If you have general questions, make sure to stop by
+our [discussions](https://github.com/orgs/bpm-crafters/discussions).
