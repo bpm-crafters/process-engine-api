@@ -7,10 +7,11 @@ It allows to start new process instances.
 It is intended to be used in outbound adapters of the port/adapter architecture 
 to control the process engine from your application.
 
-There are three ways to start processes:
+There are four ways to start processes:
 * by providing a process definition key
 * by providing a start message
 * by providing a process definition key and a specific activity to start at
+* by providing a start message and a specific activity to start at
 
 In all cases, you might provide a process payload passed to the started process instance. 
 
@@ -50,6 +51,18 @@ public class ProcessStarter {
     startProcessApi.startProcess(
       new StartProcessByDefinitionAtElementCmd(
         "MyExampleProcessKey",
+        "Activity_ProcessOrder",
+        () -> Map.of("order", order),
+        Map.of()
+      )
+    ).get();
+  }
+
+  @SneakyThrows
+  public void startByMessageAtActivity(Order order) {
+    startProcessApi.startProcess(
+      new StartProcessByMessageAtElementCmd(
+        "Msg_OrderReceived",
         "Activity_ProcessOrder",
         () -> Map.of("order", order),
         Map.of()
