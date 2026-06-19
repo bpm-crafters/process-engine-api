@@ -34,7 +34,7 @@ jobs:
     steps:
       # Checkout the code
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Expose branch name
         run: echo ${{ github.ref }}
