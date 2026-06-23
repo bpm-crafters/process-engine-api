@@ -52,6 +52,7 @@ If you want to try the API, please refer to one of the adapter implementations m
 | Start Process by definition    | ✅           | ✅         | ✅    | ✅  |
 | Start Process by definition at | ✅           | ✅         | ✅    | ✅  |
 | Start Process by message       | ✅           | ✅         | ✅    | ✅  |
+| Start Process by message at    | 🚧           | 🚧         | 🚧    | ❌  |
 | Correlate message              | ✅           | ✅         | ✅    | ✅  |
 | Send signal                    | ✅           | ✅         | ✅    | ✅  |
 | Subscribe to task              | ✅           | ✅         | ✅    | ✅  |
@@ -61,6 +62,8 @@ If you want to try the API, please refer to one of the adapter implementations m
 | Complete service task          | ✅           | ✅         | ✅    | ✅  |
 | Complete service task by error | ✅           | ✅         | ✅    | ✅  |
 | Fail service task              | ✅           | ✅         | ✅    | ✅  |
+
+*✅ supported · 🚧 in development · ❌ not supported*
 
 ## Process Engine Worker
 
