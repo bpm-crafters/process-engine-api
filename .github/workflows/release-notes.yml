@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout code
-      uses: actions/checkout@master
+      uses: actions/checkout@v7.0.0
     - name: Create Release Notes Markdown
       uses: docker://ghcr.io/rohwerj/release-notes-generator-action:v1.0.0
       env:
@@ -27,7 +27,7 @@ jobs:
         echo "VERSION=$VERSION" >> $GITHUB_ENV
     - name: Create a Draft Release Notes on GitHub
       id: create_release
-      uses: actions/create-release@v1
+      uses: actions/create-release@v1.1.4
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
       with:
