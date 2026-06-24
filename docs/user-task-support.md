@@ -52,8 +52,21 @@ In addition to the API for task retrieval offered by the `User Task Support` com
 directly and acts as a composite handler, invoking both on corresponding task lifecycle events. This is in particular helpful, if you implement any kind
 of forwarding or notification logic for the user tasks:
 
-  - `addTaskHandler(handler: TaskHandler)`
-  - `addTaskTerminationHandler(handler: TaskTerminationHandler)`
+  - `addHandler(handler: TaskHandler)`
+  - `addTerminationHandler(handler: TaskTerminationHandler)`
+
+## Restart and duplicate delivery handling
+
+`User Task Support` keeps received task information and payload in memory for the current application instance. It is
+populated by the Task Subscription API, which delivers all currently available matching tasks when a new subscription is
+created. After an application restart, already active user tasks can therefore be delivered to a new `User Task Support`
+instance again and look like newly received tasks to in-memory handlers.
+
+If you register handlers for forwarding, synchronization, or notifications, do not rely on `User Task Support` alone to
+prevent duplicate side effects across restarts. Make these handlers idempotent and persist the synchronization state in
+your own storage. A typical implementation stores a last synchronization timestamp or a per-task processing marker,
+compares it with the adapter-provided created date or updated date from `TaskInformation.meta`, then skips notification
+or forwarding if the task was already processed for the same timestamp.
 
 ## Typical usage
 
@@ -63,4 +76,3 @@ load some information, which is shown to user on a user task form and finally re
 
 For the implementation of those, you would need to outbound adapters: `UserTaskSupport` for resolving task reference and `UserTaskCompletionAPI` for sending out commands.
 See our provided examples for more details.
-
