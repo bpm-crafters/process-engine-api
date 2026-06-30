@@ -52,7 +52,7 @@ If you want to try the API, please refer to one of the adapter implementations m
 | Start Process by definition    | ✅           | ✅         | ✅    | ✅  |
 | Start Process by definition at | ✅           | ✅         | ✅    | ✅  |
 | Start Process by message       | ✅           | ✅         | ✅    | ✅  |
-| Start Process by message at    | 🚧           | 🚧         | 🚧    | ❌  |
+| Start Process by message at    | ✅           | ✅         | ✅    | ❌  |
 | Correlate message              | ✅           | ✅         | ✅    | ✅  |
 | Send signal                    | ✅           | ✅         | ✅    | ✅  |
 | Subscribe to task              | ✅           | ✅         | ✅    | ✅  |
