@@ -1,0 +1,46 @@
+name: Release
+
+on:
+  push:
+    branches: [develop]
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Dry run (build & verify only — no PR, no release, no publish)"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  release-please:
+    name: Open or update Release PR
+    runs-on: ubuntu-latest
+    outputs:
+      release_created: ${{ steps.rp.outputs.release_created }}
+      tag_name: ${{ steps.rp.outputs.tag_name }}
+    steps:
+      - uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        id: app-token
+        with:
+          client-id: ${{ vars.RELEASE_PLEASE_APP_CLIENT_ID }}
+          private-key: ${{ secrets.RELEASE_PLEASE_APP_PRIVATE_KEY }}
+      - id: rp
+        uses: googleapis/release-please-action@45996ed1f6d02564a971a2fa1b5860e934307cf7 # v5.0.0
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+          config-file: release-please-config.json
+          manifest-file: .release-please-manifest.json
+          skip-github-pull-request: ${{ inputs.dry_run || false }}
+          skip-github-release: ${{ inputs.dry_run || false }}
+
+  publish-maven:
+    name: Publish to Maven Central
+    needs: release-please
+    if: ${{ needs.release-please.outputs.release_created == 'true' || inputs.dry_run == true }}
+    uses: ./.github/workflows/publish-maven.yml
+    secrets: inherit
+    with:
+      dry_run: ${{ inputs.dry_run == true }}
