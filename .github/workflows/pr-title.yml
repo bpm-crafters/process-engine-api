@@ -1,7 +1,5 @@
 name: PR Title
 
-# Squash-merge repo: the PR title becomes the commit on `develop`, which release-please parses.
-# So the title must be a valid Conventional Commit.
 on:
   pull_request:
     types: [opened, edited, synchronize, reopened]

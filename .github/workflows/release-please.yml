@@ -1,9 +1,5 @@
 name: Release
 
-# release-please parses Conventional Commits on `develop`, keeps a rolling Release PR
-# (version bump in the poms + CHANGELOG) and, on its merge, cuts the GitHub Release + tag.
-# The Maven Central deploy runs in the *same* workflow run via `needs` + `release_created`.
-# A manual `dry_run` dispatch exercises the publish pipeline in build/verify-only mode.
 on:
   push:
     branches: [develop]
@@ -26,8 +22,6 @@ jobs:
       release_created: ${{ steps.rp.outputs.release_created }}
       tag_name: ${{ steps.rp.outputs.tag_name }}
     steps:
-      # A GitHub App token — NOT the default GITHUB_TOKEN — so the Release PR triggers CI
-      # (otherwise it is stuck behind required checks) and its commits are signed.
       - uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
         id: app-token
         with:

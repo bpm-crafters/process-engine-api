@@ -1,8 +1,5 @@
 name: Publish to Maven Central
 
-# Reusable publish job — the same build/sign/deploy steps the old master.yml ran, now driven
-# by release-please (workflow_call) or triggerable standalone (workflow_dispatch). `dry_run`
-# builds & verifies without deploying. As workflow_call this file is org-wide reusable.
 on:
   workflow_call:
     inputs:
