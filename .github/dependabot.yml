@@ -5,11 +5,19 @@ updates:
     schedule:
       interval: "weekly"
     open-pull-requests-limit: 19
+    # Conventional-Commit prefix so Dependabot PR titles pass the pr-title check and are
+    # parsed correctly by release-please (otherwise the default "Bump ..." titles fail).
+    commit-message:
+      prefix: "chore"
+      prefix-development: "chore"
     labels:
       - "Type: dependencies"
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "daily"
+    commit-message:
+      prefix: "chore"
+      prefix-development: "chore"
     labels:
       - "Type: dependencies"

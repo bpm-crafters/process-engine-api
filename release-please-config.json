@@ -1,0 +1,17 @@
+{
+  "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
+  "release-type": "simple",
+  "include-component-in-tag": false,
+  "bootstrap-sha": "d4d1bd8c5b708e407449c67e8a91d371452550e8",
+  "packages": {
+    ".": {
+      "package-name": "process-engine-api",
+      "changelog-path": "CHANGELOG.md",
+      "extra-files": [
+        { "type": "generic", "path": "pom.xml" },
+        { "type": "generic", "path": "api/pom.xml" },
+        { "type": "generic", "path": "api-impl/pom.xml" }
+      ]
+    }
+  }
+}
