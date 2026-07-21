@@ -14,7 +14,7 @@ jobs:
     name: Build and run tests
     steps:
       - name: Checkout code
-        uses: actions/checkout@v7.0.0
+        uses: actions/checkout@v7.0.1
 
       # Setup JDK and .m2/settings.xml
       - name: Set up JDK
