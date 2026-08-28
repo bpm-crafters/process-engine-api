@@ -73,7 +73,7 @@ public class ProcessStarter {
 }
 ```
 
-For supported engines (currently only C7 Embedded and C7 Remote) it is possible to set a business key by providing it 
+For supported engines (currently C7 Embedded, C7 Remote, Operaton Embedded and Operaton Remote) it is possible to set a business key by providing it 
 in the payload supplier, for example:
 ```java
 @SneakyThrows

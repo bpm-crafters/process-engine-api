@@ -7,7 +7,7 @@
 ## Purpose of the library
 
 This library provides a modern engine-agnostic API which can be used to implement process applications. By providing a set
-of adapters to relevant process engines (Camunda Platform 7, Camunda Platform 8, etc...) the library enforces separation of
+of adapters to relevant process engines (Camunda Platform 7, Camunda Platform 8, Operaton, etc...) the library enforces separation of
 the integration of process engine from the selection of the used engine. This approach fosters an easy migration between engines
 and tries to achieve to support migrations with minimal (or even no) code modifications.
 
@@ -42,26 +42,28 @@ If you want to try the API, please refer to one of the adapter implementations m
 
 - [CIB-Seven Adapter](https://github.com/bpm-crafters/process-engine-adapters-cib-seven) [![Maven Central Version](https://img.shields.io/maven-central/v/dev.bpm-crafters.process-engine-adapters/process-engine-adapter-cib-seven-root)](https://central.sonatype.org/artifact/dev.bpm-crafters.process-engine-adapters/process-engine-adapter-cib-seven-root)
 
+- [Operaton Adapter](https://github.com/bpm-crafters/process-engine-adapters-operaton) [![Maven Central Version](https://img.shields.io/maven-central/v/dev.bpm-crafters.process-engine-adapters/process-engine-adapter-operaton-root)](https://central.sonatype.com/artifact/dev.bpm-crafters.process-engine-adapters/process-engine-adapter-operaton-root)
+
 ## Feature supported by adapters
 
 
-|                                | C7 embedded | C7 remote | CIB7 | C8 |
-|--------------------------------|-------------|-----------|------|----|
-| Deployment                     | ✅           | ✅         | ✅    | ✅  |
-| Decision Evaluation            | ✅           | ✅         | ❌    | ✅  |
-| Start Process by definition    | ✅           | ✅         | ✅    | ✅  |
-| Start Process by definition at | ✅           | ✅         | ✅    | ✅  |
-| Start Process by message       | ✅           | ✅         | ✅    | ✅  |
-| Start Process by message at    | ✅           | ✅         | ✅    | ❌  |
-| Correlate message              | ✅           | ✅         | ✅    | ✅  |
-| Send signal                    | ✅           | ✅         | ✅    | ✅  |
-| Subscribe to task              | ✅           | ✅         | ✅    | ✅  |
-| Complete user task             | ✅           | ✅         | ✅    | ✅  |
-| Complete user task by error    | ✅           | ✅         | ✅    | ✅  |
-| Modify user task               | ✅           | ✅         | ✅    | ❌  |
-| Complete service task          | ✅           | ✅         | ✅    | ✅  |
-| Complete service task by error | ✅           | ✅         | ✅    | ✅  |
-| Fail service task              | ✅           | ✅         | ✅    | ✅  |
+|                                | C7 embedded | C7 remote | CIB7 | C8 | Operaton embedded | Operaton remote |
+|--------------------------------|-------------|-----------|------|----|-------------------|-----------------|
+| Deployment                     | ✅           | ✅         | ✅    | ✅  | ✅                 | ✅               |
+| Decision Evaluation            | ✅           | ✅         | ❌    | ✅  | ✅                 | ✅               |
+| Start Process by definition    | ✅           | ✅         | ✅    | ✅  | ✅                 | ✅               |
+| Start Process by definition at | ✅           | ✅         | ✅    | ✅  | ✅                 | ✅               |
+| Start Process by message       | ✅           | ✅         | ✅    | ✅  | ✅                 | ✅               |
+| Start Process by message at    | ✅           | ✅         | ✅    | ❌  | ✅                 | ✅               |
+| Correlate message              | ✅           | ✅         | ✅    | ✅  | ✅                 | ✅               |
+| Send signal                    | ✅           | ✅         | ✅    | ✅  | ✅                 | ✅               |
+| Subscribe to task              | ✅           | ✅         | ✅    | ✅  | ✅                 | ✅               |
+| Complete user task             | ✅           | ✅         | ✅    | ✅  | ✅                 | ✅               |
+| Complete user task by error    | ✅           | ✅         | ✅    | ✅  | ✅                 | ✅               |
+| Modify user task               | ✅           | ✅         | ✅    | ❌  | ✅                 | ✅               |
+| Complete service task          | ✅           | ✅         | ✅    | ✅  | ✅                 | ✅               |
+| Complete service task by error | ✅           | ✅         | ✅    | ✅  | ✅                 | ✅               |
+| Fail service task              | ✅           | ✅         | ✅    | ✅  | ✅                 | ✅               |
 
 *✅ supported · 🚧 in development · ❌ not supported*
 
