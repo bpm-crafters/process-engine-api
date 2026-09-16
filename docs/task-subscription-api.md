@@ -53,3 +53,40 @@ public class TaskSubscriber {
 
 
 ```
+
+## Intercepting task handlers
+
+Cross-cutting concerns such as logging, tracing, or auditing can wrap every task delivery via a
+`TaskHandlerInterceptor`. An interceptor wraps the call of the subscription action for both
+registration paths (`@ProcessEngineWorker` and manual `subscribeForTask`) and applies to every
+`TaskType`. Filter on `context.getTaskType()` if an interceptor should only act on a specific type.
+
+Interceptors run in the delivery thread, inside the delivery's try/catch. An exception thrown by an
+interceptor is treated like a handler exception and leads to failure handling or a retry by the
+adapter. The context is immutable; interceptors observe the delivery but do not mutate payload or
+task information.
+
+Register interceptors as Spring beans in the adapter starter. The order follows `@Order`/`Ordered`.
+
+```java
+
+@Component
+@Slf4j
+@Order(0)
+public class LoggingTaskHandlerInterceptor implements TaskHandlerInterceptor {
+
+  @Override
+  public void intercept(TaskHandlerInterceptorContext context, TaskHandlerInterceptorChain chain) {
+    log.info("[TASK]: Handling {} of type {}", context.getTaskInformation().getTaskId(), context.getTaskType());
+    try {
+      chain.proceed();
+      log.info("[TASK]: Handled {}", context.getTaskInformation().getTaskId());
+    } catch (RuntimeException e) {
+      log.error("[TASK]: Failed handling {}", context.getTaskInformation().getTaskId(), e);
+      throw e;
+    }
+  }
+}
+
+
+```
