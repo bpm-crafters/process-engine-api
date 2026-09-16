@@ -3,6 +3,9 @@ package dev.bpmcrafters.processengineapi.task
 /**
  * Intercepts the execution of a [TaskHandler] of a subscription.
  *
+ * Lets you add cross-cutting concerns (logging, tracing, auditing) around every task execution
+ * without replacing the delivery layer or resorting to AOP.
+ *
  * Interceptors wrap the call `subscription.action.accept(taskInformation, payload)` performed by
  * every delivery. They run in the delivery thread, inside the delivery's try/catch, and apply to
  * every [TaskType]. An interceptor may filter on [TaskHandlerInterceptorContext.taskType].
