@@ -66,6 +66,13 @@ interceptor is treated like a handler exception and leads to failure handling or
 adapter. The context is immutable; interceptors observe the delivery but do not mutate payload or
 task information.
 
+A handler may report a failure or a BPMN error itself instead of throwing an exception, as the
+`process-engine-worker` does. `chain.proceed()` then returns normally, and the returned
+`TaskHandlerOutcome` tells what happened: `Completed`, `CompletedByError`, `Failed`, or
+`Undetermined`. The outcome is only known if the handler finishes the task through the
+`ServiceTaskCompletionApi` in the delivery thread. A task finished later or by another thread
+results in `Undetermined`.
+
 Register interceptors as Spring beans in the adapter starter. The order follows `@Order`/`Ordered`.
 
 ```java
@@ -76,11 +83,16 @@ Register interceptors as Spring beans in the adapter starter. The order follows 
 public class LoggingTaskHandlerInterceptor implements TaskHandlerInterceptor {
 
   @Override
-  public void intercept(TaskHandlerInterceptorContext context, TaskHandlerInterceptorChain chain) {
+  public TaskHandlerOutcome intercept(TaskHandlerInterceptorContext context, TaskHandlerInterceptorChain chain) {
     log.info("[TASK]: Handling {} of type {}", context.getTaskInformation().getTaskId(), context.getTaskType());
     try {
-      chain.proceed();
-      log.info("[TASK]: Handled {}", context.getTaskInformation().getTaskId());
+      TaskHandlerOutcome outcome = chain.proceed();
+      if (outcome instanceof TaskHandlerOutcome.Failed failed) {
+        log.error("[TASK]: Failed handling {}: {}", context.getTaskInformation().getTaskId(), failed.getReason());
+      } else {
+        log.info("[TASK]: Handled {}", context.getTaskInformation().getTaskId());
+      }
+      return outcome;
     } catch (RuntimeException e) {
       log.error("[TASK]: Failed handling {}", context.getTaskInformation().getTaskId(), e);
       throw e;

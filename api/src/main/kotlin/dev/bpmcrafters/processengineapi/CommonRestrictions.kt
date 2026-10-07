@@ -12,6 +12,11 @@ object CommonRestrictions {
   const val ACTIVITY_ID = "activityId"
 
   /**
+   * Id of the runtime instance of a BPMN activity.
+   */
+  const val ACTIVITY_INSTANCE_ID = "activityInstanceId"
+
+  /**
    * Logical business key.
    */
   const val BUSINESS_KEY = "businessKey"

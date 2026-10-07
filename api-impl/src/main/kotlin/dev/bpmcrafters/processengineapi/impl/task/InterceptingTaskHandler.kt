@@ -4,6 +4,7 @@ import dev.bpmcrafters.processengineapi.task.TaskHandler
 import dev.bpmcrafters.processengineapi.task.TaskHandlerInterceptor
 import dev.bpmcrafters.processengineapi.task.TaskHandlerInterceptorChain
 import dev.bpmcrafters.processengineapi.task.TaskHandlerInterceptorContext
+import dev.bpmcrafters.processengineapi.task.TaskHandlerOutcome
 import dev.bpmcrafters.processengineapi.task.TaskInformation
 import dev.bpmcrafters.processengineapi.task.TaskType
 
@@ -21,7 +22,9 @@ class InterceptingTaskHandler(
 
   override fun accept(taskInformation: TaskInformation, payload: Map<String, Any?>) {
     val context = TaskHandlerInterceptorContext(taskInformation, payload, taskDescriptionKey, taskType)
-    proceed(context, 0, taskInformation, payload)
+    TaskHandlerOutcomeRecorder.recordingFor(taskInformation.taskId) {
+      proceed(context, 0, taskInformation, payload)
+    }
   }
 
   private fun proceed(
@@ -29,11 +32,11 @@ class InterceptingTaskHandler(
     index: Int,
     taskInformation: TaskInformation,
     payload: Map<String, Any?>
-  ) {
+  ): TaskHandlerOutcome =
     if (index < interceptors.size) {
       interceptors[index].intercept(context) { proceed(context, index + 1, taskInformation, payload) }
     } else {
       delegate.accept(taskInformation, payload)
+      TaskHandlerOutcomeRecorder.recordedOutcome()
     }
-  }
 }

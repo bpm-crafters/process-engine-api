@@ -3,6 +3,7 @@ package dev.bpmcrafters.processengineapi.impl.task
 import dev.bpmcrafters.processengineapi.task.TaskHandler
 import dev.bpmcrafters.processengineapi.task.TaskHandlerInterceptor
 import dev.bpmcrafters.processengineapi.task.TaskHandlerInterceptorContext
+import dev.bpmcrafters.processengineapi.task.TaskHandlerOutcome
 import dev.bpmcrafters.processengineapi.task.TaskInformation
 import dev.bpmcrafters.processengineapi.task.TaskType
 import org.assertj.core.api.Assertions.assertThat
@@ -19,13 +20,11 @@ internal class InterceptingTaskHandlerTest {
     val trace = mutableListOf<String>()
     val first = TaskHandlerInterceptor { _, chain ->
       trace += "first-before"
-      chain.proceed()
-      trace += "first-after"
+      chain.proceed().also { trace += "first-after" }
     }
     val second = TaskHandlerInterceptor { _, chain ->
       trace += "second-before"
-      chain.proceed()
-      trace += "second-after"
+      chain.proceed().also { trace += "second-after" }
     }
     val delegate = TaskHandler { _, _ -> trace += "delegate" }
 
@@ -56,7 +55,7 @@ internal class InterceptingTaskHandlerTest {
   @Test
   fun `interceptor without proceed prevents delegate invocation`() {
     var delegateCalled = false
-    val interceptor = TaskHandlerInterceptor { _, _ -> }
+    val interceptor = TaskHandlerInterceptor { _, _ -> TaskHandlerOutcome.Undetermined }
     val delegate = TaskHandler { _, _ -> delegateCalled = true }
 
     InterceptingTaskHandler(delegate, listOf(interceptor), "task-key", TaskType.EXTERNAL)

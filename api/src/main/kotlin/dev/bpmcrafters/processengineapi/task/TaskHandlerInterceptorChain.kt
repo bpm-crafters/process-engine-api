@@ -7,6 +7,7 @@ package dev.bpmcrafters.processengineapi.task
 fun interface TaskHandlerInterceptorChain {
   /**
    * Proceeds with the next interceptor and finally the wrapped handler.
+   * @return outcome reported by the wrapped handler.
    */
-  fun proceed()
+  fun proceed(): TaskHandlerOutcome
 }

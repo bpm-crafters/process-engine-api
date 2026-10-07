@@ -76,8 +76,7 @@ internal class AbstractTaskSubscriptionApiImplTest {
     val trace = mutableListOf<String>()
     val interceptor = TaskHandlerInterceptor { _, chain ->
       trace += "before"
-      chain.proceed()
-      trace += "after"
+      chain.proceed().also { trace += "after" }
     }
     val api = MyTaskSubscriptionApiImpl(subscriptionRepository, listOf(interceptor))
     val action = TaskHandler { _, _ -> trace += "action" }
