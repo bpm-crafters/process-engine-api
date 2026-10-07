@@ -28,6 +28,10 @@ object CommonRestrictions {
 
   /**
    * Id provided by the runtime identifying the process instance.
+   *
+   * In the meta of a task, the value is the same as
+   * [dev.bpmcrafters.processengineapi.process.ProcessInformation.instanceId] returned when that process
+   * instance was started. An engine which uses a different value in one of the two places has a bug.
    */
   const val PROCESS_INSTANCE_ID = "processInstanceId"
 
