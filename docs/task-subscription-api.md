@@ -56,39 +56,29 @@ public class TaskSubscriber {
 
 ## Task execution decorators
 
-Cross-cutting concerns such as tracing, MDC, logging, or metrics can wrap the execution of external
-service tasks with a `TaskExecutionDecorator`, in the spirit of Spring's `TaskDecorator`. A decorator
-applies to both registration paths (`@ProcessEngineWorker` and manual `subscribeForTask`). It is not an
-engine listener such as a Camunda `ExecutionListener` or `TaskListener`, and it is not declared in the
-BPMN model.
+Cross-cutting concerns such as tracing, MDC, logging, or metrics can wrap the execution of external service tasks with a `TaskExecutionDecorator`.
+It works like Spring's `TaskDecorator` and applies to `@ProcessEngineWorker` as well as to manual `subscribeForTask`.
+It is not an engine listener such as a Camunda `ExecutionListener`, and it is not declared in the BPMN model.
 
-The adapter delivery passes its whole per-task work to the decorators: the call of the handler and the
-delivery's own failure handling and logging. Code placed before and after `execution.run()` therefore
-runs before and after both. A span or MDC entry opened around `execution.run()` also covers the
-handler's logs, the logs of the `process-engine-worker`, and the logs the delivery writes when it
-reports a failure.
+The adapter delivery passes its whole per-task work to the decorators: the handler call and its own failure handling.
+Code before and after `execution.run()` therefore runs before and after both.
+A span or MDC entry opened around `execution.run()` covers the logs of the handler, of the `process-engine-worker` and of the delivery's failure handling.
 
-A decorator cannot change the task:
+Rules for decorators:
 
-- It receives read-only views of the task information and the payload. Do not mutate values inside
-  the payload, as they are shared with the handler.
-- Call `execution.run()` exactly once, in the thread of the decorated runnable. The adapter runs the
-  execution exactly once anyway: if a decorator skips it, throws before running it, or runs it twice,
-  this is only logged.
-- An exception a decorator throws is only logged, except a `VirtualMachineError`. An exception thrown
-  by the execution itself passes through the decorators unchanged.
-- The delivery handles a failing handler itself, so `execution.run()` returns normally even if the
-  task failed. A decorator does not learn the outcome; the failure is visible in the logs written
-  inside its scope.
+- Task information and payload are read-only. Do not mutate values inside the payload, as they are shared with the handler.
+- Call `execution.run()` exactly once, in the thread of the decorated runnable. If a decorator skips or repeats it, the adapter still runs it exactly once and logs a warning.
+- An exception thrown by a decorator is only logged. An exception thrown by the execution passes through the decorators unchanged.
+- The delivery handles a failing handler itself, so `execution.run()` returns normally even if the task failed. The failure is visible in the logs written inside the decorator's scope.
 
-Several decorators can be registered. They are nested in execution order, the first one outermost,
-so put tracing first to give the inner decorators' logs the trace id. Decorators run synchronously in
-the delivery thread. Keep them cheap and non-blocking, and release what you open in a `finally` block,
-otherwise a scope or MDC entry leaks into the next task on this thread.
+Several decorators can be registered. They are nested in execution order, the first one outermost.
+Put tracing first, so the logs of the inner decorators carry the trace id.
+Decorators run synchronously in the delivery thread, so keep them cheap and non-blocking.
+Release what you open in a `finally` block, otherwise a scope or MDC entry leaks into the next task on this thread.
 
-Decorators only take effect with an adapter that supports them. The following example assumes an
-adapter starter that collects them as Spring beans and orders them by `@Order`/`Ordered`. It runs
-every task in its own span and puts the activity id into the MDC.
+Decorators only take effect with an adapter that supports them.
+The following example assumes an adapter starter that collects them as Spring beans ordered by `@Order`/`Ordered`.
+It runs every task in its own span and puts the activity id into the MDC.
 
 ```kotlin
 @Component
@@ -133,9 +123,8 @@ TaskExecutionDecorator loggingTaskExecutionDecorator() {
 
 ### Supporting decorators in an adapter
 
-An adapter creates one `TaskExecutionDecoration` (module `process-engine-api-impl`) from the
-decorators in execution order, passes it to its deliveries, and calls `run` in each delivery of
-external tasks, around the whole per-task work including its failure handling.
+An adapter creates one `TaskExecutionDecoration` (module `process-engine-api-impl`) from the decorators in execution order and passes it to its deliveries.
+Each delivery of external tasks calls `run` around its whole per-task work, including the failure handling.
 `TaskExecutionDecoration.NONE` just runs the work.
 
 ```kotlin

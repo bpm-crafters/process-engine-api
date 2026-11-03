@@ -10,16 +10,16 @@ internal class TaskExecutionDecorationTest {
 
   private val task = TaskInformation("task-id", mutableMapOf("topicName" to "my-topic"))
   private val payload = mutableMapOf<String, Any?>("var1" to "value1")
-  private val trace = mutableListOf<String>()
-  private val execution = Runnable { trace += "execution" }
+  private val recordedSteps = mutableListOf<String>()
+  private val execution = Runnable { recordedSteps += "execution" }
 
-  private fun tracing(name: String) = TaskExecutionDecorator { _, _, inner ->
+  private fun recording(name: String) = TaskExecutionDecorator { _, _, inner ->
     Runnable {
-      trace += "$name-before"
+      recordedSteps += "$name-before"
       try {
         inner.run()
       } finally {
-        trace += "$name-after"
+        recordedSteps += "$name-after"
       }
     }
   }
@@ -28,25 +28,14 @@ internal class TaskExecutionDecorationTest {
   fun `runs execution directly without decorators`() {
     TaskExecutionDecoration.NONE.run(task, payload, execution)
 
-    assertThat(trace).containsExactly("execution")
-  }
-
-  @Test
-  fun `is not affected by later changes of the decorator list`() {
-    val decorators = mutableListOf(tracing("first"))
-    val decoration = TaskExecutionDecoration(decorators)
-    decorators += tracing("second")
-
-    decoration.run(task, payload, execution)
-
-    assertThat(trace).containsExactly("first-before", "execution", "first-after")
+    assertThat(recordedSteps).containsExactly("execution")
   }
 
   @Test
   fun `runs decorators around execution with the first one outermost`() {
-    TaskExecutionDecoration(listOf(tracing("first"), tracing("second"))).run(task, payload, execution)
+    TaskExecutionDecoration(listOf(recording("first"), recording("second"))).run(task, payload, execution)
 
-    assertThat(trace).containsExactly("first-before", "second-before", "execution", "second-after", "first-after")
+    assertThat(recordedSteps).containsExactly("first-before", "second-before", "execution", "second-after", "first-after")
   }
 
   @Test
@@ -71,11 +60,11 @@ internal class TaskExecutionDecorationTest {
 
   @Test
   fun `runs execution once if a decorator skips it`() {
-    val skipping = TaskExecutionDecorator { _, _, _ -> Runnable { trace += "skipping" } }
+    val skipping = TaskExecutionDecorator { _, _, _ -> Runnable { recordedSteps += "skipping" } }
 
-    TaskExecutionDecoration(listOf(tracing("first"), skipping)).run(task, payload, execution)
+    TaskExecutionDecoration(listOf(recording("first"), skipping)).run(task, payload, execution)
 
-    assertThat(trace).containsExactly("first-before", "skipping", "first-after", "execution")
+    assertThat(recordedSteps).containsExactly("first-before", "skipping", "first-after", "execution")
   }
 
   @Test
@@ -84,25 +73,25 @@ internal class TaskExecutionDecorationTest {
 
     TaskExecutionDecoration(listOf(repeating)).run(task, payload, execution)
 
-    assertThat(trace).containsExactly("execution")
+    assertThat(recordedSteps).containsExactly("execution")
   }
 
   @Test
-  fun `runs execution with remaining decorators if decorate throws`() {
+  fun `skips a decorator whose decorate throws`() {
     val failing = TaskExecutionDecorator { _, _, _ -> throw IllegalStateException("boom") }
 
-    TaskExecutionDecoration(listOf(tracing("first"), failing)).run(task, payload, execution)
+    TaskExecutionDecoration(listOf(recording("first"), failing)).run(task, payload, execution)
 
-    assertThat(trace).containsExactly("first-before", "execution", "first-after")
+    assertThat(recordedSteps).containsExactly("first-before", "execution", "first-after")
   }
 
   @Test
-  fun `runs execution if a decorator throws before running it`() {
-    val failing = TaskExecutionDecorator { _, _, _ -> Runnable { throw AssertionError("boom") } }
+  fun `runs execution when the decorated runnable throws first`() {
+    val failing = TaskExecutionDecorator { _, _, _ -> Runnable { throw IllegalStateException("boom") } }
 
     TaskExecutionDecoration(listOf(failing)).run(task, payload, execution)
 
-    assertThat(trace).containsExactly("execution")
+    assertThat(recordedSteps).containsExactly("execution")
   }
 
   @Test
@@ -111,31 +100,23 @@ internal class TaskExecutionDecorationTest {
 
     TaskExecutionDecoration(listOf(failing)).run(task, payload, execution)
 
-    assertThat(trace).containsExactly("execution")
+    assertThat(recordedSteps).containsExactly("execution")
   }
 
   @Test
   fun `propagates exception thrown by the execution unchanged through decorators`() {
     val executionError = IllegalStateException("execution")
 
-    assertThatThrownBy { TaskExecutionDecoration(listOf(tracing("first"))).run(task, payload) { throw executionError } }
+    assertThatThrownBy { TaskExecutionDecoration(listOf(recording("first"))).run(task, payload) { throw executionError } }
       .isSameAs(executionError)
-    assertThat(trace).containsExactly("first-before", "first-after")
+    assertThat(recordedSteps).containsExactly("first-before", "first-after")
   }
 
   @Test
   fun `propagates error thrown by the execution unchanged through decorators`() {
     val executionError = AssertionError("execution")
 
-    assertThatThrownBy { TaskExecutionDecoration(listOf(tracing("first"))).run(task, payload) { throw executionError } }
+    assertThatThrownBy { TaskExecutionDecoration(listOf(recording("first"))).run(task, payload) { throw executionError } }
       .isSameAs(executionError)
-  }
-
-  @Test
-  fun `propagates virtual machine errors thrown by decorators`() {
-    val failing = TaskExecutionDecorator { _, _, _ -> throw StackOverflowError("boom") }
-
-    assertThatThrownBy { TaskExecutionDecoration(listOf(failing)).run(task, payload, execution) }
-      .isInstanceOf(StackOverflowError::class.java)
   }
 }

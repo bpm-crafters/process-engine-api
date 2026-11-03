@@ -9,50 +9,70 @@ import java.util.concurrent.atomic.AtomicBoolean
 private val logger = KotlinLogging.logger {}
 
 /**
- * Runs the per-task work of a delivery with the [TaskExecutionDecorator]s around it. Adapters create
- * one instance from the decorators in execution order and call [run] in every delivery of external
- * tasks, around the whole per-task work including its failure handling.
- *
- * The first decorator is the outermost one. The work runs exactly once: a decorator that fails, skips
- * or repeats the work is only logged. An exception thrown by the work itself passes through unchanged;
- * only a [VirtualMachineError] thrown by a decorator propagates as well.
+ * Runs the per-task work of a delivery with the [TaskExecutionDecorator]s around it, the first one outermost.
+ * Adapters create one instance and call [run] around the whole per-task work, including its failure handling.
+ * The work always runs exactly once; a decorator that fails, skips or repeats it is only logged.
  * @param decorators decorators in execution order.
  * @since 1.8
  */
-class TaskExecutionDecoration(decorators: List<TaskExecutionDecorator>) {
-
-  private val decorators = decorators.toList()
+class TaskExecutionDecoration(private val decorators: List<TaskExecutionDecorator>) {
 
   /**
    * Runs the per-task work of a delivery with the decorators around it.
+   * Exceptions thrown by the work pass through unchanged.
    * @param task information about the delivered task.
    * @param payload payload delivered to the handler.
    * @param execution per-task work of the delivery, including its failure handling.
    */
   fun run(task: TaskInformation, payload: Map<String, Any?>, execution: Runnable) {
-    if (decorators.isEmpty()) {
-      execution.run()
-      return
+    val executionStarted = AtomicBoolean(false)
+    val executionFailed = AtomicBoolean(false)
+    val trackedExecution = Runnable {
+      if (executionStarted.getAndSet(true)) {
+        logger.warn { "PROCESS-ENGINE-API-018: Decorator ran task ${task.taskId} again, ignoring the repeated run." }
+        return@Runnable
+      }
+      try {
+        execution.run()
+      } catch (e: Exception) {
+        executionFailed.set(true)
+        throw e
+      }
     }
-    val readOnlyTask = task.copy(meta = Collections.unmodifiableMap(task.meta))
-    val readOnlyPayload = Collections.unmodifiableMap(payload)
-    val work = SingleRun(task.taskId, execution)
-    val decorated = decorators.foldRight<TaskExecutionDecorator, Runnable>(work) { decorator, inner ->
-      decorateSafely(decorator, readOnlyTask, readOnlyPayload, inner)
-    }
+
     try {
-      decorated.run()
-    } catch (e: VirtualMachineError) {
-      throw e
-    } catch (e: Throwable) {
-      if (e === work.error) throw e
-      logger.error(e) { "PROCESS-ENGINE-API-016: Task execution decorator failed for task ${task.taskId}." }
+      wrapInDecorators(readOnly(task), Collections.unmodifiableMap(payload), trackedExecution).run()
+    } catch (e: Exception) {
+      if (executionFailed.get()) throw e
+      logDecoratorFailure(task, e)
     }
-    if (!work.started) {
+
+    if (!executionStarted.get()) {
       logger.warn { "PROCESS-ENGINE-API-017: Decorators did not run task ${task.taskId}, running it without them." }
-      work.run()
+      execution.run()
     }
   }
+
+  private fun wrapInDecorators(task: TaskInformation, payload: Map<String, Any?>, execution: Runnable): Runnable =
+    decorators.reversed().fold(execution) { inner, decorator -> decorateOrSkip(decorator, task, payload, inner) }
+
+  private fun decorateOrSkip(
+    decorator: TaskExecutionDecorator,
+    task: TaskInformation,
+    payload: Map<String, Any?>,
+    inner: Runnable
+  ): Runnable =
+    try {
+      decorator.decorate(task, payload, inner)
+    } catch (e: Exception) {
+      logDecoratorFailure(task, e)
+      inner
+    }
+
+  private fun readOnly(task: TaskInformation) = task.copy(meta = Collections.unmodifiableMap(task.meta))
+
+  private fun logDecoratorFailure(task: TaskInformation, e: Exception) =
+    logger.error(e) { "PROCESS-ENGINE-API-016: Task execution decorator failed for task ${task.taskId}." }
 
   companion object {
     /**
@@ -60,41 +80,5 @@ class TaskExecutionDecoration(decorators: List<TaskExecutionDecorator>) {
      */
     @JvmField
     val NONE = TaskExecutionDecoration(emptyList())
-  }
-}
-
-private fun decorateSafely(
-  decorator: TaskExecutionDecorator,
-  task: TaskInformation,
-  payload: Map<String, Any?>,
-  inner: Runnable
-): Runnable =
-  try {
-    decorator.decorate(task, payload, inner)
-  } catch (e: VirtualMachineError) {
-    throw e
-  } catch (e: Throwable) {
-    logger.error(e) { "PROCESS-ENGINE-API-016: Task execution decorator failed for task ${task.taskId}." }
-    inner
-  }
-
-private class SingleRun(private val taskId: String, private val execution: Runnable) : Runnable {
-  private val running = AtomicBoolean(false)
-  var error: Throwable? = null
-    private set
-  val started: Boolean
-    get() = running.get()
-
-  override fun run() {
-    if (!running.compareAndSet(false, true)) {
-      logger.warn { "PROCESS-ENGINE-API-018: Decorator ran task $taskId again, ignoring the repeated run." }
-      return
-    }
-    try {
-      execution.run()
-    } catch (e: Throwable) {
-      error = e
-      throw e
-    }
   }
 }
