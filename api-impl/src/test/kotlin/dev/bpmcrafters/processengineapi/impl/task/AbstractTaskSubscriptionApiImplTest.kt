@@ -4,10 +4,10 @@ import dev.bpmcrafters.processengineapi.CommonRestrictions
 import dev.bpmcrafters.processengineapi.MetaInfo
 import dev.bpmcrafters.processengineapi.MetaInfoAware
 import dev.bpmcrafters.processengineapi.task.SubscribeForTaskCmd
+import dev.bpmcrafters.processengineapi.task.TaskHandlerContext
+import dev.bpmcrafters.processengineapi.task.TaskHandlerObserver
 import dev.bpmcrafters.processengineapi.task.TaskHandler
-import dev.bpmcrafters.processengineapi.task.TaskHandlerInterceptor
-import dev.bpmcrafters.processengineapi.task.TaskHandlerInterceptorChain
-import dev.bpmcrafters.processengineapi.task.TaskHandlerInterceptorContext
+import dev.bpmcrafters.processengineapi.task.TaskHandlerOutcome
 import dev.bpmcrafters.processengineapi.task.TaskInformation
 import dev.bpmcrafters.processengineapi.task.TaskType
 import dev.bpmcrafters.processengineapi.task.UnsubscribeFromTaskCmd
@@ -20,8 +20,8 @@ internal class AbstractTaskSubscriptionApiImplTest {
   private val taskSubscriptionApi = MyTaskSubscriptionApiImpl(subscriptionRepository)
   class MyTaskSubscriptionApiImpl(
     subscriptionRepository: SubscriptionRepository,
-    interceptors: List<TaskHandlerInterceptor> = emptyList()
-  ) : AbstractTaskSubscriptionApiImpl(subscriptionRepository, interceptors) {
+    observers: List<TaskHandlerObserver<*>> = emptyList()
+  ) : AbstractTaskSubscriptionApiImpl(subscriptionRepository, observers) {
 
     override fun meta(instance: MetaInfoAware): MetaInfo {
       TODO("Not yet implemented")
@@ -56,12 +56,12 @@ internal class AbstractTaskSubscriptionApiImplTest {
   }
 
   @Test
-  fun `keeps constructor without interceptors for existing adapters`() {
+  fun `keeps constructor without observers for existing adapters`() {
     Assertions.assertThat(AbstractTaskSubscriptionApiImpl::class.java.getDeclaredConstructor(SubscriptionRepository::class.java)).isNotNull
   }
 
   @Test
-  fun `invokes action when no interceptors are configured`() {
+  fun `invokes action when no observers are configured`() {
     var invocations = 0
     val action = TaskHandler { _, _ -> invocations++ }
 
@@ -82,10 +82,10 @@ internal class AbstractTaskSubscriptionApiImplTest {
   }
 
   @Test
-  fun `wraps action so interceptor runs on delivery and unsubscribe still works`() {
-    val interceptor = TracingInterceptor()
-    val api = MyTaskSubscriptionApiImpl(subscriptionRepository, listOf(interceptor))
-    val action = TaskHandler { _, _ -> interceptor.trace += "action" }
+  fun `wraps action so observer runs on delivery and unsubscribe still works`() {
+    val observer = TracingObserver()
+    val api = MyTaskSubscriptionApiImpl(subscriptionRepository, listOf(observer))
+    val action = TaskHandler { _, _ -> observer.trace += "action" }
 
     val handle = api.subscribeForTask(
         SubscribeForTaskCmd(
@@ -100,18 +100,20 @@ internal class AbstractTaskSubscriptionApiImplTest {
 
     Assertions.assertThat(handle.action).isNotSameAs(action)
     handle.action.accept(TaskInformation("task-id", emptyMap()), emptyMap())
-    Assertions.assertThat(interceptor.trace).containsExactly("before", "action", "after")
+    Assertions.assertThat(observer.trace).containsExactly("before", "action", "after")
 
     api.unsubscribe(UnsubscribeFromTaskCmd(handle)).get()
     Assertions.assertThat(subscriptionRepository.getTaskSubscriptions()).isEmpty()
   }
 
-  private class TracingInterceptor : TaskHandlerInterceptor {
+  private class TracingObserver : TaskHandlerObserver<Unit> {
     val trace = mutableListOf<String>()
 
-    override fun intercept(context: TaskHandlerInterceptorContext, chain: TaskHandlerInterceptorChain) {
+    override fun before(context: TaskHandlerContext) {
       trace += "before"
-      chain.proceed()
+    }
+
+    override fun after(context: TaskHandlerContext, state: Unit, outcome: TaskHandlerOutcome, error: Throwable?) {
       trace += "after"
     }
   }

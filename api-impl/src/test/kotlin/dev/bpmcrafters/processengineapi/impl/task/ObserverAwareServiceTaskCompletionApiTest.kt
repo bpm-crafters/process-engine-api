@@ -5,8 +5,9 @@ import dev.bpmcrafters.processengineapi.task.CompleteTaskByErrorCmd
 import dev.bpmcrafters.processengineapi.task.CompleteTaskCmd
 import dev.bpmcrafters.processengineapi.task.FailTaskCmd
 import dev.bpmcrafters.processengineapi.task.ServiceTaskCompletionApi
+import dev.bpmcrafters.processengineapi.task.TaskHandlerContext
+import dev.bpmcrafters.processengineapi.task.TaskHandlerObserver
 import dev.bpmcrafters.processengineapi.task.TaskHandler
-import dev.bpmcrafters.processengineapi.task.TaskHandlerInterceptor
 import dev.bpmcrafters.processengineapi.task.TaskHandlerOutcome
 import dev.bpmcrafters.processengineapi.task.TaskInformation
 import dev.bpmcrafters.processengineapi.task.TaskType
@@ -15,11 +16,11 @@ import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
 import java.util.concurrent.CompletableFuture
 
-internal class InterceptorAwareServiceTaskCompletionApiTest {
+internal class ObserverAwareServiceTaskCompletionApiTest {
 
   private val taskInformation = TaskInformation("task-id", emptyMap())
   private val delegatedCommands = mutableListOf<Any>()
-  private val completionApi = InterceptorAwareServiceTaskCompletionApi(object : ServiceTaskCompletionApi {
+  private val completionApi = ObserverAwareServiceTaskCompletionApi(object : ServiceTaskCompletionApi {
     override fun completeTask(cmd: CompleteTaskCmd) = delegated(cmd)
     override fun completeTaskByError(cmd: CompleteTaskByErrorCmd) = delegated(cmd)
     override fun failTask(cmd: FailTaskCmd) = delegated(cmd)
@@ -30,10 +31,15 @@ internal class InterceptorAwareServiceTaskCompletionApiTest {
     return CompletableFuture.completedFuture(Empty)
   }
 
-  private fun outcomeSeenByInterceptorOf(handler: TaskHandler): TaskHandlerOutcome {
+  private fun outcomeSeenByObserverOf(handler: TaskHandler): TaskHandlerOutcome {
     var seenOutcome: TaskHandlerOutcome? = null
-    val interceptor = TaskHandlerInterceptor { _, chain -> chain.proceed().also { seenOutcome = it } }
-    InterceptingTaskHandler(handler, listOf(interceptor), "task-key", TaskType.EXTERNAL)
+    val observer = object : TaskHandlerObserver<Unit> {
+      override fun before(context: TaskHandlerContext) = Unit
+      override fun after(context: TaskHandlerContext, state: Unit, outcome: TaskHandlerOutcome, error: Throwable?) {
+        seenOutcome = outcome
+      }
+    }
+    ObserverAwareTaskHandler(handler, listOf(observer), "task-key", TaskType.EXTERNAL)
       .accept(taskInformation, emptyMap())
     return seenOutcome!!
   }
@@ -42,7 +48,7 @@ internal class InterceptorAwareServiceTaskCompletionApiTest {
   fun `reports failed task`() {
     val cmd = FailTaskCmd("task-id", "reason", "details")
 
-    val outcome = outcomeSeenByInterceptorOf { _, _ -> completionApi.failTask(cmd).get() }
+    val outcome = outcomeSeenByObserverOf { _, _ -> completionApi.failTask(cmd).get() }
 
     assertThat(outcome).isEqualTo(TaskHandlerOutcome.Failed("reason", "details"))
     assertThat(delegatedCommands).containsExactly(cmd)
@@ -52,7 +58,7 @@ internal class InterceptorAwareServiceTaskCompletionApiTest {
   fun `reports task completed by error`() {
     val cmd = CompleteTaskByErrorCmd("task-id", "error-code", "message")
 
-    val outcome = outcomeSeenByInterceptorOf { _, _ -> completionApi.completeTaskByError(cmd).get() }
+    val outcome = outcomeSeenByObserverOf { _, _ -> completionApi.completeTaskByError(cmd).get() }
 
     assertThat(outcome).isEqualTo(TaskHandlerOutcome.CompletedByError("error-code", "message"))
     assertThat(delegatedCommands).containsExactly(cmd)
@@ -62,7 +68,7 @@ internal class InterceptorAwareServiceTaskCompletionApiTest {
   fun `reports completed task`() {
     val cmd = CompleteTaskCmd("task-id") { emptyMap() }
 
-    val outcome = outcomeSeenByInterceptorOf { _, _ -> completionApi.completeTask(cmd).get() }
+    val outcome = outcomeSeenByObserverOf { _, _ -> completionApi.completeTask(cmd).get() }
 
     assertThat(outcome).isEqualTo(TaskHandlerOutcome.Completed)
     assertThat(delegatedCommands).containsExactly(cmd)
@@ -70,13 +76,13 @@ internal class InterceptorAwareServiceTaskCompletionApiTest {
 
   @Test
   fun `does not report outcome if the engine call throws`() {
-    val failingApi = InterceptorAwareServiceTaskCompletionApi(object : ServiceTaskCompletionApi {
+    val failingApi = ObserverAwareServiceTaskCompletionApi(object : ServiceTaskCompletionApi {
       override fun completeTask(cmd: CompleteTaskCmd): CompletableFuture<Empty> = throw IllegalStateException("boom")
       override fun completeTaskByError(cmd: CompleteTaskByErrorCmd) = delegated(cmd)
       override fun failTask(cmd: FailTaskCmd) = delegated(cmd)
     })
 
-    val outcome = outcomeSeenByInterceptorOf { _, _ ->
+    val outcome = outcomeSeenByObserverOf { _, _ ->
       runCatching { failingApi.completeTask(CompleteTaskCmd("task-id") { emptyMap() }) }
     }
 
@@ -85,13 +91,13 @@ internal class InterceptorAwareServiceTaskCompletionApiTest {
 
   @Test
   fun `reports outcome regardless of the result of the returned future`() {
-    val pendingApi = InterceptorAwareServiceTaskCompletionApi(object : ServiceTaskCompletionApi {
+    val pendingApi = ObserverAwareServiceTaskCompletionApi(object : ServiceTaskCompletionApi {
       override fun completeTask(cmd: CompleteTaskCmd) = CompletableFuture<Empty>()
       override fun completeTaskByError(cmd: CompleteTaskByErrorCmd) = delegated(cmd)
       override fun failTask(cmd: FailTaskCmd) = delegated(cmd)
     })
 
-    val outcome = outcomeSeenByInterceptorOf { _, _ ->
+    val outcome = outcomeSeenByObserverOf { _, _ ->
       pendingApi.completeTask(CompleteTaskCmd("task-id") { emptyMap() })
     }
 
@@ -99,61 +105,27 @@ internal class InterceptorAwareServiceTaskCompletionApiTest {
   }
 
   @Test
-  fun `keeps outcome of enclosing execution after a nested execution`() {
-    val outcome = outcomeSeenByInterceptorOf { _, _ ->
+  fun `keeps outcomes of nested and enclosing execution apart`() {
+    var innerOutcome: TaskHandlerOutcome? = null
+    val outerOutcome = outcomeSeenByObserverOf { _, _ ->
       completionApi.failTask(FailTaskCmd("task-id", "reason", null))
-      outcomeSeenByInterceptorOf { _, _ -> }
+      innerOutcome = outcomeSeenByObserverOf { _, _ -> completionApi.completeTask(CompleteTaskCmd("task-id") { emptyMap() }) }
     }
 
-    assertThat(outcome).isEqualTo(TaskHandlerOutcome.Failed("reason", null))
-  }
-
-  @Test
-  fun `does not report outcome of a previous attempt if interceptor proceeds twice`() {
-    var attempts = 0
-    val retryingInterceptor = TaskHandlerInterceptor { _, chain ->
-      chain.proceed()
-      chain.proceed()
-    }
-    var seenOutcome: TaskHandlerOutcome? = null
-    val observingInterceptor = TaskHandlerInterceptor { _, chain -> chain.proceed().also { seenOutcome = it } }
-    val handler = TaskHandler { _, _ ->
-      if (attempts++ == 0) completionApi.failTask(FailTaskCmd("task-id", "reason", null))
-    }
-
-    InterceptingTaskHandler(handler, listOf(retryingInterceptor, observingInterceptor), "task-key", TaskType.EXTERNAL)
-      .accept(taskInformation, emptyMap())
-
-    assertThat(seenOutcome).isEqualTo(TaskHandlerOutcome.Undetermined)
-  }
-
-  @Test
-  fun `does not report outcome of a previous attempt if inner interceptor skips the handler`() {
-    var attempts = 0
-    var secondOutcome: TaskHandlerOutcome? = null
-    val retryingInterceptor = TaskHandlerInterceptor { _, chain ->
-      chain.proceed()
-      secondOutcome = chain.proceed()
-    }
-    val skippingInterceptor = TaskHandlerInterceptor { _, chain -> if (attempts++ == 0) chain.proceed() }
-    val handler = TaskHandler { _, _ -> completionApi.failTask(FailTaskCmd("task-id", "reason", null)) }
-
-    InterceptingTaskHandler(handler, listOf(retryingInterceptor, skippingInterceptor), "task-key", TaskType.EXTERNAL)
-      .accept(taskInformation, emptyMap())
-
-    assertThat(secondOutcome).isEqualTo(TaskHandlerOutcome.Undetermined)
+    assertThat(innerOutcome).isEqualTo(TaskHandlerOutcome.Completed)
+    assertThat(outerOutcome).isEqualTo(TaskHandlerOutcome.Failed("reason", null))
   }
 
   @Test
   fun `reports undetermined outcome if handler does not finish the task`() {
-    val outcome = outcomeSeenByInterceptorOf { _, _ -> }
+    val outcome = outcomeSeenByObserverOf { _, _ -> }
 
     assertThat(outcome).isEqualTo(TaskHandlerOutcome.Undetermined)
   }
 
   @Test
   fun `ignores outcome of another task`() {
-    val outcome = outcomeSeenByInterceptorOf { _, _ ->
+    val outcome = outcomeSeenByObserverOf { _, _ ->
       completionApi.failTask(FailTaskCmd("other-task-id", "reason", null)).get()
     }
 
@@ -162,7 +134,7 @@ internal class InterceptorAwareServiceTaskCompletionApiTest {
 
   @Test
   fun `ignores outcome reported by another thread`() {
-    val outcome = outcomeSeenByInterceptorOf { _, _ ->
+    val outcome = outcomeSeenByObserverOf { _, _ ->
       CompletableFuture.runAsync { completionApi.failTask(FailTaskCmd("task-id", "reason", null)).get() }.get()
     }
 
@@ -172,13 +144,33 @@ internal class InterceptorAwareServiceTaskCompletionApiTest {
   @Test
   fun `does not leak outcome of a throwing handler into the next execution`() {
     assertThatThrownBy {
-      outcomeSeenByInterceptorOf { _, _ ->
+      outcomeSeenByObserverOf { _, _ ->
         completionApi.failTask(FailTaskCmd("task-id", "reason", null)).get()
         throw IllegalStateException("boom")
       }
     }.isInstanceOf(IllegalStateException::class.java)
 
     assertThat(TaskHandlerOutcomeRecorder.recordedOutcome()).isEqualTo(TaskHandlerOutcome.Undetermined)
+  }
+
+  @Test
+  fun `reports outcome to observers if handler throws after finishing the task`() {
+    var seenOutcome: TaskHandlerOutcome? = null
+    val observer = object : TaskHandlerObserver<Unit> {
+      override fun before(context: TaskHandlerContext) = Unit
+      override fun after(context: TaskHandlerContext, state: Unit, outcome: TaskHandlerOutcome, error: Throwable?) {
+        seenOutcome = outcome
+      }
+    }
+
+    assertThatThrownBy {
+      ObserverAwareTaskHandler({ _, _ ->
+        completionApi.failTask(FailTaskCmd("task-id", "reason", null)).get()
+        throw IllegalStateException("boom")
+      }, listOf(observer), "task-key", TaskType.EXTERNAL).accept(taskInformation, emptyMap())
+    }.isInstanceOf(IllegalStateException::class.java)
+
+    assertThat(seenOutcome).isEqualTo(TaskHandlerOutcome.Failed("reason", null))
   }
 
   @Test

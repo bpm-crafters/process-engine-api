@@ -5,18 +5,20 @@ import dev.bpmcrafters.processengineapi.task.CompleteTaskByErrorCmd
 import dev.bpmcrafters.processengineapi.task.CompleteTaskCmd
 import dev.bpmcrafters.processengineapi.task.FailTaskCmd
 import dev.bpmcrafters.processengineapi.task.ServiceTaskCompletionApi
-import dev.bpmcrafters.processengineapi.task.TaskHandlerInterceptor
+import dev.bpmcrafters.processengineapi.task.TaskHandlerObserver
 import dev.bpmcrafters.processengineapi.task.TaskHandlerOutcome
 import java.util.concurrent.CompletableFuture
 
 /**
  * Decorates a [ServiceTaskCompletionApi] and reports each accepted request of a task handler as
- * [TaskHandlerOutcome] to the running [TaskHandlerInterceptor]s, regardless of the returned future.
+ * [TaskHandlerOutcome] to the running [TaskHandlerObserver]s, regardless of the returned future.
  *
  * Reports only calls made in the handler's thread, and nothing if the call throws synchronously.
+ * Use it together with the observers passed to [AbstractTaskSubscriptionApiImpl]; either one alone
+ * makes every outcome [TaskHandlerOutcome.Undetermined].
  * @since 1.8
  */
-class InterceptorAwareServiceTaskCompletionApi(
+class ObserverAwareServiceTaskCompletionApi(
   private val delegate: ServiceTaskCompletionApi
 ) : ServiceTaskCompletionApi {
 

@@ -24,10 +24,6 @@ internal object TaskHandlerOutcomeRecorder {
     }
   }
 
-  fun clearRecordedOutcome() {
-    currentRecording.get()?.outcome = TaskHandlerOutcome.Undetermined
-  }
-
   fun record(taskId: String, outcome: TaskHandlerOutcome) {
     currentRecording.get()?.takeIf { it.taskId == taskId }?.outcome = outcome
   }
