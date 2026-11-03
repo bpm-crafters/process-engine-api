@@ -1,10 +1,11 @@
 package dev.bpmcrafters.processengineapi.task
 
 /**
- * What a [TaskHandler] requested via the [ServiceTaskCompletionApi] in its executing thread, not
- * whether the engine processed it. Requires a completion API wrapped in
+ * What a [TaskHandler] requested via the [ServiceTaskCompletionApi] in its executing thread, or
+ * what the delivery reported for it, not whether the engine processed it. Requires a completion API wrapped in
  * `ObserverAwareServiceTaskCompletionApi` (module `process-engine-api-impl`). From Java, the
- * singletons are `TaskHandlerOutcome.Completed.INSTANCE` and `TaskHandlerOutcome.Undetermined.INSTANCE`.
+ * singletons are `TaskHandlerOutcome.Completed.INSTANCE`, `TaskHandlerOutcome.Vanished.INSTANCE` and
+ * `TaskHandlerOutcome.Undetermined.INSTANCE`.
  * @since 1.8
  */
 sealed interface TaskHandlerOutcome {
@@ -41,6 +42,12 @@ sealed interface TaskHandlerOutcome {
      */
     val errorDetails: String?
   ) : TaskHandlerOutcome
+
+  /**
+   * The task was gone before the delivery could finish it, e.g. because its lock expired and another
+   * worker took it over. Reported by the delivery; not a failure of the handler.
+   */
+  data object Vanished : TaskHandlerOutcome
 
   /**
    * No outcome was reported in the executing thread: the task is finished later or by another

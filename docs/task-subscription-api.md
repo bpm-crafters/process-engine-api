@@ -56,23 +56,24 @@ public class TaskSubscriber {
 
 ## Task handler observers
 
-Cross-cutting concerns such as logging, tracing, or auditing can observe every task delivery via a
-`TaskHandlerObserver`. An observer applies to both registration paths (`@ProcessEngineWorker` and
-manual `subscribeForTask`) and to every `TaskType`. Filter on `context.getTaskType()` if an observer
-should only act on a specific type.
+Cross-cutting concerns such as logging, tracing, or auditing can observe the delivery of external
+service tasks via a `TaskHandlerObserver`. An observer applies to both registration paths
+(`@ProcessEngineWorker` and manual `subscribeForTask`). Only `EXTERNAL` tasks are observed.
 
 An observer watches the handler call of a subscription in the application. It is not an engine
 listener such as a Camunda `ExecutionListener` or `TaskListener`, and it is not declared in the BPMN
 model.
 
-The handler always runs exactly once, and `before` is called before it in list order, `after` after
-it in reverse order. An observer cannot affect the task:
+The delivery runs the observers around its whole per-task work: `before` in list order before the
+handler, `after` in reverse order once the delivery has finished, including its failure handling.
+Logs the delivery writes while reporting a failure therefore still see the trace or MDC context an
+observer opened. The handler always runs exactly once. An observer cannot affect the task:
 
 - Everything thrown by `before` or `after` is only logged, except a `VirtualMachineError` such as
   `OutOfMemoryError`. If `before` throws, `after` is not called for this observer; the handler and
   all other observers still run.
-- An exception thrown by the handler reaches `after` as `error` and is then passed on to the
-  delivery unchanged.
+- An exception thrown by the handler reaches `after` as `error`, also if the delivery catches it and
+  reports a failure to the engine. The delivery handles it as without observers.
 - The context is read-only. The handler receives the original arguments, so changing the context
   never reaches it. The payload is a view, not a copy: do not mutate values inside it, as they are
   shared with the handler, and expect changes the handler makes to a mutable payload map to be
@@ -90,21 +91,22 @@ the next task on this thread.
 
 A handler may report a failure or a BPMN error itself instead of throwing an exception, as the
 `process-engine-worker` does. The `TaskHandlerOutcome` passed to `after` tells what happened:
-`Completed`, `CompletedByError`, `Failed`, or `Undetermined`. From Java, the singletons are
-`TaskHandlerOutcome.Completed.INSTANCE` and `TaskHandlerOutcome.Undetermined.INSTANCE`; match the
+`Completed`, `CompletedByError`, `Failed`, `Vanished`, or `Undetermined`. `Failed` is also reported
+by the delivery if it catches a handler exception. `Vanished` means the task was gone before the
+delivery could finish it, for example because its lock expired and another worker took it over; it
+is not a failure. From Java, the singletons are `TaskHandlerOutcome.Completed.INSTANCE`,
+`TaskHandlerOutcome.Vanished.INSTANCE` and `TaskHandlerOutcome.Undetermined.INSTANCE`; match the
 others with `instanceof`. The outcome is only known if the handler finishes the task in the delivery
 thread through a `ServiceTaskCompletionApi` wrapped in `ObserverAwareServiceTaskCompletionApi`
-(module `process-engine-api-impl`). The adapter has to wrap its completion API and pass the
-observers; either one alone makes every outcome `Undetermined`. A task finished later, by another
+(module `process-engine-api-impl`). A task finished later, by another
 thread, or not through a `ServiceTaskCompletionApi` (as user tasks are) results in `Undetermined`.
 `Undetermined` means neither success nor failure, so do not treat it as either. The outcome reflects
 the accepted request, not the result of the returned future. A completion call that throws
 synchronously results in `Undetermined`.
 
-An adapter passes observers to the constructor of `AbstractTaskSubscriptionApiImpl`, in execution
-order. Observers therefore only take effect with an adapter that supports them. The following
-example assumes an adapter starter that collects them as Spring beans and orders them by
-`@Order`/`Ordered`. It runs every task in its own span and puts the activity id into the MDC.
+Observers only take effect with an adapter whose deliveries support them. The following example
+assumes an adapter starter that collects them as Spring beans and orders them by `@Order`/`Ordered`.
+It runs every task in its own span and puts the activity id into the MDC.
 
 ```java
 import dev.bpmcrafters.processengineapi.CommonRestrictions;
@@ -174,6 +176,31 @@ public class LoggingTaskHandlerObserver implements TaskHandlerObserver<Void> {
   @Override
   public void after(TaskHandlerContext context, Void state, TaskHandlerOutcome outcome, Throwable error) {
     log.info("[TASK]: {} finished with {}", context.getTaskInformation().getTaskId(), outcome);
+  }
+}
+```
+
+### Supporting observers in an adapter
+
+An adapter creates one `TaskHandlerObservation` from the observers in execution order and calls it
+in each delivery of external tasks, around the whole per-task work including the failure handling.
+It reports what the handler could not report itself through the `TaskDeliveryReport`, and wraps its
+`ServiceTaskCompletionApi` in `ObserverAwareServiceTaskCompletionApi`, so observers also see
+outcomes reported by the handler. A reported outcome takes precedence over the one of the handler,
+and `vanished` over `failed`. Without observers, or for other task types, `observe` just runs the
+delivery.
+
+```kotlin
+observation.observe(subscription, taskInformation, payload) { report ->
+  try {
+    subscription.action.accept(taskInformation, payload)
+  } catch (e: NotFoundException) {
+    logger.debug(e) { "Task ${taskInformation.taskId} is gone." }
+    report.vanished(e)
+  } catch (e: Exception) {
+    logger.warn(e) { "Failed delivering task ${taskInformation.taskId}." }
+    externalTaskService.handleFailure(taskInformation.taskId, workerId, e.message, retries - 1, retryTimeout)
+    report.failed(e)
   }
 }
 ```

@@ -14,8 +14,8 @@ import java.util.concurrent.CompletableFuture
  * [TaskHandlerOutcome] to the running [TaskHandlerObserver]s, regardless of the returned future.
  *
  * Reports only calls made in the handler's thread, and nothing if the call throws synchronously.
- * Use it together with the observers passed to [AbstractTaskSubscriptionApiImpl]; either one alone
- * makes every outcome [TaskHandlerOutcome.Undetermined].
+ * Use it together with a [TaskHandlerObservation] in the deliveries; without it, observers only see
+ * outcomes the delivery reports.
  * @since 1.8
  */
 class ObserverAwareServiceTaskCompletionApi(

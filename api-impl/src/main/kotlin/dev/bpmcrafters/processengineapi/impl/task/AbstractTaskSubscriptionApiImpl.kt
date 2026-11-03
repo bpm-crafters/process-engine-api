@@ -2,7 +2,6 @@ package dev.bpmcrafters.processengineapi.impl.task
 
 import dev.bpmcrafters.processengineapi.Empty
 import dev.bpmcrafters.processengineapi.task.SubscribeForTaskCmd
-import dev.bpmcrafters.processengineapi.task.TaskHandlerObserver
 import dev.bpmcrafters.processengineapi.task.TaskSubscription
 import dev.bpmcrafters.processengineapi.task.TaskSubscriptionApi
 import dev.bpmcrafters.processengineapi.task.UnsubscribeFromTaskCmd
@@ -15,9 +14,8 @@ private val logger = KotlinLogging.logger {}
  * Abstract task subscription api implementation, using subscription repository and a list of completion strategies.
  * @since 0.0.2
  */
-abstract class AbstractTaskSubscriptionApiImpl @JvmOverloads constructor(
-  private val subscriptionRepository: SubscriptionRepository,
-  private val observers: List<TaskHandlerObserver<*>> = emptyList()
+abstract class AbstractTaskSubscriptionApiImpl(
+  private val subscriptionRepository: SubscriptionRepository
 ) : TaskSubscriptionApi {
 
   override fun subscribeForTask(cmd: SubscribeForTaskCmd): CompletableFuture<TaskSubscription> {
@@ -25,12 +23,7 @@ abstract class AbstractTaskSubscriptionApiImpl @JvmOverloads constructor(
       taskDescriptionKey = cmd.taskDescriptionKey,
       payloadDescription = cmd.payloadDescription,
       restrictions = cmd.restrictions,
-      action = ObserverAwareTaskHandler(
-        delegate = cmd.action,
-        observers = observers,
-        taskDescriptionKey = cmd.taskDescriptionKey,
-        taskType = cmd.taskType
-      ),
+      action = cmd.action,
       taskType = cmd.taskType,
       termination = cmd.termination
     ).let {

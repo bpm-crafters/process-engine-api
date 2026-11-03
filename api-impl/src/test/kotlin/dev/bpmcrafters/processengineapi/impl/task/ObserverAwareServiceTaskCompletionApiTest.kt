@@ -31,6 +31,13 @@ internal class ObserverAwareServiceTaskCompletionApiTest {
     return CompletableFuture.completedFuture(Empty)
   }
 
+  private fun observe(handler: TaskHandler, observer: TaskHandlerObserver<*>) {
+    val subscription = TaskSubscriptionHandle(TaskType.EXTERNAL, null, emptyMap(), "task-key", handler) { }
+    TaskHandlerObservation(listOf(observer)).observe(subscription, taskInformation, emptyMap()) {
+      subscription.action.accept(taskInformation, emptyMap())
+    }
+  }
+
   private fun outcomeSeenByObserverOf(handler: TaskHandler): TaskHandlerOutcome {
     var seenOutcome: TaskHandlerOutcome? = null
     val observer = object : TaskHandlerObserver<Unit> {
@@ -39,8 +46,7 @@ internal class ObserverAwareServiceTaskCompletionApiTest {
         seenOutcome = outcome
       }
     }
-    ObserverAwareTaskHandler(handler, listOf(observer), "task-key", TaskType.EXTERNAL)
-      .accept(taskInformation, emptyMap())
+    observe(handler, observer)
     return seenOutcome!!
   }
 
@@ -164,10 +170,10 @@ internal class ObserverAwareServiceTaskCompletionApiTest {
     }
 
     assertThatThrownBy {
-      ObserverAwareTaskHandler({ _, _ ->
+      observe({ _, _ ->
         completionApi.failTask(FailTaskCmd("task-id", "reason", null)).get()
         throw IllegalStateException("boom")
-      }, listOf(observer), "task-key", TaskType.EXTERNAL).accept(taskInformation, emptyMap())
+      }, observer)
     }.isInstanceOf(IllegalStateException::class.java)
 
     assertThat(seenOutcome).isEqualTo(TaskHandlerOutcome.Failed("reason", null))
