@@ -23,35 +23,20 @@ class TaskExecutionDecoration(private val decorators: List<TaskExecutionDecorato
    * @param execution per-task work of the delivery.
    */
   fun run(task: TaskInformation, payload: Map<String, Any?>, execution: Runnable) {
-    val executionResult = resultOfSingleRun(execution)
-    runDecorated(task, payload, executionResult)
-    if (!executionResult.isInitialized()) {
-      runUndecorated(task, execution)
-    }
-  }
+    val singleExecution = SingleExecution(execution) { warnRepeatedRun(task) }
 
-  private fun resultOfSingleRun(execution: Runnable) = lazy {
-    runCatching { execution.run() }
-  }
-
-  private fun runDecorated(task: TaskInformation, payload: Map<String, Any?>, executionResult: Lazy<Result<Unit>>) {
     try {
-      val executionOnce = runOnce(task, executionResult)
-      val decoratedExecution = decorate(readOnly(task), Collections.unmodifiableMap(payload), executionOnce)
+      val decoratedExecution = decorate(readOnly(task), Collections.unmodifiableMap(payload), singleExecution)
       decoratedExecution.run()
     } catch (e: Exception) {
-      if (executionResult.isFailure()) throw e
+      if (singleExecution.hasFailed) throw e
       logDecoratorFailure(task, e)
     }
-  }
 
-  private fun runOnce(task: TaskInformation, executionResult: Lazy<Result<Unit>>) = Runnable {
-    if (executionResult.isInitialized()) warnRepeatedRun(task) else executionResult.value.getOrThrow()
-  }
-
-  private fun runUndecorated(task: TaskInformation, execution: Runnable) {
-    logger.warn { "PROCESS-ENGINE-API-017: Decorators did not run task ${task.taskId}, running it without them." }
-    execution.run()
+    if (!singleExecution.hasRun) {
+      warnSkippedRun(task)
+      singleExecution.run()
+    }
   }
 
   private fun decorate(task: TaskInformation, payload: Map<String, Any?>, execution: Runnable): Runnable =
@@ -64,12 +49,13 @@ class TaskExecutionDecoration(private val decorators: List<TaskExecutionDecorato
       }
     }
 
-  private fun Lazy<Result<Unit>>.isFailure() = isInitialized() && value.isFailure
-
   private fun readOnly(task: TaskInformation) = task.copy(meta = Collections.unmodifiableMap(task.meta))
 
   private fun warnRepeatedRun(task: TaskInformation) =
     logger.warn { "PROCESS-ENGINE-API-018: Decorator ran task ${task.taskId} again, ignoring the repeated run." }
+
+  private fun warnSkippedRun(task: TaskInformation) =
+    logger.warn { "PROCESS-ENGINE-API-017: Decorators did not run task ${task.taskId}, running it without them." }
 
   private fun logDecoratorFailure(task: TaskInformation, e: Exception) =
     logger.error(e) { "PROCESS-ENGINE-API-016: Task execution decorator failed for task ${task.taskId}." }
