@@ -23,19 +23,19 @@ class TaskExecutionDecoration(private val decorators: List<TaskExecutionDecorato
    * @param execution per-task work of the delivery.
    */
   fun run(task: TaskInformation, payload: Map<String, Any?>, execution: Runnable) {
-    val singleExecution = SingleExecution(execution) { warnRepeatedRun(task) }
+    val singleTaskExecution = SingleTaskExecution(execution) { warnRepeatedRun(task) }
 
     try {
-      val decoratedExecution = decorate(readOnly(task), Collections.unmodifiableMap(payload), singleExecution)
+      val decoratedExecution = decorate(readOnly(task), Collections.unmodifiableMap(payload), singleTaskExecution)
       decoratedExecution.run()
     } catch (e: Exception) {
-      if (singleExecution.hasFailed) throw e
+      if (singleTaskExecution.hasFailed) throw e
       logDecoratorFailure(task, e)
     }
 
-    if (!singleExecution.hasRun) {
+    if (!singleTaskExecution.hasRun) {
       warnSkippedRun(task)
-      singleExecution.run()
+      singleTaskExecution.run()
     }
   }
 
