@@ -54,153 +54,99 @@ public class TaskSubscriber {
 
 ```
 
-## Task handler observers
+## Task execution decorators
 
-Cross-cutting concerns such as logging, tracing, or auditing can observe the delivery of external
-service tasks via a `TaskHandlerObserver`. An observer applies to both registration paths
-(`@ProcessEngineWorker` and manual `subscribeForTask`). Only `EXTERNAL` tasks are observed.
+Cross-cutting concerns such as tracing, MDC, logging, or metrics can wrap the execution of external
+service tasks with a `TaskExecutionDecorator`, in the spirit of Spring's `TaskDecorator`. A decorator
+applies to both registration paths (`@ProcessEngineWorker` and manual `subscribeForTask`). It is not an
+engine listener such as a Camunda `ExecutionListener` or `TaskListener`, and it is not declared in the
+BPMN model.
 
-An observer watches the handler call of a subscription in the application. It is not an engine
-listener such as a Camunda `ExecutionListener` or `TaskListener`, and it is not declared in the BPMN
-model.
+The adapter delivery passes its whole per-task work to the decorators: the call of the handler and the
+delivery's own failure handling and logging. Code placed before and after `execution.run()` therefore
+runs before and after both. A span or MDC entry opened around `execution.run()` also covers the
+handler's logs, the logs of the `process-engine-worker`, and the logs the delivery writes when it
+reports a failure.
 
-The delivery runs the observers around its whole per-task work: `before` in list order before the
-handler, `after` in reverse order once the delivery has finished, including its failure handling.
-Logs the delivery writes while reporting a failure therefore still see the trace or MDC context an
-observer opened. The handler always runs exactly once. An observer cannot affect the task:
+A decorator cannot change the task:
 
-- Everything thrown by `before` or `after` is only logged, except a `VirtualMachineError` such as
-  `OutOfMemoryError`. If `before` throws, `after` is not called for this observer; the handler and
-  all other observers still run.
-- An exception thrown by the handler reaches `after` as `error`, also if the delivery catches it and
-  reports a failure to the engine. The delivery handles it as without observers.
-- The context is read-only. The handler receives the original arguments, so changing the context
-  never reaches it. The payload is a view, not a copy: do not mutate values inside it, as they are
-  shared with the handler, and expect changes the handler makes to a mutable payload map to be
-  visible in `after`.
+- It receives read-only views of the task information and the payload. Do not mutate values inside
+  the payload, as they are shared with the handler.
+- Call `execution.run()` exactly once, in the thread of the decorated runnable. The adapter runs the
+  execution exactly once anyway: if a decorator skips it, throws before running it, or runs it twice,
+  this is only logged.
+- An exception a decorator throws is only logged, except a `VirtualMachineError`. An exception thrown
+  by the execution itself passes through the decorators unchanged.
+- The delivery handles a failing handler itself, so `execution.run()` returns normally even if the
+  task failed. A decorator does not learn the outcome; the failure is visible in the logs written
+  inside its scope.
 
-`before` returns a state that the same observer receives in `after`, so no `ThreadLocal` is needed
-and no observer can see the state of another. If no state is needed, use `Unit` in Kotlin, or `Void`
-in Java and return `null` from `before`.
+Several decorators can be registered. They are nested in execution order, the first one outermost,
+so put tracing first to give the inner decorators' logs the trace id. Decorators run synchronously in
+the delivery thread. Keep them cheap and non-blocking, and release what you open in a `finally` block,
+otherwise a scope or MDC entry leaks into the next task on this thread.
 
-Observers run synchronously in the delivery thread. Work in `before` delays the handler and uses up
-the lock time of the task, and work in `after` blocks the worker thread. Keep them cheap and
-non-blocking, and do not call external systems synchronously. Acquire resources in `before` all or
-nothing, and release them in `after` in a `finally` block: a scope or MDC entry left open leaks into
-the next task on this thread.
+Decorators only take effect with an adapter that supports them. The following example assumes an
+adapter starter that collects them as Spring beans and orders them by `@Order`/`Ordered`. It runs
+every task in its own span and puts the activity id into the MDC.
 
-A handler may report a failure or a BPMN error itself instead of throwing an exception, as the
-`process-engine-worker` does. The `TaskHandlerOutcome` passed to `after` tells what happened:
-`Completed`, `CompletedByError`, `Failed`, `Vanished`, or `Undetermined`. `Failed` is also reported
-by the delivery if it catches a handler exception. `Vanished` means the task was gone before the
-delivery could finish it, for example because its lock expired and another worker took it over; it
-is not a failure. From Java, the singletons are `TaskHandlerOutcome.Completed.INSTANCE`,
-`TaskHandlerOutcome.Vanished.INSTANCE` and `TaskHandlerOutcome.Undetermined.INSTANCE`; match the
-others with `instanceof`. The outcome is only known if the handler finishes the task in the delivery
-thread through a `ServiceTaskCompletionApi` wrapped in `ObserverAwareServiceTaskCompletionApi`
-(module `process-engine-api-impl`). A task finished later, by another
-thread, or not through a `ServiceTaskCompletionApi` (as user tasks are) results in `Undetermined`.
-`Undetermined` means neither success nor failure, so do not treat it as either. The outcome reflects
-the accepted request, not the result of the returned future. A completion call that throws
-synchronously results in `Undetermined`.
-
-Observers only take effect with an adapter whose deliveries support them. The following example
-assumes an adapter starter that collects them as Spring beans and orders them by `@Order`/`Ordered`.
-It runs every task in its own span and puts the activity id into the MDC.
-
-```java
-import dev.bpmcrafters.processengineapi.CommonRestrictions;
-import dev.bpmcrafters.processengineapi.task.TaskHandlerContext;
-import dev.bpmcrafters.processengineapi.task.TaskHandlerObserver;
-import dev.bpmcrafters.processengineapi.task.TaskHandlerOutcome;
-import io.opentelemetry.api.trace.Span;
-import io.opentelemetry.api.trace.SpanKind;
-import io.opentelemetry.api.trace.StatusCode;
-import io.opentelemetry.api.trace.Tracer;
-import io.opentelemetry.context.Scope;
-import lombok.RequiredArgsConstructor;
-import org.slf4j.MDC;
-import org.springframework.core.annotation.Order;
-import org.springframework.stereotype.Component;
-
+```kotlin
 @Component
 @Order(0)
-@RequiredArgsConstructor
-public class TracingTaskHandlerObserver implements TaskHandlerObserver<TracingTaskHandlerObserver.OpenSpan> {
+class TracingTaskExecutionDecorator(private val tracer: Tracer) : TaskExecutionDecorator {
 
-  public record OpenSpan(Span span, Scope scope, MDC.MDCCloseable mdc) {}
-
-  private final Tracer tracer;
-
-  @Override
-  public OpenSpan before(TaskHandlerContext context) {
-    String activityId = context.getTaskInformation().getMeta().getOrDefault(CommonRestrictions.ACTIVITY_ID, "");
-    Span span = tracer.spanBuilder(context.getTaskDescriptionKey() + ".handle")
+  override fun decorate(task: TaskInformation, payload: Map<String, Any?>, execution: Runnable) = Runnable {
+    val span = tracer.spanBuilder("${task.meta["topicName"]}.handle")
       .setNoParent()
       .setSpanKind(SpanKind.CONSUMER)
-      .startSpan();
-    Scope scope = span.makeCurrent();
-    MDC.MDCCloseable mdc = MDC.putCloseable("activityId", activityId);
-    return new OpenSpan(span, scope, mdc);
-  }
-
-  @Override
-  public void after(TaskHandlerContext context, OpenSpan state, TaskHandlerOutcome outcome, Throwable error) {
+      .setAttribute("engine.task.id", task.taskId)
+      .startSpan()
     try {
-      if (error != null) {
-        state.span().recordException(error).setStatus(StatusCode.ERROR);
-      } else if (outcome instanceof TaskHandlerOutcome.Failed failed) {
-        state.span().setStatus(StatusCode.ERROR, failed.getReason());
+      span.makeCurrent().use {
+        MDC.putCloseable("activityId", task.meta[CommonRestrictions.ACTIVITY_ID]).use {
+          execution.run()
+        }
       }
     } finally {
-      state.mdc().close();
-      state.scope().close();
-      state.span().end();
+      span.end()
     }
   }
 }
 ```
 
-An observer without state, for example for logging:
+The same in Java, as a lambda that logs before and after each task:
 
 ```java
-@Component
-@Slf4j
-public class LoggingTaskHandlerObserver implements TaskHandlerObserver<Void> {
-
-  @Override
-  public Void before(TaskHandlerContext context) {
-    return null;
-  }
-
-  @Override
-  public void after(TaskHandlerContext context, Void state, TaskHandlerOutcome outcome, Throwable error) {
-    log.info("[TASK]: {} finished with {}", context.getTaskInformation().getTaskId(), outcome);
-  }
+@Bean
+@Order(1)
+TaskExecutionDecorator loggingTaskExecutionDecorator() {
+  return (task, payload, execution) -> () -> {
+    log.info("Processing task {} with variables {}", task.getTaskId(), payload);
+    try {
+      execution.run();
+    } finally {
+      log.info("Finished task {}", task.getTaskId());
+    }
+  };
 }
 ```
 
-### Supporting observers in an adapter
+### Supporting decorators in an adapter
 
-An adapter creates one `TaskHandlerObservation` from the observers in execution order and calls it
-in each delivery of external tasks, around the whole per-task work including the failure handling.
-It reports what the handler could not report itself through the `TaskDeliveryReport`, and wraps its
-`ServiceTaskCompletionApi` in `ObserverAwareServiceTaskCompletionApi`, so observers also see
-outcomes reported by the handler. A reported outcome takes precedence over the one of the handler,
-and `vanished` over `failed`. Without observers, or for other task types, `observe` just runs the
-delivery.
+An adapter creates one `TaskExecutionDecoration` (module `process-engine-api-impl`) from the
+decorators in execution order, passes it to its deliveries, and calls `run` in each delivery of
+external tasks, around the whole per-task work including its failure handling.
+`TaskExecutionDecoration.NONE` just runs the work.
 
 ```kotlin
-observation.observe(subscription, taskInformation, payload) { report ->
+decoration.run(taskInformation, payload) {
   try {
     subscription.action.accept(taskInformation, payload)
   } catch (e: NotFoundException) {
     logger.debug(e) { "Task ${taskInformation.taskId} is gone." }
-    report.vanished(e)
   } catch (e: Exception) {
     logger.warn(e) { "Failed delivering task ${taskInformation.taskId}." }
     externalTaskService.handleFailure(taskInformation.taskId, workerId, e.message, retries - 1, retryTimeout)
-    report.failed(e)
   }
 }
 ```
