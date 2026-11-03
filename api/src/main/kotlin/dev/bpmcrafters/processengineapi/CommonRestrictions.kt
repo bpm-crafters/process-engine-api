@@ -12,6 +12,13 @@ object CommonRestrictions {
   const val ACTIVITY_ID = "activityId"
 
   /**
+   * Id of the runtime instance of a BPMN activity. Key under which adapters can put it into
+   * [dev.bpmcrafters.processengineapi.task.TaskInformation.meta], e.g. for log or trace correlation.
+   * @since 1.8
+   */
+  const val ACTIVITY_INSTANCE_ID = "activityInstanceId"
+
+  /**
    * Logical business key.
    */
   const val BUSINESS_KEY = "businessKey"
