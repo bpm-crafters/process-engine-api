@@ -150,6 +150,9 @@ internal class DefaultProcessApplicationLifecycleTest {
     val lifecycle = DefaultProcessApplicationLifecycle()
     lifecycle.register(participant(ProcessApplicationPhase.INFRASTRUCTURE_READY) {
       assertThatIllegalStateException().isThrownBy {
+        lifecycle.transitionTo(ProcessApplicationPhase.INFRASTRUCTURE_READY)
+      }.withMessage("A lifecycle transition is already in progress")
+      assertThatIllegalStateException().isThrownBy {
         lifecycle.register(participant(ProcessApplicationPhase.RUNNING) {})
       }.withMessage("Lifecycle participants can only be registered for a phase after NOT_STARTED (-2147483648)")
     })

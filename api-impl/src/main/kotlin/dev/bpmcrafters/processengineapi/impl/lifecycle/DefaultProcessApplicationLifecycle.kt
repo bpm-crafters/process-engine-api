@@ -102,9 +102,7 @@ class DefaultProcessApplicationLifecycle : ProcessApplicationLifecycle {
     registrationContext: TaskSubscriptionRegistrationContext?
   ) {
     val context = if (namedPhase == ProcessApplicationPhase.SUBSCRIPTION_REGISTRATION) {
-      checkNotNull(registrationContext) {
-        "Lifecycle transition to phase ${describe(targetContext.getPhase())} requires a TaskSubscriptionRegistrationContext"
-      }
+      registrationContext!!
     } else if (namedPhase == targetContext.getPhase()) {
       targetContext
     } else {
