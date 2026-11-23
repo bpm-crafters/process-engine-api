@@ -66,11 +66,14 @@ Every callback names the `TaskType`, so one observer can handle both types or fi
 |---|---|---|
 | `onStart(task, taskType)` | right before the task handler is invoked; its cleanup runs after the handler returned or threw | delivering thread |
 | `onOutcome(taskId, taskType, outcome)` | on a call to `ServiceTaskCompletionApi` or `UserTaskCompletionApi`, or when an exception escapes the handler | calling thread |
-| `onTermination(task, taskType)` | when the adapter reports that a delivered task is gone, e.g. completed, cancelled or deleted | adapter's thread |
+| `onTermination(task, taskType)` | when the adapter reports that a delivered task is gone, e.g. completed, cancelled or deleted | completing thread or adapter's thread |
 
 For user tasks, the handler only receives the task, e.g. for a task list, and the user completes it later.
 Their outcomes are therefore reported on another thread than `onStart`, and only as `Completed`, `BpmnError` or `Thrown`.
-When and whether `onTermination` is called depends on the adapter and the engine; it may come without a preceding `onStart`, after `onOutcome`, or never for service tasks.
+`onStart` may be called several times for the same task, e.g. when a user task is assigned or updated.
+Adapters may name the reason in `task.meta[TaskInformation.REASON]`: `create`, `assign` or `update` for `onStart`, `complete` or `delete` for `onTermination`.
+An adapter may report `onTermination` right after a completion, so a completed task may report both `onOutcome` and `onTermination`.
+When and whether `onTermination` is called depends on the adapter and the engine; it may also come without a preceding `onStart`.
 The KDoc of `TaskExecutionObserver` describes the full contract.
 
 The example opens a span and MDC values for each external service task and marks the span as failed.
