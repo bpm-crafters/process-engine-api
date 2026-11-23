@@ -22,7 +22,7 @@ For example, a participant at `SUBSCRIPTIONS_REGISTERED + 10` executes after the
 
 ## Registering participants
 
-Implement `ProcessApplicationLifecycleParticipant` with a phase and an `onPhase` callback. Participants execute synchronously in ascending numeric phase order.
+Implement `ProcessApplicationLifecycleParticipant` with a phase and an `onPhase` callback. Participants execute synchronously in ascending numeric phase order while the lifecycle coordinator monitor is held. Do not wait for a thread that calls lifecycle registration or transition methods from a participant, because that can deadlock.
 
 ```kotlin
 class StopConsumerParticipant(
@@ -73,9 +73,11 @@ lifecycle.transitionTo(ProcessApplicationPhase.STOPPING)
 lifecycle.transitionTo(ProcessApplicationPhase.STOPPED)
 ```
 
-Every entered phase is logged at `INFO` level before its participants run. A second message is logged after they finish successfully.
+Every entered phase is logged at `INFO` level before its participants run. A second message is logged after the phase is reached.
 
 ```text
 PROCESS-ENGINE-API-LIFECYCLE-001: Entering lifecycle phase RUNNING (42).
 PROCESS-ENGINE-API-LIFECYCLE-002: Lifecycle phase RUNNING (42) reached.
 ```
+
+If a startup participant fails, `PROCESS-ENGINE-API-LIFECYCLE-003` is logged and the lifecycle becomes unusable, preventing retries that could repeat partial startup work. During `STOPPING` and `STOPPED`, each participant is still invoked after an individual failure; the lifecycle reaches the requested shutdown phase and then throws an aggregate exception containing all participant failures.

@@ -7,6 +7,7 @@ import dev.bpmcrafters.processengineapi.lifecycle.TaskSubscriptionRegistrationCo
 import dev.bpmcrafters.processengineapi.task.TaskSubscriptionApi
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatIllegalStateException
+import org.assertj.core.api.Assertions.catchThrowable
 import org.junit.jupiter.api.extension.ExtendWith
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.mock
@@ -217,7 +218,7 @@ internal class DefaultProcessApplicationLifecycleTest {
   }
 
   @Test
-  fun `keeps phase unchanged when a participant fails`() {
+  fun `makes lifecycle unusable when a startup participant fails`(output: CapturedOutput) {
     val lifecycle = DefaultProcessApplicationLifecycle()
     lifecycle.register(participant(ProcessApplicationPhase.INFRASTRUCTURE_READY) {
       throw IllegalStateException("registration failed")
@@ -228,6 +229,43 @@ internal class DefaultProcessApplicationLifecycleTest {
     }.withMessage("registration failed")
 
     assertThat(lifecycle.getPhase()).isEqualTo(ProcessApplicationPhase.NOT_STARTED)
+    assertThat(output.all).contains(
+      "PROCESS-ENGINE-API-LIFECYCLE-003: Lifecycle phase " +
+        "INFRASTRUCTURE_READY (${ProcessApplicationPhase.INFRASTRUCTURE_READY}) participant"
+    )
+    assertThatIllegalStateException().isThrownBy {
+      lifecycle.transitionTo(ProcessApplicationPhase.INFRASTRUCTURE_READY)
+    }.withMessage("Lifecycle is unusable after a participant failed during startup")
+      .withCauseInstanceOf(IllegalStateException::class.java)
+  }
+
+  @Test
+  fun `continues shutdown after participant failures and reports them together`() {
+    val lifecycle = DefaultProcessApplicationLifecycle()
+    val calls = mutableListOf<String>()
+    lifecycle.register(participant(ProcessApplicationPhase.STOPPING) {
+      calls += "failing-stop"
+      throw IllegalStateException("stop failed")
+    })
+    lifecycle.register(participant(ProcessApplicationPhase.STOPPING) { calls += "second-stop" })
+    lifecycle.register(participant(ProcessApplicationPhase.STOPPED) { calls += "stopped" })
+
+    lifecycle.transitionTo(
+      ProcessApplicationPhase.RUNNING,
+      TaskSubscriptionRegistrationContext(taskSubscriptionApi)
+    )
+
+    val failure = catchThrowable {
+      lifecycle.transitionTo(ProcessApplicationPhase.STOPPED)
+    }
+
+    assertThat(failure).isInstanceOf(IllegalStateException::class.java)
+      .hasMessage("One or more lifecycle participants failed during shutdown")
+    assertThat(failure!!.suppressed).hasSize(1)
+    assertThat(failure.suppressed.single().message).isEqualTo("stop failed")
+
+    assertThat(calls).containsExactly("failing-stop", "second-stop", "stopped")
+    assertThat(lifecycle.getPhase()).isEqualTo(ProcessApplicationPhase.STOPPED)
   }
 
   private fun participant(
