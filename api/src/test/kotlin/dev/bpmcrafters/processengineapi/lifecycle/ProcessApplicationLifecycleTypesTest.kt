@@ -28,6 +28,7 @@ class ProcessApplicationLifecycleTypesTest {
     val context = ProcessApplicationLifecycleContext(99)
 
     assertThat(context.getPhase()).isEqualTo(99)
+    assertThat(context.getStartupFailure()).isNull()
   }
 
   @Test
