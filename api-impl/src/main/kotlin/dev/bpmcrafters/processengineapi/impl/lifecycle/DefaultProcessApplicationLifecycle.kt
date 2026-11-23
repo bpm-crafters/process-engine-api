@@ -68,17 +68,19 @@ class DefaultProcessApplicationLifecycle : ProcessApplicationLifecycle {
     targetContext: ProcessApplicationLifecycleContext,
     registrationContext: TaskSubscriptionRegistrationContext?
   ) {
-    rejectIfStartupFailed()
     val targetPhase = targetContext.getPhase()
+    rejectIfStartupFailedUnlessShuttingDown(targetPhase)
     if (phase >= targetPhase) {
       return
     }
-    check(
-      phase >= ProcessApplicationPhase.SUBSCRIPTION_REGISTRATION ||
-        targetPhase < ProcessApplicationPhase.SUBSCRIPTION_REGISTRATION ||
-        registrationContext != null
-    ) {
-      "Lifecycle transition to phase ${describe(targetPhase)} requires a TaskSubscriptionRegistrationContext"
+    if (startupFailure == null) {
+      check(
+        phase >= ProcessApplicationPhase.SUBSCRIPTION_REGISTRATION ||
+          targetPhase < ProcessApplicationPhase.SUBSCRIPTION_REGISTRATION ||
+          registrationContext != null
+      ) {
+        "Lifecycle transition to phase ${describe(targetPhase)} requires a TaskSubscriptionRegistrationContext"
+      }
     }
     check(!transitioning) { "A lifecycle transition is already in progress" }
 
@@ -86,7 +88,7 @@ class DefaultProcessApplicationLifecycle : ProcessApplicationLifecycle {
     try {
       val failures = mutableListOf<Exception>()
       namedPhases
-        .filter { it > phase && it <= targetPhase }
+        .filter { it > phase && it <= targetPhase && (startupFailure == null || it >= ProcessApplicationPhase.STOPPING) }
         .forEach { namedPhase ->
           failures += transitionToNamedPhase(namedPhase, targetContext, registrationContext)
         }
@@ -107,11 +109,13 @@ class DefaultProcessApplicationLifecycle : ProcessApplicationLifecycle {
     registrationContext: TaskSubscriptionRegistrationContext?
   ): List<Exception> {
     val context = if (namedPhase == ProcessApplicationPhase.SUBSCRIPTION_REGISTRATION) {
-      registrationContext!!
-    } else if (namedPhase == targetContext.getPhase()) {
+      checkNotNull(registrationContext) {
+        "Lifecycle transition to phase ${describe(targetContext.getPhase())} requires a TaskSubscriptionRegistrationContext"
+      }
+    } else if (namedPhase == targetContext.getPhase() && startupFailure == null) {
       targetContext
     } else {
-      ProcessApplicationLifecycleContext(namedPhase)
+      ProcessApplicationLifecycleContext(namedPhase, startupFailure)
     }
     enter(namedPhase)
     val failures = dispatch(namedPhase, context)
@@ -140,15 +144,18 @@ class DefaultProcessApplicationLifecycle : ProcessApplicationLifecycle {
     participantPhase: Int,
     targetContext: ProcessApplicationLifecycleContext
   ): ProcessApplicationLifecycleContext =
-    if (participantPhase == targetContext.getPhase()) {
+    if (participantPhase == targetContext.getPhase() && startupFailure == null) {
       targetContext
     } else {
-      ProcessApplicationLifecycleContext(participantPhase)
+      ProcessApplicationLifecycleContext(participantPhase, startupFailure)
     }
 
   private fun participantsForTransition(next: Int): List<ProcessApplicationLifecycleParticipant> =
     participants
-      .filter { it.getPhase() in (phase + 1)..next }
+      .filter {
+        it.getPhase() in (phase + 1)..next &&
+          (startupFailure == null || it.getPhase() >= ProcessApplicationPhase.STOPPING)
+      }
       .sortedBy(ProcessApplicationLifecycleParticipant::getPhase)
 
   private fun describe(phase: Int): String =
@@ -170,6 +177,12 @@ class DefaultProcessApplicationLifecycle : ProcessApplicationLifecycle {
   private fun rejectIfStartupFailed() {
     startupFailure?.let { failure ->
       throw IllegalStateException("Lifecycle is unusable after a participant failed during startup", failure)
+    }
+  }
+
+  private fun rejectIfStartupFailedUnlessShuttingDown(targetPhase: Int) {
+    if (targetPhase < ProcessApplicationPhase.STOPPING) {
+      rejectIfStartupFailed()
     }
   }
 

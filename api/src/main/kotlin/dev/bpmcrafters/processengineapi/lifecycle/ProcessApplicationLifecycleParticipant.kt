@@ -5,8 +5,9 @@ package dev.bpmcrafters.processengineapi.lifecycle
  *
  * Participants are invoked in ascending phase order while the coordinator crosses a named
  * lifecycle boundary. They run while the lifecycle coordinator monitor is held: do not wait for a
- * thread that calls lifecycle registration or transition methods. A startup exception makes the
- * lifecycle unusable; shutdown exceptions are collected after all participants have run.
+ * thread that calls lifecycle registration or transition methods. A startup exception blocks later
+ * startup transitions but still permits shutdown; shutdown exceptions are collected after all
+ * participants have run.
  *
  * @since 1.8.0
  */

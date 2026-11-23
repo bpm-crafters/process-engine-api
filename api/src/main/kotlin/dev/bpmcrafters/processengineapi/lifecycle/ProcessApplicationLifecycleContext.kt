@@ -5,12 +5,18 @@ package dev.bpmcrafters.processengineapi.lifecycle
  *
  * @since 1.8.0
  */
-open class ProcessApplicationLifecycleContext(
-  private val phase: Int
+open class ProcessApplicationLifecycleContext @JvmOverloads constructor(
+  private val phase: Int,
+  private val startupFailure: Exception? = null
 ) {
 
   /**
    * Returns the lifecycle phase being dispatched.
    */
   fun getPhase(): Int = phase
+
+  /**
+   * Returns the failure that caused this shutdown transition, or `null` during normal operation.
+   */
+  fun getStartupFailure(): Exception? = startupFailure
 }

@@ -218,10 +218,20 @@ internal class DefaultProcessApplicationLifecycleTest {
   }
 
   @Test
-  fun `makes lifecycle unusable when a startup participant fails`(output: CapturedOutput) {
+  fun `blocks startup but permits shutdown when a startup participant fails`(output: CapturedOutput) {
     val lifecycle = DefaultProcessApplicationLifecycle()
+    val calls = mutableListOf<String>()
     lifecycle.register(participant(ProcessApplicationPhase.INFRASTRUCTURE_READY) {
       throw IllegalStateException("registration failed")
+    })
+    lifecycle.register(participant(ProcessApplicationPhase.RUNNING) { calls += "running" })
+    lifecycle.register(participant(ProcessApplicationPhase.STOPPING) { context ->
+      calls += "stopping"
+      assertThat(context.getStartupFailure()).hasMessage("registration failed")
+    })
+    lifecycle.register(participant(ProcessApplicationPhase.STOPPED) { context ->
+      calls += "stopped"
+      assertThat(context.getStartupFailure()).hasMessage("registration failed")
     })
 
     assertThatIllegalStateException().isThrownBy {
@@ -237,6 +247,11 @@ internal class DefaultProcessApplicationLifecycleTest {
       lifecycle.transitionTo(ProcessApplicationPhase.INFRASTRUCTURE_READY)
     }.withMessage("Lifecycle is unusable after a participant failed during startup")
       .withCauseInstanceOf(IllegalStateException::class.java)
+
+    lifecycle.transitionTo(ProcessApplicationPhase.STOPPED)
+
+    assertThat(calls).containsExactly("stopping", "stopped")
+    assertThat(lifecycle.getPhase()).isEqualTo(ProcessApplicationPhase.STOPPED)
   }
 
   @Test
