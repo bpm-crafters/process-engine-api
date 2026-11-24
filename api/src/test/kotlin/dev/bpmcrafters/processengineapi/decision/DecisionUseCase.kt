@@ -43,7 +43,7 @@ internal class DecisionUseCase(
     ).get()
       .asSingle()
       .asMap()
-      ?.let { Offer(it["id"] as Integer, it["name"] as String) }
+      ?.let { Offer(it["id"] as Int, it["name"] as String) }
       ?: throw IllegalStateException("No offer found")
   }
 
@@ -64,7 +64,7 @@ internal class DecisionUseCase(
       .asList()
       .mapNotNull { result -> result
         .asMap()
-        ?.let { Offer(it["id"] as Integer, it["name"] as String) } }
+        ?.let { Offer(it["id"] as Int, it["name"] as String) } }
   }
 
   enum class CustomerStatus {
@@ -74,7 +74,7 @@ internal class DecisionUseCase(
   }
 
   data class Offer(
-    val id: Integer,
+    val id: Int,
     val name: String
   )
 
