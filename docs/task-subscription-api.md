@@ -53,3 +53,88 @@ public class TaskSubscriber {
 
 
 ```
+
+## Task execution observers
+
+A `TaskExecutionObserver` watches the lifecycle of delivered tasks, e.g. for an audit log, a tracing span or MDC values.
+It covers external service tasks and user tasks, independent of the engine and of the telemetry tool.
+Once the adapter supports observers (see below), this includes annotation-based workers and handlers registered via `subscribeForTask` alike.
+
+Every callback names the `TaskType`, so one observer can handle both types or filter:
+
+| Callback | When | Thread |
+|---|---|---|
+| `onStart(task, taskType)` | right before the task handler is invoked; its cleanup runs after the handler returned or threw | delivering thread |
+| `onOutcome(taskId, taskType, outcome)` | on a call to `ServiceTaskCompletionApi` or `UserTaskCompletionApi`, or when an exception escapes the handler | calling thread |
+| `onTermination(task, taskType)` | when the adapter reports that a delivered task is gone, e.g. completed, cancelled or deleted | completing thread or adapter's thread |
+
+For user tasks, the handler only receives the task, e.g. for a task list, and the user completes it later.
+Their outcomes are therefore reported on another thread than `onStart`, and only as `Completed`, `BpmnError` or `Thrown`.
+`onStart` may be called several times for the same task, e.g. when a user task is assigned or updated.
+Adapters may name the reason in `task.meta[TaskInformation.REASON]`: `create`, `assign` or `update` for `onStart`, `complete` or `delete` for `onTermination`.
+`onStart` sees the reason the adapter delivered, because it runs before any handler: an update that `UserTaskSupport` passes to its handlers as `assign` reaches the observer with the adapter's reason, e.g. `update`.
+An adapter may report `onTermination` right after a completion, so a completed task may report both `onOutcome` and `onTermination`.
+When and whether `onTermination` is called depends on the adapter and the engine; it may also come without a preceding `onStart`.
+The KDoc of `TaskExecutionObserver` describes the full contract.
+
+The example opens a span and MDC values for each external service task and marks the span as failed.
+It relies on `Span.current()`, so it only marks the span if the handler completes the task on the delivering thread before it returns, as `process-engine-worker` does.
+
+```kotlin
+@Component
+class TracingTaskExecutionObserver(private val tracer: Tracer) : TaskExecutionObserver {
+
+  override fun onStart(task: TaskInformation, taskType: TaskType): TaskExecutionCleanup {
+    if (taskType != TaskType.EXTERNAL) {
+      return TaskExecutionCleanup.NONE
+    }
+    val activityId = task.meta[CommonRestrictions.ACTIVITY_ID] ?: "unknown-activity"
+    val span = tracer.spanBuilder("$activityId process").setNoParent().setSpanKind(SpanKind.CONSUMER).startSpan()
+    val scope = span.makeCurrent()
+    val mdc = MDC.putCloseable("activityId", activityId)
+    return TaskExecutionCleanup {
+      mdc.close()
+      scope.close()
+      span.end()
+    }
+  }
+
+  override fun onOutcome(taskId: String, taskType: TaskType, outcome: TaskExecutionOutcome) {
+    if (taskType != TaskType.EXTERNAL) {
+      return
+    }
+    when (outcome) {
+      is TaskExecutionOutcome.BpmnError -> Span.current().setStatus(StatusCode.ERROR, outcome.errorCode)
+      is TaskExecutionOutcome.Failed -> Span.current().setStatus(StatusCode.ERROR, outcome.reason)
+      is TaskExecutionOutcome.Thrown -> Span.current().recordException(outcome.cause).setStatus(StatusCode.ERROR)
+      TaskExecutionOutcome.Completed -> Unit
+    }
+  }
+}
+```
+
+An audit observer for user tasks only overrides what it needs:
+
+```kotlin
+@Component
+class UserTaskAuditObserver : TaskExecutionObserver {
+
+  override fun onOutcome(taskId: String, taskType: TaskType, outcome: TaskExecutionOutcome) {
+    if (taskType == TaskType.USER) {
+      logger.info { "User task $taskId ended with $outcome" }
+    }
+  }
+
+  override fun onTermination(task: TaskInformation, taskType: TaskType) {
+    if (taskType == TaskType.USER) {
+      logger.info { "User task ${task.taskId} is gone" }
+    }
+  }
+}
+```
+
+### Supporting observers in an adapter
+
+An adapter passes the observers in notification order to `AbstractTaskSubscriptionApiImpl`, which observes the task handler and the termination handler of every subscription.
+It also wraps its `ServiceTaskCompletionApi` in an `ObservedServiceTaskCompletionApi` and its `UserTaskCompletionApi` in an `ObservedUserTaskCompletionApi` with the same observers, and registers only the wrapped instances, so workers, manual handlers and task lists report their outcomes through them.
+Without observers, the adapter keeps its plain completion APIs and nothing changes.
