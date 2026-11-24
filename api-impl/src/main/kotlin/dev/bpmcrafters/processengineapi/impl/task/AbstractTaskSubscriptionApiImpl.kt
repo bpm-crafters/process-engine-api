@@ -25,6 +25,7 @@ abstract class AbstractTaskSubscriptionApiImpl @JvmOverloads constructor(
 ) : TaskSubscriptionApi {
 
   override fun subscribeForTask(cmd: SubscribeForTaskCmd): CompletableFuture<TaskSubscription> {
+    ensureSupported(cmd.restrictions)
     return TaskSubscriptionHandle(
       taskDescriptionKey = cmd.taskDescriptionKey,
       payloadDescription = cmd.payloadDescription,
@@ -45,7 +46,11 @@ abstract class AbstractTaskSubscriptionApiImpl @JvmOverloads constructor(
     return CompletableFuture.completedFuture(Empty)
   }
 
-  override fun getSupportedRestrictions(): Set<String> = setOf()
+  /**
+   * Task delivery is adapter-specific. Implementations must declare the restrictions which are
+   * guaranteed to work for every delivery strategy they expose.
+   */
+  abstract override fun getSupportedRestrictions(): Set<String>
 
   private fun observedAction(cmd: SubscribeForTaskCmd): TaskHandler {
     if (observers.isEmpty()) {

@@ -22,6 +22,8 @@ internal class AbstractTaskSubscriptionApiImplTest {
     observers: List<TaskExecutionObserver> = emptyList()
   ) : AbstractTaskSubscriptionApiImpl(subscriptionRepository, observers) {
 
+    override fun getSupportedRestrictions(): Set<String> = setOf(CommonRestrictions.PROCESS_DEFINITION_KEY)
+
     override fun meta(instance: MetaInfoAware): MetaInfo {
       TODO("Not yet implemented")
     }
@@ -52,6 +54,17 @@ internal class AbstractTaskSubscriptionApiImplTest {
     ).get()
 
     Assertions.assertThat(this.subscriptionRepository.getTaskSubscriptions()).isEmpty()
+  }
+
+  @Test
+  fun `rejects unsupported restrictions before creating a subscription`() {
+    val command = subscribeCmd(TaskType.EXTERNAL, TaskHandler { _, _ -> }).copy(
+      restrictions = mapOf(CommonRestrictions.TENANT_ID to "tenant")
+    )
+
+    Assertions.assertThatThrownBy { taskSubscriptionApi.subscribeForTask(command) }
+      .isInstanceOf(IllegalArgumentException::class.java)
+    Assertions.assertThat(subscriptionRepository.getTaskSubscriptions()).isEmpty()
   }
 
   @Test

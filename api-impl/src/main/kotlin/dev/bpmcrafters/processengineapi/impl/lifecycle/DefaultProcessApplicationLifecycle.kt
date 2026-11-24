@@ -75,8 +75,7 @@ class DefaultProcessApplicationLifecycle : ProcessApplicationLifecycle {
     }
     if (startupFailure == null) {
       check(
-        phase >= ProcessApplicationPhase.SUBSCRIPTION_REGISTRATION ||
-          targetPhase < ProcessApplicationPhase.SUBSCRIPTION_REGISTRATION ||
+        ProcessApplicationPhase.SUBSCRIPTION_REGISTRATION !in (phase + 1)..targetPhase ||
           registrationContext != null
       ) {
         "Lifecycle transition to phase ${describe(targetPhase)} requires a TaskSubscriptionRegistrationContext"
@@ -88,7 +87,7 @@ class DefaultProcessApplicationLifecycle : ProcessApplicationLifecycle {
     try {
       val failures = mutableListOf<Exception>()
       namedPhases
-        .filter { it > phase && it <= targetPhase && (startupFailure == null || it >= ProcessApplicationPhase.STOPPING) }
+        .filter { it in (phase + 1)..targetPhase && (startupFailure == null || it >= ProcessApplicationPhase.STOPPING) }
         .forEach { namedPhase ->
           failures += transitionToNamedPhase(namedPhase, targetContext, registrationContext)
         }
