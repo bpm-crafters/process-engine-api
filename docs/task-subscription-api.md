@@ -5,6 +5,9 @@ title: Task Subscription API
 The Task Subscription API allows you to subscribe to different tasks. The process-engine-api adapter implementation
 then takes care of the delivery of the tasks matching the intended subscription.
 
+See [Restrictions and metadata](restrictions-and-metadata.md) for the portable task-subscription restrictions and
+the metadata keys an adapter can return with a task.
+
 ## Delivery semantics
 
 A task subscription delivers the tasks that are available in the process engine and match the subscription.
