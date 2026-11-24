@@ -7,6 +7,9 @@ It allows to start new process instances.
 It is intended to be used in outbound adapters of the port/adapter architecture 
 to control the process engine from your application.
 
+See [Restrictions and metadata](restrictions-and-metadata.md) for the portable restriction keys and the metadata
+returned for started process instances.
+
 There are four ways to start processes:
 * by providing a process definition key
 * by providing a start message
@@ -73,7 +76,7 @@ public class ProcessStarter {
 }
 ```
 
-For supported engines (currently only C7 Embedded and C7 Remote) it is possible to set a business key by providing it 
+For supported engines (currently C7 Embedded, C7 Remote, Operaton Embedded and Operaton Remote) it is possible to set a business key by providing it 
 in the payload supplier, for example:
 ```java
 @SneakyThrows
