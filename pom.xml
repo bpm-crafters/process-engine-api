@@ -220,5 +220,14 @@
       <organization>Miragon</organization>
       <organizationUrl>https://miragon.com</organizationUrl>
     </developer>
+    <developer>
+      <id>emarco</id>
+      <name>Marco Schäck</name>
+      <roles>
+        <role>Developer</role>
+      </roles>
+      <organization>Miragon</organization>
+      <organizationUrl>https://miragon.com</organizationUrl>
+    </developer>
   </developers>
 </project>
