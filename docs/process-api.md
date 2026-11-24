@@ -7,6 +7,9 @@ It allows to start new process instances.
 It is intended to be used in outbound adapters of the port/adapter architecture 
 to control the process engine from your application.
 
+See [Restrictions and metadata](restrictions-and-metadata.md) for the portable restriction keys and the metadata
+returned for started process instances.
+
 There are four ways to start processes:
 * by providing a process definition key
 * by providing a start message

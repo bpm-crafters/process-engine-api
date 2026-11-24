@@ -6,6 +6,9 @@ The Correlation API provides functionality to correlate messages with running pr
 It is intended to be used in outbound adapters of the port/adapter architecture, in order to control
 the process engine from your application.
 
+See [Restrictions and metadata](restrictions-and-metadata.md) for portable message-correlation restrictions,
+including the distinction between tenant, correlation, and business keys.
+
 Message correlation denotes the ability of a process engine to continue the process execution of a process instance, waiting in a catch message event,
 if a message with a given name is delivered to the process engine. In doing so, it requires a way to target a single process execution (otherwise the
 correlation fails regarding BPMN specification).

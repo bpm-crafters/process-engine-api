@@ -6,6 +6,9 @@ The Signal API provides functionality to send signals to running process instanc
 It is intended to be used in outbound adapters of the port/adapter architecture, in order
 to control the process engine from your application.
 
+See [Restrictions and metadata](restrictions-and-metadata.md) for portable signal restrictions and their
+adapter-dependent support.
+
 
 ```java
 class SignalUseCase {
