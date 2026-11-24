@@ -20,7 +20,6 @@
   <properties>
     <!-- COMMON GLOBAL -->
     <slf4j.version>2.0.20</slf4j.version>
-    <spring-boot.version>3.5.16</spring-boot.version>
     <!-- TEST -->
     <mockito.version>6.4.0</mockito.version>
     <assertj.version>3.27.7</assertj.version>
@@ -33,46 +32,10 @@
     <module>api-impl</module>
   </modules>
 
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-dependencies</artifactId>
-        <version>${spring-boot.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-api</artifactId>
-        <version>${slf4j.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-simple</artifactId>
-        <version>${slf4j.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.assertj</groupId>
-        <artifactId>assertj-core</artifactId>
-        <version>${assertj.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.mockito.kotlin</groupId>
-        <artifactId>mockito-kotlin</artifactId>
-        <version>${mockito.version}</version>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
-
   <dependencies>
     <dependency>
       <groupId>org.jetbrains.kotlin</groupId>
       <artifactId>kotlin-stdlib</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.jetbrains.kotlin</groupId>
-      <artifactId>kotlin-reflect</artifactId>
     </dependency>
     <dependency>
       <groupId>io.github.oshai</groupId>
@@ -82,6 +45,7 @@
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
+      <version>${slf4j.version}</version>
     </dependency>
 
     <!-- TEST -->
@@ -103,16 +67,19 @@
     <dependency>
       <groupId>org.assertj</groupId>
       <artifactId>assertj-core</artifactId>
+      <version>${assertj.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.mockito.kotlin</groupId>
       <artifactId>mockito-kotlin</artifactId>
+      <version>${mockito.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-simple</artifactId>
+      <version>${slf4j.version}</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -129,19 +96,14 @@
         <artifactId>kotlin-maven-plugin</artifactId>
         <groupId>org.jetbrains.kotlin</groupId>
         <configuration>
-          <jvmTarget>17</jvmTarget>
           <args>
-            <arg>-Xjvm-default=all-compatibility</arg>
+            <arg>-jvm-default=enable</arg>
             <arg>-Xconsistent-data-class-copy-visibility</arg>
           </args>
           <compilerPlugins>
-            <plugin>spring</plugin>
             <plugin>no-arg</plugin>
             <plugin>all-open</plugin>
           </compilerPlugins>
-          <pluginOptions>
-            <option>all-open:annotation=io.toolisticon.testing.jgiven.JGivenKotlinStage</option>
-          </pluginOptions>
         </configuration>
       </plugin>
       <plugin>

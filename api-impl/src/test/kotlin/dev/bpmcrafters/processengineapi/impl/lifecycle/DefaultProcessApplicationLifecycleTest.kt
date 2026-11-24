@@ -9,12 +9,18 @@ import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatIllegalStateException
 import org.assertj.core.api.Assertions.catchThrowable
 import org.junit.jupiter.api.extension.ExtendWith
+import org.junit.jupiter.api.extension.AfterEachCallback
+import org.junit.jupiter.api.extension.BeforeEachCallback
+import org.junit.jupiter.api.extension.ExtensionContext
+import org.junit.jupiter.api.extension.ParameterContext
+import org.junit.jupiter.api.extension.ParameterResolver
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.mock
-import org.springframework.boot.test.system.CapturedOutput
-import org.springframework.boot.test.system.OutputCaptureExtension
+import java.io.ByteArrayOutputStream
+import java.io.PrintStream
+import java.nio.charset.StandardCharsets
 
-@ExtendWith(OutputCaptureExtension::class)
+@ExtendWith(StandardOutputCaptureExtension::class)
 internal class DefaultProcessApplicationLifecycleTest {
 
   private companion object {
@@ -302,4 +308,35 @@ internal class DefaultProcessApplicationLifecycleTest {
     lifecycle.transitionTo(ProcessApplicationPhase.STOPPING)
     lifecycle.transitionTo(ProcessApplicationPhase.STOPPED)
   }
+}
+
+internal class CapturedOutput(private val output: ByteArrayOutputStream) {
+  val all: String
+    get() = output.toString(StandardCharsets.UTF_8)
+}
+
+internal class StandardOutputCaptureExtension : BeforeEachCallback, AfterEachCallback, ParameterResolver {
+  private lateinit var originalOut: PrintStream
+  private lateinit var originalErr: PrintStream
+  private lateinit var capturedOutput: CapturedOutput
+
+  override fun beforeEach(context: ExtensionContext) {
+    val output = ByteArrayOutputStream()
+    capturedOutput = CapturedOutput(output)
+    originalOut = System.out
+    originalErr = System.err
+    val stream = PrintStream(output, true, StandardCharsets.UTF_8)
+    System.setOut(stream)
+    System.setErr(stream)
+  }
+
+  override fun afterEach(context: ExtensionContext) {
+    System.setOut(originalOut)
+    System.setErr(originalErr)
+  }
+
+  override fun supportsParameter(parameterContext: ParameterContext, extensionContext: ExtensionContext): Boolean =
+    parameterContext.parameter.type == CapturedOutput::class.java
+
+  override fun resolveParameter(parameterContext: ParameterContext, extensionContext: ExtensionContext): Any = capturedOutput
 }
