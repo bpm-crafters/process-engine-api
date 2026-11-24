@@ -20,7 +20,7 @@
   <properties>
     <!-- COMMON GLOBAL -->
     <slf4j.version>2.0.20</slf4j.version>
-    <spring-boot.version>3.5.16</spring-boot.version>
+    <spring-boot.version>4.2.0</spring-boot.version>
     <!-- TEST -->
     <mockito.version>6.4.0</mockito.version>
     <assertj.version>3.27.7</assertj.version>
