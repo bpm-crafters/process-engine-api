@@ -3,26 +3,26 @@ package dev.bpmcrafters.processengineapi.impl.task
 import dev.bpmcrafters.processengineapi.CommonRestrictions
 import dev.bpmcrafters.processengineapi.MetaInfo
 import dev.bpmcrafters.processengineapi.MetaInfoAware
-import dev.bpmcrafters.processengineapi.task.SubscribeForTaskCmd
-import dev.bpmcrafters.processengineapi.task.TaskExecutionObserver
-import dev.bpmcrafters.processengineapi.task.TaskHandler
-import dev.bpmcrafters.processengineapi.task.TaskInformation
-import dev.bpmcrafters.processengineapi.task.TaskTerminationHandler
-import dev.bpmcrafters.processengineapi.task.TaskType
-import dev.bpmcrafters.processengineapi.task.UnsubscribeFromTaskCmd
-import org.assertj.core.api.Assertions
+import dev.bpmcrafters.processengineapi.task.*
+import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
 
 internal class AbstractTaskSubscriptionApiImplTest {
 
   private val subscriptionRepository: SubscriptionRepository = InMemSubscriptionRepository()
   private val taskSubscriptionApi = MyTaskSubscriptionApiImpl(subscriptionRepository)
+
   class MyTaskSubscriptionApiImpl(
     subscriptionRepository: SubscriptionRepository,
     observers: List<TaskExecutionObserver> = emptyList()
   ) : AbstractTaskSubscriptionApiImpl(subscriptionRepository, observers) {
 
-    override fun getSupportedRestrictions(): Set<String> = setOf(CommonRestrictions.PROCESS_DEFINITION_KEY)
+    override fun getSupportedRestrictions(): Set<String> = setOf(
+      CommonRestrictions.PROCESS_DEFINITION_KEY,
+      CommonRestrictions.TENANT_ID,
+      CommonRestrictions.WITHOUT_TENANT_ID,
+    )
 
     override fun meta(instance: MetaInfoAware): MetaInfo {
       TODO("Not yet implemented")
@@ -33,38 +33,51 @@ internal class AbstractTaskSubscriptionApiImplTest {
   fun `subscribe and unsubscribe`() {
 
     val x = taskSubscriptionApi.subscribeForTask(
-        SubscribeForTaskCmd(
-            CommonRestrictions.builder().withProcessDefinitionKey("process-key").build(),
-            TaskType.EXTERNAL,
-            null,
-            setOf("var1"),
-            { _, _ -> },
-            { _ -> }
-        )
+      SubscribeForTaskCmd(
+        CommonRestrictions.builder().withProcessDefinitionKey("process-key").build(),
+        TaskType.EXTERNAL,
+        null,
+        setOf("var1"),
+        { _, _ -> },
+        { _ -> }
+      )
     ).get()
 
 
-    Assertions.assertThat(x).isNotNull
-    Assertions.assertThat(x).isInstanceOf(TaskSubscriptionHandle::class.java)
-    Assertions.assertThat((x as TaskSubscriptionHandle).taskType).isEqualTo(TaskType.EXTERNAL)
-    Assertions.assertThat(this.subscriptionRepository.getTaskSubscriptions()).containsExactly(x)
+    assertThat(x).isNotNull
+    assertThat(x).isInstanceOf(TaskSubscriptionHandle::class.java)
+    assertThat((x as TaskSubscriptionHandle).taskType).isEqualTo(TaskType.EXTERNAL)
+    assertThat(this.subscriptionRepository.getTaskSubscriptions()).containsExactly(x)
 
     taskSubscriptionApi.unsubscribe(
-        UnsubscribeFromTaskCmd(x)
+      UnsubscribeFromTaskCmd(x)
     ).get()
 
-    Assertions.assertThat(this.subscriptionRepository.getTaskSubscriptions()).isEmpty()
+    assertThat(this.subscriptionRepository.getTaskSubscriptions()).isEmpty()
   }
 
   @Test
   fun `rejects unsupported restrictions before creating a subscription`() {
     val command = subscribeCmd(TaskType.EXTERNAL, TaskHandler { _, _ -> }).copy(
-      restrictions = mapOf(CommonRestrictions.TENANT_ID to "tenant")
+      restrictions = mapOf(CommonRestrictions.BUSINESS_KEY to "business-key")
     )
 
-    Assertions.assertThatThrownBy { taskSubscriptionApi.subscribeForTask(command) }
+    assertThatThrownBy { taskSubscriptionApi.subscribeForTask(command) }.isInstanceOf(IllegalArgumentException::class.java)
+    assertThat(subscriptionRepository.getTaskSubscriptions()).isEmpty()
+  }
+
+  @Test
+  fun `rejects tenant and without tenant restrictions together`() {
+    val command = subscribeCmd(TaskType.EXTERNAL, TaskHandler { _, _ -> }).copy(
+      restrictions = mapOf(
+        CommonRestrictions.TENANT_ID to "tenant",
+        CommonRestrictions.WITHOUT_TENANT_ID to "true",
+      )
+    )
+
+    assertThatThrownBy { taskSubscriptionApi.subscribeForTask(command) }
       .isInstanceOf(IllegalArgumentException::class.java)
-    Assertions.assertThat(subscriptionRepository.getTaskSubscriptions()).isEmpty()
+    assertThat(subscriptionRepository.getTaskSubscriptions()).isEmpty()
   }
 
   @Test
@@ -74,8 +87,8 @@ internal class AbstractTaskSubscriptionApiImplTest {
 
     val subscription = taskSubscriptionApi.subscribeForTask(subscribeCmd(TaskType.EXTERNAL, handler, termination)).get() as TaskSubscriptionHandle
 
-    Assertions.assertThat(subscription.action).isSameAs(handler)
-    Assertions.assertThat(subscription.termination).isSameAs(termination)
+    assertThat(subscription.action).isSameAs(handler)
+    assertThat(subscription.termination).isSameAs(termination)
   }
 
   @Test
@@ -86,7 +99,7 @@ internal class AbstractTaskSubscriptionApiImplTest {
     val subscription = observedApi.subscribeForTask(subscribeCmd(TaskType.EXTERNAL, { _, _ -> recordedSteps.add("handler") })).get() as TaskSubscriptionHandle
     subscription.action.accept(TaskInformation("task-1", mapOf()), mapOf())
 
-    Assertions.assertThat(recordedSteps).containsExactly("observer start EXTERNAL task-1", "handler", "observer cleanup task-1")
+    assertThat(recordedSteps).containsExactly("observer start EXTERNAL task-1", "handler", "observer cleanup task-1")
   }
 
   @Test
@@ -101,7 +114,7 @@ internal class AbstractTaskSubscriptionApiImplTest {
     subscription.action.accept(task, mapOf())
     subscription.termination.accept(task)
 
-    Assertions.assertThat(recordedSteps).containsExactly(
+    assertThat(recordedSteps).containsExactly(
       "observer start USER task-1",
       "delivered",
       "observer cleanup task-1",

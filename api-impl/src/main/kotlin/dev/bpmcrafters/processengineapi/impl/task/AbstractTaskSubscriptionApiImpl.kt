@@ -1,6 +1,7 @@
 package dev.bpmcrafters.processengineapi.impl.task
 
 import dev.bpmcrafters.processengineapi.Empty
+import dev.bpmcrafters.processengineapi.CommonRestrictions
 import dev.bpmcrafters.processengineapi.task.SubscribeForTaskCmd
 import dev.bpmcrafters.processengineapi.task.TaskExecutionObserver
 import dev.bpmcrafters.processengineapi.task.TaskHandler
@@ -26,6 +27,13 @@ abstract class AbstractTaskSubscriptionApiImpl @JvmOverloads constructor(
 
   override fun subscribeForTask(cmd: SubscribeForTaskCmd): CompletableFuture<TaskSubscription> {
     ensureSupported(cmd.restrictions)
+    require(
+      !(cmd.restrictions.containsKey(CommonRestrictions.TENANT_ID) &&
+        cmd.restrictions.containsKey(CommonRestrictions.WITHOUT_TENANT_ID))
+    ) {
+      "Illegal restriction combination. ${CommonRestrictions.TENANT_ID} and " +
+        "${CommonRestrictions.WITHOUT_TENANT_ID} can't be provided at the same time because they are mutually exclusive."
+    }
     return TaskSubscriptionHandle(
       taskDescriptionKey = cmd.taskDescriptionKey,
       payloadDescription = cmd.payloadDescription,
