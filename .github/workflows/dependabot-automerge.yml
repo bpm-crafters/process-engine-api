@@ -10,6 +10,7 @@ jobs:
   auto-merge:
     if: github.actor == 'dependabot[bot]'
     runs-on: ubuntu-latest
+    timeout-minutes: 45
     steps:
 
       - name: Fetch Dependabot metadata
@@ -18,15 +19,43 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Enable auto-merge for patch and minor updates
+      - name: Merge successful patch and minor updates
         if: steps.meta.outputs.update-type == 'version-update:semver-patch' || steps.meta.outputs.update-type == 'version-update:semver-minor'
         run: |
-          for i in 1 2 3 4 5; do
-            gh pr merge --auto --squash "$PR_URL" && exit 0
-            echo "enablePullRequestAutoMerge race (attempt $i) — retrying in 15s…"
+          for i in {1..180}; do
+            check_run="$(gh api "repos/$GITHUB_REPOSITORY/commits/$HEAD_SHA/check-runs" \
+              --jq '.check_runs | map(select(.name == "Build and run tests")) | sort_by(.started_at) | last // empty')"
+
+            if [[ -z "$check_run" ]]; then
+              echo "Build and run tests has not started yet (attempt $i)."
+              sleep 15
+              continue
+            fi
+
+            status="$(jq -r '.status' <<<"$check_run")"
+            conclusion="$(jq -r '.conclusion // empty' <<<"$check_run")"
+            if [[ "$status" == "completed" ]]; then
+              if [[ "$conclusion" != "success" ]]; then
+                echo "Build and run tests completed with conclusion: $conclusion"
+                exit 1
+              fi
+
+              current_head="$(gh pr view "$PR_URL" --json headRefOid --jq '.headRefOid')"
+              if [[ "$current_head" != "$HEAD_SHA" ]]; then
+                echo "The pull request changed while its build ran; a new workflow run will evaluate the new head."
+                exit 0
+              fi
+
+              gh pr merge --squash "$PR_URL"
+              exit 0
+            fi
+
+            echo "Build and run tests is $status (attempt $i)."
             sleep 15
           done
+          echo "Timed out waiting for Build and run tests."
           exit 1
         env:
           PR_URL: ${{ github.event.pull_request.html_url }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
