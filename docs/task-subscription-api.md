@@ -72,6 +72,7 @@ For user tasks, the handler only receives the task, e.g. for a task list, and th
 Their outcomes are therefore reported on another thread than `onStart`, and only as `Completed`, `BpmnError` or `Thrown`.
 `onStart` may be called several times for the same task, e.g. when a user task is assigned or updated.
 Adapters may name the reason in `task.meta[TaskInformation.REASON]`: `create`, `assign` or `update` for `onStart`, `complete` or `delete` for `onTermination`.
+`onStart` sees the reason the adapter delivered, because it runs before any handler: an update that `UserTaskSupport` passes to its handlers as `assign` reaches the observer with the adapter's reason, e.g. `update`.
 An adapter may report `onTermination` right after a completion, so a completed task may report both `onOutcome` and `onTermination`.
 When and whether `onTermination` is called depends on the adapter and the engine; it may also come without a preceding `onStart`.
 The KDoc of `TaskExecutionObserver` describes the full contract.
